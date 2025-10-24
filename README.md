@@ -1,46 +1,87 @@
-# Astro Starter Kit: Basics
+# Skill Bank - Dự án Astro
 
-```sh
-npm create astro@latest -- --template basics
-```
+Dự án Skill Bank được xây dựng bằng Astro framework với cấu trúc tối ưu cho việc phát triển web hiện đại.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🚀 Cấu trúc dự án
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+Dự án Astro của bạn có cấu trúc thư mục như sau:
 
 ```text
 /
-├── public/
+├── public/                 # Thư mục chứa các file tĩnh
 │   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+├── src/                    # Thư mục mã nguồn chính
+│   ├── assets/            # Tài nguyên (CSS, JS, hình ảnh)
+│   │   ├── css/           # File CSS
+│   │   └── script/        # File JavaScript
+│   ├── components/        # Các component Astro
+│   │   ├── Header.astro
+│   │   └── Footer.astro
+│   ├── layouts/           # Layout templates
+│   │   └── Layout.astro
+│   └── pages/             # Các trang web
+│       ├── index.astro     # Trang chủ
+│       ├── about.astro     # Trang giới thiệu
+│       └── contact.astro   # Trang liên hệ
+├── astro.config.mjs       # Cấu hình Astro
+├── tsconfig.json          # Cấu hình TypeScript
+└── package.json           # Thông tin dự án và dependencies
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 🔧 Cấu hình Alias
 
-## 🧞 Commands
+Dự án đã được cấu hình alias để import dễ dàng hơn:
 
-All commands are run from the root of the project, from a terminal:
+- `@` → `/src` (alias chính)
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+### Ví dụ sử dụng alias:
 
-## 👀 Want to learn more?
+```astro
+<!-- Import layout -->
+import Layout from '@/layouts/Layout.astro';
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+<!-- Import component -->
+import Header from '@/components/Header.astro';
+
+<!-- Import script -->
+<script src="@/assets/script/index.js"></script>
+
+<!-- Import CSS -->
+import '@/assets/css/main.css';
+```
+
+## 📋 Các lệnh chính
+
+Tất cả các lệnh được chạy từ thư mục gốc của dự án:
+
+| Lệnh                    | Mô tả                                           |
+| :---------------------- | :---------------------------------------------- |
+| `npm install`           | Cài đặt các dependencies                        |
+| `npm run dev`           | Khởi động server phát triển tại `localhost:4321` |
+| `npm run build`         | Build dự án production vào thư mục `./dist/`    |
+| `npm run preview`       | Xem trước build trước khi deploy                |
+| `npm run astro ...`     | Chạy các lệnh CLI như `astro add`, `astro check` |
+| `npm run astro -- --help` | Xem trợ giúp sử dụng Astro CLI                 |
+
+## 🎯 Tính năng chính
+
+- ✅ **Astro Framework**: Framework web hiện đại với hiệu suất cao
+- ✅ **TypeScript Support**: Hỗ trợ TypeScript đầy đủ
+- ✅ **Path Aliases**: Cấu hình alias để import dễ dàng
+- ✅ **Component-based**: Kiến trúc component linh hoạt
+- ✅ **SEO Friendly**: Tối ưu cho SEO và hiệu suất
+
+## 📚 Tài liệu tham khảo
+
+- [Tài liệu Astro chính thức](https://docs.astro.build)
+- [Hướng dẫn cấu trúc dự án Astro](https://docs.astro.build/en/basics/project-structure/)
+- [Cộng đồng Discord Astro](https://astro.build/chat)
+
+## 🚀 Bắt đầu phát triển
+
+1. Clone dự án
+2. Chạy `npm install` để cài đặt dependencies
+3. Chạy `npm run dev` để khởi động server phát triển
+4. Mở trình duyệt tại `http://localhost:4321`
+
+Chúc bạn phát triển vui vẻ! 🎉
