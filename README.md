@@ -37,8 +37,7 @@ Dự án đã được cấu hình alias để import dễ dàng hơn:
 ### Ví dụ sử dụng alias:
 
 ```astro
-<!-- Import layout -->
-import Layout from '@/layouts/Layout.astro';
+<!-- Import layout -->import Layout from '@/layouts/Layout.astro';
 
 <!-- Import component -->
 import Header from '@/components/Header.astro';
@@ -54,14 +53,14 @@ import '@/assets/css/main.css';
 
 Tất cả các lệnh được chạy từ thư mục gốc của dự án:
 
-| Lệnh                    | Mô tả                                           |
-| :---------------------- | :---------------------------------------------- |
-| `npm install`           | Cài đặt các dependencies                        |
-| `npm run dev`           | Khởi động server phát triển tại `localhost:4321` |
-| `npm run build`         | Build dự án production vào thư mục `./dist/`    |
-| `npm run preview`       | Xem trước build trước khi deploy                |
-| `npm run astro ...`     | Chạy các lệnh CLI như `astro add`, `astro check` |
-| `npm run astro -- --help` | Xem trợ giúp sử dụng Astro CLI                 |
+| Lệnh                      | Mô tả                                            |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Cài đặt các dependencies                         |
+| `npm run dev`             | Khởi động server phát triển tại `localhost:4321` |
+| `npm run build`           | Build dự án production vào thư mục `./dist/`     |
+| `npm run preview`         | Xem trước build trước khi deploy                 |
+| `npm run astro ...`       | Chạy các lệnh CLI như `astro add`, `astro check` |
+| `npm run astro -- --help` | Xem trợ giúp sử dụng Astro CLI                   |
 
 ## 🎯 Tính năng chính
 
