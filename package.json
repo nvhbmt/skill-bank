@@ -12,11 +12,14 @@
         "format:staged": "prettier --write --ignore-unknown"
     },
     "dependencies": {
+        "@supabase/ssr": "^0.7.0",
         "@supabase/supabase-js": "^2.76.1",
-        "astro": "^5.15.1"
+        "astro": "^5.15.1",
+        "zod": "^4.1.12"
     },
     "devDependencies": {
         "prettier": "^3.0.0",
-        "prettier-plugin-astro": "^0.12.0"
+        "prettier-plugin-astro": "^0.12.0",
+        "supabase": "^2.54.11"
     }
 }
