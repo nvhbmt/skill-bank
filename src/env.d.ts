@@ -1,8 +1,19 @@
-interface ImportMetaEnv {
-    readonly SUPABASE_URL: string;
-    readonly SUPABASE_ANON_KEY: string;
-}
+/// <reference types="astro/client" />
+import type { Session } from '@supabase/supabase-js';
 
-interface ImportMeta {
-    readonly env: ImportMetaEnv;
+declare global {
+    namespace App {
+        interface Locals {
+            session: Session | null;
+        }
+    }
+
+    interface ImportMetaEnv {
+        readonly SUPABASE_URL: string;
+        readonly SUPABASE_ANON_KEY: string;
+    }
+
+    interface ImportMeta {
+        readonly env: ImportMetaEnv;
+    }
 }
