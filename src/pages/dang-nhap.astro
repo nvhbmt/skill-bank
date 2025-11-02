@@ -1,0 +1,52 @@
+---
+import DefaultLayout from "@/layouts/DefaultLayout.astro";
+import '@/assets/css/dang-nhap.css'
+---
+
+<DefaultLayout>
+    <div class="container">
+        <div class="login-page">
+            <div class="login-page-left">
+                <div class="inner-login-page-left">
+                    <div class="login-content">
+                        <div class="login-form">
+                            <h1>Đăng nhập</h1>
+                            <div>Bạn không có tài khoản? <a href="http://" class="login-link">Đăng kí</a></div>
+                        </div>
+                        <div class="login-form-body">
+                            <div class="login-form-group">
+                                <img src="./assets/image/solar_user-outline.png" alt="icon">
+                                <input type="text" placeholder="Tên người dùng" class="login-form-group-text">
+                            </div>
+                            <div class="login-form-group">
+                                <img src="./assets/image/material-symbols-light_lock-outline.png" alt="icon">
+                                <input type="password" placeholder="Tên người dùng" class="login-form-group-text">
+                            </div>
+                            <div class="login-form-action">
+                                <label><input type="checkbox" /> Nhớ tôi</label>
+                                <a href="http://" class="login-link">Quên mật khẩu?</a>
+                            </div>
+                        </div>
+                        <button class="login-form-btn">Đăng nhập</button>
+                    </div>
+                    <div class="login-form-divider">
+                        <div class="login-form-divider-line"></div>
+                        <div class="login-form-divider-text">hoặc</div>
+                        <div class="login-form-divider-line"></div>
+                    </div>
+                    <div class="login-btn-box">
+                        <button class="login-btn">
+                            <img src="./assets/image/flat-color-icons_google.png" alt="icon">
+                            <div class="login-btn-text">Gmail</div>
+                        </button>
+                        <button class="login-btn">
+                            <img src="./assets/image/logos_facebook.png" alt="icon">
+                            <div class="login-btn-text">Facefook</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <img src="./assets/image/anh-dang-nhap.png" alt="anh" class="login-page-right">
+        </div>
+    </div>
+</DefaultLayout>
