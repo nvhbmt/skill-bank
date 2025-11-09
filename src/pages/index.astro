@@ -1,10 +1,334 @@
 ---
-import MainLayout from '@/layouts/MainLayout.astro';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import SearchInput from '@/components/SearchInput.astro';
+import '@/assets/css/index.css';
+import Footer from '@/components/Footer.astro';
 ---
 
-<MainLayout>
-	<h1>Trang chủ</h1>
-	<button id="btn">Say hello</button>
-</MainLayout>
+<DefaultLayout>
+    <!-- Hero Section -->
+    <section id="hero-section" class="hero-section">
+        <div class="hero-section__container">
+            <header class="hero-section__header">
+                <div class="container hero-section__header-wrapper">
+                    <div class="hero-section__header-left">
+                        <a href="/" class="hero-section__logo">
+                            <img
+                                src="/assets/image/logo-full-ngang.png"
+                                alt="logo"
+                            />
+                        </a>
+                        <div class="hero-section__search">
+                            <SearchInput
+                                placeholder="Tìm kiếm"
+                                name="search"
+                                showIcon={true}
+                            />
+                        </div>
+                    </div>
+                    <div class="hero-section__header-right">
+                        <a href="/dang-nhap" class="hero-section__link"
+                            >Đăng nhập</a
+                        >
+                        <a href="/dang-ky" class="hero-section__link">Đăng ký</a
+                        >
+                    </div>
+                </div>
+            </header>
+            <div class="hero-section__content">
+                <h1 class="hero-section__title">
+                    Không chỉ là kỹ năng.<br /> Đây là sandbox của<br /> những dự
+                    án.
+                </h1>
+                <p class="hero-section__description">
+                    Hãy xem mỗi dự án như một đoạn code đang chờ được biên dịch
+                    – chính bạn là người viết nên logic, sửa bug, và khiến nó
+                    hoạt động. Cơ hội chỉ đến khi bạn bắt tay vào làm.
+                </p>
+                <div class="hero-section__buttons">
+                    <button class="hero-section__button">Get Started</button>
+                    <button class="hero-section__button">Learn More</button>
+                </div>
+                <div class="hero-section__users">
+                    <div class="hero-section__user-images">
+                        <div class="hero-section__user-image">
+                            <img src="/assets/image/hero-1.jpg" alt="user-1" />
+                        </div>
+                        <div class="hero-section__user-image">
+                            <img src="/assets/image/hero-2.jpg" alt="user-2" />
+                        </div>
+                        <div class="hero-section__user-image">
+                            <img src="/assets/image/hero-3.jpg" alt="user-3" />
+                        </div>
+                    </div>
+                    <span class="hero-section__user-text"
+                        >Hơn 1k người sử dụng</span
+                    >
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script src="@/assets/script/index.js"></script>
+    <!-- Creators Section -->
+    <section id="creators-section" class="creators-section">
+        <div class="container creators-section__container">
+            <h2 class="creators-section__title">
+                Những gương mặt tạo nên sự khác biệt.
+            </h2>
+            <p class="creators-section__description">
+                Cùng khám phá những người dùng nổi bật – những cá nhân không
+                ngừng thử nghiệm, chia sẻ và truyền cảm hứng.
+            </p>
+            <div class="creators-section__list">
+                <div class="creators-section__card">
+                    <div class="creators-section__card-header">
+                        <div class="creators-section__avatar">
+                            <img src="/assets/image/hero-1.jpg" alt="avatar" />
+                        </div>
+                        <div class="creators-section__info">
+                            <h3 class="creators-section__name">
+                                Nguyễn Trọng Nhân
+                            </h3>
+                            <h4 class="creators-section__username">
+                                @Nhan_dep_trai
+                            </h4>
+                        </div>
+                    </div>
+                    <ul class="creators-section__skills">
+                        <li class="creators-section__skill">
+                            Game Development
+                        </li>
+                        <li class="creators-section__skill">
+                            nhandeptrai@gmail.com
+                        </li>
+                        <li class="creators-section__skill">Bình thuận</li>
+                    </ul>
+                </div>
+                <div class="creators-section__card">
+                    <div class="creators-section__card-header">
+                        <div class="creators-section__avatar">
+                            <img src="/assets/image/hero-1.jpg" alt="avatar" />
+                        </div>
+                        <div class="creators-section__info">
+                            <h3 class="creators-section__name">
+                                Nguyễn Trọng Nhân
+                            </h3>
+                            <h4 class="creators-section__username">
+                                @Nhan_dep_trai
+                            </h4>
+                        </div>
+                    </div>
+                    <ul class="creators-section__skills">
+                        <li class="creators-section__skill">
+                            Game Development
+                        </li>
+                        <li class="creators-section__skill">
+                            nhandeptrai@gmail.com
+                        </li>
+                        <li class="creators-section__skill">Bình thuận</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects-section" class="projects-section">
+        <div class="container projects-section__container">
+            <div class="projects-section__content">
+                <div class="projects-section__card">
+                    <div class="projects-section__image">
+                        <img src="/assets/image/hero-1.jpg" alt="project" />
+                    </div>
+                    <div class="projects-section__info">
+                        <h3 class="projects-section__title">Design web</h3>
+                        <div class="projects-section__user">
+                            <div class="projects-section__user-avatar">
+                                <img
+                                    src="/assets/image/hero-1.jpg"
+                                    alt="user"
+                                />
+                            </div>
+                            <div class="projects-section__user-details">
+                                <p class="projects-section__user-name">
+                                    User name
+                                </p>
+                                <p class="projects-section__user-email">
+                                    email
+                                </p>
+                            </div>
+                        </div>
+                        <div class="projects-section__stats">
+                            <span
+                                class="projects-section__stat projects-section__stat--views"
+                            >
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                >
+                                    <path
+                                        d="M8 2C4.667 2 2 4.667 2 8s2.667 6 6 6 6-2.667 6-6-2.667-6-6-6zm0 10.667c-2.58 0-4.667-2.087-4.667-4.667S5.42 3.333 8 3.333 12.667 5.42 12.667 8 10.58 12.667 8 12.667z"
+                                        fill="currentColor"></path>
+                                    <path
+                                        d="M8 5.333c-1.467 0-2.667 1.2-2.667 2.667S6.533 10.667 8 10.667 10.667 9.467 10.667 8 9.467 5.333 8 5.333z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                790
+                            </span>
+                            <span
+                                class="projects-section__stat projects-section__stat--likes"
+                            >
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                >
+                                    <path
+                                        d="M8 2.667c-1.467-2-4-2.667-4 2.667 0 4 4 6.667 4 6.667s4-2.667 4-6.667c0-5.334-2.533-4.667-4-2.667z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                500
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="projects-section__text">
+                    <h2 class="projects-section__heading">
+                        Khám phá những ý tưởng đang thay đổi tương lai
+                    </h2>
+                    <p class="projects-section__description">
+                        Từ công nghệ đến nghệ thuật - nơi các dự án độc đáo được
+                        chia sẻ, kết nối và truyền cảm hứng.
+                    </p>
+                    <div class="projects-section__buttons">
+                        <button class="projects-section__button"
+                            >Get Started</button
+                        >
+                        <button class="projects-section__button"
+                            >Learn More</button
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QNA Section -->
+    <section id="qna-section" class="qna-section">
+        <div class="container qna-section__container">
+            <h2 class="qna-section__title">CÁC CÂU HỎI THƯỜNG GẶP</h2>
+            <p class="qna-section__subtitle">
+                Cần giúp đỡ? Hãy để chúng tôi hỗ trợ bạn
+            </p>
+            <div class="qna-section__search">
+                <SearchInput
+                    placeholder="Search"
+                    name="qna-search"
+                    showIcon={true}
+                />
+            </div>
+            <div class="qna-section__list">
+                <div class="qna-section__item">
+                    <div class="qna-section__question">
+                        <span class="qna-section__number">1.</span>
+                        <h3 class="qna-section__question-text">
+                            Ngân hàng kỹ năng là gì?
+                        </h3>
+                    </div>
+                    <div class="qna-section__answer">
+                        <p>
+                            Ngân hàng kỹ năng là nơi kết nối những người có năng
+                            lực chuyên môn với các dự án cần hỗ trợ.
+                        </p>
+                    </div>
+                </div>
+                <div class="qna-section__item">
+                    <div class="qna-section__question">
+                        <span class="qna-section__number">2.</span>
+                        <h3 class="qna-section__question-text">
+                            Nền tảng này có tính phí không?
+                        </h3>
+                    </div>
+                    <div class="qna-section__answer">
+                        <p>
+                            Không. Việc tham gia và sử dụng cơ bản trên nền tảng
+                            là hoàn toàn miễn phí.
+                        </p>
+                    </div>
+                </div>
+                <div class="qna-section__item">
+                    <div class="qna-section__question">
+                        <span class="qna-section__number">3.</span>
+                        <h3 class="qna-section__question-text">
+                            Làm thế nào để tham gia dự án?
+                        </h3>
+                    </div>
+                    <div class="qna-section__answer">
+                        <p>
+                            Bạn chỉ cần tạo tài khoản, cập nhật hồ sơ kỹ năng và
+                            gửi đơn tham gia vào dự án phù hợp.
+                        </p>
+                    </div>
+                </div>
+                <div class="qna-section__item">
+                    <div class="qna-section__question">
+                        <span class="qna-section__number">4.</span>
+                        <h3 class="qna-section__question-text">
+                            Làm sao để tìm người có kỹ năng phù hợp?
+                        </h3>
+                    </div>
+                    <div class="qna-section__answer">
+                        <p>
+                            Bạn có thể sử dụng công cụ tìm kiếm hoặc bộ lọc theo
+                            lĩnh vực, vị trí và kinh nghiệm.
+                        </p>
+                    </div>
+                </div>
+                <div class="qna-section__item">
+                    <div class="qna-section__question">
+                        <span class="qna-section__number">5.</span>
+                        <h3 class="qna-section__question-text">
+                            Có quy định nào khi tham gia cộng đồng không?
+                        </h3>
+                    </div>
+                    <div class="qna-section__answer">
+                        <p>
+                            Có. Mỗi thành viên cần tuân thủ quy tắc tôn trọng,
+                            chia sẻ và bảo mật thông tin.
+                        </p>
+                    </div>
+                </div>
+                <div class="qna-section__item">
+                    <div class="qna-section__question">
+                        <span class="qna-section__number">6.</span>
+                        <h3 class="qna-section__question-text">
+                            Ai có thể sử dụng nền tảng này?
+                        </h3>
+                    </div>
+                    <div class="qna-section__answer">
+                        <p>
+                            Bất kỳ cá nhân hoặc tổ chức nào có nhu cầu kết nối,
+                            chia sẻ kỹ năng đều có thể tham gia.
+                        </p>
+                    </div>
+                </div>
+                <div class="qna-section__item">
+                    <div class="qna-section__question">
+                        <span class="qna-section__number">7.</span>
+                        <h3 class="qna-section__question-text">
+                            Làm thế nào để liên hệ với đội ngũ hỗ trợ?
+                        </h3>
+                    </div>
+                    <div class="qna-section__answer">
+                        <p>Bạn có thể gửi email về địa chỉ support...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <Footer />
+</DefaultLayout>
