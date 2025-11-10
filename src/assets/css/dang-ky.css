@@ -1,0 +1,227 @@
+:root {
+    --color-primary: #6363F1;
+    --color-bg-light: #ffffff;
+    --color-surface: #E0E0FC;
+    --color-primary-dark: #4C3DF2;
+    --color-secondary: #8282F4;
+    --color-bg-black: #000000;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-image: url('./assets/image/nen-dang-nhap.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+a:hover {
+    color: var(--color-secondary);
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-secondary);
+}
+
+.login-page {
+    display: flex;
+    max-width: 1100px;
+    width: 95%;
+    height: 846px; 
+    margin: 117px auto;
+    border-radius: 30px;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-page-left {
+    object-fit: cover; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('./assets/image/anh-dang-ky.svg');
+    background-position: center;
+    max-width: 548px;
+    width: 100%;
+    height: 846px;
+    position: relative;
+}
+
+.logo {
+    position: absolute;
+    left: 40px;
+    top: 32px;
+}
+
+.login-page-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 552px;
+    width: 100%;
+    height: 846px;
+    background: var(--color-bg-light);
+}
+
+.inner-login-page-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 23px;
+    width: 400px;
+    height: 592px;
+}
+
+.login-content {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.login-link {
+    text-decoration-line: none;
+}
+
+.login-form-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.login-form-group {
+    width: 100%;
+    height: 60px;
+    background: var(--color-surface);
+    border-radius: 40px;
+    display: flex;
+    gap: 8px;
+    padding:0 24px;
+    align-items: center;
+}
+
+.login-form-group-text {
+    background: var(--color-surface);
+    border: none;
+    width: 100%;
+}
+
+input:focus {
+    outline: none;
+}
+
+.login-form-action {
+    display: flex;
+}
+
+input[type="checkbox"] {
+    transform: scale(2); 
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.login-form-action label {
+    cursor: pointer;
+}
+
+.login-form-btn {
+    background: var(--color-primary-dark);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-bg-light);
+    border-radius: 20px;
+    width: 100%;
+    height: 52px;
+    font-size: 23px;
+    transition: color 0.1s linear;
+}
+
+.login-form-btn:hover {
+    background: var(--color-primary);
+    color: var(--color-bg-black);
+}
+
+.login-form-btn:active {
+    background: var(--color-secondary);
+    color: var(--color-bg-black);
+}
+
+.login-form-divider {
+    display: flex;
+    gap: 26.5px;
+    align-items: center;
+}
+
+.login-form-divider-line {
+    width: 150px;
+    height: 0;
+    border: 2px solid #DBC4C4;
+    border-radius: 20px;
+}
+
+.login-form-divider-text {
+    font-size: 20px;
+    color: #B8ABAB;
+}
+
+.login-btn-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.login-btn {
+    width: 190px;
+    height: 68px;
+    border: 1px solid #000000b0;
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-bg-light);
+    transition: color 0.1s linear;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    border: 1px solid var(--color-primary-dark);
+}
+
+.login-btn:active {
+    border: 1px solid var();
+}
+
+.login-btn-text {
+    font-size: 19.2px;
+    font-weight: 600;
+    color: #000000b0;
+}
+
+@media (max-width: 768px) {
+    .login-page-left {
+        display: none;
+    }
+
+    .login-page-right {
+        border-radius: 30px;
+        max-width: 768px;
+    }
+}
