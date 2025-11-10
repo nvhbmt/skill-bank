@@ -1,0 +1,42 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/quen-mat-khau.css';
+---
+
+<DefaultLayout>
+    <div class="container">
+        <section class="forgot-page">
+            <div class="head">
+                <span>Bạn chưa có tài khoản?</span>
+                <a href="#">Đăng ký</a>
+            </div>
+
+            <div class="hero">
+                <div class="hero-section">
+                    <a href="#"
+                        ><img src="/assets/images/logo.png" alt="logo" /></a
+                    >
+
+                    <h1>Quên mật khẩu?</h1>
+
+                    <form action="#" method="post">
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Nhập email của bạn"
+                            autocomplete="on"
+                        />
+                        <br />
+                        <button class="reset">Đặt lại mật khẩu</button>
+                    </form>
+
+                    <a href="#">
+                        <i class="fa-solid fa-arrow-rotate-left"></i> Quay lại đăng
+                        nhập
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</DefaultLayout>
