@@ -1,0 +1,204 @@
+:root {
+    --color-bg-light: #ffffff;
+    --color-bg-soft: #efeffe;
+    --color-surface: #e0e0fc;
+    --color-primary-light: #c1c1f9;
+    --color-primary: #6363f1;
+    --color-primary-dark: #4c3df2;
+    --color-secondary: #8282f4;
+    --color-accent: #a1a1f7;
+    --color-text: #2a2a79;
+    --color-text-muted: #212165;
+    --color-text-invert: #ffffff;
+    --color-bg-dark: #171751;
+    --color-bg-darker: #0e0e3d;
+    --color-bg-black: #000000;
+    --color-purple-base-dark: #7928ff;
+    --color-purple-base-light: #a68cff;
+    --color-purple-text: #a78bfa;
+    --color-purple-button: #7c3aed;
+    /* Typography Scale /
+    --font-size-h1: 5.97rem; / Display / h1 /
+    --font-size-h2: 4.98rem; / h2 /
+    --font-size-h3: 4.15rem; / h3 /
+    --font-size-h4: 3.46rem; / h4 /
+    --font-size-h5: 2.88rem; / h5 /
+    --font-size-h6: 2.4rem; / h6 /
+    --font-size-body: 2rem; / Body /
+    --font-size-small: 1.67rem; / small */
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    box-sizing: border-box;
+    background-image: url('./assets/tim-kiem-du-an/nen-tim-kiem-du-an.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+}
+header {
+    height: 100px;
+    background-color: #00000090;
+    padding: 18px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header-container {
+    max-width: 1920px;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.left-header {
+    display: flex;
+    width: 518px;
+    height: 64px;
+    gap: 16px;
+    align-items: center;
+}
+.left-header-button {
+    border-radius: 30px;
+    border: 1px solid var(--color-purple-button);
+    background-color: transparent;
+    color: var(--color-bg-light);
+    width: 232px;
+    height: 52px;
+    font-size: 24px;
+    font-weight: 500;
+}
+.right-header {
+    display: flex;
+    gap: 16px;
+    width: 552px;
+}
+.right-header-button {
+    border-radius: 30px;
+    background: var(--color-purple-button);
+    color: var(--color-bg-light);
+    width: 200px;
+    height: 52px;
+    font-size: 24px;
+    font-weight: 500;
+}
+.information {
+    display: flex;
+    gap: 8px;
+}
+.name-information {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.username {
+    font-size: 20px;
+    color: var(--color-bg-light);
+}
+.email {
+    font-size: 20px;
+    color: var(--color-bg-light);
+}
+
+/* end header */
+.title {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    color: var(--color-bg-black);
+}
+.title h1 {
+    color: var(--color-bg-light);
+    font-size: 60px;
+    font-weight: 900;
+}
+.search-container {
+    display: flex;
+    justify-content: center;
+}
+.search-bar {
+    position: relative;
+    width: 1200px;
+    .icon-search {
+        position: absolute;
+        margin: 5px;
+        img {
+            width: 33px;
+            height: 33px;
+        }
+    }
+    .filter {
+        position: absolute;
+        margin-left: 1145px;
+        margin-top: 5px;
+        img {
+            width: 33px;
+            height: 33px;
+        }
+    }
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 15px;
+    padding-left: 50px;
+}
+/* end search-bar */
+
+.project {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+.project-container {
+    display: flex;
+    gap: 40px 150px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+}
+.project-image {
+    width: 300px;
+    height: 190px;
+    background-color: var(--color-bg-light);
+    border-radius: 30px;
+}
+.project-image img {
+    border-radius: 30px 30px 0 0;
+}
+.project-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 24px;
+}
+.design-web {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+.email-address {
+    font-size: 10px;
+    font-weight: 100;
+}
+.interact {
+    display: flex;
+    gap: 10px;
+}
+.view-more {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--color-text);
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+    text-decoration: underline;
+}
