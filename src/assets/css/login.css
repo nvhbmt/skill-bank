@@ -1,0 +1,40 @@
+* {
+    box-sizing: border-box;
+    padding: 0 0;
+    margin: 0 0;
+    font-family: Inter;
+}
+.container {
+    max-width: 1200px;
+}
+.container_left {
+    padding-left: 80px;
+    width: 738px;
+    height: 1024px;
+}
+#logo {
+    width: 247px;
+    height: 80px;
+}
+header {
+    height: 90px;
+}
+/* /* main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+} */
+main {
+    padding: 150px 0;
+}
+head {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.contain_icon_user {
+    width: 148px;
+    height: 148px;
+    border-radius: 50%;
+    background-color: #888888;
+}

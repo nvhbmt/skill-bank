@@ -1,0 +1,51 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/gui-ung-tuyen.css';
+---
+
+<DefaultLayout>
+    <header>
+        <div class="header-container">
+            <div class="left-header">
+                <img src="./assets/gui-ung-tuyen/logo-full-ngang.svg" alt="" />
+                <div class="about-us">Giới thiệu</div>
+                <div class="see-all">Xem tất cả</div>
+                <div class="language">
+                    VI
+                    <img
+                        src="./assets/gui-ung-tuyen/weui_back-filled.svg"
+                        alt=""
+                    />
+                </div>
+            </div>
+            <div class="right-header">
+                <img
+                    src="./assets/gui-ung-tuyen/Icon-notification-default.svg"
+                    alt=""
+                />
+                <button class="right-header-button">Đăng tải dự án</button>
+                <div class="information">
+                    <img src="./assets/gui-ung-tuyen/avt-nhỏ.svg" alt="" />
+                    <div class="name-information">
+                        <div class="username">User name</div>
+                        <div class="email">Email</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="ung-tuyen">
+        <div class="ung-tuyen-container">
+            <div class="title">
+                <h1>Ứng tuyển dự án</h1>
+            </div>
+            <div class="ung-tuyen-content">
+                <div class="reason">
+                    <h5>Lý do tham gia</h5>
+                </div>
+                <textarea placeholder="Nhập lí do của bạn"></textarea>
+            </div>
+            <button class="send-button">Gửi ứng tuyển</button>
+        </div>
+    </div>
+</DefaultLayout>
