@@ -4,9 +4,6 @@
     margin: 0;
     font-size: 62.5%;
 }
-body {
-    margin: 0;
-}
 
 .container {
     max-width: 1440px;
@@ -22,7 +19,7 @@ body {
 
 /* Hero Section */
 .hero-section {
-    background-image: url('/assets/image/background.png');
+    background-image: url('/assets/images/background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -30,7 +27,7 @@ body {
 }
 
 .hero-section__container {
-    background-image: url('/assets/image/hero.png');
+    background-image: url('/assets/images/hero.png');
     background-repeat: no-repeat;
     background-position: right;
     height: 1080px;
