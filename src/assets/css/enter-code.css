@@ -22,8 +22,9 @@ body {
 }
 .container {
     background-color: var(--color-bg-black);
-    width: 100%;
+    width: 100vw;
     height: 100vh;
+    overflow: hidden;
 }
 .enter-code-page {
     width: 80%;
@@ -40,17 +41,19 @@ body {
     align-items: center;
 }
 .hero-section {
-    width: 80%;
-    min-width: 53rem;
+    width: 100%;
+    max-width: 53rem;
     /* margin: 175px auto; */
-    margin: 0 auto;
+    /* margin: 0 auto; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
     img {
         width: 20rem;
-        height: 20rem;
+        max-width: 20rem;
+        height: auto;
     }
     h1 {
         margin-top: 0;
@@ -60,6 +63,7 @@ body {
         font-weight: 800;
     }
     form {
+        width: 100%;
         .input {
             display: flex;
             justify-content: space-between;
@@ -102,8 +106,10 @@ body {
             }
         }
         button {
-            width: 50rem;
-            height: 6.8rem;
+            /* width: 50rem; */
+            width: 100%;
+            /* height: 6.8rem; */
+            height: 7.8vh;
             border-radius: 20px;
             font-size: 2.4rem;
             margin-top: 2.4rem;
@@ -129,5 +135,22 @@ body {
     }
     a:hover {
         color: var(--color-purple-text-hover);
+    }
+}
+@media (max-width: 1024px) {
+    :root {
+        font-size: 40%;
+    }
+    .hero-section img {
+        width: 15rem;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        font-size: 30%;
+    }
+    .hero-section img {
+        width: 12rem;
     }
 }
