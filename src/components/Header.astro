@@ -1,36 +1,136 @@
 <header>
-	<h1>Header</h1>
-	<nav>
-		<ul>
-			<li><a href="/">Trang chủ</a></li>
-			<li><a href="/about">Về chúng tôi</a></li>
-			<li><a href="/contact">Liên hệ</a></li>
-		</ul>
-	</nav>
+    <div class="header-left">
+        <a href="#"
+            ><img src="./assets/image/logo-full-ngang.png" alt="logo" />
+        </a>
+        <a href="#">Về chúng tôi</a>
+        <a href="#">Xem tất cả</a>
+        <select name="language" id="choose-language">
+            <option value="vietnamese">VI</option>
+            <option value="english">EN</option>
+        </select>
+    </div>
+    <div class="header-right">
+        <a href="#"><i class="fa-regular fa-bell"></i></a>
+        <button class="dang-tai">Đăng tải dự án</button>
+        <a href="#" class="user">
+            <img src="./assets/image/va1.jpg" alt="avtar" />
+            <!-- <span>@username</span> -->
+        </a>
+    </div>
 </header>
 
 <style>
-	header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	nav {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	ul {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	li {
-		list-style: none;
-		margin-right: 10px;
-	}
-	a {
-		text-decoration: none;
-		color: #000;
-	}
+    :root {
+        font-size: 50%;
+        --color-bg-light: #ffffff;
+        --color-bg-soft: #efeffe;
+        --color-surface: #e0e0fc;
+        --color-primary-light: #c1c1f9;
+        --color-primary: #6363f1;
+        --color-primary-dark: #4c3df2;
+        --color-secondary: #8282f4;
+        --color-accent: #a1a1f7;
+        --color-text: #2a2a79;
+        --color-text-muted: #212165;
+        --color-text-invert: #ffffff;
+        --color-bg-dark: #171751;
+        --color-bg-darker: #0e0e3d;
+        --color-bg-black: #000000;
+        --color-purple-base-dark: #7928ff;
+        --color-purple-base-light: #a68cff;
+        --color-purple-text: #a78bfa;
+        --color-purple-text-hover: #c4b5fd;
+        --color-purple-button: #7c3aed;
+        --color-purple-button-hover: #8b5cf6;
+        --color-purple-button-active: #623ea0;
+    }
+    * {
+        box-sizing: border-box;
+        font-family: Inter, sans-serif;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: space-between;
+        padding: 2rem 12rem;
+
+        .header-left,
+        .header-right {
+            gap: 1.6rem;
+            display: flex;
+            font-size: 2.4rem;
+            align-items: center;
+        }
+        .header-left {
+            a {
+                text-decoration: none;
+                color: var(--color-bg-light);
+                transition: color 0.3s ease-in-out;
+            }
+            a:hover {
+                color: var(--color-purple-button);
+                text-decoration: underline;
+            }
+            a:active {
+                color: var(--color-purple-button-active);
+                text-decoration: underline;
+            }
+            select {
+                color: var(--color-bg-light);
+                background-color: transparent;
+                border: none;
+
+                option {
+                    background-color: var(--color-bg-black);
+                }
+            }
+        }
+        .header-right {
+            i {
+                font-size: 4rem;
+                border: 1px solid transparent;
+                border-radius: 7px;
+                transition: border-color 0.2s ease-in-out;
+                color: var(--color-bg-light);
+            }
+            i:hover {
+                border-color: var(--color-bg-light);
+            }
+            .user {
+                display: flex;
+                align-items: center;
+                gap: 0.8rem;
+                img {
+                    border-radius: 50%;
+                    width: 5.2rem;
+                    max-width: 5.2rem;
+                    height: 5.2rem;
+                    object-fit: cover;
+                    transition: outline 0.2s ease-in-out;
+                }
+                img:hover {
+                    outline: 3px solid #525252;
+                }
+            }
+            button {
+                font-size: 2.4rem;
+                background-color: var(--color-purple-button);
+                color: var(--color-bg-light);
+                border-radius: 30px;
+                padding: 10px 24px;
+                transition: background-color 0.3s ease-in-out;
+            }
+            button:hover {
+                background-color: var(--color-purple-button-hover);
+            }
+            button:active {
+                background-color: var(--color-purple-button-active);
+            }
+        }
+    }
 </style>
