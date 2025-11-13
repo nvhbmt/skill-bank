@@ -1,0 +1,10 @@
+body {
+	background-image: url(./assets/gui-ung-tuyen/nen-gui-ung-tuyen.svg);
+	font-family: Inter, sans-serif;
+}
+
+.center-bypass {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
