@@ -1,25 +1,11 @@
 :root {
     font-size: 50%;
-    --color-primary: #6363f1;
-    --color-bg-light: #ffffff;
-    --color-surface: #e0e0fc;
-    --color-primary-dark: #4c3df2;
-    --color-secondary: #8282f4;
-    --color-bg-black: #000000;
-    --color-purple-button: #7c3aed;
-    --color-purple-button-hover: #8b5cf6;
-    --color-purple-button-active: #623ea0;
-    --color-purple-text: #a78bfa;
-    --color-purple-text-hover: #c4b5fd;
 }
 * {
     box-sizing: border-box;
     font-family: Inter, sans-serif;
 }
-body {
-    margin: 0;
-    padding: 0;
-}
+
 .container {
     background-color: var(--color-bg-black);
     width: 100vw;
