@@ -1,0 +1,95 @@
+---
+import DefaultLayout from "@/layouts/DefaultLayout.astro";
+import '@/assets/css/ban-giao-du-an.css'
+
+---
+
+<DefaultLayout>
+    <header>
+        <div class="container">
+            <div class="left-header">
+                <img src="./assets/images/logo.svg" alt="logo"/>
+                <div class="left-header-nav">
+                    <div class="left-header-nav-box"><a href="http://">About us</a></div>
+                    <div class="left-header-nav-box"><a href="http://">Xem tất cả</a></div>
+                    <div class="left-header-nav-box">
+                        <select>
+                            <option value="VI">VI</option>
+                            <option value="EN">EN</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="right-header">
+                <img src="./assets/image/Icon-notification-default.svg" alt="icon" class="bell"/>
+                <button class="right-header-button">Đăng tải dự án</button>
+                <div class="information">
+                    <img src="./assets/image/avt-nho.svg" alt="img"/>
+                    <div class="name-information">
+                        <div class="username">User name</div>
+                        <div class="email">Email</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="project-handover">
+            <div class="inner-project-handover container">
+                <div class="project-handover-title">Bàn giao dự án</div>
+                <div class="project-handover-body">
+                    <div class="project-handover-section">
+                        <label class="project-handover-label">Mô tả</label>
+                        <textarea class="project-handover-textarea"></textarea>
+                    </div>
+                    <div class="project-handover-section">
+                        <label class="project-handover-label">Lưu ý</label>
+                        <div class="project-handover-note">
+                            Dự án 1 cần sửa một số điểm như padding, margin. <br/>
+                            Dự án 2 cần thay đổi font chữ.
+                        </div>
+                    </div>
+                    <div class="project-handover-upload">
+                        <label class="project-handover-label">Đăng tải file/ link dự án:</label>
+                        <div class="project-handover-upload-box">
+                            <button class="upload-box-button">
+                                <img src="./assets/image/solar_upload-square-outline.svg" alt="icon"> Đăng tải ở đây
+                            </button>
+                            <div class="upload-box-list">
+                                <div class="upload-item">
+                                    <div class="upload-item-info">
+                                        <img src="./assets/image/solar_file-outline.svg" alt="icon">
+                                        <span class="upload-item-name">Tên file</span>
+                                    </div>
+                                    <span class="upload-item-success"></span>
+                                </div>
+                                <div class="upload-item">
+                                    <div class="upload-item-info">
+                                        <img src="./assets/image/solar_file-outline.svg" alt="icon">
+                                        <span class="upload-item-name">Tên file</span>
+                                    </div>
+                                    <span class="upload-item-success"></span>
+                                </div>
+                                <div class="upload-item">
+                                    <div class="upload-item-info">
+                                        <img src="./assets/image/solar_file-outline.svg" alt="icon">
+                                        <span class="upload-item-name">Tên file</span>
+                                    </div>
+                                    <span class="upload-item-error"></span>
+                                </div>
+                                <div class="upload-item">
+                                    <div class="upload-item-info">
+                                        <img src="./assets/image/solar_file-outline.svg" alt="icon">
+                                        <span class="upload-item-name">Tên file</span>
+                                    </div>
+                                    <span class="upload-item-pending"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="project-handover-submit">Gửi</button>
+            </div>
+        </div>
+    </main>
+</DefaultLayout>
