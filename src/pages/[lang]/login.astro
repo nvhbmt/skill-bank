@@ -1,0 +1,126 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/dang-nhap.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <div class="container">
+        <div class="login-page">
+            <div class="login-page-left">
+                <div class="inner-login-page-left">
+                    <div class="login-content">
+                        <div class="login-form">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"
+                            >
+                                <h1>{t('login.title')}</h1>
+                                <select
+                                    id="lang-selector"
+                                    style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;"
+                                >
+                                    <option value="vi" selected={lang === 'vi'}
+                                        >VI</option
+                                    >
+                                    <option value="en" selected={lang === 'en'}
+                                        >EN</option
+                                    >
+                                </select>
+                            </div>
+                            <div>
+                                {t('login.noAccount')}
+                                <a href={l('/signup')} class="login-link"
+                                    >{t('login.signUp')}</a
+                                >
+                            </div>
+                        </div>
+                        <div class="login-form-body">
+                            <div class="login-form-group">
+                                <img
+                                    src="/assets/images/solar_user-outline.svg"
+                                    alt="icon"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder={t('login.username')}
+                                    class="login-form-group-text"
+                                />
+                            </div>
+                            <div class="login-form-group">
+                                <img
+                                    src="/assets/images/material-symbols-light_lock-outline.svg"
+                                    alt="icon"
+                                />
+                                <input
+                                    type="password"
+                                    placeholder={t('login.password')}
+                                    class="login-form-group-text"
+                                />
+                            </div>
+                            <div class="login-form-action">
+                                <label
+                                    ><input type="checkbox" />
+                                    {t('login.rememberMe')}</label
+                                >
+                                <a
+                                    href={l('/forgot-password')}
+                                    class="login-link"
+                                    >{t('login.forgotPassword')}</a
+                                >
+                            </div>
+                        </div>
+                        <button class="login-form-btn"
+                            >{t('login.title')}</button
+                        >
+                    </div>
+                    <div class="login-form-divider">
+                        <div class="login-form-divider-line"></div>
+                        <div class="login-form-divider-text">
+                            {t('login.or')}
+                        </div>
+                        <div class="login-form-divider-line"></div>
+                    </div>
+                    <div class="login-btn-box">
+                        <button class="login-btn">
+                            <img
+                                src="/assets/images/flat-color-icons_google.png"
+                                alt="icon"
+                            />
+                            <div class="login-btn-text">{t('login.gmail')}</div>
+                        </button>
+                        <button class="login-btn">
+                            <img
+                                src="/assets/images/logos_facebook.png"
+                                alt="icon"
+                            />
+                            <div class="login-btn-text">
+                                {t('login.facebook')}
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <img
+                src="/assets/images/anh-dang-nhap.svg"
+                alt="anh"
+                class="login-page-right"
+            />
+        </div>
+    </div>
+</DefaultLayout>
+
+<script>
+    const langSelector = document.getElementById(
+        'lang-selector'
+    ) as HTMLSelectElement | null;
+    if (langSelector) {
+        langSelector.addEventListener('change', (e) => {
+            const target = e.target as HTMLSelectElement;
+            const selectedLang = target.value;
+            window.location.href = `/${selectedLang}/login`;
+        });
+    }
+</script>
