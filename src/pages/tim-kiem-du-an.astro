@@ -1,74 +1,24 @@
 ---
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/tim-kiem-du-an.css';
+import Header from '@/components/Header.astro';
 ---
 
 <DefaultLayout>
     <div class="container">
-        <div class="sticky-group">
-            <header>
-                <div class="header-container">
-                    <div class="left-header">
-                        <a href="/">
-                            <img
-                                src="./assets/gui-ung-tuyen/logo-full-ngang.svg"
-                                alt=""
-                            />
-                        </a>
-                        <a class="about-us" href="./about.astro">Giới thiệu</a>
-                        <a class="see-all" href="">Xem tất cả</a>
-                        <div class="language">
-                            VI
-                            <img
-                                src="./assets/gui-ung-tuyen/weui_back-filled.svg"
-                                alt=""
-                            />
-                        </div>
-                    </div>
-                    <div class="right-header">
-                        <a href=""
-                            ><img
-                                class="bell"
-                                src="./assets/gui-ung-tuyen/Icon-notification-default.svg"
-                                alt=""
-                            /></a
-                        >
-                        <a href=""
-                            ><button class="right-header-button"
-                                >Đăng tải dự án</button
-                            >
-                        </a>
-                        <div class="information">
-                            <a href=""
-                                ><img
-                                    src="./assets/gui-ung-tuyen/avt-nhỏ.svg"
-                                    alt=""
-                                />
-                            </a>
-                            <div class="name-information">
-                                <div class="username">User name</div>
-                                <div class="email">Email</div>
-                            </div>
-                        </div>
-                    </div>
+        <Header />
+        <div class="title">
+            <h1>Khám phá dự án</h1>
+        </div><div class="search-container">
+            <div class="search-bar">
+                <div class="icon-search">
+                    <img src="./assets/images/Icon-search.svg" alt="" />
                 </div>
-            </header>
-            <div class="title">
-                <h1>Khám phá dự án</h1>
-            </div><div class="search-container">
-                <div class="search-bar">
-                    <div class="icon-search">
-                        <img
-                            src="./assets/tim-kiem-du-an/Icon-search.svg"
-                            alt=""
-                        />
-                    </div>
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Nhập từ khoá dự án, kỹ năng..."
-                    />
-                </div>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Nhập từ khoá dự án, kỹ năng..."
+                />
             </div>
         </div>
 
@@ -76,10 +26,7 @@ import '@/assets/css/tim-kiem-du-an.css';
             <div class="project">
                 <div class="project-container">
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -91,14 +38,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
@@ -109,10 +56,7 @@ import '@/assets/css/tim-kiem-du-an.css';
                         </div>
                     </div>
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -124,14 +68,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
@@ -142,10 +86,7 @@ import '@/assets/css/tim-kiem-du-an.css';
                         </div>
                     </div>
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -157,14 +98,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
@@ -175,10 +116,7 @@ import '@/assets/css/tim-kiem-du-an.css';
                         </div>
                     </div>
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -190,14 +128,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
@@ -208,10 +146,7 @@ import '@/assets/css/tim-kiem-du-an.css';
                         </div>
                     </div>
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -223,14 +158,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
@@ -241,10 +176,7 @@ import '@/assets/css/tim-kiem-du-an.css';
                         </div>
                     </div>
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -256,14 +188,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
@@ -274,10 +206,7 @@ import '@/assets/css/tim-kiem-du-an.css';
                         </div>
                     </div>
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -289,14 +218,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
@@ -307,10 +236,7 @@ import '@/assets/css/tim-kiem-du-an.css';
                         </div>
                     </div>
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -322,14 +248,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
@@ -340,10 +266,7 @@ import '@/assets/css/tim-kiem-du-an.css';
                         </div>
                     </div>
                     <div class="project-image">
-                        <img
-                            src="./assets/tim-kiem-du-an/project-image.svg"
-                            alt=""
-                        />
+                        <img src="./assets/images/project-image.svg" alt="" />
                         <div class="project-content">
                             <div class="left-project-content">
                                 <div class="design-web">Design web</div>
@@ -355,14 +278,14 @@ import '@/assets/css/tim-kiem-du-an.css';
                                 <div class="interact">
                                     <div class="eyes">
                                         <img
-                                            src="./assets/tim-kiem-du-an/teenyicons_eye-outline.svg"
+                                            src="./assets/images/teenyicons_eye-outline.svg"
                                             alt=""
                                         />
                                         990
                                     </div>
                                     <div class="like">
                                         <img
-                                            src="./assets/tim-kiem-du-an/solar_like-outline.svg"
+                                            src="./assets/images/solar_like-outline.svg"
                                             alt=""
                                         />
                                         500
