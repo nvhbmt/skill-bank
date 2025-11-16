@@ -1,0 +1,328 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    background-image: url('/assets/images/nen-gui-ung-tuyen.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: Inter, sans-serif;
+}
+a:hover {
+    color: var(--color-primary);
+    text-decoration-color: var(--color-secondary);
+}
+button:hover {
+    background-color: var(--color-purple-base-light);
+}
+header {
+    height: 100px;
+    background-color: #00000090;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-position: center;
+}
+.header-container {
+    max-width: 1920px;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.left-header {
+    display: flex;
+    width: 616px;
+    height: 64px;
+    gap: 40px;
+    align-items: center;
+}
+.about-us {
+    color: var(--color-bg-light);
+    font-size: 20px;
+    font-weight: 400;
+    transition: all 0.1s ease;
+    text-decoration: none;
+}
+
+.see-all {
+    color: var(--color-bg-light);
+    font-size: 20px;
+    font-weight: 400;
+    transition: all 0.1s ease;
+    text-decoration: none;
+}
+.language {
+    color: var(--color-bg-light);
+    font-size: 20px;
+    font-weight: 400;
+}
+.right-header {
+    display: flex;
+    gap: 16px;
+    width: 552px;
+}
+.bell {
+    font-size: 40px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.bell:hover {
+    animation: ring 0.6s ease-in-out;
+}
+
+@keyframes ring {
+    0% {
+        transform: rotate(0);
+    }
+    15% {
+        transform: rotate(15deg);
+    }
+    30% {
+        transform: rotate(-15deg);
+    }
+    45% {
+        transform: rotate(10deg);
+    }
+    60% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(5deg);
+    }
+    100% {
+        transform: rotate(0);
+    }
+}
+.right-header-button {
+    border-radius: 30px;
+    background: var(--color-purple-button);
+    color: var(--color-bg-light);
+    width: 200px;
+    height: 52px;
+    font-size: 24px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
+.information {
+    display: flex;
+    gap: 8px;
+    width: 200px;
+}
+.name-information {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.username {
+    font-size: 20px;
+    color: var(--color-bg-light);
+}
+.email {
+    font-size: 20px;
+    color: var(--color-bg-light);
+}
+/* end header */
+.ung-tuyen {
+    display: flex;
+    padding-top: 37px;
+    justify-content: center;
+}
+.ung-tuyen-container {
+    width: 1000px;
+    background-color: #00000090;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 15px;
+}
+.title {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 660px;
+    gap: 12px;
+    h1 {
+        color: var(--color-bg-light);
+        font-size: 60px;
+        font-weight: 800;
+    }
+    .mo-ta {
+        color: var(--color-bg-light);
+        font-size: 20px;
+        font-family:
+            Open Sans,
+            sans-serif;
+    }
+}
+
+.ung-tuyen-content {
+    display: flex;
+    width: 800px;
+    height: 420px;
+    flex-direction: column;
+    .reason {
+        margin-bottom: 10px;
+        h5 {
+            color: var(--color-bg-light);
+            font-size: 29px;
+            font-weight: 500;
+        }
+    }
+    .reason-input {
+        width: 100%;
+        height: 180px;
+        border-radius: 20px;
+        border: none;
+        font-size: 20px;
+        font-family:
+            Open Sans,
+            sans-serif;
+        outline: none;
+        padding-top: 20px;
+        padding-left: 24px;
+        background: var(--color-surface);
+        color: #00000090;
+        resize: none;
+    }
+}
+.cv {
+    display: flex;
+    flex-direction: column;
+    width: 522px;
+    height: 35px;
+    margin-top: 40px;
+    h5 {
+        color: var(--color-bg-light);
+        font-size: 29px;
+        font-weight: 500;
+    }
+    .upload {
+        font-size: 20px;
+        font-family:
+            Open Sans,
+            sans-serif;
+        color: var(--color-bg-light);
+        display: flex;
+        gap: 20px;
+        .file-upload {
+            width: 200px;
+            height: 120px;
+            background-color: var(--color-surface);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            .here {
+                color: var(--color-bg-black);
+                font-size: 29px;
+                font-weight: 500;
+            }
+        }
+        .file-name {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            background-color: #00000080;
+            width: 302px;
+            height: 120px;
+            input {
+                padding-left: 40px;
+            }
+            .first-name {
+                width: 254px;
+                height: 35px;
+                background-color: var(--color-bg-soft);
+                outline: none;
+                border-radius: 20px;
+                resize: none;
+                font-size: 20px;
+                color: var(--color-bg-black);
+                font-family:
+                    Open Sans,
+                    sans-serif;
+                position: relative;
+            }
+            input::placeholder {
+                position: absolute;
+                color: var(--color-bg-black);
+            }
+            .button-1 {
+                width: 24px;
+                height: 24px;
+                background-color: #027a48cf;
+                border: none;
+                position: absolute;
+                border-radius: 50%;
+                margin-bottom: 60px;
+                margin-left: 200px;
+            }
+            .folder-image-1 {
+                position: absolute;
+                margin-bottom: 60px;
+                margin-right: 200px;
+            }
+            .second-name {
+                width: 254px;
+                height: 35px;
+                background-color: var(--color-bg-soft);
+                outline: none;
+                border-radius: 20px;
+                resize: none;
+                font-size: 20px;
+                color: var(--color-bg-black);
+                font-family:
+                    Open Sans,
+                    sans-serif;
+                position: relative;
+            }
+            .button-2 {
+                width: 24px;
+                height: 24px;
+                background-color: #d92d20cf;
+                border: none;
+                position: absolute;
+                border-radius: 50%;
+                margin-top: 60px;
+                margin-left: 200px;
+            }
+            .folder-image-2 {
+                position: absolute;
+                margin-top: 60px;
+                margin-right: 200px;
+            }
+        }
+    }
+}
+.send-button {
+    width: 400px;
+    height: 52px;
+    display: flex;
+    gap: 24px;
+}
+.send-button-1 {
+    border-radius: 30px;
+    background: var(--color-purple-button);
+    color: var(--color-bg-light);
+    width: 188px;
+    height: 52px;
+    font-size: 24px;
+    font-weight: 500;
+    border-radius: 30px;
+    border: 1px solid var(--color-purple-button);
+}
+.send-button-2 {
+    width: 188px;
+    height: 52px;
+    font-size: 24px;
+    font-weight: 500;
+    border-radius: 30px;
+    border: 1px solid var(--color-purple-button);
+    background-color: transparent;
+    color: var(--color-bg-light);
+}

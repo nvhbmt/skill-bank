@@ -1,0 +1,41 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/dat-lai-mat-khau.css';
+---
+
+<DefaultLayout>
+    <div class="container">
+        <section class="set-new-password-page">
+            <div class="hero">
+                <div class="hero-section">
+                    <a href="/"
+                        ><img src="/assets/images/logo.png" alt="logo" /></a
+                    >
+
+                    <h1>Đặt lại mật khẩu</h1>
+
+                    <form action="#" method="post">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Nhập mật khẩu mới"
+                        />
+                        <input
+                            type="password"
+                            id="confirm-password"
+                            name="confirm-password"
+                            placeholder="Nhập lại mật khẩu mới"
+                        />
+                        <button class="reset">Đặt mật khẩu mới</button>
+                    </form>
+
+                    <a href="/dang-nhap">
+                        <i class="fa-solid fa-arrow-rotate-left"></i> Quay lại đăng
+                        nhập
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</DefaultLayout>
