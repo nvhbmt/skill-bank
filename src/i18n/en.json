@@ -16,6 +16,7 @@
         "enterKeywords": "Enter project or skill keywords...",
         "viewMore": "View more",
         "designWeb": "Design web"
+    },
     "forgot-password": {
         "newbie": "New to SkillBank?",
         "signUp": "Sign up",
@@ -36,5 +37,19 @@
         "confirmPass": "Confirm password",
         "setNewPass": "Set new password",
         "backToSignIn": "Back to sign in"
+    },
+    "sign-up": {
+        "title": "Sign up",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign in",
+        "fullName": "Full name",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "agree": "I agree to the",
+        "TermsAndConditions": "Terms and Conditions",
+        "or": "or",
+        "gmail": "Gmail",
+        "facebook": "Facebook"
     }
 }
