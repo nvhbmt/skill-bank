@@ -1,15 +1,20 @@
 {
-	"login": {
-		"title": "Login",
-		"noAccount": "Don't have an account?",
-		"signUp": "Sign up",
-		"username": "Username",
-		"password": "Password",
-		"rememberMe": "Remember me",
-		"forgotPassword": "Forgot password?",
-		"or": "or",
-		"gmail": "Gmail",
-		"facebook": "Facebook"
-	}
+    "login": {
+        "title": "Login",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign up",
+        "username": "Username",
+        "password": "Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot password?",
+        "or": "or",
+        "gmail": "Gmail",
+        "facebook": "Facebook"
+    },
+    "project-search": {
+        "title": "Explore Projects",
+        "enterKeywords": "Enter project or skill keywords...",
+        "viewMore": "View more",
+        "designWeb": "Design web"
+    }
 }
-

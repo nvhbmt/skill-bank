@@ -10,5 +10,11 @@
         "or": "hoặc",
         "gmail": "Gmail",
         "facebook": "Facebook"
+    },
+    "project-search": {
+        "title": "Khám phá dự án",
+        "enterKeywords": "Enter project or skill keywords...",
+        "viewMore": "Xem thêm",
+        "designWeb": "Thiết kế web"
     }
 }
