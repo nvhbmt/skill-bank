@@ -1,0 +1,15 @@
+{
+	"login": {
+		"title": "Login",
+		"noAccount": "Don't have an account?",
+		"signUp": "Sign up",
+		"username": "Username",
+		"password": "Password",
+		"rememberMe": "Remember me",
+		"forgotPassword": "Forgot password?",
+		"or": "or",
+		"gmail": "Gmail",
+		"facebook": "Facebook"
+	}
+}
+

@@ -43,7 +43,7 @@
 
 body {
     box-sizing: border-box;
-    background-image: url('./assets/images/nen-dang-ky-dang-nhap.png');
+    background-image: url('/assets/images/nen-dang-nhap.png');
     background-repeat: no-repeat;
     background-size: cover;
     font-family: Arial, sans-serif;
@@ -78,7 +78,7 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('./assets/images/anh-dang-ky.png');
+    background: url('/assets/images/anh-dang-ky.png');
     max-width: 548px;
     width: 100%;
     height: 846px;
