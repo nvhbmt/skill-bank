@@ -3,83 +3,31 @@
     margin: 0;
     padding: 0;
 }
+html {
+    font-size: 62.5%;
+}
 body {
     box-sizing: border-box;
-    background-image: url('./assets/images/nen-tim-kiem-du-an.svg');
+    background-image: url('/assets/images/nen-tim-kiem-du-an.svg');
     background-repeat: no-repeat;
     background-size: cover;
-    font-family: Arial, sans-serif;
+    font-family: Inter, sans-serif;
+    background-position: center;
+    background-attachment: fixed;
 }
-header {
-    height: 100px;
-    background-color: #00000090;
-    padding: 18px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.header-container {
-    max-width: 1920px;
-    width: 90%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.left-header {
-    display: flex;
-    width: 518px;
-    height: 64px;
-    gap: 16px;
-    align-items: center;
-}
-.left-header-button {
-    border-radius: 30px;
-    border: 1px solid var(--color-purple-button);
-    background-color: transparent;
-    color: var(--color-bg-light);
-    width: 232px;
-    height: 52px;
-    font-size: 24px;
-    font-weight: 500;
-}
-.right-header {
-    display: flex;
-    gap: 16px;
-    width: 552px;
-}
-.right-header-button {
-    border-radius: 30px;
-    background: var(--color-purple-button);
-    color: var(--color-bg-light);
-    width: 200px;
-    height: 52px;
-    font-size: 24px;
-    font-weight: 500;
-}
-.information {
-    display: flex;
-    gap: 8px;
-}
-.name-information {
+.container {
+    /* width: 100%; */
     display: flex;
     flex-direction: column;
-    gap: 8px;
-}
-.username {
-    font-size: 20px;
-    color: var(--color-bg-light);
-}
-.email {
-    font-size: 20px;
-    color: var(--color-bg-light);
+    /* height: 100vh; */
 }
 
-/* end header */
 .title {
     display: flex;
     align-items: center;
     flex-direction: column;
     color: var(--color-bg-black);
+    padding: 52px;
 }
 .title h1 {
     color: var(--color-bg-light);
@@ -96,15 +44,6 @@ header {
     .icon-search {
         position: absolute;
         margin: 5px;
-        img {
-            width: 33px;
-            height: 33px;
-        }
-    }
-    .filter {
-        position: absolute;
-        margin-left: 1145px;
-        margin-top: 5px;
         img {
             width: 33px;
             height: 33px;
@@ -127,7 +66,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
+    padding: 44px;
 }
 .project-container {
     display: flex;
@@ -135,7 +74,8 @@ header {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    max-width: 1200px;
+    max-width: 1230px;
+    left: 12px;
 }
 .project-image {
     width: 300px;
@@ -158,11 +98,22 @@ header {
 }
 .email-address {
     font-size: 10px;
-    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
 }
 .interact {
     display: flex;
     gap: 10px;
+}
+.eyes {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.like {
+    display: flex;
+    align-items: center;
+    gap: 3px;
 }
 .view-more {
     font-size: 10px;
@@ -170,6 +121,6 @@ header {
     color: var(--color-text);
     display: flex;
     justify-content: flex-end;
-    margin-top: 6px;
+    margin-top: 12px;
     text-decoration: underline;
 }
