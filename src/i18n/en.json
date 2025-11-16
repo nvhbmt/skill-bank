@@ -16,5 +16,15 @@
         "enterKeywords": "Enter project or skill keywords...",
         "viewMore": "View more",
         "designWeb": "Design web"
+    },
+    "submit-application": {
+        "title": "Apply for Project",
+        "mo-ta": "Submit your application to join open projects where your skills and experience are valued and fully utilized.",
+        "reason": "Reason for joining",
+        "cv": "Upload CV (Optional)",
+        "here": "Upload here",
+        "file-name": "File name",
+        "send-button-1": "Submit",
+        "send-button-2": "Go back"
     }
 }

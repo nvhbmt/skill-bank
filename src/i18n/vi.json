@@ -13,8 +13,19 @@
     },
     "project-search": {
         "title": "Khám phá dự án",
-        "enterKeywords": "Enter project or skill keywords...",
+        "enterKeywords": "Nhập từ khoá dự án, kỹ năng...",
         "viewMore": "View more",
         "designWeb": "Design web"
+    },
+    "submit-application": {
+        "title": "Ứng tuyển dự án",
+        "mo-ta": "Gửi hồ sơ ứng tuyển để trở thành một phần trong các dự án đang mở, nơi kỹ năng và kinh nghiệm của bạn được đánh giá và phát huy tối đa.",
+        "reason": "Lý do tham gia",
+        "cv": "Đính kèm CV (nếu có)",
+        "here": "Đăng tải ở đây",
+        "reason-input": "Nhập lời nhắn...",
+        "file-name": "Tên file",
+        "send-button-1": "Gửi",
+        "send-button-2": "Quay lại"
     }
 }
