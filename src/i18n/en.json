@@ -11,6 +11,11 @@
         "gmail": "Gmail",
         "facebook": "Facebook"
     },
+    "project-search": {
+        "title": "Explore Projects",
+        "enterKeywords": "Enter project or skill keywords...",
+        "viewMore": "View more",
+        "designWeb": "Design web"
     "forgot-password": {
         "newbie": "New to SkillBank?",
         "signUp": "Sign up",

@@ -2,14 +2,19 @@
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/tim-kiem-du-an.css';
 import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
 ---
 
 <DefaultLayout>
     <div class="container">
         <Header />
         <div class="title">
-            <h1>Khám phá dự án</h1>
-        </div><div class="search-container">
+            <h1>{t('project-search.title')}</h1>
+        </div>
+        <div class="search-container">
             <div class="search-bar">
                 <div class="icon-search">
                     <img src="/assets/images/Icon-search.svg" alt="" />
@@ -17,11 +22,10 @@ import Header from '@/components/Header.astro';
                 <input
                     type="text"
                     id="searchInput"
-                    placeholder="Nhập từ khoá dự án, kỹ năng..."
+                    placeholder={t('project-search.enterKeywords')}
                 />
             </div>
         </div>
-
         <div class="content">
             <div class="project">
                 <div class="project-container">
@@ -32,7 +36,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -54,7 +60,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -65,7 +73,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -87,7 +97,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -98,7 +110,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -120,7 +134,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -131,7 +147,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -153,7 +171,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -164,7 +184,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -186,7 +208,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -197,7 +221,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -219,7 +245,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -230,7 +258,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -252,7 +282,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -263,7 +295,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -285,7 +319,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -296,7 +332,9 @@ import Header from '@/components/Header.astro';
                         />
                         <div class="project-content">
                             <div class="left-project-content">
-                                <div class="design-web">Design web</div>
+                                <div class="design-web">
+                                    {t('project-search.designWeb')}
+                                </div>
                                 <div class="email-address">
                                     buithaivy2019@gmail.com
                                 </div>
@@ -318,7 +356,9 @@ import Header from '@/components/Header.astro';
                                         500
                                     </div>
                                 </div>
-                                <div class="view-more">View more</div>
+                                <div class="view-more">
+                                    {t('project-search.viewMore')}
+                                </div>
                             </div>
                         </div>
                     </div>
