@@ -48,6 +48,16 @@
         "setNewPass": "Đặt mật khẩu mới",
         "backToSignIn": "Quay lại đăng nhập"
     },
+    "ProjectHandover-Collaborator": {
+        "title": "Bàn giao dự án",
+        "description": "Mô tả",
+        "notes": "Lưu ý",
+        "project1": "Dự án 1 cần sửa một số điểm như padding, margin.",
+        "project2": "Dự án 2 cần thay đổi font chữ.",
+        "upload": "Đăng tải file/ link dự án:",
+        "uploadhere": "Đăng tải ở đây",
+        "file": "Tên file",
+        "send": "Gửi"
     "create-project": {
         "title": "Đăng tải dự án",
         "thongTinChung": "Thông tin chung",
@@ -71,4 +81,5 @@
         "quayLai": "Quay lại",
         "dang": "Đăng"
     }
+
 }
