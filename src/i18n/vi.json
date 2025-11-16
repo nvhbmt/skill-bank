@@ -27,6 +27,7 @@
         "file-name": "Tên file",
         "send-button-1": "Gửi",
         "send-button-2": "Quay lại"
+    },
     "forgot-password": {
         "newbie": "Bạn chưa có tài khoản?",
         "signUp": "Đăng ký",
@@ -61,6 +62,7 @@
         "or": "hoặc",
         "gmail": "Gmail",
         "facebook": "Facebook"
+    },
     "ProjectHandover-Collaborator": {
         "title": "Bàn giao dự án",
         "description": "Mô tả",
@@ -71,6 +73,7 @@
         "uploadhere": "Đăng tải ở đây",
         "file": "Tên file",
         "send": "Gửi"
+    },
     "create-project": {
         "title": "Đăng tải dự án",
         "thongTinChung": "Thông tin chung",
@@ -94,5 +97,4 @@
         "quayLai": "Quay lại",
         "dang": "Đăng"
     }
-
 }

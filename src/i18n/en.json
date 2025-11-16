@@ -16,7 +16,7 @@
         "enterKeywords": "Enter project or skill keywords...",
         "viewMore": "View more",
         "designWeb": "Design web"
-    },    
+    },
     "submit-application": {
         "title": "Apply for Project",
         "mo-ta": "Submit your application to join open projects where your skills and experience are valued and fully utilized.",
@@ -26,6 +26,7 @@
         "file-name": "File name",
         "send-button-1": "Submit",
         "send-button-2": "Go back"
+    },
     "forgot-password": {
         "newbie": "New to SkillBank?",
         "signUp": "Sign up",
@@ -60,6 +61,7 @@
         "or": "or",
         "gmail": "Gmail",
         "facebook": "Facebook"
+    },
     "ProjectHandover-Collaborator": {
         "title": "Project Handover",
         "description": "Description",
@@ -70,6 +72,7 @@
         "uploadhere": "Upload here",
         "file": "File name",
         "send": "Send"
+    },
     "create-project": {
         "title": "Create project",
         "thongTinChung": "General information",
