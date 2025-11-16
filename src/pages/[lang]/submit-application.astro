@@ -2,6 +2,10 @@
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/gui-ung-tuyen.css';
 import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
 ---
 
 <DefaultLayout>
@@ -10,22 +14,21 @@ import Header from '@/components/Header.astro';
         <div class="ung-tuyen-container">
             <div class="ung-tuyen-section">
                 <div class="title">
-                    <h1>Ứng tuyển dự án</h1>
+                    <h1>{t('submit-application.title')}</h1>
                     <div class="mo-ta">
-                        Gửi hồ sơ ứng tuyển để trở thành một phần trong các dự
-                        án đang mở, nơi kỹ năng và kinh nghiệm của bạn được đánh
-                        giá và phát huy tối đa.
+                        {t('submit-application.mo-ta')}
                     </div>
                 </div>
                 <div class="ung-tuyen-content">
                     <div class="reason">
-                        <h5>Lý do tham gia</h5>
+                        <h5>{t('submit-application.reason')}</h5>
                     </div>
                     <textarea
                         class="reason-input"
-                        placeholder="Nhập lời nhắn..."></textarea>
+                        placeholder={t('submit-application.reason-input')}
+                    ></textarea>
                     <div class="cv">
-                        <h5>Đính kèm CV (nếu có)</h5>
+                        <h5>{t('submit-application.cv')}</h5>
                         <div class="upload">
                             <div class="file-upload">
                                 <a href=""
@@ -35,14 +38,18 @@ import Header from '@/components/Header.astro';
                                     />
                                 </a>
 
-                                <div class="here">Đăng tải ở đây</div>
+                                <div class="here">
+                                    {t('submit-application.here')}
+                                </div>
                             </div>
                             <div class="file-name">
                                 <input
                                     class="first-name"
                                     type="text"
                                     id="first-name"
-                                    placeholder="Tên file"
+                                    placeholder={t(
+                                        'submit-application.file-name'
+                                    )}
                                 />
                                 <button class="button-1"></button>
                                 <img
@@ -54,7 +61,9 @@ import Header from '@/components/Header.astro';
                                     class="second-name"
                                     type="text"
                                     id="second-name"
-                                    placeholder="Tên file"
+                                    placeholder={t(
+                                        'submit-application.file-name'
+                                    )}
                                 />
                                 <button class="button-2"></button>
                                 <img
@@ -67,8 +76,12 @@ import Header from '@/components/Header.astro';
                     </div>
                 </div>
                 <div class="send-button">
-                    <button class="send-button-2">Quay lại</button>
-                    <button class="send-button-1">Gửi</button>
+                    <button class="send-button-2"
+                        >{t('submit-application.send-button-2')}</button
+                    >
+                    <button class="send-button-1"
+                        >{t('submit-application.send-button-1')}</button
+                    >
                 </div>
             </div>
         </div>

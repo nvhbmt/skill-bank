@@ -16,7 +16,16 @@
         "enterKeywords": "Enter project or skill keywords...",
         "viewMore": "View more",
         "designWeb": "Design web"
-    },
+    },    
+    "submit-application": {
+        "title": "Apply for Project",
+        "mo-ta": "Submit your application to join open projects where your skills and experience are valued and fully utilized.",
+        "reason": "Reason for joining",
+        "cv": "Upload CV (Optional)",
+        "here": "Upload here",
+        "file-name": "File name",
+        "send-button-1": "Submit",
+        "send-button-2": "Go back"
     "forgot-password": {
         "newbie": "New to SkillBank?",
         "signUp": "Sign up",
@@ -51,5 +60,37 @@
         "or": "or",
         "gmail": "Gmail",
         "facebook": "Facebook"
+    "ProjectHandover-Collaborator": {
+        "title": "Project Handover",
+        "description": "Description",
+        "notes": "Notes",
+        "project1": "Project 1: Adjust padding and margin.",
+        "project2": "Project 2: Update fonts.",
+        "upload": "Upload project file/link:",
+        "uploadhere": "Upload here",
+        "file": "File name",
+        "send": "Send"
+    "create-project": {
+        "title": "Create project",
+        "thongTinChung": "General information",
+        "tenDuAn": "Project name:",
+        "điaDiem": "Work location:",
+        "phanLoai": "Category:",
+        "chonPhanLoai": "Select category",
+        "tgianBD": "Start date:",
+        "moTa": "Project description",
+        "moTaChiTiet": "Describe your project in detail...",
+        "danhMucKN": "Skills",
+        "KN1": "Skill 1",
+        "chonKN": "Select skill",
+        "taiLenAnhBia": "Upload cover image",
+        "dangTaiODay": "Upload here",
+        "tgianHD": "Timeline",
+        "moc1": "Milestone 1: ...",
+        "thanhVien": "Members",
+        "toiDongTinh": "I agree to the ",
+        "chinhSach": "Terms of Service and Privacy Policy",
+        "quayLai": "Back",
+        "dang": "Submit"
     }
 }
