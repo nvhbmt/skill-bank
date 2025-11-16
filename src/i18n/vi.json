@@ -48,6 +48,19 @@
         "setNewPass": "Đặt mật khẩu mới",
         "backToSignIn": "Quay lại đăng nhập"
     },
+    "sign-up": {
+        "title": "Đăng ký",
+        "haveAccount": "Bạn đã có tài khoản?",
+        "signIn": "Đăng nhập",
+        "fullName": "Tên đầy đủ",
+        "username": "Tên người dùng",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "agree": "Tôi đồng ý với các",
+        "TermsAndConditions": ">Điều khoản & Điều kiện",
+        "or": "hoặc",
+        "gmail": "Gmail",
+        "facebook": "Facebook"
     "ProjectHandover-Collaborator": {
         "title": "Bàn giao dự án",
         "description": "Mô tả",
