@@ -16,5 +16,25 @@
         "enterKeywords": "Enter project or skill keywords...",
         "viewMore": "View more",
         "designWeb": "Design web"
+    "forgot-password": {
+        "newbie": "New to SkillBank?",
+        "signUp": "Sign up",
+        "title": "Forgor password?",
+        "resetPass": "Reset password",
+        "backToSignIn": "Back to sign in"
+    },
+    "enter-code": {
+        "title": "Enter code",
+        "noEmail": "Don't receive the email?",
+        "resent": "Click to resent",
+        "continue": "Continue",
+        "backToSignIn": "Back to sign in"
+    },
+    "set-new-password": {
+        "title": "Set new password",
+        "password": "Password",
+        "confirmPass": "Confirm password",
+        "setNewPass": "Set new password",
+        "backToSignIn": "Back to sign in"
     }
 }

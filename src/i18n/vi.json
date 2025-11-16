@@ -16,5 +16,25 @@
         "enterKeywords": "Enter project or skill keywords...",
         "viewMore": "View more",
         "designWeb": "Design web"
+    "forgot-password": {
+        "newbie": "Bạn chưa có tài khoản?",
+        "signUp": "Đăng ký",
+        "title": "Quên mật khẩu?",
+        "resetPass": "Đặt lại mật khẩu",
+        "backToSignIn": "Quay lại đăng nhập"
+    },
+    "enter-code": {
+        "title": "Nhập mã xác thực",
+        "noEmail": "Không nhận được email?",
+        "resent": "Gửi lại",
+        "continue": "Tiếp tục",
+        "backToSignIn": "Quay lại đăng nhập"
+    },
+    "set-new-password": {
+        "title": "Đặt lại mật khẩu",
+        "password": "Nhập mật khẩu mới",
+        "confirmPass": "Nhập lại mật khẩu",
+        "setNewPass": "Đặt mật khẩu mới",
+        "backToSignIn": "Quay lại đăng nhập"
     }
 }
