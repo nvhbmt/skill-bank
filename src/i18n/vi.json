@@ -47,5 +47,28 @@
         "confirmPass": "Nhập lại mật khẩu",
         "setNewPass": "Đặt mật khẩu mới",
         "backToSignIn": "Quay lại đăng nhập"
+    },
+    "create-project": {
+        "title": "Đăng tải dự án",
+        "thongTinChung": "Thông tin chung",
+        "tenDuAn": "Tên dự án:",
+        "điaDiem": "Địa điểm làm việc:",
+        "phanLoai": "Phân loại:",
+        "chonPhanLoai": "Chọn phân loại",
+        "tgianBD": "Ngày bắt đầu:",
+        "moTa": "Mô tả dự án",
+        "moTaChiTiet": "Mô tả chi tiết về dự án của bạn...",
+        "danhMucKN": "Kỹ năng",
+        "KN1": "Kỹ năng 1",
+        "chonKN": "Chọn kỹ năng",
+        "taiLenAnhBia": "Tải lên ảnh bìa",
+        "dangTaiODay": "Tải lên tại đây",
+        "tgianHD": "Tiến trình",
+        "moc1": "Mốc 1: ...",
+        "thanhVien": "Thành viên",
+        "toiDongTinh": "Tôi đồng ý với ",
+        "chinhSach": "Chính sách và Điều khoản sử dụng",
+        "quayLai": "Quay lại",
+        "dang": "Đăng"
     }
 }

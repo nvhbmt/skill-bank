@@ -46,5 +46,28 @@
         "confirmPass": "Confirm password",
         "setNewPass": "Set new password",
         "backToSignIn": "Back to sign in"
+    },
+    "create-project": {
+        "title": "Create project",
+        "thongTinChung": "General information",
+        "tenDuAn": "Project name:",
+        "điaDiem": "Work location:",
+        "phanLoai": "Category:",
+        "chonPhanLoai": "Select category",
+        "tgianBD": "Start date:",
+        "moTa": "Project description",
+        "moTaChiTiet": "Describe your project in detail...",
+        "danhMucKN": "Skills",
+        "KN1": "Skill 1",
+        "chonKN": "Select skill",
+        "taiLenAnhBia": "Upload cover image",
+        "dangTaiODay": "Upload here",
+        "tgianHD": "Timeline",
+        "moc1": "Milestone 1: ...",
+        "thanhVien": "Members",
+        "toiDongTinh": "I agree to the ",
+        "chinhSach": "Terms of Service and Privacy Policy",
+        "quayLai": "Back",
+        "dang": "Submit"
     }
 }
