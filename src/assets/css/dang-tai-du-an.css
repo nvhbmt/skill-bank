@@ -1,0 +1,594 @@
+:root {
+    --color-bg-light: #ffffff;
+    --color-bg-soft: #efeffe;
+    --color-surface: #e0e0fc;
+    --color-primary-light: #c1c1f9;
+    --color-primary: #6363f1;
+    --color-primary-dark: #4c3df2;
+    --color-secondary: #8282f4;
+    --color-accent: #a1a1f7;
+    --color-text: #2a2a79;
+    --color-text-muted: #212165;
+    --color-text-invert: #ffffff;
+    --color-bg-dark: #171751;
+    --color-bg-darker: #0e0e3d;
+    --color-bg-black: #000000;
+    --color-purple-base-dark: #7928ff;
+    --color-purple-base-light: #a68cff;
+    --color-purple-text: #a78bfa;
+    --color-purple-text-hover: #c4b5fd;
+    --color-purple-button: #7c3aed;
+    --color-purple-button-hover: #8b5cf6;
+    --color-purple-button-active: #623ea0;
+}
+html {
+    font-size: 62.5%;
+}
+* {
+    box-sizing: border-box;
+    font-family: Inter, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.wrapper {
+    background-image: url('/assets/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-attachment: fixed;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem 0;
+}
+
+.hero-section {
+    width: 100%;
+    max-width: 1200px;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4rem;
+    color: var(--color-bg-light);
+}
+
+.hero-section > h1 {
+    font-size: 5.2rem;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 50px;
+}
+
+.project-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-body {
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    gap: 5rem;
+}
+
+.column-left,
+.column-right {
+    display: flex;
+    flex-direction: column;
+    gap: 5.2rem;
+}
+
+.form-section h3 {
+    font-size: 2.8rem;
+    color: var(--color-bg-light);
+    margin-bottom: 1.6rem;
+    font-weight: 500;
+}
+
+.section-title-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-add {
+    background-color: var(--color-purple-button);
+    color: white;
+    border: none;
+    width: 4.2rem;
+    height: 4.2rem;
+    border-radius: 50%;
+    font-size: 2.5rem;
+    cursor: pointer;
+    transition:
+        background-color 0.25s ease,
+        transform 0.15s ease,
+        box-shadow 0.25s ease;
+}
+.btn-add:hover {
+    background-color: var(--color-purple-button-hover);
+}
+.btn-add:active {
+    background-color: var(--color-purple-button-active);
+}
+.form-group {
+    margin-bottom: 2rem;
+}
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label,
+.checkbox-area label {
+    display: block;
+    font-size: 2rem;
+    color: var(--color-primary-light);
+    margin-bottom: 0.8rem;
+}
+
+/* === BẮT ĐẦU NÂNG CẤP UX/UI CHO FORM (CỘT TRÁI) === */
+
+/* 1. Style CHUNG cho Input, Select, Textarea */
+.form-input {
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.2rem;
+    padding: 1.4rem 1.6rem;
+    font-size: 2rem;
+    color: var(--color-text-invert);
+    -webkit-appearance: none;
+    appearance: none;
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* 2. Style khi :focus */
+.form-input:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--color-purple-button);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4);
+    outline: none;
+}
+
+/* 3. Style khi :hover */
+.form-input:hover:not(:focus) {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* 4. Style cho chữ placeholder */
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+}
+
+/* 5a. Nâng cấp cho <select> (thêm mũi tên) */
+select.form-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%23C1C1F9'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.6rem center;
+    background-size: 1.5rem;
+    padding-right: 4rem;
+}
+
+/* 5b. Style cho select khi chưa chọn (mờ) */
+select.form-input:invalid {
+    color: rgba(255, 255, 255, 0.6);
+}
+select.form-input:valid {
+    color: var(--color-text-invert);
+}
+
+/* 5c. Style cho date khi chưa chọn (mờ) */
+input[type='date'].form-input:invalid {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* 6. Nâng cấp cho <input type="date"> */
+input[type='date'].form-input {
+    color-scheme: dark;
+    position: relative;
+}
+input[type='date'].form-input::-webkit-calendar-picker-indicator {
+    opacity: 0.7;
+    cursor: pointer;
+}
+input[type='date'].form-input::-webkit-datetime-edit-text,
+input[type='date'].form-input::-webkit-datetime-edit-month-field,
+input[type='date'].form-input::-webkit-datetime-edit-day-field,
+input[type='date'].form-input::-webkit-datetime-edit-year-field {
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+}
+input[type='date'].form-input:valid,
+input[type='date'].form-input:valid::-webkit-datetime-edit-text,
+input[type='date'].form-input:valid::-webkit-datetime-edit-month-field,
+input[type='date'].form-input:valid::-webkit-datetime-edit-day-field,
+input[type='date'].form-input:valid::-webkit-datetime-edit-year-field {
+    color: var(--color-text-invert);
+}
+
+/* 7. Nâng cấp cho <textarea> (Mô tả dự án) */
+textarea.form-input {
+    width: 95%;
+    resize: vertical; /* Vẫn cho resize Mô tả dự án */
+    min-height: 15rem; /* Chiều cao ban đầu */
+}
+
+/* 8. Style cho khu vực Kỹ Năng */
+#ky-nang .form-group-wrapper-2 {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+#ky-nang .form-input,
+#ky-nang .section-title-with-button {
+    width: 95%;
+}
+
+/* 9. Sửa lỗi Select Option chữ trắng nền trắng */
+select.form-input option {
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-light);
+}
+
+/* 10. Nâng cấp UX/UI cho "Tải lên ảnh bìa" */
+.upload-box {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.2rem;
+    color: rgba(255, 255, 255, 0.6);
+    width: 20rem;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    cursor: pointer;
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        color 0.3s ease;
+}
+/* 11. Đồng bộ :hover cho upload-box */
+.upload-box:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: var(--color-text-invert); /* Sáng lên khi hover */
+}
+/* 12. Đồng bộ :active (khi nhấn vào) cho upload-box */
+.upload-box:active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--color-purple-button);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4);
+}
+/* 13. Ghi đè style gốc của icon/text BÊN TRONG upload-box */
+.upload-box i,
+.upload-box p {
+    color: inherit; /* Kế thừa màu từ .upload-box */
+    display: flex;
+    justify-content: center;
+    font-size: 2rem;
+}
+.upload-box i {
+    font-size: 3rem;
+}
+.upload-box p {
+    padding-top: 2rem;
+}
+/* === KẾT THÚC NÂNG CẤP UX CỘT TRÁI === */
+
+.form-group-wrapper-1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+/* Khối chung cho list bên phải (Chỉ dùng cho Thành viên) */
+.list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+/* === BẮT ĐẦU CSS CHO TIMELINE ĐỘNG (CỘT PHẢI) === */
+
+/* 1. Container cho timeline */
+#thoi-gian .timeline-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding-left: 2.5rem;
+}
+/* 2. Đường kẻ timeline dọc */
+#thoi-gian .timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    width: 2px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    z-index: 0;
+}
+/* 3. Wrapper cho mỗi input */
+.milestone-item {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+/* 4. "Dot" phát sáng cho mỗi mốc */
+.milestone-item::before {
+    content: '';
+    position: absolute;
+    left: -2.1rem;
+    /* SỬA: Căn dot vào giữa dòng ĐẦU TIÊN (padding 1.6rem + nửa font 0.9rem) */
+    top: 2.5rem;
+    transform: translateY(-50%);
+    width: 1.2rem;
+    height: 1.2rem;
+    background-color: var(--color-bg-darker);
+    border: 2px solid var(--color-primary-light);
+    border-radius: 50%;
+    box-shadow: 0 0 6px 1px rgba(193, 193, 249, 0.5);
+    z-index: 1;
+}
+/* 5. Input cho mốc thời gian (BÂY GIỜ LÀ TEXTAREA) */
+.milestone-input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.6rem;
+    padding: 1.4rem 1.6rem;
+    font-size: 1.8rem;
+    color: var(--color-text-invert);
+    font-family: Inter, sans-serif; /* Đảm bảo font giống nhau */
+
+    -webkit-appearance: none;
+    appearance: none;
+
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+/* 6. Style placeholder cho input mốc */
+.milestone-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+}
+/* 7. Style focus */
+.milestone-input:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--color-purple-button);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4);
+    outline: none;
+}
+/* 8. Style hover */
+.milestone-input:hover:not(:focus) {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+/* === KẾT THÚC CSS CHO TIMELINE ĐỘNG === */
+
+/* Mục thành viên (Đã tinh chỉnh) */
+.member-item {
+    display: flex;
+    align-items: center;
+    gap: 2.2rem;
+}
+.member-avatar {
+    width: 7.2rem;
+    height: 7.2rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+.member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+.member-name {
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: var(--color-bg-light);
+}
+.member-username {
+    font-size: 1.667rem;
+    color: var(--color-accent);
+}
+
+/* PHẦN CHÂN FORM */
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4rem;
+    padding: 3rem 3rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.checkbox-area {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+/* === BẮT ĐẦU NÂNG CẤP UX CHECKBOX === */
+.form-checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 2.2rem;
+    height: 2.2rem;
+    border: 2px solid var(--color-primary-light);
+    border-radius: 6px;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+.form-checkbox::before {
+    content: '✓';
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    transform: scale(0);
+    opacity: 0;
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+.form-checkbox:checked {
+    background-color: var(--color-purple-button);
+    border-color: var(--color-purple-button);
+}
+.form-checkbox:checked::before {
+    transform: scale(1);
+    opacity: 1;
+}
+/* THÊM MỚI: Hiệu ứng hover cho checkbox */
+.form-checkbox:not(:checked):hover {
+    border-color: var(--color-text-invert); /* Viền sáng lên */
+}
+
+.checkbox-area label {
+    margin-bottom: 0;
+    color: var(--color-bg-light);
+    font-size: 2rem; /* Sửa: 2.4rem -> 2rem */
+    a {
+        color: var(--color-purple-text);
+        transition: color 0.15s linear;
+    }
+    a:hover {
+        color: var(--color-purple-text-hover);
+    }
+}
+/* === KẾT THÚC NÂNG CẤP UX CHECKBOX === */
+
+.buttons-area {
+    display: flex;
+    gap: 1.6rem;
+}
+
+/* NÚT BẤM */
+.btn {
+    padding: 1.2rem 2.4rem;
+    font-size: 2.4rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.btn-primary {
+    background-color: var(--color-purple-button);
+    color: white;
+    border: none;
+    transition:
+        background-color 0.25s ease,
+        transform 0.15s ease,
+        box-shadow 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.btn-primary:hover {
+    background-color: var(--color-purple-button-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+.btn-primary:active {
+    background-color: var(--color-purple-button-active);
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--color-purple-button);
+    color: var(--color-bg-light);
+    transition: background-color 0.2s linear;
+}
+.btn-secondary:hover {
+    border-color: transparent;
+    background-color: var(--color-purple-button-hover);
+}
+
+.group-left {
+    margin-left: 5rem;
+}
+.column-left {
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* === BẮT ĐẦU CSS NÂNG CẤP JS (Tự co dãn, Preview) === */
+
+/* 1. CSS cho Textarea tự co dãn (Timeline & Mô tả) */
+textarea.auto-resize-textarea {
+    resize: none; /* Tắt tính năng resize bằng tay */
+    overflow-y: hidden; /* Ẩn thanh cuộn (JS sẽ lo co dãn) */
+}
+
+/* 2. CSS cho Textarea mốc thời gian (ghi đè 1 chút) */
+.milestone-input.auto-resize-textarea {
+    min-height: 5.4rem; /* Chiều cao tối thiểu (padding + 1 dòng) */
+    height: 5.4rem; /* Chiều cao ban đầu */
+    /* * Đổi padding 1 chút cho textarea đẹp hơn
+	 * (1.6rem trên dưới, thay vì 1.4rem)
+	*/
+    padding-top: 1.6rem;
+    padding-bottom: 1.6rem;
+}
+
+/* 3. CSS cho container Upload (để preview nằm cạnh) */
+.upload-container {
+    display: flex;
+    align-items: center; /* Căn upload-box và preview theo chiều dọc */
+    gap: 1.6rem; /* Khoảng cách giữa 2 box */
+}
+
+/* 4. (SỬA) CSS cho tên file upload (giờ là thẻ <a>) */
+.file-name-display {
+    color: var(--color-primary-light); /* Màu tím nhạt */
+    font-size: 1.6rem;
+    text-decoration: none; /* Bỏ gạch chân */
+    background-color: rgba(0, 0, 0, 0.2); /* Nền mờ tối */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Viền mờ sáng */
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    transition: all 0.2s ease; /* Hiệu ứng mượt */
+
+    /* Cắt chữ nếu quá dài */
+    max-width: 25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* 5. (THÊM MỚI) Hover cho tên file upload */
+.file-name-display:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--color-text-invert); /* Sáng lên */
+    cursor: pointer;
+}
+
+/* === KẾT THÚC CSS NÂNG CẤP JS === */

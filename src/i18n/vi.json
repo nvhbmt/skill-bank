@@ -1,0 +1,14 @@
+{
+    "login": {
+        "title": "Đăng nhập",
+        "noAccount": "Bạn không có tài khoản?",
+        "signUp": "Đăng kí",
+        "username": "Tên người dùng",
+        "password": "Mật khẩu",
+        "rememberMe": "Nhớ tôi",
+        "forgotPassword": "Quên mật khẩu?",
+        "or": "hoặc",
+        "gmail": "Gmail",
+        "facebook": "Facebook"
+    }
+}

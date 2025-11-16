@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 body {
-    background-image: url('./assets/images/nen-gui-ung-tuyen.svg');
+    background-image: url('/assets/images/nen-gui-ung-tuyen.svg');
     background-repeat: no-repeat;
     background-size: cover;
     font-family: Inter, sans-serif;
