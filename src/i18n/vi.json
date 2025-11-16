@@ -13,10 +13,20 @@
     },
     "project-search": {
         "title": "Khám phá dự án",
-        "enterKeywords": "Enter project or skill keywords...",
+        "enterKeywords": "Nhập từ khoá dự án, kỹ năng...",
         "viewMore": "View more",
         "designWeb": "Design web"
-    },    
+    },
+    "submit-application": {
+        "title": "Ứng tuyển dự án",
+        "mo-ta": "Gửi hồ sơ ứng tuyển để trở thành một phần trong các dự án đang mở, nơi kỹ năng và kinh nghiệm của bạn được đánh giá và phát huy tối đa.",
+        "reason": "Lý do tham gia",
+        "cv": "Đính kèm CV (nếu có)",
+        "here": "Đăng tải ở đây",
+        "reason-input": "Nhập lời nhắn...",
+        "file-name": "Tên file",
+        "send-button-1": "Gửi",
+        "send-button-2": "Quay lại"
     "forgot-password": {
         "newbie": "Bạn chưa có tài khoản?",
         "signUp": "Đăng ký",
@@ -48,6 +58,28 @@
         "uploadhere": "Đăng tải ở đây",
         "file": "Tên file",
         "send": "Gửi"
+    "create-project": {
+        "title": "Đăng tải dự án",
+        "thongTinChung": "Thông tin chung",
+        "tenDuAn": "Tên dự án:",
+        "điaDiem": "Địa điểm làm việc:",
+        "phanLoai": "Phân loại:",
+        "chonPhanLoai": "Chọn phân loại",
+        "tgianBD": "Ngày bắt đầu:",
+        "moTa": "Mô tả dự án",
+        "moTaChiTiet": "Mô tả chi tiết về dự án của bạn...",
+        "danhMucKN": "Kỹ năng",
+        "KN1": "Kỹ năng 1",
+        "chonKN": "Chọn kỹ năng",
+        "taiLenAnhBia": "Tải lên ảnh bìa",
+        "dangTaiODay": "Tải lên tại đây",
+        "tgianHD": "Tiến trình",
+        "moc1": "Mốc 1: ...",
+        "thanhVien": "Thành viên",
+        "toiDongTinh": "Tôi đồng ý với ",
+        "chinhSach": "Chính sách và Điều khoản sử dụng",
+        "quayLai": "Quay lại",
+        "dang": "Đăng"
     }
 
 }

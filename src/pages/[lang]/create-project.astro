@@ -1,0 +1,306 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/create-project.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <div class="wrapper">
+        <Header />
+
+        <main>
+            <div class="hero-section">
+                <h1>{t('create-project.title')}</h1>
+
+                <form class="project-form">
+                    <div class="form-body">
+                        <div class="column-left">
+                            <section class="form-section" id="thong-tin-chung">
+                                <h3>{t('create-project.thongTinChung')}</h3>
+                                <div class="form-group-wrapper-1 group-left">
+                                    <div class="sub-grid-1">
+                                        <div class="form-group">
+                                            <label for="project-name"
+                                                >{
+                                                    t('create-project.tenDuAn')
+                                                }</label
+                                            >
+                                            <input
+                                                type="text"
+                                                id="project-name"
+                                                name="project_name"
+                                                class="form-input"
+                                            />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="location"
+                                                >{
+                                                    t('create-project.điaDiem')
+                                                }</label
+                                            >
+                                            <input
+                                                type="text"
+                                                id="location"
+                                                name="location"
+                                                class="form-input"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="sub-grid-2">
+                                        <div class="form-group">
+                                            <label for="category"
+                                                >{
+                                                    t('create-project.phanLoai')
+                                                }</label
+                                            >
+                                            <select
+                                                id="category"
+                                                name="category"
+                                                class="form-input"
+                                                required
+                                            >
+                                                <option
+                                                    value=""
+                                                    disabled
+                                                    selected
+                                                    hidden
+                                                    >{
+                                                        t(
+                                                            'create-project.chonPhanLoai'
+                                                        )
+                                                    }</option
+                                                >
+                                                <option value="website"
+                                                    >Website</option
+                                                >
+                                                <option value="mobile-app"
+                                                    >Mobile App</option
+                                                >
+                                                <option value="desktop-app"
+                                                    >Desktop App</option
+                                                >
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="start-date"
+                                                >{
+                                                    t('create-project.tgianBD')
+                                                }</label
+                                            >
+                                            <input
+                                                type="date"
+                                                id="start-date"
+                                                name="start_date"
+                                                class="form-input"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="form-section" id="mo-ta-du-an">
+                                <h3>{t('create-project.moTa')}</h3>
+                                <div class="form-group group-left">
+                                    <textarea
+                                        id="description"
+                                        name="description"
+                                        class="form-input auto-resize-textarea"
+                                        rows="4"
+                                        placeholder={t(
+                                            'create-project.moTaChiTiet'
+                                        )}></textarea>
+                                </div>
+                            </section>
+
+                            <section class="form-section" id="ky-nang">
+                                <h3 class="section-title-with-button">
+                                    <span>{t('create-project.danhMucKN')}</span>
+                                    <button
+                                        type="button"
+                                        class="btn-add"
+                                        id="add-skill-btn">+</button
+                                    >
+                                </h3>
+                                <div
+                                    class="form-group-wrapper-2 group-left"
+                                    id="skill-list-container"
+                                >
+                                    <div class="form-group">
+                                        <label for="skill-1"
+                                            >{t('create-project.KN1')}</label
+                                        >
+                                        <select
+                                            id="skill-1"
+                                            name="skill-1"
+                                            class="form-input"
+                                            required
+                                        >
+                                            <option
+                                                value=""
+                                                disabled
+                                                hidden
+                                                selected
+                                                >{
+                                                    t('create-project.chonKN')
+                                                }</option
+                                            >
+                                            <option value="react">React</option>
+                                            <option value="vue">Vue</option>
+                                            <option value="css">CSS</option>
+                                            <option value="tailwind"
+                                                >Tailwind</option
+                                            >
+                                        </select>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="form-section">
+                                <h3>{t('create-project.taiLenAnhBia')}</h3>
+                                <div
+                                    class="form-group group-left upload-container"
+                                >
+                                    <label class="upload-box" for="coverUpload">
+                                        <i
+                                            class="fa-solid fa-arrow-up-from-bracket"
+                                        ></i>
+                                        <p>{t('create-project.dangTaiODay')}</p>
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        id="coverUpload"
+                                        accept="image/*"
+                                        hidden
+                                    />
+
+                                    <!-- Tên file -->
+                                    <a
+                                        id="cover-file-name"
+                                        class="file-name-display"
+                                        href="#"
+                                        target="_blank"
+                                        download
+                                        hidden></a>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- CỘT BÊN PHẢI -->
+                        <div class="column-right">
+                            <section class="form-section" id="thoi-gian">
+                                <h3 class="section-title-with-button">
+                                    <span>{t('create-project.tgianHD')}</span>
+                                    <button
+                                        type="button"
+                                        class="btn-add"
+                                        id="add-milestone-btn">+</button
+                                    >
+                                </h3>
+
+                                <div
+                                    class="timeline-container"
+                                    id="milestone-list"
+                                >
+                                    <div class="milestone-item">
+                                        <textarea
+                                            name="milestone-1"
+                                            class="milestone-input auto-resize-textarea"
+                                            placeholder={t(
+                                                'create-project.moc1'
+                                            )}
+                                            rows="1"></textarea>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="form-section" id="thanh-vien">
+                                <h3>{t('create-project.thanhVien')}</h3>
+                                <div class="list-wrapper">
+                                    <div class="member-item">
+                                        <img
+                                            src="/assets/image/vy1.png"
+                                            alt="avatar"
+                                            class="member-avatar"
+                                        />
+                                        <div class="member-info">
+                                            <span class="member-name"
+                                                >Bùi Thái Vy</span
+                                            >
+                                            <span class="member-username"
+                                                >@vyxam</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="member-item">
+                                        <img
+                                            src="/assets/image/va2.png"
+                                            alt="avatar"
+                                            class="member-avatar"
+                                        />
+                                        <div class="member-info">
+                                            <span class="member-name"
+                                                >Nguyễn Xuân Việt Anh</span
+                                            >
+                                            <span class="member-username"
+                                                >@tredeadline</span
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="member-item">
+                                        <img
+                                            src="/assets/image/me2.png"
+                                            alt="avatar"
+                                            class="member-avatar"
+                                        />
+                                        <div class="member-info">
+                                            <span class="member-name"
+                                                >Trần Tường Vân</span
+                                            >
+                                            <span class="member-username"
+                                                >@deptrais1tgioi</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <div class="checkbox-area">
+                            <input
+                                type="checkbox"
+                                id="terms"
+                                name="terms"
+                                class="form-checkbox"
+                            />
+                            <label for="terms"
+                                >{t('create-project.toiDongTinh')}<a href="#"
+                                    >{t('create-project.chinhSach')}</a
+                                ></label
+                            >
+                        </div>
+                        <div class="buttons-area">
+                            <button type="button" class="btn btn-secondary"
+                                >{t('create-project.quayLai')}</button
+                            >
+                            <button type="submit" class="btn btn-primary"
+                                >{t('create-project.dang')}</button
+                            >
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="@/assets/script/create-project.js"></script>
+</DefaultLayout>
