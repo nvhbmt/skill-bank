@@ -9,7 +9,9 @@ import type { APIRoute } from 'astro';
 export const POST: APIRoute = async ({ request, cookies }) => {
     try {
         const validated = signupSchema.safeParse(
-            Object.fromEntries(await request.formData())
+            Object.fromEntries(
+                (await request.formData()) as unknown as [string, string][]
+            )
         );
 
         if (!validated.success) {
@@ -45,7 +47,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         if (error) {
             switch (error.code) {
                 case 'user_already_exists':
-                    return httpResponse.fail('Username đã tồn tại', 400);
+                    return httpResponse.fail('Email đã được sử dụng', 400);
                 default:
                     return httpResponse.fail(error.message, 500);
             }

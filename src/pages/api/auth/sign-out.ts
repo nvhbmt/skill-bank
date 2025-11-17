@@ -4,7 +4,7 @@ import type { APIRoute } from 'astro';
 import { supabase } from '@/lib/supabase';
 import httpResponse from '@/utils/response';
 
-export const GET: APIRoute = async ({ cookies, locals }) => {
+export const POST: APIRoute = async ({ cookies, locals }) => {
     try {
         await supabase.auth.signOut();
         return httpResponse.ok(null, 'Đăng xuất thành công', 200);

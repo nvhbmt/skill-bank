@@ -1,6 +1,6 @@
 ---
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
-import '@/assets/css/dang-ky.css';
+import '@/assets/css/sign-up.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 export { getStaticPaths };
 
@@ -15,96 +15,444 @@ const { lang, t, l } = useTranslate(Astro);
             </div>
             <div class="login-page-right">
                 <div class="inner-login-page-right">
-                    <div class="login-content">
-                        <div class="login-form">
-                            <h1>{t('sign-up.title')}</h1>
-                            <div>
-                                {t('sign-up.haveAccount')} <a
-                                    href="/dang-nhap"
-                                    class="login-link">{t('sign-up.signIn')}</a
-                                >
+                    <form id="signup-form">
+                        <div class="login-content">
+                            <div class="login-form">
+                                <h1>{t('sign-up.title')}</h1>
+                                <div>
+                                    {t('sign-up.haveAccount')}
+                                    <a href={l('/sign-in')} class="login-link"
+                                        >{t('sign-up.signIn')}</a
+                                    >
+                                </div>
                             </div>
+                            <div class="login-form-body">
+                                <div class="login-form-item-group">
+                                    <div class="login-form-input-wrapper">
+                                        <img
+                                            src="/assets/images/solar_pen-outline.svg"
+                                            alt="icon"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="fullName"
+                                            placeholder={t('sign-up.fullName')}
+                                            class="login-form-group-text"
+                                        />
+                                    </div>
+                                    <div
+                                        id="fullName-error"
+                                        class="login-form-input-error"
+                                    >
+                                    </div>
+                                </div>
+                                <div class="login-form-item-group">
+                                    <div class="login-form-input-wrapper">
+                                        <img
+                                            src="/assets/images/solar_user-outline.svg"
+                                            alt="icon"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="username"
+                                            placeholder={t('sign-up.username')}
+                                            class="login-form-group-text"
+                                        />
+                                    </div>
+                                    <div
+                                        id="username-error"
+                                        class="login-form-input-error"
+                                    >
+                                    </div>
+                                </div>
+                                <div class="login-form-item-group">
+                                    <div class="login-form-input-wrapper">
+                                        <img
+                                            src="/assets/images/mdi-light_email.svg"
+                                            alt="icon"
+                                        />
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            placeholder={t('sign-up.email')}
+                                            class="login-form-group-text"
+                                        />
+                                    </div>
+                                    <div
+                                        id="email-error"
+                                        class="login-form-input-error"
+                                    >
+                                    </div>
+                                </div>
+                                <div class="login-form-item-group">
+                                    <div class="login-form-input-wrapper">
+                                        <img
+                                            src="/assets/images/material-symbols-light_lock-outline.svg"
+                                            alt="icon"
+                                        />
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            placeholder={t('sign-up.password')}
+                                            class="login-form-group-text"
+                                        />
+                                    </div>
+                                    <div
+                                        id="password-error"
+                                        class="login-form-input-error"
+                                    >
+                                    </div>
+                                </div>
+                                <div class="login-form-action">
+                                    <div
+                                        style="display: flex; flex-direction: column; gap: 5px;"
+                                    >
+                                        <div
+                                            style="display: flex; align-items: center; gap: 8px;"
+                                        >
+                                            <label
+                                                style="display: flex; align-items: center; gap: 8px; cursor: pointer;"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    name="agree"
+                                                />
+                                                <span>{t('sign-up.agree')}</span
+                                                >
+                                            </label>
+                                            <a
+                                                href="/dieu-khoan-va-dieu-kien"
+                                                class="login-link"
+                                                >{
+                                                    t(
+                                                        'sign-up.TermsAndConditions'
+                                                    )
+                                                }</a
+                                            >
+                                        </div>
+                                        <div
+                                            id="agree-error"
+                                            class="login-form-input-error"
+                                        >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="login-form-btn"
+                                >{t('sign-up.title')}</button
+                            >
                         </div>
-                        <div class="login-form-body">
-                            <div class="login-form-group">
-                                <img
-                                    src="/assets/images/solar_pen-outline.svg"
-                                    alt="icon"
-                                />
-                                <input
-                                    type="text"
-                                    placeholder={t('sign-up.fullName')}
-                                    class="login-form-group-text"
-                                />
+                        <div class="login-form-divider">
+                            <div class="login-form-divider-line"></div>
+                            <div class="login-form-divider-text">
+                                {t('sign-up.or')}
                             </div>
-                            <div class="login-form-group">
-                                <img
-                                    src="/assets/images/solar_user-outline.svg"
-                                    alt="icon"
-                                />
-                                <input
-                                    type="text"
-                                    placeholder={t('sign-up.username')}
-                                    class="login-form-group-text"
-                                />
-                            </div>
-                            <div class="login-form-group">
-                                <img
-                                    src="/assets/images/mdi-light_email.svg"
-                                    alt="icon"
-                                />
-                                <input
-                                    type="text"
-                                    placeholder={t('sign-up.email')}
-                                    class="login-form-group-text"
-                                />
-                            </div>
-                            <div class="login-form-group">
-                                <img
-                                    src="/assets/images/material-symbols-light_lock-outline.svg"
-                                    alt="icon"
-                                />
-                                <input
-                                    type="password"
-                                    placeholder={t('sign-up.password')}
-                                    class="login-form-group-text"
-                                />
-                            </div>
-                            <div class="login-form-action">
-                                <label
-                                    ><input type="checkbox" /> &nbsp; {t('sign-up.agree')}
-                                </label>&nbsp;
-                                <a
-                                    href="/dieu-khoan-va-dieu-kien"
-                                    class="login-link">{t('sign-up.TermsAndConditions')}</a
-                                >
-                            </div>
+                            <div class="login-form-divider-line"></div>
                         </div>
-                        <button class="login-form-btn">{t('sign-up.title')}</button>
-                    </div>
-                    <div class="login-form-divider">
-                        <div class="login-form-divider-line"></div>
-                        <div class="login-form-divider-text">{t('sign-up.or')}</div>
-                        <div class="login-form-divider-line"></div>
-                    </div>
-                    <div class="login-btn-box">
-                        <button class="login-btn">
-                            <img
-                                src="/assets/images/flat-color-icons_google.png"
-                                alt="icon"
-                            />
-                            <div class="login-btn-text">{t('sign-up.gmail')}</div>
-                        </button>
-                        <button class="login-btn">
-                            <img
-                                src="/assets/images/logos_facebook.png"
-                                alt="icon"
-                            />
-                            <div class="login-btn-text">{t('sign-up.facebook')}</div>
-                        </button>
-                    </div>
+                        <div class="login-btn-box">
+                            <button type="button" class="login-btn">
+                                <img
+                                    src="/assets/images/flat-color-icons_google.png"
+                                    alt="icon"
+                                />
+                                <div class="login-btn-text">
+                                    {t('sign-up.gmail')}
+                                </div>
+                            </button>
+                            <button type="button" class="login-btn">
+                                <img
+                                    src="/assets/images/logos_facebook.png"
+                                    alt="icon"
+                                />
+                                <div class="login-btn-text">
+                                    {t('sign-up.facebook')}
+                                </div>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </DefaultLayout>
+
+<script
+    define:vars={{
+        validationMessages: JSON.stringify({
+            fullNameRequired: t('sign-up.validation.fullNameRequired'),
+            fullNameMinLength: t('sign-up.validation.fullNameMinLength'),
+            fullNameMaxLength: t('sign-up.validation.fullNameMaxLength'),
+            usernameRequired: t('sign-up.validation.usernameRequired'),
+            usernameMinLength: t('sign-up.validation.usernameMinLength'),
+            usernameMaxLength: t('sign-up.validation.usernameMaxLength'),
+            emailRequired: t('sign-up.validation.emailRequired'),
+            emailInvalid: t('sign-up.validation.emailInvalid'),
+            passwordRequired: t('sign-up.validation.passwordRequired'),
+            passwordMinLength: t('sign-up.validation.passwordMinLength'),
+            agreeRequired: t('sign-up.validation.agreeRequired'),
+        }),
+        uiMessages: JSON.stringify({
+            loading: t('sign-up.loading'),
+            error: t('sign-up.error'),
+            errorGeneric: t('sign-up.errorGeneric'),
+        }),
+    }}
+>
+    window.signupValidationMessages = JSON.parse(validationMessages);
+    window.signupUIMessages = JSON.parse(uiMessages);
+</script>
+
+<script type="module">
+    const $ = document.querySelector.bind(document);
+    const $$ = document.querySelectorAll.bind(document);
+
+    const form = $('#signup-form');
+
+    if (form) {
+        const validation = new window.JustValidate('#signup-form');
+        const messages = window.signupValidationMessages || {};
+        const uiMessages = window.signupUIMessages || {};
+
+        validation
+            .addField(
+                '[name="fullName"]',
+                [
+                    {
+                        rule: 'required',
+                        errorMessage:
+                            messages.fullNameRequired || 'Vui lòng nhập tên',
+                    },
+                    {
+                        rule: 'minLength',
+                        value: 3,
+                        errorMessage:
+                            messages.fullNameMinLength ||
+                            'Tên phải có ít nhất 3 ký tự',
+                    },
+                    {
+                        rule: 'maxLength',
+                        value: 50,
+                        errorMessage:
+                            messages.fullNameMaxLength ||
+                            'Tên không được vượt quá 50 ký tự',
+                    },
+                ],
+                {
+                    errorsContainer: '#fullName-error',
+                }
+            )
+            .addField(
+                '[name="username"]',
+                [
+                    {
+                        rule: 'required',
+                        errorMessage:
+                            messages.usernameRequired ||
+                            'Vui lòng nhập username',
+                    },
+                    {
+                        rule: 'minLength',
+                        value: 3,
+                        errorMessage:
+                            messages.usernameMinLength ||
+                            'Username phải có ít nhất 3 ký tự',
+                    },
+                    {
+                        rule: 'maxLength',
+                        value: 20,
+                        errorMessage:
+                            messages.usernameMaxLength ||
+                            'Username không được vượt quá 20 ký tự',
+                    },
+                ],
+                {
+                    errorsContainer: '#username-error',
+                }
+            )
+            .addField(
+                '[name="email"]',
+                [
+                    {
+                        rule: 'required',
+                        errorMessage:
+                            messages.emailRequired || 'Vui lòng nhập email',
+                    },
+                    {
+                        rule: 'email',
+                        errorMessage:
+                            messages.emailInvalid || 'Email không hợp lệ',
+                    },
+                ],
+                {
+                    errorsContainer: '#email-error',
+                }
+            )
+            .addField(
+                '[name="password"]',
+                [
+                    {
+                        rule: 'required',
+                        errorMessage:
+                            messages.passwordRequired ||
+                            'Vui lòng nhập mật khẩu',
+                    },
+                    {
+                        rule: 'minLength',
+                        value: 8,
+                        errorMessage:
+                            messages.passwordMinLength ||
+                            'Mật khẩu phải có ít nhất 8 ký tự',
+                    },
+                ],
+                {
+                    errorsContainer: '#password-error',
+                }
+            )
+            .addField(
+                '[name="agree"]',
+                [
+                    {
+                        validator: (value) => {
+                            const checkbox = $('[name="agree"]');
+                            return (
+                                checkbox instanceof HTMLInputElement &&
+                                checkbox.checked
+                            );
+                        },
+                        errorMessage:
+                            messages.agreeRequired ||
+                            'Vui lòng đồng ý với điều khoản',
+                    },
+                ],
+                {
+                    errorsContainer: '#agree-error',
+                }
+            )
+            .onSuccess(async (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                const submitButton = form.querySelector(
+                    'button[type="submit"]'
+                );
+                const originalButtonText = submitButton?.textContent;
+
+                // Disable button and show loading state
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.textContent =
+                        uiMessages.loading || 'Đang tạo tài khoản...';
+                }
+
+                try {
+                    const response = await fetch('/api/auth/sign-up', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Redirect to home page after successful signup
+                        const currentLang =
+                            window.location.pathname.split('/')[1] || 'vi';
+                        window.location.href = `/${currentLang}`;
+                    } else {
+                        // Clear previous errors
+                        const fullNameErrorContainer = $('#fullName-error');
+                        const usernameErrorContainer = $('#username-error');
+                        const emailErrorContainer = $('#email-error');
+                        const passwordErrorContainer = $('#password-error');
+                        const agreeErrorContainer = $('#agree-error');
+
+                        if (fullNameErrorContainer)
+                            fullNameErrorContainer.textContent = '';
+                        if (usernameErrorContainer)
+                            usernameErrorContainer.textContent = '';
+                        if (emailErrorContainer)
+                            emailErrorContainer.textContent = '';
+                        if (passwordErrorContainer)
+                            passwordErrorContainer.textContent = '';
+                        if (agreeErrorContainer)
+                            agreeErrorContainer.textContent = '';
+
+                        // Show error messages
+                        const errorMessage =
+                            result.error ||
+                            result.message ||
+                            uiMessages.error ||
+                            'Tạo tài khoản thất bại';
+
+                        if (typeof errorMessage === 'object') {
+                            // Field-specific errors
+                            if (
+                                errorMessage.fullName &&
+                                fullNameErrorContainer
+                            ) {
+                                fullNameErrorContainer.textContent =
+                                    errorMessage.fullName;
+                            }
+                            if (
+                                errorMessage.username &&
+                                usernameErrorContainer
+                            ) {
+                                usernameErrorContainer.textContent =
+                                    errorMessage.username;
+                            }
+                            if (errorMessage.email && emailErrorContainer) {
+                                emailErrorContainer.textContent =
+                                    errorMessage.email;
+                            }
+                            if (
+                                errorMessage.password &&
+                                passwordErrorContainer
+                            ) {
+                                passwordErrorContainer.textContent =
+                                    errorMessage.password;
+                            }
+                        } else {
+                            // General error
+                            if (usernameErrorContainer) {
+                                usernameErrorContainer.textContent =
+                                    errorMessage;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    // Clear previous errors
+                    const fullNameErrorContainer = $('#fullName-error');
+                    const usernameErrorContainer = $('#username-error');
+                    const emailErrorContainer = $('#email-error');
+                    const passwordErrorContainer = $('#password-error');
+                    const agreeErrorContainer = $('#agree-error');
+
+                    if (fullNameErrorContainer)
+                        fullNameErrorContainer.textContent = '';
+                    if (usernameErrorContainer)
+                        usernameErrorContainer.textContent = '';
+                    if (emailErrorContainer)
+                        emailErrorContainer.textContent = '';
+                    if (passwordErrorContainer)
+                        passwordErrorContainer.textContent = '';
+                    if (agreeErrorContainer)
+                        agreeErrorContainer.textContent = '';
+
+                    // Show error
+                    if (usernameErrorContainer) {
+                        usernameErrorContainer.textContent =
+                            uiMessages.errorGeneric ||
+                            'Có lỗi xảy ra, vui lòng thử lại';
+                    }
+                } finally {
+                    // Re-enable button
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        if (originalButtonText) {
+                            submitButton.textContent = originalButtonText;
+                        }
+                    }
+                }
+            });
+    }
+</script>

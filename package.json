@@ -15,6 +15,7 @@
         "@supabase/ssr": "^0.7.0",
         "@supabase/supabase-js": "^2.76.1",
         "astro": "^5.15.1",
+        "just-validate": "^4.3.0",
         "zod": "^4.1.12"
     },
     "devDependencies": {

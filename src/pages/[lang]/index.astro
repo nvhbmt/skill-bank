@@ -1,0 +1,359 @@
+---
+import '@/assets/css/index.css';
+import Footer from '@/components/Footer.astro';
+import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <!-- Hero Section -->
+    <section id="hero-section" class="hero-section">
+        <Header />
+        <div class="hero-section__container container">
+            <div class="hero-section__content">
+                <h1
+                    class="hero-section__title"
+                    set:html={t('home.heroTitle')}
+                />
+                <p class="hero-section__description">
+                    {t('home.heroDescription')}
+                </p>
+                <div class="hero-section__buttons">
+                    <button class="hero-section__button"
+                        >{t('home.getStarted')}</button
+                    >
+                    <button class="hero-section__button"
+                        >{t('home.learnMore')}</button
+                    >
+                </div>
+                <div class="hero-section__users">
+                    <div class="hero-section__user-images">
+                        <div class="hero-section__user-image">
+                            <img src="/assets/images/hero-1.jpg" alt="user-1" />
+                        </div>
+                        <div class="hero-section__user-image">
+                            <img src="/assets/images/hero-2.jpg" alt="user-2" />
+                        </div>
+                        <div class="hero-section__user-image">
+                            <img src="/assets/images/hero-3.jpg" alt="user-3" />
+                        </div>
+                    </div>
+                    <span class="hero-section__user-text"
+                        >{t('home.usersCount')}</span
+                    >
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Creators Section -->
+    <section id="creators-section" class="creators-section">
+        <div class="container creators-section__container">
+            <h2 class="creators-section__title">
+                {t('home.creatorsTitle')}
+            </h2>
+            <p class="creators-section__description">
+                {t('home.creatorsDescription')}
+            </p>
+            <div class="creators-section__list">
+                <div class="creators-section__card">
+                    <div class="creators-section__card-header">
+                        <div class="creators-section__avatar">
+                            <img src="/assets/images/hero-1.jpg" alt="avatar" />
+                        </div>
+                        <div class="creators-section__info">
+                            <h3 class="creators-section__name">
+                                Nguyễn Trọng Nhân
+                            </h3>
+                            <h4 class="creators-section__username">
+                                @Nhan_dep_trai
+                            </h4>
+                        </div>
+                    </div>
+                    <ul class="creators-section__skills">
+                        <li class="creators-section__skill">
+                            Game Development
+                        </li>
+                        <li class="creators-section__skill">
+                            nhandeptrai@gmail.com
+                        </li>
+                        <li class="creators-section__skill">Bình thuận</li>
+                    </ul>
+                </div>
+                <div class="creators-section__card">
+                    <div class="creators-section__card-header">
+                        <div class="creators-section__avatar">
+                            <img src="/assets/images/hero-1.jpg" alt="avatar" />
+                        </div>
+                        <div class="creators-section__info">
+                            <h3 class="creators-section__name">
+                                Nguyễn Trọng Nhân
+                            </h3>
+                            <h4 class="creators-section__username">
+                                @Nhan_dep_trai
+                            </h4>
+                        </div>
+                    </div>
+                    <ul class="creators-section__skills">
+                        <li class="creators-section__skill">
+                            Game Development
+                        </li>
+                        <li class="creators-section__skill">
+                            nhandeptrai@gmail.com
+                        </li>
+                        <li class="creators-section__skill">Bình thuận</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects-section" class="projects-section">
+        <div class="container projects-section__container">
+            <div class="projects-section__content">
+                <div class="projects-section__card">
+                    <div class="projects-section__image">
+                        <img src="/assets/images/hero-1.jpg" alt="project" />
+                    </div>
+                    <div class="projects-section__info">
+                        <h3 class="projects-section__title">Design web</h3>
+                        <div class="projects-section__user">
+                            <div class="projects-section__user-avatar">
+                                <img
+                                    src="/assets/images/hero-1.jpg"
+                                    alt="user"
+                                />
+                            </div>
+                            <div class="projects-section__user-details">
+                                <p class="projects-section__user-name">
+                                    User name
+                                </p>
+                                <p class="projects-section__user-email">
+                                    email
+                                </p>
+                            </div>
+                        </div>
+                        <div class="projects-section__stats">
+                            <span
+                                class="projects-section__stat projects-section__stat--views"
+                            >
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                >
+                                    <path
+                                        d="M8 2C4.667 2 2 4.667 2 8s2.667 6 6 6 6-2.667 6-6-2.667-6-6-6zm0 10.667c-2.58 0-4.667-2.087-4.667-4.667S5.42 3.333 8 3.333 12.667 5.42 12.667 8 10.58 12.667 8 12.667z"
+                                        fill="currentColor"></path>
+                                    <path
+                                        d="M8 5.333c-1.467 0-2.667 1.2-2.667 2.667S6.533 10.667 8 10.667 10.667 9.467 10.667 8 9.467 5.333 8 5.333z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                790
+                            </span>
+                            <span
+                                class="projects-section__stat projects-section__stat--likes"
+                            >
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                >
+                                    <path
+                                        d="M8 2.667c-1.467-2-4-2.667-4 2.667 0 4 4 6.667 4 6.667s4-2.667 4-6.667c0-5.334-2.533-4.667-4-2.667z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                500
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="projects-section__text">
+                    <h2 class="projects-section__heading">
+                        {t('home.projectsHeading')}
+                    </h2>
+                    <p class="projects-section__description">
+                        {t('home.projectsDescription')}
+                    </p>
+                    <div class="projects-section__buttons">
+                        <button class="projects-section__button"
+                            >{t('home.getStarted')}</button
+                        >
+                        <button class="projects-section__button"
+                            >{t('home.learnMore')}</button
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QNA Section -->
+    <section id="qna-section" class="qna-section">
+        <div class="container qna-section__container">
+            <h2 class="qna-section__title">{t('home.qnaTitle')}</h2>
+            <p class="qna-section__subtitle">
+                {t('home.qnaSubtitle')}
+            </p>
+            <div class="qna-section__list">
+                <div class="qna-section__item">
+                    <span class="qna-section__number">1.</span>
+                    <span class="qna-section__question-text">
+                        {t('home.qna.q1')}
+                    </span>
+                    <svg
+                        class="qna-section__chevron"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 9L12 15L18 9"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </div>
+                <div class="qna-section__item">
+                    <span class="qna-section__number">2.</span>
+                    <span class="qna-section__question-text">
+                        {t('home.qna.q2')}
+                    </span>
+                    <svg
+                        class="qna-section__chevron"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 9L12 15L18 9"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </div>
+                <div class="qna-section__item">
+                    <span class="qna-section__number">3.</span>
+                    <span class="qna-section__question-text">
+                        {t('home.qna.q3')}
+                    </span>
+                    <svg
+                        class="qna-section__chevron"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 9L12 15L18 9"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </div>
+                <div class="qna-section__item">
+                    <span class="qna-section__number">4.</span>
+                    <span class="qna-section__question-text">
+                        {t('home.qna.q4')}
+                    </span>
+                    <svg
+                        class="qna-section__chevron"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 9L12 15L18 9"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </div>
+                <div class="qna-section__item">
+                    <span class="qna-section__number">5.</span>
+                    <span class="qna-section__question-text">
+                        {t('home.qna.q5')}
+                    </span>
+                    <svg
+                        class="qna-section__chevron"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 9L12 15L18 9"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </div>
+                <div class="qna-section__item">
+                    <span class="qna-section__number">6.</span>
+                    <span class="qna-section__question-text">
+                        {t('home.qna.q6')}
+                    </span>
+                    <svg
+                        class="qna-section__chevron"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 9L12 15L18 9"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </div>
+                <div class="qna-section__item">
+                    <span class="qna-section__number">7.</span>
+                    <span class="qna-section__question-text">
+                        {t('home.qna.q7')}
+                    </span>
+                    <svg
+                        class="qna-section__chevron"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 9L12 15L18 9"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <Footer />
+</DefaultLayout>
+

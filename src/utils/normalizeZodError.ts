@@ -1,7 +1,7 @@
-import type { ZodSafeParseError } from 'zod';
+import type { ZodSafeParseResult } from 'zod';
 
-function normalizeZodError(
-    zodSafeParseError: ZodSafeParseError<unknown>
+function normalizeZodError<T>(
+    zodSafeParseError: ZodSafeParseResult<T>
 ): Record<string, string> {
     return zodSafeParseError.error.issues.reduce(
         (acc, curr) => {

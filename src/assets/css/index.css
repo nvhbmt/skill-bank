@@ -9,7 +9,6 @@
 }
 
 .hero-section__container {
-    max-width: 1440px;
     height: 1080px;
     margin: 0 auto;
 
@@ -590,4 +589,94 @@
     height: 24px;
 
     color: var(--color-text);
+}
+
+/* User Avatar Dropdown */
+.user-avatar-dropdown {
+    position: relative;
+}
+
+.user-avatar-dropdown__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.user-avatar-dropdown__trigger:hover {
+    transform: scale(1.05);
+}
+
+.user-avatar-dropdown__avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-text-invert);
+    transition: border-color 0.2s ease;
+    display: block;
+}
+
+.user-avatar-dropdown__trigger:hover .user-avatar-dropdown__avatar {
+    border-color: var(--color-primary);
+}
+
+.user-avatar-dropdown__menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    padding: 8px 0;
+    border-radius: 8px;
+    background-color: var(--color-surface);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.user-avatar-dropdown__menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-avatar-dropdown__item {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    text-align: left;
+    text-decoration: none;
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.user-avatar-dropdown__item:hover {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.user-avatar-dropdown__item:first-child {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.user-avatar-dropdown__item:last-child {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }

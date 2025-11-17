@@ -1,27 +1,3 @@
-:root {
-    --color-bg-light: #ffffff;
-    --color-bg-soft: #efeffe;
-    --color-surface: #e0e0fc;
-    --color-primary-light: #c1c1f9;
-    --color-primary: #6363f1;
-    --color-primary-dark: #4c3df2;
-    --color-secondary: #8282f4;
-    --color-accent: #a1a1f7;
-    --color-text: #2a2a79;
-    --color-text-muted: #212165;
-    --color-text-invert: #ffffff;
-    --color-bg-dark: #171751;
-    --color-bg-darker: #0e0e3d;
-    --color-bg-black: #000000;
-    --color-purple-base-dark: #7928ff;
-    --color-purple-base-light: #a68cff;
-    --color-purple-text: #a78bfa;
-    --color-purple-text-hover: #c4b5fd;
-    --color-purple-button: #7c3aed;
-    --color-purple-button-hover: #8b5cf6;
-    --color-purple-button-active: #623ea0;
-}
-
 body {
     box-sizing: border-box;
     background-image: url('/assets/images/nen-dang-ky-dang-nhap.png');
@@ -95,7 +71,14 @@ a:hover {
     gap: 24px;
 }
 
-.login-form-group {
+.login-form-item-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.login-form-input-wrapper {
     width: 100%;
     height: 60px;
     background: var(--color-surface);
@@ -105,6 +88,12 @@ a:hover {
     padding: 0 24px;
     align-items: center;
     transition: outline 0.2s ease;
+}
+
+.login-form-input-error {
+    color: red;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .login-form-group:hover {
@@ -126,7 +115,7 @@ input::placeholder {
 }
 
 .login-form-group:focus-within {
-    outline: 3px solid var(--color-purple-base-dark); 
+    outline: 3px solid var(--color-purple-base-dark);
 }
 
 .login-form-action {
