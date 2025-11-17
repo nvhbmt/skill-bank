@@ -30,47 +30,47 @@ const { lang, t, l } = useTranslate(Astro);
                     <div class="cv">
                         <h5>{t('submit-application.cv')}</h5>
                         <div class="upload">
-                            <div class="file-upload">
-                                <a href=""
-                                    ><img
-                                        src="./assets/gui-ung-tuyen/-square-outline.svg"
-                                        alt=""
-                                    />
-                                </a>
+                            <button class="upload-box-button">
+                                <img
+                                    src="/assets/images/solar_upload-square-outline.svg"
+                                    alt="icon"
+                                />
+                                {t('submit-application.here')}
+                            </button>
 
-                                <div class="here">
-                                    {t('submit-application.here')}
+                            <div class="upload-box-list">
+                                <div class="upload-item">
+                                    <div class="upload-item-info">
+                                        <img
+                                            src="/assets/images/solar_file-outline.svg"
+                                            alt="icon"
+                                        />
+                                        <span class="upload-item-name"
+                                            >{
+                                                t(
+                                                    'submit-application.file-name'
+                                                )
+                                            }</span
+                                        >
+                                    </div>
+                                    <span class="upload-item-success"></span>
                                 </div>
-                            </div>
-                            <div class="file-name">
-                                <input
-                                    class="first-name"
-                                    type="text"
-                                    id="first-name"
-                                    placeholder={t(
-                                        'submit-application.file-name'
-                                    )}
-                                />
-                                <button class="button-1"></button>
-                                <img
-                                    class="folder-image-1"
-                                    src="./assets/gui-ung-tuyen/solar_file-outline.svg"
-                                    alt=""
-                                />
-                                <input
-                                    class="second-name"
-                                    type="text"
-                                    id="second-name"
-                                    placeholder={t(
-                                        'submit-application.file-name'
-                                    )}
-                                />
-                                <button class="button-2"></button>
-                                <img
-                                    class="folder-image-2"
-                                    src="./assets/gui-ung-tuyen/solar_file-outline.svg"
-                                    alt=""
-                                />
+                                <div class="upload-item">
+                                    <div class="upload-item-info">
+                                        <img
+                                            src="/assets/images/solar_file-outline.svg"
+                                            alt="icon"
+                                        />
+                                        <span class="upload-item-name"
+                                            >{
+                                                t(
+                                                    'submit-application.file-name'
+                                                )
+                                            }</span
+                                        >
+                                    </div>
+                                    <span class="upload-item-error"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
