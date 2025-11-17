@@ -3,9 +3,76 @@ import '@/assets/css/project-search.css';
 import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import { supabase } from '@/lib/supabase';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
+
+// Load initial projects from database
+let projects: Array<{
+    id: number;
+    title: string;
+    description: string | null;
+    cover_image_url: string | null;
+    project_type: string | null;
+    location: string | null;
+    start_date: string | null;
+    status: string | null;
+    created_at: string | null;
+    owner_id: string;
+    user_info: {
+        user_id: string;
+        email: string;
+        full_name: string | null;
+        username: string;
+        avatar_url: string | null;
+    } | null;
+}> = [];
+
+try {
+    const { data, error } = await supabase
+        .from('projects')
+        .select(
+            `
+            id,
+            title,
+            description,
+            cover_image_url,
+            project_type,
+            location,
+            start_date,
+            status,
+            created_at,
+            owner_id
+        `
+        )
+        .is('deleted_at', null)
+        .eq('status', 'open')
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+    if (!error && data) {
+        // Load owner info separately
+        const ownerIds = [...new Set(data.map((p) => p.owner_id))];
+        const { data: ownersData } = await supabase
+            .from('user_info')
+            .select('user_id, email, full_name, username, avatar_url')
+            .in('user_id', ownerIds);
+
+        const ownersMap = new Map(
+            (ownersData || []).map((owner) => [owner.user_id, owner])
+        );
+
+        projects = data.map((project) => ({
+            ...project,
+            user_info: ownersMap.get(project.owner_id) || null,
+        }));
+    } else {
+        console.error('Error loading projects:', error);
+    }
+} catch (error) {
+    console.error('Error loading projects:', error);
+}
 ---
 
 <DefaultLayout>
@@ -28,315 +95,84 @@ const { lang, t, l } = useTranslate(Astro);
         </div>
         <div class="content">
             <div class="project">
-                <div class="project-container">
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
+                <div class="project-container" id="projects-container">
+                    {
+                        projects.length > 0 ? (
+                            projects.map((project) => {
+                                const owner = project.user_info;
+                                const projectTypeLabel =
+                                    project.project_type === 'website'
+                                        ? 'Website'
+                                        : project.project_type === 'mobile-app'
+                                          ? 'Mobile App'
+                                          : project.project_type ===
+                                              'desktop-app'
+                                            ? 'Desktop App'
+                                            : project.project_type || '';
+
+                                return (
+                                    <div
+                                        class="project-image"
+                                        data-project-id={project.id}
+                                    >
                                         <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
+                                            loading="lazy"
+                                            class="project-image-img"
+                                            src={
+                                                project.cover_image_url ||
+                                                '/assets/images/project-image.svg'
+                                            }
+                                            alt={project.title}
                                         />
-                                        990
+                                        <div class="project-content">
+                                            <div class="left-project-content">
+                                                <div class="design-web">
+                                                    {project.title}
+                                                </div>
+                                                <div class="email-address">
+                                                    {owner?.email || 'N/A'}
+                                                </div>
+                                            </div>
+                                            <div class="right-project-content">
+                                                <div class="interact">
+                                                    <div class="eyes">
+                                                        <img
+                                                            src="/assets/images/teenyicons_eye-outline.svg"
+                                                            alt=""
+                                                        />
+                                                        <span class="view-count">
+                                                            0
+                                                        </span>
+                                                    </div>
+                                                    <div class="like">
+                                                        <img
+                                                            src="/assets/images/solar_like-outline.svg"
+                                                            alt=""
+                                                        />
+                                                        <span class="like-count">
+                                                            0
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="view-more">
+                                                    {t(
+                                                        'project-search.viewMore'
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
+                                );
+                            })
+                        ) : (
+                            <div class="no-projects">
+                                <p>Không có dự án nào</p>
                             </div>
-                        </div>
-                    </div>
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        990
-                                    </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        990
-                                    </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        990
-                                    </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        990
-                                    </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        990
-                                    </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        990
-                                    </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        990
-                                    </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-image">
-                        <img src="/assets/images/project-image.svg" alt="" />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    {t('project-search.designWeb')}
-                                </div>
-                                <div class="email-address">
-                                    buithaivy2019@gmail.com
-                                </div>
-                            </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        990
-                                    </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        500
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    {t('project-search.viewMore')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        )
+                    }
                 </div>
             </div>
         </div>
     </div>
+    <script src="@/assets/script/project-search.js"></script>
 </DefaultLayout>

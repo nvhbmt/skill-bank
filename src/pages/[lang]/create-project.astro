@@ -3,12 +3,30 @@ import '@/assets/css/create-project.css';
 import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import { supabase } from '@/lib/supabase';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
 const session = Astro.locals.session;
 if (!session?.user) {
     return Astro.redirect(`/${lang}/sign-in`);
+}
+
+// Load skills from database
+let skills: Array<{ id: number; name: string }> = [];
+try {
+    const { data, error } = await supabase
+        .from('skills')
+        .select('id, name')
+        .order('name', { ascending: true });
+
+    if (!error && data) {
+        skills = data;
+    } else {
+        console.error('Error loading skills:', error);
+    }
+} catch (error) {
+    console.error('Error loading skills:', error);
 }
 ---
 
@@ -20,7 +38,7 @@ if (!session?.user) {
             <div class="hero-section">
                 <h1>{t('create-project.title')}</h1>
 
-                <form class="project-form">
+                <form class="project-form" id="project-form">
                     <div class="form-body">
                         <div class="column-left">
                             <section class="form-section" id="thong-tin-chung">
@@ -154,12 +172,15 @@ if (!session?.user) {
                                                     t('create-project.chonKN')
                                                 }</option
                                             >
-                                            <option value="react">React</option>
-                                            <option value="vue">Vue</option>
-                                            <option value="css">CSS</option>
-                                            <option value="tailwind"
-                                                >Tailwind</option
-                                            >
+                                            {
+                                                skills.map((skill) => (
+                                                    <option
+                                                        value={skill.name.toLowerCase()}
+                                                    >
+                                                        {skill.name}
+                                                    </option>
+                                                ))
+                                            }
                                         </select>
                                     </div>
                                 </div>
@@ -180,9 +201,32 @@ if (!session?.user) {
                                     <input
                                         type="file"
                                         id="coverUpload"
+                                        name="cover_image"
                                         accept="image/*"
                                         hidden
                                     />
+
+                                    <!-- Preview ảnh -->
+                                    <div
+                                        id="cover-preview"
+                                        class="cover-preview"
+                                        hidden
+                                    >
+                                        <img
+                                            id="cover-preview-img"
+                                            src=""
+                                            alt="Preview ảnh bìa"
+                                            class="cover-preview-image"
+                                        />
+                                        <button
+                                            type="button"
+                                            class="btn-remove-cover"
+                                            id="btn-remove-cover"
+                                            aria-label="Xóa ảnh bìa"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
 
                                     <!-- Tên file -->
                                     <a

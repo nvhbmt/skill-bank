@@ -301,6 +301,7 @@ select.form-input option {
     width: 100%;
     display: flex;
     align-items: center;
+    gap: 0.8rem;
 }
 /* 4. "Dot" phát sáng cho mỗi mốc */
 .milestone-item::before {
@@ -320,7 +321,7 @@ select.form-input option {
 }
 /* 5. Input cho mốc thời gian (BÂY GIỜ LÀ TEXTAREA) */
 .milestone-input {
-    width: 100%;
+    flex: 1;
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 1.6rem;
@@ -353,6 +354,36 @@ select.form-input option {
 .milestone-input:hover:not(:focus) {
     background-color: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.5);
+}
+/* 9. Nút xóa milestone */
+.btn-delete-milestone {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    font-size: var(--font-size-2xl);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.15s ease;
+    line-height: 1;
+    padding: 0;
+}
+.btn-delete-milestone:hover {
+    background-color: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.6);
+    transform: scale(1.1);
+}
+.btn-delete-milestone:active {
+    background-color: rgba(239, 68, 68, 0.4);
+    transform: scale(0.95);
 }
 /* === KẾT THÚC CSS CHO TIMELINE ĐỘNG === */
 
@@ -527,8 +558,9 @@ textarea.auto-resize-textarea {
 /* 3. CSS cho container Upload (để preview nằm cạnh) */
 .upload-container {
     display: flex;
-    align-items: center; /* Căn upload-box và preview theo chiều dọc */
+    align-items: flex-start; /* Căn upload-box và preview theo chiều dọc */
     gap: 1.2rem; /* Khoảng cách giữa 2 box */
+    flex-wrap: wrap;
 }
 
 /* 4. (SỬA) CSS cho tên file upload (giờ là thẻ <a>) */
@@ -554,6 +586,67 @@ textarea.auto-resize-textarea {
     border-color: rgba(255, 255, 255, 0.4);
     color: var(--color-text-invert); /* Sáng lên */
     cursor: pointer;
+}
+
+/* 6. CSS cho preview ảnh bìa */
+.cover-preview {
+    position: relative;
+    width: 20rem;
+    height: 12rem;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.cover-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.cover-preview-image:hover {
+    opacity: 0.9;
+}
+
+.btn-remove-cover {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    background-color: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    font-size: var(--font-size-2xl);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        background-color 0.25s ease,
+        transform 0.15s ease,
+        box-shadow 0.25s ease;
+    line-height: 1;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.btn-remove-cover:hover {
+    background-color: rgba(239, 68, 68, 1);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+}
+
+.btn-remove-cover:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* === KẾT THÚC CSS NÂNG CẤP JS === */
