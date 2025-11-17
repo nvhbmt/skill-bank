@@ -1,35 +1,3 @@
-:root {
-    --color-bg-light: #ffffff;
-    --color-bg-soft: #efeffe;
-    --color-surface: #e0e0fc;
-    --color-primary-light: #c1c1f9;
-    --color-primary: #6363f1;
-    --color-primary-dark: #4c3df2;
-    --color-secondary: #8282f4;
-    --color-accent: #a1a1f7;
-    --color-text: #2a2a79;
-    --color-text-muted: #212165;
-    --color-text-invert: #ffffff;
-    --color-bg-dark: #171751;
-    --color-bg-darker: #0e0e3d;
-    --color-bg-black: #000000;
-    --color-purple-base-dark: #7928ff;
-    --color-purple-base-light: #a68cff;
-    --color-purple-text: #a78bfa;
-    --color-purple-text-hover: #c4b5fd;
-    --color-purple-button: #7c3aed;
-    --color-purple-button-hover: #8b5cf6;
-    --color-purple-button-active: #623ea0;
-}
-html {
-    font-size: 62.5%;
-}
-* {
-    box-sizing: border-box;
-    font-family: Inter, sans-serif;
-    margin: 0;
-    padding: 0;
-}
 .wrapper {
     background-image: url('/assets/images/background.png');
     background-size: cover;
@@ -47,7 +15,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 5rem 0;
+    padding: 3rem 0;
 }
 
 .hero-section {
@@ -57,15 +25,15 @@ main {
     backdrop-filter: blur(5px);
     border-radius: 100px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 4rem;
+    padding: 2.4rem 3.2rem;
     color: var(--color-bg-light);
 }
 
 .hero-section > h1 {
-    font-size: 5.2rem;
+    font-size: var(--font-size-5xl);
     text-align: center;
     font-weight: 600;
-    margin-bottom: 50px;
+    margin-bottom: 2.4rem;
 }
 
 .project-form {
@@ -77,20 +45,20 @@ main {
 .form-body {
     display: grid;
     grid-template-columns: 7fr 3fr;
-    gap: 5rem;
+    gap: 3.2rem;
 }
 
 .column-left,
 .column-right {
     display: flex;
     flex-direction: column;
-    gap: 5.2rem;
+    gap: 3.2rem;
 }
 
 .form-section h3 {
-    font-size: 2.8rem;
+    font-size: var(--font-size-3xl);
     color: var(--color-bg-light);
-    margin-bottom: 1.6rem;
+    margin-bottom: 1.2rem;
     font-weight: 500;
 }
 
@@ -107,7 +75,7 @@ main {
     width: 4.2rem;
     height: 4.2rem;
     border-radius: 50%;
-    font-size: 2.5rem;
+    font-size: var(--font-size-2xl);
     cursor: pointer;
     transition:
         background-color 0.25s ease,
@@ -121,7 +89,7 @@ main {
     background-color: var(--color-purple-button-active);
 }
 .form-group {
-    margin-bottom: 2rem;
+    margin-bottom: 1.6rem;
 }
 .form-group:last-child {
     margin-bottom: 0;
@@ -130,9 +98,9 @@ main {
 .form-group label,
 .checkbox-area label {
     display: block;
-    font-size: 2rem;
+    font-size: var(--font-size-xl);
     color: var(--color-primary-light);
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
 }
 
 /* === BẮT ĐẦU NÂNG CẤP UX/UI CHO FORM (CỘT TRÁI) === */
@@ -143,8 +111,8 @@ main {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 1.2rem;
-    padding: 1.4rem 1.6rem;
-    font-size: 2rem;
+    padding: 0.8rem 1.2rem;
+    font-size: var(--font-size-base);
     color: var(--color-text-invert);
     -webkit-appearance: none;
     appearance: none;
@@ -178,9 +146,9 @@ main {
 select.form-input {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%23C1C1F9'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 1.6rem center;
+    background-position: right 1.2rem center;
     background-size: 1.5rem;
-    padding-right: 4rem;
+    padding-right: 3.2rem;
 }
 
 /* 5b. Style cho select khi chưa chọn (mờ) */
@@ -224,7 +192,7 @@ input[type='date'].form-input:valid::-webkit-datetime-edit-year-field {
 textarea.form-input {
     width: 95%;
     resize: vertical; /* Vẫn cho resize Mô tả dự án */
-    min-height: 15rem; /* Chiều cao ban đầu */
+    min-height: 10rem; /* Chiều cao ban đầu */
 }
 
 /* 8. Style cho khu vực Kỹ Năng */
@@ -251,7 +219,7 @@ select.form-input option {
     border-radius: 1.2rem;
     color: rgba(255, 255, 255, 0.6);
     width: 20rem;
-    height: 120px;
+    height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -282,27 +250,27 @@ select.form-input option {
     color: inherit; /* Kế thừa màu từ .upload-box */
     display: flex;
     justify-content: center;
-    font-size: 2rem;
+    font-size: var(--font-size-base);
 }
 .upload-box i {
-    font-size: 3rem;
+    font-size: var(--font-size-3xl);
 }
 .upload-box p {
-    padding-top: 2rem;
+    padding-top: 1.2rem;
 }
 /* === KẾT THÚC NÂNG CẤP UX CỘT TRÁI === */
 
 .form-group-wrapper-1 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 1.6rem;
 }
 
 /* Khối chung cho list bên phải (Chỉ dùng cho Thành viên) */
 .list-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 1.6rem;
+    gap: 1.2rem;
 }
 
 /* === BẮT ĐẦU CSS CHO TIMELINE ĐỘNG (CỘT PHẢI) === */
@@ -312,8 +280,8 @@ select.form-input option {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
-    padding-left: 2.5rem;
+    gap: 1.6rem;
+    padding-left: 2rem;
 }
 /* 2. Đường kẻ timeline dọc */
 #thoi-gian .timeline-container::before {
@@ -338,9 +306,9 @@ select.form-input option {
 .milestone-item::before {
     content: '';
     position: absolute;
-    left: -2.1rem;
+    left: -1.7rem;
     /* SỬA: Căn dot vào giữa dòng ĐẦU TIÊN (padding 1.6rem + nửa font 0.9rem) */
-    top: 2.5rem;
+    top: 2.2rem;
     transform: translateY(-50%);
     width: 1.2rem;
     height: 1.2rem;
@@ -356,8 +324,8 @@ select.form-input option {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 1.6rem;
-    padding: 1.4rem 1.6rem;
-    font-size: 1.8rem;
+    padding: 0.8rem 1.2rem;
+    font-size: var(--font-size-base);
     color: var(--color-text-invert);
     font-family: Inter, sans-serif; /* Đảm bảo font giống nhau */
 
@@ -392,11 +360,11 @@ select.form-input option {
 .member-item {
     display: flex;
     align-items: center;
-    gap: 2.2rem;
+    gap: 1.2rem;
 }
 .member-avatar {
-    width: 7.2rem;
-    height: 7.2rem;
+    width: 4.8rem;
+    height: 4.8rem;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -407,12 +375,12 @@ select.form-input option {
     gap: 0.4rem;
 }
 .member-name {
-    font-size: 2.4rem;
+    font-size: var(--font-size-xl);
     font-weight: 500;
     color: var(--color-bg-light);
 }
 .member-username {
-    font-size: 1.667rem;
+    font-size: var(--font-size-base);
     color: var(--color-accent);
 }
 
@@ -421,15 +389,15 @@ select.form-input option {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 4rem;
-    padding: 3rem 3rem 0;
+    margin-top: 2.4rem;
+    padding: 2rem 0 0;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .checkbox-area {
     display: flex;
     align-items: center;
-    gap: 1.2rem;
+    gap: 0.8rem;
 }
 /* === BẮT ĐẦU NÂNG CẤP UX CHECKBOX === */
 .form-checkbox {
@@ -439,8 +407,8 @@ select.form-input option {
     margin: 0;
     font: inherit;
     color: currentColor;
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 1.8rem;
+    height: 1.8rem;
     border: 2px solid var(--color-primary-light);
     border-radius: 6px;
     cursor: pointer;
@@ -452,7 +420,7 @@ select.form-input option {
 }
 .form-checkbox::before {
     content: '✓';
-    font-size: 1.8rem;
+    font-size: var(--font-size-base);
     font-weight: bold;
     color: white;
     transform: scale(0);
@@ -477,7 +445,7 @@ select.form-input option {
 .checkbox-area label {
     margin-bottom: 0;
     color: var(--color-bg-light);
-    font-size: 2rem; /* Sửa: 2.4rem -> 2rem */
+    font-size: var(--font-size-base);
     a {
         color: var(--color-purple-text);
         transition: color 0.15s linear;
@@ -490,13 +458,13 @@ select.form-input option {
 
 .buttons-area {
     display: flex;
-    gap: 1.6rem;
+    gap: 1.2rem;
 }
 
 /* NÚT BẤM */
 .btn {
-    padding: 1.2rem 2.4rem;
-    font-size: 2.4rem;
+    padding: 0.8rem 1.6rem;
+    font-size: var(--font-size-lg);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -534,7 +502,7 @@ select.form-input option {
 }
 
 .group-left {
-    margin-left: 5rem;
+    margin-left: 2.4rem;
 }
 .column-left {
     border-right: 1px solid rgba(255, 255, 255, 0.2);
@@ -550,30 +518,27 @@ textarea.auto-resize-textarea {
 
 /* 2. CSS cho Textarea mốc thời gian (ghi đè 1 chút) */
 .milestone-input.auto-resize-textarea {
-    min-height: 5.4rem; /* Chiều cao tối thiểu (padding + 1 dòng) */
-    height: 5.4rem; /* Chiều cao ban đầu */
-    /* * Đổi padding 1 chút cho textarea đẹp hơn
-	 * (1.6rem trên dưới, thay vì 1.4rem)
-	*/
-    padding-top: 1.6rem;
-    padding-bottom: 1.6rem;
+    min-height: 4rem; /* Chiều cao tối thiểu (padding + 1 dòng) */
+    height: 4rem; /* Chiều cao ban đầu */
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
 }
 
 /* 3. CSS cho container Upload (để preview nằm cạnh) */
 .upload-container {
     display: flex;
     align-items: center; /* Căn upload-box và preview theo chiều dọc */
-    gap: 1.6rem; /* Khoảng cách giữa 2 box */
+    gap: 1.2rem; /* Khoảng cách giữa 2 box */
 }
 
 /* 4. (SỬA) CSS cho tên file upload (giờ là thẻ <a>) */
 .file-name-display {
     color: var(--color-primary-light); /* Màu tím nhạt */
-    font-size: 1.6rem;
+    font-size: var(--font-size-sm);
     text-decoration: none; /* Bỏ gạch chân */
     background-color: rgba(0, 0, 0, 0.2); /* Nền mờ tối */
     border: 1px solid rgba(255, 255, 255, 0.2); /* Viền mờ sáng */
-    padding: 0.8rem 1.2rem;
+    padding: 0.6rem 1rem;
     border-radius: 8px;
     transition: all 0.2s ease; /* Hiệu ứng mượt */
 

@@ -1,38 +1,7 @@
-:root {
-    --color-bg-light: #ffffff;
-    --color-bg-soft: #efeffe;
-    --color-surface: #e0e0fc;
-    --color-primary-light: #c1c1f9;
-    --color-primary: #6363f1;
-    --color-primary-dark: #4c3df2;
-    --color-secondary: #8282f4;
-    --color-accent: #a1a1f7;
-    --color-text: #2a2a79;
-    --color-text-muted: #212165;
-    --color-text-invert: #ffffff;
-    --color-bg-dark: #171751;
-    --color-bg-darker: #0e0e3d;
-    --color-bg-black: #000000;
-    --color-purple-base-dark: #7928ff;
-    --color-purple-base-light: #a68cff;
-    --color-purple-text: #a78bfa;
-    --color-purple-text-hover: #c4b5fd;
-    --color-purple-button: #7c3aed;
-    --color-purple-button-hover: #8b5cf6;
-    --color-purple-button-active: #623ea0;
-}
-
-html {
-    font-size: 62.5%;
-}
-
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url('./assets/images/background.png');
+    background-image: url('/assets/images/background.png');
     font-family: Arial, sans-serif;
     width: 100%;
     min-height: 100vh;
@@ -67,7 +36,7 @@ main {
     max-width: 1920px;
     width: 80%;
     margin: 0 auto;
-} 
+}
 
 textarea {
     transition: outline 0.2s ease;
@@ -169,9 +138,15 @@ textarea:focus {
 }
 
 @keyframes up {
-    0% {transform: translateY(-10px);}
-    50% {transform: translateY(-5px);}
-    100% {transform: translateY(0);}
+    0% {
+        transform: translateY(-10px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
 
 .upload-box-list {
@@ -217,7 +192,7 @@ textarea:focus {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: #027A48;
+    background-color: #027a48;
     opacity: 80%;
 }
 
@@ -225,7 +200,7 @@ textarea:focus {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: #D92D20;
+    background-color: #d92d20;
     opacity: 80%;
 }
 
@@ -233,7 +208,7 @@ textarea:focus {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: #FDB022;
+    background-color: #fdb022;
     opacity: 80%;
 }
 

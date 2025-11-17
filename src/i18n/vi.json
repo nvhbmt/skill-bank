@@ -9,7 +9,37 @@
         "forgotPassword": "Quên mật khẩu?",
         "or": "hoặc",
         "gmail": "Gmail",
-        "facebook": "Facebook"
+        "facebook": "Facebook",
+        "validation": {
+            "usernameRequired": "Vui lòng nhập tên đăng nhập",
+            "usernameMinLength": "Username phải có ít nhất 3 ký tự",
+            "passwordRequired": "Vui lòng nhập mật khẩu",
+            "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự"
+        },
+        "loading": "Đang đăng nhập...",
+        "error": "Đăng nhập thất bại",
+        "errorGeneric": "Có lỗi xảy ra, vui lòng thử lại"
+    },
+    "sign-in": {
+        "title": "Đăng nhập",
+        "noAccount": "Bạn không có tài khoản?",
+        "signUp": "Đăng kí",
+        "username": "Tên người dùng",
+        "password": "Mật khẩu",
+        "rememberMe": "Nhớ tôi",
+        "forgotPassword": "Quên mật khẩu?",
+        "or": "hoặc",
+        "gmail": "Gmail",
+        "facebook": "Facebook",
+        "validation": {
+            "usernameRequired": "Vui lòng nhập tên đăng nhập",
+            "usernameMinLength": "Username phải có ít nhất 3 ký tự",
+            "passwordRequired": "Vui lòng nhập mật khẩu",
+            "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự"
+        },
+        "loading": "Đang đăng nhập...",
+        "error": "Đăng nhập thất bại",
+        "errorGeneric": "Có lỗi xảy ra, vui lòng thử lại"
     },
     "project-search": {
         "title": "Khám phá dự án",
@@ -61,9 +91,25 @@
         "TermsAndConditions": ">Điều khoản & Điều kiện",
         "or": "hoặc",
         "gmail": "Gmail",
-        "facebook": "Facebook"
+        "facebook": "Facebook",
+        "validation": {
+            "fullNameRequired": "Vui lòng nhập tên",
+            "fullNameMinLength": "Tên phải có ít nhất 3 ký tự",
+            "fullNameMaxLength": "Tên không được vượt quá 50 ký tự",
+            "usernameRequired": "Vui lòng nhập username",
+            "usernameMinLength": "Username phải có ít nhất 3 ký tự",
+            "usernameMaxLength": "Username không được vượt quá 20 ký tự",
+            "emailRequired": "Vui lòng nhập email",
+            "emailInvalid": "Email không hợp lệ",
+            "passwordRequired": "Vui lòng nhập mật khẩu",
+            "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+            "agreeRequired": "Vui lòng đồng ý với điều khoản"
+        },
+        "loading": "Đang tạo tài khoản...",
+        "error": "Tạo tài khoản thất bại",
+        "errorGeneric": "Có lỗi xảy ra, vui lòng thử lại"
     },
-    "ProjectHandover-Collaborator": {
+    "projectHandover-collaborator": {
         "title": "Bàn giao dự án",
         "description": "Mô tả",
         "notes": "Lưu ý",
@@ -96,5 +142,37 @@
         "chinhSach": "Chính sách và Điều khoản sử dụng",
         "quayLai": "Quay lại",
         "dang": "Đăng"
+    },
+    "header": {
+        "aboutUs": "Về chúng tôi",
+        "viewAll": "Xem tất cả",
+        "createProject": "Đăng tải dự án"
+    },
+    "home": {
+        "searchPlaceholder": "Tìm kiếm",
+        "signIn": "Đăng nhập",
+        "signUp": "Đăng ký",
+        "editProfile": "Chỉnh sửa profile",
+        "logout": "Đăng xuất",
+        "heroTitle": "Không chỉ là kỹ năng.<br /> Đây là sandbox của<br /> những dự án.",
+        "heroDescription": "Hãy xem mỗi dự án như một đoạn code đang chờ được biên dịch – chính bạn là người viết nên logic, sửa bug, và khiến nó hoạt động. Cơ hội chỉ đến khi bạn bắt tay vào làm.",
+        "getStarted": "Get Started",
+        "learnMore": "Learn More",
+        "usersCount": "Hơn 1k người sử dụng",
+        "creatorsTitle": "Những gương mặt tạo nên sự khác biệt.",
+        "creatorsDescription": "Cùng khám phá những người dùng nổi bật – những cá nhân không ngừng thử nghiệm, chia sẻ và truyền cảm hứng.",
+        "projectsHeading": "Khám phá những ý tưởng đang thay đổi tương lai",
+        "projectsDescription": "Từ công nghệ đến nghệ thuật - nơi các dự án độc đáo được chia sẻ, kết nối và truyền cảm hứng.",
+        "qnaTitle": "CÁC CÂU HỎI THƯỜNG GẶP",
+        "qnaSubtitle": "Cần giúp đỡ? Hãy để chúng tôi hỗ trợ bạn",
+        "qna": {
+            "q1": "Ngân hàng kỹ năng là gì?",
+            "q2": "Nền tảng này có tính phí không?",
+            "q3": "Làm thế nào để tham gia dự án?",
+            "q4": "Làm sao để tìm người có kỹ năng phù hợp?",
+            "q5": "Có quy định nào khi tham gia cộng đồng không?",
+            "q6": "Ai có thể sử dụng nền tảng này?",
+            "q7": "Làm thế nào để liên hệ với đội ngũ hỗ trợ?"
+        }
     }
 }

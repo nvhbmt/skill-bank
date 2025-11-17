@@ -9,7 +9,37 @@
         "forgotPassword": "Forgot password?",
         "or": "or",
         "gmail": "Gmail",
-        "facebook": "Facebook"
+        "facebook": "Facebook",
+        "validation": {
+            "usernameRequired": "Please enter username",
+            "usernameMinLength": "Username must be at least 3 characters",
+            "passwordRequired": "Please enter password",
+            "passwordMinLength": "Password must be at least 8 characters"
+        },
+        "loading": "Logging in...",
+        "error": "Login failed",
+        "errorGeneric": "An error occurred, please try again"
+    },
+    "sign-in": {
+        "title": "Login",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign up",
+        "username": "Username",
+        "password": "Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot password?",
+        "or": "or",
+        "gmail": "Gmail",
+        "facebook": "Facebook",
+        "validation": {
+            "usernameRequired": "Please enter username",
+            "usernameMinLength": "Username must be at least 3 characters",
+            "passwordRequired": "Please enter password",
+            "passwordMinLength": "Password must be at least 8 characters"
+        },
+        "loading": "Logging in...",
+        "error": "Login failed",
+        "errorGeneric": "An error occurred, please try again"
     },
     "project-search": {
         "title": "Explore Projects",
@@ -60,9 +90,25 @@
         "TermsAndConditions": "Terms and Conditions",
         "or": "or",
         "gmail": "Gmail",
-        "facebook": "Facebook"
+        "facebook": "Facebook",
+        "validation": {
+            "fullNameRequired": "Please enter name",
+            "fullNameMinLength": "Name must be at least 3 characters",
+            "fullNameMaxLength": "Name must not exceed 50 characters",
+            "usernameRequired": "Please enter username",
+            "usernameMinLength": "Username must be at least 3 characters",
+            "usernameMaxLength": "Username must not exceed 20 characters",
+            "emailRequired": "Please enter email",
+            "emailInvalid": "Invalid email",
+            "passwordRequired": "Please enter password",
+            "passwordMinLength": "Password must be at least 8 characters",
+            "agreeRequired": "Please agree to the terms"
+        },
+        "loading": "Creating account...",
+        "error": "Sign up failed",
+        "errorGeneric": "An error occurred, please try again"
     },
-    "ProjectHandover-Collaborator": {
+    "projectHandover-collaborator": {
         "title": "Project Handover",
         "description": "Description",
         "notes": "Notes",
@@ -95,5 +141,37 @@
         "chinhSach": "Terms of Service and Privacy Policy",
         "quayLai": "Back",
         "dang": "Submit"
+    },
+    "header": {
+        "aboutUs": "About us",
+        "viewAll": "View all",
+        "createProject": "Create project"
+    },
+    "home": {
+        "searchPlaceholder": "Search",
+        "signIn": "Sign in",
+        "signUp": "Sign up",
+        "editProfile": "Edit profile",
+        "logout": "Logout",
+        "heroTitle": "More than just skills.<br /> This is the sandbox of<br /> projects.",
+        "heroDescription": "Think of each project as a piece of code waiting to be compiled – you are the one who writes the logic, fixes bugs, and makes it work. Opportunities only come when you take action.",
+        "getStarted": "Get Started",
+        "learnMore": "Learn More",
+        "usersCount": "Over 1k users",
+        "creatorsTitle": "The faces that make the difference.",
+        "creatorsDescription": "Discover outstanding users – individuals who never stop experimenting, sharing and inspiring.",
+        "projectsHeading": "Explore ideas that are changing the future",
+        "projectsDescription": "From technology to art - where unique projects are shared, connected and inspired.",
+        "qnaTitle": "FREQUENTLY ASKED QUESTIONS",
+        "qnaSubtitle": "Need help? Let us support you",
+        "qna": {
+            "q1": "What is Skill Bank?",
+            "q2": "Is this platform free?",
+            "q3": "How to join a project?",
+            "q4": "How to find people with suitable skills?",
+            "q5": "Are there any rules when joining the community?",
+            "q6": "Who can use this platform?",
+            "q7": "How to contact the support team?"
+        }
     }
 }

@@ -1,136 +1,609 @@
-<header>
-    <div class="header-left">
-        <a href="#"
-            ><img src="/assets/images/logo-full-ngang.png" alt="logo" />
-        </a>
-        <a href="#">Về chúng tôi</a>
-        <a href="#">Xem tất cả</a>
-        <select name="language" id="choose-language">
-            <option value="vietnamese">VI</option>
-            <option value="english">EN</option>
-        </select>
-    </div>
-    <div class="header-right">
-        <div id="dropdown"><i class="fa-regular fa-bell"></i></div>
-        <button class="dang-tai">Đăng tải dự án</button>
-        <a href="#" class="user">
-            <img src="/assets/images/va1.jpg" alt="avtar" />
-            <!-- <span>@username</span> -->
-        </a>
+---
+interface Props {}
+
+const {} = Astro.props;
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+const session = Astro.locals.session;
+
+const user = session?.user;
+---
+
+<header class="header">
+    <div class="container header-container">
+        <div class="header-left">
+            <a href={l('/')} class="header-logo">
+                <img src="/assets/images/logo-full-ngang.svg" alt="logo" />
+            </a>
+            <nav class="header-nav">
+                <a href="#" class="header-nav-link">{t('header.aboutUs')}</a>
+                <a href="#" class="header-nav-link">{t('header.viewAll')}</a>
+            </nav>
+            <select
+                name="language"
+                id="choose-language"
+                class="header-language"
+            >
+                <option value="vi" selected={lang === 'vi'}>VI</option>
+                <option value="en" selected={lang === 'en'}>EN</option>
+            </select>
+        </div>
+        <div class="header-right">
+            {
+                user && (
+                    <button
+                        class="header-notification"
+                        aria-label="Notifications"
+                    >
+                        <ion-icon name="notifications-outline" />
+                    </button>
+                )
+            }
+            {
+                user ? (
+                    <div class="header-user">
+                        <a
+                            href={l('/create-project')}
+                            class="header-create-btn"
+                        >
+                            {t('header.createProject')}
+                        </a>
+                        <div class="user-avatar-dropdown">
+                            <button
+                                class="user-avatar-dropdown__trigger"
+                                id="avatar-button"
+                                aria-label="User menu"
+                            >
+                                <img
+                                    src={
+                                        user?.user_metadata?.avatar_url ||
+                                        '/assets/images/default-avatar.png'
+                                    }
+                                    alt={
+                                        user?.user_metadata?.full_name ||
+                                        user?.user_metadata?.username ||
+                                        'User'
+                                    }
+                                    class="user-avatar-dropdown__avatar"
+                                />
+                            </button>
+                            <div
+                                class="user-avatar-dropdown__menu"
+                                id="avatar-dropdown-menu"
+                            >
+                                <a
+                                    href={l('/profile/edit')}
+                                    class="user-avatar-dropdown__item"
+                                >
+                                    {t('home.editProfile')}
+                                </a>
+                                <button
+                                    class="user-avatar-dropdown__item"
+                                    id="logout-button"
+                                >
+                                    {t('home.logout')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div class="header-auth">
+                        <a href={l('/sign-in')} class="header-auth-link">
+                            {t('home.signIn')}
+                        </a>
+                        <a href={l('/sign-up')} class="header-auth-btn">
+                            {t('home.signUp')}
+                        </a>
+                    </div>
+                )
+            }
+        </div>
     </div>
 </header>
 
 <style>
-    :root {
-        --color-bg-light: #ffffff;
-        --color-bg-soft: #efeffe;
-        --color-surface: #e0e0fc;
-        --color-primary-light: #c1c1f9;
-        --color-primary: #6363f1;
-        --color-primary-dark: #4c3df2;
-        --color-secondary: #8282f4;
-        --color-accent: #a1a1f7;
-        --color-text: #2a2a79;
-        --color-text-muted: #212165;
-        --color-text-invert: #ffffff;
-        --color-bg-dark: #171751;
-        --color-bg-darker: #0e0e3d;
-        --color-bg-black: #000000;
-        --color-purple-base-dark: #7928ff;
-        --color-purple-base-light: #a68cff;
-        --color-purple-text: #a78bfa;
-        --color-purple-text-hover: #c4b5fd;
-        --color-purple-button: #7c3aed;
-        --color-purple-button-hover: #8b5cf6;
-        --color-purple-button-active: #623ea0;
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1rem 0;
+        transition: all 0.3s ease;
     }
-    * {
-        box-sizing: border-box;
-        font-family: Inter, sans-serif;
-    }
-    body {
-        margin: 0;
-        padding: 0;
-    }
-    header {
-        background-color: rgba(0, 0, 0, 0.5);
+
+    .header-container {
         display: flex;
         justify-content: space-between;
-        padding: 2rem 12rem;
+        align-items: center;
+        gap: 1.6rem;
+    }
 
-        .header-left,
-        .header-right {
-            gap: 1.6rem;
-            display: flex;
-            font-size: 2.4rem;
-            align-items: center;
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 2.4rem;
+        flex: 1;
+    }
+
+    .header-logo {
+        display: flex;
+        align-items: center;
+        transition: opacity 0.2s ease;
+    }
+
+    .header-logo:hover {
+        opacity: 0.8;
+    }
+
+    .header-logo img {
+        height: 2.6rem;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .header-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.8rem;
+    }
+
+    .header-nav-link {
+        font-size: var(--font-size-base);
+        font-weight: 500;
+        color: var(--color-text-invert);
+        text-decoration: none;
+        padding: 0.6rem 0;
+        position: relative;
+        transition: color 0.2s ease;
+    }
+
+    .header-nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--color-purple-button);
+        transition: width 0.3s ease;
+    }
+
+    .header-nav-link:hover {
+        color: var(--color-purple-text-hover);
+    }
+
+    .header-nav-link:hover::after {
+        width: 100%;
+    }
+
+    .header-language {
+        font-size: var(--font-size-sm);
+        font-weight: 500;
+        color: var(--color-text-invert);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.6rem center;
+        padding-right: 2.4rem;
+    }
+
+    .header-language:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .header-language:focus {
+        outline: none;
+        border-color: var(--color-purple-button);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+    }
+
+    .header-language option {
+        background-color: var(--color-bg-dark);
+        color: var(--color-text-invert);
+        padding: 0.8rem;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .header-notification {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.8rem;
+        height: 2.8rem;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--color-text-invert);
+    }
+
+    .header-notification:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .header-notification ion-icon {
+        font-size: 1.8rem;
+    }
+
+    .header-user {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .header-create-btn {
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        background: linear-gradient(
+            135deg,
+            var(--color-purple-button) 0%,
+            var(--color-purple-button-hover) 100%
+        );
+        color: var(--color-text-invert);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.6rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .header-create-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        background: linear-gradient(
+            135deg,
+            var(--color-purple-button-hover) 0%,
+            var(--color-purple-button) 100%
+        );
+    }
+
+    .header-create-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+    }
+
+    .header-auth {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .header-auth-link {
+        font-size: var(--font-size-base);
+        font-weight: 500;
+        color: var(--color-text-invert);
+        text-decoration: none;
+        padding: 0.6rem 1.2rem;
+        transition: color 0.2s ease;
+    }
+
+    .header-auth-link:hover {
+        color: var(--color-purple-text-hover);
+    }
+
+    .header-auth-btn {
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        background: var(--color-purple-button);
+        color: var(--color-text-invert);
+        text-decoration: none;
+        padding: 0.75rem 1.6rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .header-auth-btn:hover {
+        background: var(--color-purple-button-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    .header-auth-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+    }
+
+    /* User Avatar Dropdown Styles */
+    .user-avatar-dropdown {
+        position: relative;
+    }
+
+    .user-avatar-dropdown__trigger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.6rem;
+        height: 3.6rem;
+        padding: 0;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        background: none;
+        cursor: pointer;
+        outline: none;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
+    .user-avatar-dropdown__trigger:hover {
+        transform: scale(1.05);
+        border-color: var(--color-purple-button);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    }
+
+    .user-avatar-dropdown__avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .user-avatar-dropdown__menu {
+        position: absolute;
+        top: calc(100% + 1.2rem);
+        right: 0;
+        min-width: 20rem;
+        padding: 0.8rem 0;
+        border-radius: 12px;
+        background: rgba(30, 30, 30, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 10000;
+    }
+
+    .user-avatar-dropdown__menu.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+
+    .user-avatar-dropdown__item {
+        display: block;
+        width: 100%;
+        padding: 1.2rem 1.6rem;
+        border: none;
+        background: none;
+        text-align: left;
+        text-decoration: none;
+        font-size: var(--font-size-base);
+        font-weight: 500;
+        color: var(--color-text-invert);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .user-avatar-dropdown__item:hover {
+        background: rgba(124, 58, 237, 0.2);
+        color: var(--color-purple-text-hover);
+    }
+
+    .user-avatar-dropdown__item:first-child {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    .user-avatar-dropdown__item:last-child {
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .header-nav {
+            display: none;
         }
+
         .header-left {
-            a {
-                text-decoration: none;
-                color: var(--color-bg-light);
-                transition: color 0.3s ease-in-out;
-            }
-            a:hover {
-                color: var(--color-purple-button);
-                text-decoration: underline;
-            }
-            a:active {
-                color: var(--color-purple-button-active);
-                text-decoration: underline;
-            }
-            select {
-                color: var(--color-bg-light);
-                background-color: transparent;
-                border: none;
-                font-size: 2.4rem;
-
-                option {
-                    background-color: var(--color-bg-black);
-                }
-            }
+            gap: 2rem;
         }
+    }
+
+    @media (max-width: 768px) {
+        .header-container {
+            flex-wrap: wrap;
+            gap: 1.6rem;
+        }
+
+        .header-left {
+            flex: 1 1 100%;
+            justify-content: space-between;
+        }
+
         .header-right {
-            i {
-                font-size: 4rem;
-                border: 1px solid transparent;
-                border-radius: 7px;
-                transition: border-color 0.2s ease-in-out;
-                color: var(--color-bg-light);
-            }
-            i:hover {
-                border-color: var(--color-bg-light);
-            }
-            .user {
-                display: flex;
-                align-items: center;
-                gap: 0.8rem;
-                img {
-                    border-radius: 50%;
-                    width: 5.2rem;
-                    max-width: 5.2rem;
-                    height: 5.2rem;
-                    object-fit: cover;
-                    transition: outline 0.2s ease-in-out;
-                }
-                img:hover {
-                    outline: 3px solid #525252;
-                }
-            }
-            button {
-                font-size: 2.4rem;
-                background-color: var(--color-purple-button);
-                color: var(--color-bg-light);
-                border-radius: 30px;
-                padding: 10px 24px;
-                transition: background-color 0.3s ease-in-out;
-            }
-            button:hover {
-                background-color: var(--color-purple-button-hover);
-            }
-            button:active {
-                background-color: var(--color-purple-button-active);
-            }
+            flex: 1 1 100%;
+            justify-content: flex-end;
+        }
+
+        .header-create-btn {
+            font-size: var(--font-size-sm);
+            padding: 0.8rem 1.6rem;
+        }
+
+        .header-auth-btn {
+            font-size: var(--font-size-sm);
+            padding: 0.8rem 1.6rem;
         }
     }
 </style>
+
+<script
+    define:vars={{
+        lang: lang,
+    }}
+>
+    window.lang = lang;
+</script>
+
+<script is:inline>
+    (function () {
+        // @ts-ignore
+        const lang = window.lang || 'vi';
+
+        // Prevent multiple initializations
+        if (window.headerInitialized) {
+            return;
+        }
+        window.headerInitialized = true;
+
+        function initHeader() {
+            const avatarButton = document.getElementById('avatar-button');
+            const dropdownMenu = document.getElementById(
+                'avatar-dropdown-menu'
+            );
+            const logoutButton = document.getElementById('logout-button');
+            const languageSelect = document.getElementById('choose-language');
+
+            // Toggle dropdown menu
+            if (avatarButton && dropdownMenu) {
+                // Remove existing listeners to prevent duplicates
+                const newAvatarButton = avatarButton.cloneNode(true);
+                avatarButton.parentNode?.replaceChild(
+                    newAvatarButton,
+                    avatarButton
+                );
+                const newButton = document.getElementById('avatar-button');
+
+                if (newButton) {
+                    newButton.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const menu = document.getElementById(
+                            'avatar-dropdown-menu'
+                        );
+                        if (menu) {
+                            const isActive = menu.classList.contains('active');
+                            if (isActive) {
+                                menu.classList.remove('active');
+                            } else {
+                                menu.classList.add('active');
+                            }
+                        }
+                    });
+                }
+
+                // Close dropdown when clicking outside
+                const clickOutsideHandler = function (e) {
+                    const target = e.target;
+                    if (!target) return;
+                    const button = document.getElementById('avatar-button');
+                    const menu = document.getElementById(
+                        'avatar-dropdown-menu'
+                    );
+                    if (button && menu) {
+                        const isClickInside =
+                            button.contains(target) || menu.contains(target);
+
+                        if (
+                            !isClickInside &&
+                            menu.classList.contains('active')
+                        ) {
+                            menu.classList.remove('active');
+                        }
+                    }
+                };
+
+                // Remove old listener if exists
+                document.removeEventListener('click', clickOutsideHandler);
+                document.addEventListener('click', clickOutsideHandler);
+
+                // Close dropdown when clicking on menu items (except logout)
+                const menuItems = dropdownMenu.querySelectorAll(
+                    '.user-avatar-dropdown__item'
+                );
+                menuItems.forEach(function (item) {
+                    if (item.id !== 'logout-button') {
+                        item.addEventListener('click', function () {
+                            dropdownMenu.classList.remove('active');
+                        });
+                    }
+                });
+            }
+
+            // Logout functionality
+            if (logoutButton) {
+                const logoutHandler = async function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const response = await fetch('/api/auth/sign-out', {
+                        method: 'POST',
+                    });
+                    if (response.ok) {
+                        window.location.href = '/' + lang + '/';
+                    }
+                };
+                logoutButton.removeEventListener('click', logoutHandler);
+                logoutButton.addEventListener('click', logoutHandler);
+            }
+
+            // Language selector
+            if (languageSelect) {
+                const languageHandler = function (e) {
+                    const target = e.target;
+                    if (!target) return;
+                    const selectedLang = target.value;
+                    const currentPath = window.location.pathname;
+                    const pathParts = currentPath.split('/').filter(Boolean);
+
+                    // Replace language in URL
+                    if (pathParts[0] === 'vi' || pathParts[0] === 'en') {
+                        pathParts[0] = selectedLang;
+                    } else {
+                        pathParts.unshift(selectedLang);
+                    }
+
+                    window.location.href = '/' + pathParts.join('/');
+                };
+                languageSelect.removeEventListener('change', languageHandler);
+                languageSelect.addEventListener('change', languageHandler);
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initHeader);
+        } else {
+            // Use setTimeout to ensure DOM is fully rendered
+            setTimeout(initHeader, 0);
+        }
+
+        // Fallback initialization after a delay
+        setTimeout(function () {
+            const avatarButton = document.getElementById('avatar-button');
+            const dropdownMenu = document.getElementById(
+                'avatar-dropdown-menu'
+            );
+            if (avatarButton && dropdownMenu) {
+                initHeader();
+            }
+        }, 200);
+    })();
+</script>

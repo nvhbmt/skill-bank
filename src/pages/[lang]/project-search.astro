@@ -1,16 +1,16 @@
 ---
-import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/tim-kiem-du-an.css';
 import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
 ---
 
 <DefaultLayout>
+    <Header />
     <div class="container">
-        <Header />
         <div class="title">
             <h1>{t('project-search.title')}</h1>
         </div>

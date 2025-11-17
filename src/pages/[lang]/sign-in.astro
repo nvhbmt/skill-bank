@@ -1,0 +1,302 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/sign-in.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <div class="container">
+        <div class="login-page">
+            <div class="login-page-left">
+                <form id="login-form">
+                    <div class="inner-login-page-left">
+                        <div class="login-content">
+                            <div class="login-form">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"
+                                >
+                                    <h1>{t('sign-in.title')}</h1>
+                                    <select
+                                        id="lang-selector"
+                                        style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;"
+                                    >
+                                        <option
+                                            value="vi"
+                                            selected={lang === 'vi'}>VI</option
+                                        >
+                                        <option
+                                            value="en"
+                                            selected={lang === 'en'}>EN</option
+                                        >
+                                    </select>
+                                </div>
+                                <div>
+                                    {t('sign-in.noAccount')}
+                                    <a href={l('/sign-up')} class="login-link"
+                                        >{t('sign-in.signUp')}</a
+                                    >
+                                </div>
+                            </div>
+                            <div class="login-form-body">
+                                <div class="login-form-item-group">
+                                    <div class="login-form-input-wrapper">
+                                        <img
+                                            src="/assets/images/solar_user-outline.svg"
+                                            alt="icon"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="username"
+                                            placeholder={t('sign-in.username')}
+                                            class="login-form-group-text"
+                                        />
+                                    </div>
+                                    <div
+                                        id="username-error"
+                                        class="login-form-input-error"
+                                    >
+                                    </div>
+                                </div>
+                                <div class="login-form-item-group">
+                                    <div class="login-form-input-wrapper">
+                                        <img
+                                            src="/assets/images/material-symbols-light_lock-outline.svg"
+                                            alt="icon"
+                                        />
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            placeholder={t('sign-in.password')}
+                                            class="login-form-group-text"
+                                        />
+                                    </div>
+                                    <div
+                                        id="password-error"
+                                        class="login-form-input-error"
+                                    >
+                                    </div>
+                                </div>
+                                <div class="login-form-action">
+                                    <label
+                                        ><input type="checkbox" />
+                                        {t('sign-in.rememberMe')}</label
+                                    >
+                                    <a
+                                        href={l('/forgot-password')}
+                                        class="login-link"
+                                        >{t('sign-in.forgotPassword')}</a
+                                    >
+                                </div>
+                            </div>
+                            <button type="submit" class="login-form-btn"
+                                >{t('sign-in.title')}</button
+                            >
+                        </div>
+                        <div class="login-form-divider">
+                            <div class="login-form-divider-line"></div>
+                            <div class="login-form-divider-text">
+                                {t('sign-in.or')}
+                            </div>
+                            <div class="login-form-divider-line"></div>
+                        </div>
+                        <div class="login-btn-box">
+                            <button class="login-btn">
+                                <img
+                                    src="/assets/images/flat-color-icons_google.png"
+                                    alt="icon"
+                                />
+                                <div class="login-btn-text">
+                                    {t('sign-in.gmail')}
+                                </div>
+                            </button>
+                            <button class="login-btn">
+                                <img
+                                    src="/assets/images/logos_facebook.png"
+                                    alt="icon"
+                                />
+                                <div class="login-btn-text">
+                                    {t('sign-in.facebook')}
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="login-page-right"></div>
+        </div>
+    </div>
+</DefaultLayout>
+
+<script
+    define:vars={{
+        validationMessages: JSON.stringify({
+            usernameRequired: t('sign-in.validation.usernameRequired'),
+            usernameMinLength: t('sign-in.validation.usernameMinLength'),
+            passwordRequired: t('sign-in.validation.passwordRequired'),
+            passwordMinLength: t('sign-in.validation.passwordMinLength'),
+        }),
+        uiMessages: JSON.stringify({
+            loading: t('sign-in.loading'),
+            error: t('sign-in.error'),
+            errorGeneric: t('sign-in.errorGeneric'),
+        }),
+    }}
+>
+    window.loginValidationMessages = JSON.parse(validationMessages);
+    window.loginUIMessages = JSON.parse(uiMessages);
+</script>
+
+<script type="module">
+    const $ = document.querySelector.bind(document);
+    const $$ = document.querySelectorAll.bind(document);
+
+    const form = $('#login-form');
+
+    if (form) {
+        const validation = new window.JustValidate('#login-form');
+        const messages = window.loginValidationMessages || {};
+        const uiMessages = window.loginUIMessages || {};
+
+        validation
+            .addField(
+                '[name="username"]',
+                [
+                    {
+                        rule: 'required',
+                        errorMessage:
+                            messages.usernameRequired ||
+                            'Vui lòng nhập tên đăng nhập',
+                    },
+                    {
+                        rule: 'minLength',
+                        value: 3,
+                        errorMessage:
+                            messages.usernameMinLength ||
+                            'Username phải có ít nhất 3 ký tự',
+                    },
+                ],
+                {
+                    errorsContainer: '#username-error',
+                }
+            )
+            .addField(
+                '[name="password"]',
+                [
+                    {
+                        rule: 'required',
+                        errorMessage:
+                            messages.passwordRequired ||
+                            'Vui lòng nhập mật khẩu',
+                    },
+                    {
+                        rule: 'minLength',
+                        value: 8,
+                        errorMessage:
+                            messages.passwordMinLength ||
+                            'Mật khẩu phải có ít nhất 8 ký tự',
+                    },
+                ],
+                {
+                    errorsContainer: '#password-error',
+                }
+            )
+            .onSuccess(async (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                const submitButton = form.querySelector(
+                    'button[type="submit"]'
+                );
+                const originalButtonText = submitButton?.textContent;
+
+                // Disable button and show loading state
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.textContent =
+                        uiMessages.loading || 'Đang đăng nhập...';
+                }
+
+                try {
+                    const response = await fetch('/api/auth/sign-in', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Redirect to home page after successful login
+                        const currentLang =
+                            window.location.pathname.split('/')[1] || 'vi';
+                        window.location.href = `/${currentLang}`;
+                    } else {
+                        // Clear previous errors
+                        const usernameErrorContainer = $('#username-error');
+                        const passwordErrorContainer = $('#password-error');
+                        if (usernameErrorContainer)
+                            usernameErrorContainer.textContent = '';
+                        if (passwordErrorContainer)
+                            passwordErrorContainer.textContent = '';
+
+                        // Show error message
+                        const errorMessage =
+                            result.error ||
+                            result.message ||
+                            uiMessages.error ||
+                            'Đăng nhập thất bại';
+                        const errorText =
+                            typeof errorMessage === 'string'
+                                ? errorMessage
+                                : typeof errorMessage === 'object' &&
+                                    errorMessage.username
+                                  ? errorMessage.username
+                                  : 'Thông tin đăng nhập không hợp lệ';
+
+                        // Display error in username error container
+                        if (usernameErrorContainer) {
+                            usernameErrorContainer.textContent = errorText;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    // Clear previous errors
+                    const usernameErrorContainer = $('#username-error');
+                    const passwordErrorContainer = $('#password-error');
+                    if (usernameErrorContainer)
+                        usernameErrorContainer.textContent = '';
+                    if (passwordErrorContainer)
+                        passwordErrorContainer.textContent = '';
+
+                    // Show error
+                    if (usernameErrorContainer) {
+                        usernameErrorContainer.textContent =
+                            uiMessages.errorGeneric ||
+                            'Có lỗi xảy ra, vui lòng thử lại';
+                    }
+                } finally {
+                    // Re-enable button
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        if (originalButtonText) {
+                            submitButton.textContent = originalButtonText;
+                        }
+                    }
+                }
+            });
+    }
+</script>
+
+<script>
+    const $ = document.querySelector.bind(document);
+    const langSelector = $('#lang-selector') as HTMLSelectElement | null;
+    if (langSelector) {
+        langSelector.addEventListener('change', (e) => {
+            const target = e.target as HTMLSelectElement;
+            const selectedLang = target.value;
+            window.location.href = `/${selectedLang}/sign-in`;
+        });
+    }
+</script>
