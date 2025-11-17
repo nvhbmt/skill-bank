@@ -26,7 +26,7 @@ body {
 }
 .search-bar {
     position: relative;
-    width: 1200px;
+    width: 1160px;
     .icon-search {
         position: absolute;
         margin: 0.4rem;
@@ -56,7 +56,7 @@ body {
 }
 .project-container {
     display: flex;
-    gap: 2rem 6rem;
+    gap: 2rem 8rem;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
@@ -75,7 +75,7 @@ body {
 .project-content {
     display: flex;
     justify-content: space-between;
-    padding: 0.4rem 1.2rem;
+    padding: 0.2rem 1.2rem;
 }
 .design-web {
     font-size: var(--font-size-base);
@@ -107,6 +107,6 @@ body {
     color: var(--color-text);
     display: flex;
     justify-content: flex-end;
-    margin-top: 0.8rem;
+    margin-top: 0.3rem;
     text-decoration: underline;
 }
