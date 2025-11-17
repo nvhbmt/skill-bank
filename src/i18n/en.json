@@ -55,7 +55,8 @@
         "here": "Upload here",
         "file-name": "File name",
         "send-button-1": "Submit",
-        "send-button-2": "Go back"
+        "send-button-2": "Go back",
+        "reason-input": "Enter message..."
     },
     "forgot-password": {
         "newbie": "New to SkillBank?",
