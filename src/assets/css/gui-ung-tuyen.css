@@ -7,39 +7,39 @@ body {
 
 .ung-tuyen {
     display: flex;
-    margin: 74px;
+    margin: 4.6rem;
     justify-content: center;
-    height: 832px;
+    height: 52rem;
 }
 .ung-tuyen-container {
-    width: 1000px;
+    width: 62.5rem;
     background-color: #00000090;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
-    padding: 40px;
+    gap: 1.8rem;
+    padding: 2.5rem;
 }
 .ung-tuyen-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 65px;
+    gap: 4rem;
 }
 .title {
     display: flex;
     align-items: center;
     flex-direction: column;
-    width: 660px;
-    gap: 12px;
+    width: 41.25rem;
+    gap: 0.8rem;
     h1 {
         color: var(--color-bg-light);
-        font-size: 60px;
+        font-size: 3.75rem;
         font-weight: 800;
     }
     .mo-ta {
         color: var(--color-bg-light);
-        font-size: 20px;
+        font-size: 1.25rem;
         font-family:
             Open Sans,
             sans-serif;
@@ -48,150 +48,144 @@ body {
 
 .ung-tuyen-content {
     display: flex;
-    width: 800px;
-    height: 420px;
+    width: 50rem;
+    height: 26.25rem;
     flex-direction: column;
     .reason {
-        margin-bottom: 10px;
+        margin-bottom: 0.625rem;
         h5 {
             color: var(--color-bg-light);
-            font-size: 29px;
+            font-size: 1.8rem;
             font-weight: 500;
         }
     }
     .reason-input {
         width: 100%;
-        height: 180px;
-        border-radius: 20px;
+        height: 11.25rem;
+        border-radius: 1.25rem;
         border: none;
-        font-size: 20px;
+        font-size: 1.25rem;
         font-family:
             Open Sans,
             sans-serif;
         outline: none;
-        padding-top: 20px;
-        padding-left: 24px;
+        padding-top: 1.25rem;
+        padding-left: 1.5rem;
         background: var(--color-surface);
         color: #00000090;
         resize: none;
     }
 }
 .cv {
-    display: flex;
-    flex-direction: column;
-    width: 522px;
-    height: 35px;
-    margin-top: 40px;
+    margin-top: 2.5rem;
     h5 {
+        font-size: 1.8rem;
         color: var(--color-bg-light);
-        font-size: 29px;
-        font-weight: 500;
-    }
-    .upload {
-        font-size: 20px;
-        font-family:
-            Open Sans,
-            sans-serif;
-        color: var(--color-bg-light);
-        display: flex;
-        gap: 20px;
-        .file-upload {
-            width: 200px;
-            height: 120px;
-            background-color: var(--color-surface);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            .here {
-                color: var(--color-bg-black);
-                font-size: 29px;
-                font-weight: 500;
-            }
-        }
-        .file-name {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-            background-color: #00000080;
-            width: 302px;
-            height: 120px;
-            input {
-                padding-left: 40px;
-            }
-            .first-name {
-                width: 254px;
-                height: 35px;
-                background-color: var(--color-bg-soft);
-                outline: none;
-                border-radius: 20px;
-                resize: none;
-                font-size: 20px;
-                color: var(--color-bg-black);
-                font-family:
-                    Open Sans,
-                    sans-serif;
-                position: relative;
-            }
-            input::placeholder {
-                position: absolute;
-                color: var(--color-bg-black);
-            }
-            .button-1 {
-                width: 24px;
-                height: 24px;
-                background-color: #027a48cf;
-                border: none;
-                position: absolute;
-                border-radius: 50%;
-                margin-bottom: 60px;
-                margin-left: 200px;
-            }
-            .folder-image-1 {
-                position: absolute;
-                margin-bottom: 60px;
-                margin-right: 200px;
-            }
-            .second-name {
-                width: 254px;
-                height: 35px;
-                background-color: var(--color-bg-soft);
-                outline: none;
-                border-radius: 20px;
-                resize: none;
-                font-size: 20px;
-                color: var(--color-bg-black);
-                font-family:
-                    Open Sans,
-                    sans-serif;
-                position: relative;
-            }
-            .button-2 {
-                width: 24px;
-                height: 24px;
-                background-color: #d92d20cf;
-                border: none;
-                position: absolute;
-                border-radius: 50%;
-                margin-top: 60px;
-                margin-left: 200px;
-            }
-            .folder-image-2 {
-                position: absolute;
-                margin-top: 60px;
-                margin-right: 200px;
-            }
-        }
+        font-weight: 400;
     }
 }
-.send-button {
-    width: 400px;
-    height: 52px;
+.upload {
     display: flex;
-    gap: 24px;
+    margin-top: 0.5rem;
+    gap: 1.25rem;
+}
+.upload-box-button {
+    width: 12.5rem;
+    height: 7.5rem;
+    border-radius: 0.625rem;
+    background-color: var(--color-surface);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    flex-direction: column;
+    font-size: 1.25rem;
+    font-weight: 400;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0.3rem 0.25rem 0.6rem -0.2rem var(--color-surface);
+    transition: all 0.6s ease;
+}
+
+.upload-box-button:hover {
+    filter: brightness(1.1);
+}
+
+.upload-box-button:active {
+    animation: up 10s ease-in;
+}
+
+@keyframes up {
+    0% {
+        transform: translateY(-0.625rem);
+    }
+    50% {
+        transform: translateY(-0.3125rem);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+.upload-box-list {
+    max-width: 36.25rem;
+    width: 18.75rem;
+    height: 7.5rem;
+    display: grid;
+    background-color: #00000081;
+    border-radius: 0.625rem;
+    place-items: center;
+    align-items: center;
+}
+
+.upload-item {
+    background-color: var(--color-bg-soft);
+    width: 15.9rem;
+    height: 2.5rem;
+    border-radius: 1.25rem;
+    padding: 0 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-item:hover {
+    transform: scale(1.05);
+}
+
+.upload-item-info {
+    display: flex;
+    gap: 0.375rem;
+    align-items: center;
+}
+
+.upload-item-name {
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.upload-item-success {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: #027a48;
+    opacity: 80%;
+}
+
+.upload-item-error {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: #d92d20;
+    opacity: 80%;
+}
+
+.send-button {
+    width: 25rem;
+    height: 3.25rem;
+    display: flex;
+    gap: 1.5rem;
 }
 .send-button-1 {
     border-radius: 30px;
