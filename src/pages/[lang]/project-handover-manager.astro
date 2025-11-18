@@ -1,0 +1,151 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/project-handover-manager.css';
+import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <Header />
+    <!-- Main Project Handover Container -->
+    <div class="project-handover-page">
+        <div class="project-handover-container">
+            <div class="profile-list">
+                <button class="skillbank-dropdown">
+                    {t('project-handover-manager.skillbank-dropdown')}
+                    <img src="/assets/images/Vector.svg" alt="" />
+                </button>
+
+                <div class="profile-items">
+                    <div class="profile-item">
+                        <img src="/assets/images/avt-nhỏ.svg" alt="" />
+                        <div class="profile-info">
+                            <div class="user-name">
+                                {t('project-handover-manager.user-name')}
+                            </div>
+                            <div class="email">
+                                {t('project-handover-manager.email')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-item">
+                        <img src="/assets/images/avt-nhỏ.svg" alt="" />
+                        <div class="profile-info">
+                            <div class="user-name">
+                                {t('project-handover-manager.user-name')}
+                            </div>
+                            <div class="email">
+                                {t('project-handover-manager.email')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-item">
+                        <img src="/assets/images/avt-nhỏ.svg" alt="" />
+                        <div class="profile-info">
+                            <div class="user-name">
+                                {t('project-handover-manager.user-name')}
+                            </div>
+                            <div class="email">
+                                {t('project-handover-manager.email')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-item">
+                        <img src="/assets/images/avt-nhỏ.svg" alt="" />
+                        <div class="profile-info">
+                            <div class="user-name">
+                                {t('project-handover-manager.user-name')}
+                            </div>
+                            <div class="email">
+                                {t('project-handover-manager.email')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-item">
+                        <img src="/assets/images/avt-nhỏ.svg" alt="" />
+                        <div class="profile-info">
+                            <div class="user-name">
+                                {t('project-handover-manager.user-name')}
+                            </div>
+                            <div class="email">
+                                {t('project-handover-manager.email')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="handover-content">
+                <div class="requests-column">
+                    <div class="section-title">
+                        {t('project-handover-manager.section-title-1')}
+                    </div>
+                    <div class="request-list">
+                        <div class="request-item light">
+                            <img src="/assets/images/avt-nhỏ.svg" />
+                            {t('project-handover-manager.request-list')}
+                        </div>
+                        <div class="request-item light">
+                            <img src="/assets/images/avt-nhỏ.svg" />
+                            {t('project-handover-manager.request-list')}
+                        </div>
+                        <div class="request-item light">
+                            <img src="/assets/images/avt-nhỏ.svg" />
+                            {t('project-handover-manager.request-list')}
+                        </div>
+                    </div>
+
+                    <div class="section-title">
+                        {t('project-handover-manager.section-title-2')}
+                    </div>
+                    <div class="request-list">
+                        <div class="request-item green">
+                            <img src="/assets/images/avt-nhỏ.svg" />
+                            {t('project-handover-manager.request-list')}
+                        </div>
+                        <div class="request-item orange">
+                            <img src="/assets/images/avt-nhỏ.svg" />
+                            {t('project-handover-manager.request-list')}
+                        </div>
+                        <div class="request-item red">
+                            <img src="/assets/images/avt-nhỏ.svg" />
+                            {t('project-handover-manager.request-list')}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="description-column">
+                    <h4 class="section-title">
+                        {t('project-handover-manager.section-title-3')}
+                    </h4>
+
+                    <div class="collab-inputs">
+                        @tzecute
+                        <input type="text" />
+                        @vân lùn
+                        <input type="text" />
+                        @anhviethoangnumber1
+                        <input type="text" />
+                        @va
+                        <input type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="status-btn"
+                    >{t('project-handover-manager.status-btn')}</button
+                >
+                <button class="details-btn"
+                    >{t('project-handover-manager.details-btn')}</button
+                >
+            </div>
+        </div>
+    </div>
+</DefaultLayout>

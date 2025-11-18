@@ -174,5 +174,16 @@
             "q6": "Who can use this platform?",
             "q7": "How to contact the support team?"
         }
+    },
+    "project-handover-manager": {
+        "skillbank-dropdown": "SkillBank",
+        "user-name": "User name",
+        "email": "Email",
+        "section-title-1": "Pending Requests",
+        "request-list": "Name",
+        "section-title-2": "Approved Requests",
+        "section-title-3": "Collaborator Description",
+        "status-btn": "Edit status",
+        "details-btn": "View project details"
     }
 }
