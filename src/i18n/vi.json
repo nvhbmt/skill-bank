@@ -174,5 +174,16 @@
             "q6": "Ai có thể sử dụng nền tảng này?",
             "q7": "Làm thế nào để liên hệ với đội ngũ hỗ trợ?"
         }
+    },
+    "project-handover-manager": {
+        "skillbank-dropdown": "SkillBank",
+        "user-name": "Tên người dùng",
+        "email": "Email",
+        "section-title-1": "Yêu cầu chưa duyệt",
+        "request-list": "Tên",
+        "section-title-2": "Yêu cầu đã duyệt",
+        "section-title-3": "Mô tả từ người cộng tác",
+        "status-btn": "Chỉnh sửa trạng thái",
+        "details-btn": "Xem chi tiết dự án"
     }
 }
