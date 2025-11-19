@@ -141,7 +141,8 @@
         "toiDongTinh": "I agree to the ",
         "chinhSach": "Terms of Service and Privacy Policy",
         "quayLai": "Back",
-        "dang": "Submit"
+        "dang": "Submit",
+        "chiTiet": "Detail"
     },
     "header": {
         "aboutUs": "About us",
@@ -213,5 +214,20 @@
         "task-desc-2-top": "• Edit the wireframe section. ",
         "task-desc-2-bottom": "• Design homepage.",
         "widget-title-2": "Members"
+    "footer": {
+        "description": "A platform connecting skilled individuals with real-world projects. Where you share expertise, join projects, and develop yourself.",
+        "quickLinks": "Quick Links",
+        "home": "Home",
+        "exploreProjects": "Explore Projects",
+        "submitApplication": "Submit Application",
+        "about": "About",
+        "support": "Support",
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "forgotPassword": "Forgot Password",
+        "faq": "FAQ",
+        "contactSupport": "Contact Support",
+        "contact": "Contact",
+        "copyright": "Copyright © 2025 Skill Bank. All rights reserved."
     }
 }

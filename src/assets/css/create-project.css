@@ -1,3 +1,46 @@
+/* --- ĐỊNH NGHĨA BIẾN (Giữ nguyên thông số của ông) --- */
+:root {
+    --color-bg-light: #ffffff;
+    --color-bg-soft: #efeffe;
+    --color-surface: #e0e0fc;
+    --color-primary-light: #c1c1f9;
+    --color-primary: #6363f1;
+    --color-primary-dark: #4c3df2;
+    --color-secondary: #8282f4;
+    --color-accent: #a1a1f7;
+    --color-text: #2a2a79;
+    --color-text-muted: #212165;
+    --color-text-invert: #ffffff;
+    --color-bg-dark: #171751;
+    --color-bg-darker: #0e0e3d;
+    --color-bg-black: #000000;
+    --color-purple-base-dark: #7928ff;
+    --color-purple-base-light: #a68cff;
+    --color-purple-text: #a78bfa;
+    --color-purple-text-hover: #c4b5fd;
+    --color-purple-button: #7c3aed;
+    --color-purple-button-hover: #8b5cf6;
+    --color-purple-button-active: #623ea0;
+
+    /* Typography Scale */
+    --font-size-5xl: 2.986rem;
+    --font-size-4xl: 2.488rem;
+    --font-size-3xl: 2.074rem;
+    --font-size-2xl: 1.728rem;
+    --font-size-xl: 1.44rem;
+    --font-size-lg: 1.2rem;
+    --font-size-base: 1rem;
+    --font-size-sm: 0.833rem;
+    --font-size-xs: 0.694rem;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: Inter, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
 .wrapper {
     background-image: url('/assets/images/background.png');
     background-size: cover;
@@ -67,13 +110,16 @@ main {
     justify-content: space-between;
     align-items: center;
 }
+.section-title-with-button-kn {
+    width: 95%;
+}
 
 .btn-add {
     background-color: var(--color-purple-button);
     color: white;
     border: none;
-    width: 4.2rem;
-    height: 4.2rem;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
     font-size: var(--font-size-2xl);
     cursor: pointer;
@@ -88,6 +134,12 @@ main {
 .btn-add:active {
     background-color: var(--color-purple-button-active);
 }
+.form-group-wrapper-1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6rem;
+}
+
 .form-group {
     margin-bottom: 1.6rem;
 }
@@ -103,16 +155,14 @@ main {
     margin-bottom: 0.6rem;
 }
 
-/* === BẮT ĐẦU NÂNG CẤP UX/UI CHO FORM (CỘT TRÁI) === */
-
-/* 1. Style CHUNG cho Input, Select, Textarea */
+/* === INPUTS === */
 .form-input {
     width: 90%;
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 1.2rem;
     padding: 0.8rem 1.2rem;
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
     color: var(--color-text-invert);
     -webkit-appearance: none;
     appearance: none;
@@ -121,28 +171,21 @@ main {
         border-color 0.3s ease,
         box-shadow 0.3s ease;
 }
-
-/* 2. Style khi :focus */
 .form-input:focus {
     background-color: rgba(255, 255, 255, 0.15);
     border-color: var(--color-purple-button);
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4);
     outline: none;
 }
-
-/* 3. Style khi :hover */
 .form-input:hover:not(:focus) {
     background-color: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.5);
 }
-
-/* 4. Style cho chữ placeholder */
 .form-input::placeholder {
     color: rgba(255, 255, 255, 0.6);
     opacity: 1;
 }
 
-/* 5a. Nâng cấp cho <select> (thêm mũi tên) */
 select.form-input {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%23C1C1F9'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -150,21 +193,14 @@ select.form-input {
     background-size: 1.5rem;
     padding-right: 3.2rem;
 }
-
-/* 5b. Style cho select khi chưa chọn (mờ) */
-select.form-input:invalid {
-    color: rgba(255, 255, 255, 0.6);
+select.form-input option {
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-light);
 }
-select.form-input:valid {
-    color: var(--color-text-invert);
-}
-
-/* 5c. Style cho date khi chưa chọn (mờ) */
+select.form-input:invalid,
 input[type='date'].form-input:invalid {
     color: rgba(255, 255, 255, 0.6);
 }
-
-/* 6. Nâng cấp cho <input type="date"> */
 input[type='date'].form-input {
     color-scheme: dark;
     position: relative;
@@ -187,38 +223,195 @@ input[type='date'].form-input:valid::-webkit-datetime-edit-day-field,
 input[type='date'].form-input:valid::-webkit-datetime-edit-year-field {
     color: var(--color-text-invert);
 }
-
-/* 7. Nâng cấp cho <textarea> (Mô tả dự án) */
 textarea.form-input {
     width: 95%;
-    resize: vertical; /* Vẫn cho resize Mô tả dự án */
-    min-height: 10rem; /* Chiều cao ban đầu */
+    resize: vertical;
+    min-height: 10rem;
 }
 
-/* 8. Style cho khu vực Kỹ Năng */
+/* === KỸ NĂNG === */
 #ky-nang .form-group-wrapper-2 {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.2rem;
 }
-#ky-nang .form-input,
-#ky-nang .section-title-with-button {
+.skill-label-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.skill-label-wrapper label {
+    margin-bottom: 0;
+}
+.skill-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
     width: 95%;
 }
-
-/* 9. Sửa lỗi Select Option chữ trắng nền trắng */
-select.form-input option {
-    color: var(--color-text-muted);
-    background-color: var(--color-bg-light);
+.skill-select.form-input {
+    flex: 1;
+    width: auto;
 }
 
-/* 10. Nâng cấp UX/UI cho "Tải lên ảnh bìa" */
+/* Nút Chi tiết */
+.btn-skill-detail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1.2rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-primary-light);
+    color: var(--color-primary-light);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    height: 100%;
+    min-height: 2.5rem;
+}
+.btn-skill-detail:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-invert);
+    border-color: var(--color-text-invert);
+}
+.btn-skill-detail.filled {
+    background-color: var(--color-purple-button);
+    border-color: var(--color-purple-button);
+    color: white;
+}
+.btn-skill-detail.filled:hover {
+    background-color: var(--color-purple-button-hover);
+}
+
+/* === NÚT XÓA ĐỒNG BỘ (CHỈNH SỬA PHẦN NÀY) === */
+/* Class chung cho style nút xóa */
+.btn-delete {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+    color: #ef4444; /* Màu đỏ */
+    /* ĐỒNG BỘ: Cả 2 đều trong suốt, không viền */
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+.btn-delete:hover {
+    background-color: rgba(239, 68, 68, 0.15); /* Nền đỏ mờ khi hover */
+}
+
+/* Vị trí nút xóa Kỹ Năng */
+.btn-delete-skill {
+    margin-right: 5%;
+}
+
+/* Vị trí nút xóa Tiến Trình */
+.btn-delete-milestone {
+    margin-left: 0.5rem; /* Cách input 1 chút */
+    /* Đã xóa background-color/border riêng để giống skill */
+}
+
+/* === TIẾN TRÌNH (TIMELINE) === */
+#thoi-gian .timeline-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding-left: 2rem;
+}
+#thoi-gian .timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    width: 2px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    z-index: 0;
+}
+.milestone-item {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+.milestone-item::before {
+    content: '';
+    position: absolute;
+    left: -1.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.2rem;
+    height: 1.2rem;
+    background-color: var(--color-bg-darker);
+    border: 2px solid var(--color-primary-light);
+    border-radius: 50%;
+    box-shadow: 0 0 6px 1px rgba(193, 193, 249, 0.5);
+    z-index: 1;
+}
+.milestone-input {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.6rem;
+    padding: 0.8rem 1.2rem;
+    font-size: var(--font-size-base);
+    color: var(--color-text-invert);
+    font-family: Inter, sans-serif;
+    -webkit-appearance: none;
+    appearance: none;
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+.milestone-input:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--color-purple-button);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4);
+    outline: none;
+}
+.milestone-input:hover:not(:focus) {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+textarea.auto-resize-textarea {
+    resize: none;
+    overflow-y: hidden;
+}
+.milestone-input.auto-resize-textarea {
+    min-height: 4rem;
+    height: 4rem;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+}
+
+/* === UPLOAD ẢNH (LOGIC CŨ) === */
+.upload-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
 .upload-box {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 1.2rem;
     color: rgba(255, 255, 255, 0.6);
-    width: 20rem;
+    width: 15rem;
     height: 100px;
     display: flex;
     flex-direction: column;
@@ -232,22 +425,19 @@ select.form-input option {
         box-shadow 0.3s ease,
         color 0.3s ease;
 }
-/* 11. Đồng bộ :hover cho upload-box */
 .upload-box:hover {
     background-color: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.5);
-    color: var(--color-text-invert); /* Sáng lên khi hover */
+    color: var(--color-text-invert);
 }
-/* 12. Đồng bộ :active (khi nhấn vào) cho upload-box */
 .upload-box:active {
     background-color: rgba(255, 255, 255, 0.15);
     border-color: var(--color-purple-button);
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4);
 }
-/* 13. Ghi đè style gốc của icon/text BÊN TRONG upload-box */
 .upload-box i,
 .upload-box p {
-    color: inherit; /* Kế thừa màu từ .upload-box */
+    color: inherit;
     display: flex;
     justify-content: center;
     font-size: var(--font-size-base);
@@ -258,108 +448,36 @@ select.form-input option {
 .upload-box p {
     padding-top: 1.2rem;
 }
-/* === KẾT THÚC NÂNG CẤP UX CỘT TRÁI === */
 
-.form-group-wrapper-1 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.6rem;
-}
-
-/* Khối chung cho list bên phải (Chỉ dùng cho Thành viên) */
-.list-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-}
-
-/* === BẮT ĐẦU CSS CHO TIMELINE ĐỘNG (CỘT PHẢI) === */
-
-/* 1. Container cho timeline */
-#thoi-gian .timeline-container {
+/* Preview ảnh */
+.cover-preview {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
-    padding-left: 2rem;
+    width: 20rem;
+    height: 12rem;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-/* 2. Đường kẻ timeline dọc */
-#thoi-gian .timeline-container::before {
-    content: '';
-    position: absolute;
-    top: 1rem;
-    bottom: 1rem;
-    left: 1rem;
-    width: 2px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-    z-index: 0;
-}
-/* 3. Wrapper cho mỗi input */
-.milestone-item {
-    position: relative;
+.cover-preview-image {
     width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
 }
-/* 4. "Dot" phát sáng cho mỗi mốc */
-.milestone-item::before {
-    content: '';
+.cover-preview-image:hover {
+    opacity: 0.9;
+}
+.btn-remove-cover {
     position: absolute;
-    left: -1.7rem;
-    /* SỬA: Căn dot vào giữa dòng ĐẦU TIÊN (padding 1.6rem + nửa font 0.9rem) */
-    top: 2.2rem;
-    transform: translateY(-50%);
-    width: 1.2rem;
-    height: 1.2rem;
-    background-color: var(--color-bg-darker);
-    border: 2px solid var(--color-primary-light);
-    border-radius: 50%;
-    box-shadow: 0 0 6px 1px rgba(193, 193, 249, 0.5);
-    z-index: 1;
-}
-/* 5. Input cho mốc thời gian (BÂY GIỜ LÀ TEXTAREA) */
-.milestone-input {
-    flex: 1;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 1.6rem;
-    padding: 0.8rem 1.2rem;
-    font-size: var(--font-size-base);
-    color: var(--color-text-invert);
-    font-family: Inter, sans-serif; /* Đảm bảo font giống nhau */
-
-    -webkit-appearance: none;
-    appearance: none;
-
-    transition:
-        background-color 0.3s ease,
-        border-color 0.3s ease,
-        box-shadow 0.3s ease;
-}
-/* 6. Style placeholder cho input mốc */
-.milestone-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-    opacity: 1;
-}
-/* 7. Style focus */
-.milestone-input:focus {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-color: var(--color-purple-button);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4);
-    outline: none;
-}
-/* 8. Style hover */
-.milestone-input:hover:not(:focus) {
-    background-color: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-/* 9. Nút xóa milestone */
-.btn-delete-milestone {
-    background-color: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.4);
+    top: 0.8rem;
+    right: 0.8rem;
+    background-color: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
     width: 3.2rem;
     height: 3.2rem;
     border-radius: 50%;
@@ -368,34 +486,62 @@ select.form-input option {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
     transition:
         background-color 0.25s ease,
-        border-color 0.25s ease,
-        transform 0.15s ease;
+        transform 0.15s ease,
+        box-shadow 0.25s ease;
     line-height: 1;
     padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10;
 }
-.btn-delete-milestone:hover {
-    background-color: rgba(239, 68, 68, 0.3);
-    border-color: rgba(239, 68, 68, 0.6);
+.btn-remove-cover:hover {
+    background-color: rgba(239, 68, 68, 1);
     transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
 }
-.btn-delete-milestone:active {
-    background-color: rgba(239, 68, 68, 0.4);
+.btn-remove-cover:active {
     transform: scale(0.95);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
-/* === KẾT THÚC CSS CHO TIMELINE ĐỘNG === */
 
-/* Mục thành viên (Đã tinh chỉnh) */
+/* Tên file upload (thẻ a) */
+.file-name-display {
+    color: var(--color-primary-light);
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    max-width: 25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.file-name-display:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--color-text-invert);
+    cursor: pointer;
+}
+
+/* === THÀNH VIÊN & FOOTER === */
+.list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
 .member-item {
     display: flex;
     align-items: center;
     gap: 1.2rem;
+    text-decoration: none;
 }
 .member-avatar {
-    width: 4.8rem;
-    height: 4.8rem;
+    width: 4rem;
+    height: 4rem;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -406,8 +552,7 @@ select.form-input option {
     gap: 0.4rem;
 }
 .member-name {
-    font-size: var(--font-size-xl);
-    font-weight: 500;
+    font-size: var(--font-size-lg);
     color: var(--color-bg-light);
 }
 .member-username {
@@ -415,7 +560,6 @@ select.form-input option {
     color: var(--color-accent);
 }
 
-/* PHẦN CHÂN FORM */
 .form-footer {
     display: flex;
     justify-content: space-between;
@@ -424,22 +568,17 @@ select.form-input option {
     padding: 2rem 0 0;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
-
 .checkbox-area {
     display: flex;
     align-items: center;
     gap: 0.8rem;
 }
-/* === BẮT ĐẦU NÂNG CẤP UX CHECKBOX === */
 .form-checkbox {
     -webkit-appearance: none;
     appearance: none;
     background-color: transparent;
-    margin: 0;
-    font: inherit;
-    color: currentColor;
-    width: 1.8rem;
-    height: 1.8rem;
+    width: 1.4rem;
+    height: 1.4rem;
     border: 2px solid var(--color-primary-light);
     border-radius: 6px;
     cursor: pointer;
@@ -468,15 +607,13 @@ select.form-input option {
     transform: scale(1);
     opacity: 1;
 }
-/* THÊM MỚI: Hiệu ứng hover cho checkbox */
 .form-checkbox:not(:checked):hover {
-    border-color: var(--color-text-invert); /* Viền sáng lên */
+    border-color: var(--color-text-invert);
 }
-
 .checkbox-area label {
     margin-bottom: 0;
     color: var(--color-bg-light);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
     a {
         color: var(--color-purple-text);
         transition: color 0.15s linear;
@@ -485,14 +622,10 @@ select.form-input option {
         color: var(--color-purple-text-hover);
     }
 }
-/* === KẾT THÚC NÂNG CẤP UX CHECKBOX === */
-
 .buttons-area {
     display: flex;
     gap: 1.2rem;
 }
-
-/* NÚT BẤM */
 .btn {
     padding: 0.8rem 1.6rem;
     font-size: var(--font-size-lg);
@@ -531,122 +664,9 @@ select.form-input option {
     border-color: transparent;
     background-color: var(--color-purple-button-hover);
 }
-
 .group-left {
     margin-left: 2.4rem;
 }
 .column-left {
     border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
-
-/* === BẮT ĐẦU CSS NÂNG CẤP JS (Tự co dãn, Preview) === */
-
-/* 1. CSS cho Textarea tự co dãn (Timeline & Mô tả) */
-textarea.auto-resize-textarea {
-    resize: none; /* Tắt tính năng resize bằng tay */
-    overflow-y: hidden; /* Ẩn thanh cuộn (JS sẽ lo co dãn) */
-}
-
-/* 2. CSS cho Textarea mốc thời gian (ghi đè 1 chút) */
-.milestone-input.auto-resize-textarea {
-    min-height: 4rem; /* Chiều cao tối thiểu (padding + 1 dòng) */
-    height: 4rem; /* Chiều cao ban đầu */
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
-}
-
-/* 3. CSS cho container Upload (để preview nằm cạnh) */
-.upload-container {
-    display: flex;
-    align-items: flex-start; /* Căn upload-box và preview theo chiều dọc */
-    gap: 1.2rem; /* Khoảng cách giữa 2 box */
-    flex-wrap: wrap;
-}
-
-/* 4. (SỬA) CSS cho tên file upload (giờ là thẻ <a>) */
-.file-name-display {
-    color: var(--color-primary-light); /* Màu tím nhạt */
-    font-size: var(--font-size-sm);
-    text-decoration: none; /* Bỏ gạch chân */
-    background-color: rgba(0, 0, 0, 0.2); /* Nền mờ tối */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Viền mờ sáng */
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    transition: all 0.2s ease; /* Hiệu ứng mượt */
-
-    /* Cắt chữ nếu quá dài */
-    max-width: 25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-/* 5. (THÊM MỚI) Hover cho tên file upload */
-.file-name-display:hover {
-    background-color: rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 255, 255, 0.4);
-    color: var(--color-text-invert); /* Sáng lên */
-    cursor: pointer;
-}
-
-/* 6. CSS cho preview ảnh bìa */
-.cover-preview {
-    position: relative;
-    width: 20rem;
-    height: 12rem;
-    border-radius: 1.2rem;
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background-color: rgba(0, 0, 0, 0.2);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.cover-preview-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-}
-
-.cover-preview-image:hover {
-    opacity: 0.9;
-}
-
-.btn-remove-cover {
-    position: absolute;
-    top: 0.8rem;
-    right: 0.8rem;
-    background-color: rgba(239, 68, 68, 0.9);
-    color: white;
-    border: none;
-    width: 3.2rem;
-    height: 3.2rem;
-    border-radius: 50%;
-    font-size: var(--font-size-2xl);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition:
-        background-color 0.25s ease,
-        transform 0.15s ease,
-        box-shadow 0.25s ease;
-    line-height: 1;
-    padding: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 10;
-}
-
-.btn-remove-cover:hover {
-    background-color: rgba(239, 68, 68, 1);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
-}
-
-.btn-remove-cover:active {
-    transform: scale(0.95);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* === KẾT THÚC CSS NÂNG CẤP JS === */
