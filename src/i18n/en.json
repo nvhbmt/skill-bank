@@ -185,5 +185,21 @@
         "section-title-3": "Collaborator Description",
         "status-btn": "Edit status",
         "details-btn": "View project details"
+    },
+    "footer": {
+        "description": "A platform connecting skilled individuals with real-world projects. Where you share expertise, join projects, and develop yourself.",
+        "quickLinks": "Quick Links",
+        "home": "Home",
+        "exploreProjects": "Explore Projects",
+        "submitApplication": "Submit Application",
+        "about": "About",
+        "support": "Support",
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "forgotPassword": "Forgot Password",
+        "faq": "FAQ",
+        "contactSupport": "Contact Support",
+        "contact": "Contact",
+        "copyright": "Copyright © 2025 Skill Bank. All rights reserved."
     }
 }
