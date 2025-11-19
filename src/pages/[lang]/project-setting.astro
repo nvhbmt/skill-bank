@@ -1,0 +1,263 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/project-setting.css';
+import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <Header />
+    <div class="project-setting-page">
+        <div class="project-setting-layout">
+            <div class="editor-main-column">
+                <div class="overview-panel">
+                    <div class="panel-info">
+                        <div class="project-title-text">
+                            {t('project-setting.project-title-text')}
+                        </div>
+
+                        <div class="meta-data-container">
+                            <div class="meta-row">
+                                <div class="meta-label">
+                                    {t('project-setting.meta-label-1')}
+                                </div>
+                                <div class="meta-value">14/11/2025</div>
+                            </div>
+                            <div class="meta-row">
+                                <div class="meta-label">
+                                    {t('project-setting.meta-label-2')}
+                                </div>
+                                <div class="meta-value">Website</div>
+                            </div>
+                            <div class="meta-row">
+                                <div class="meta-label">
+                                    {t('project-setting.meta-label-3')}
+                                </div>
+                                <div class="meta-value email-text">
+                                    buithaivy2019@gmail.com
+                                </div>
+                            </div>
+                            <div class="meta-row">
+                                <div class="meta-label">
+                                    {t('project-setting.meta-label-4')}
+                                </div>
+                                <div class="meta-value">
+                                    {t('project-setting.meta-value')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-group">
+                            <button class="btn btn-cancel"
+                                >{t('project-setting.btn-cancel')}</button
+                            >
+                            <button class="btn btn-submit"
+                                >{t('project-setting.btn-submit')}</button
+                            >
+                        </div>
+                    </div>
+
+                    <div class="artwork-container">
+                        <img
+                            src="/assets/images/project-setting-layout.svg"
+                            alt="Artwork"
+                            class="artwork-img"
+                        />
+                    </div>
+                </div>
+                <div class="content-panel">
+                    <div class="description-section">
+                        <div class="section-header">
+                            <div class="header-text">
+                                {t('project-setting.header-text')}
+                            </div>
+                        </div>
+                        <div class="description-content">
+                            {t('project-setting.description-content')}
+                        </div>
+                    </div>
+
+                    <div class="skills-section">
+                        <div class="section-header-row">
+                            <div class="header-title">
+                                {t('project-setting.header-title')}
+                            </div>
+                            <button class="btn-icon-circle">
+                                <img
+                                    class="ph-plus"
+                                    src="/assets/images/tabler_plus.svg"
+                                    alt=""
+                                />
+                            </button>
+                        </div>
+
+                        <div class="skill-row">
+                            <div class="field-label">
+                                {t('project-setting.field-label-1')}
+                            </div>
+                            <button class="dropdown-box">
+                                <div class="dropdown-icon">
+                                    <img
+                                        class="ph-caret-down"
+                                        src="/assets/images/Vector.svg"
+                                        alt=""
+                                    />
+                                </div>
+                            </button>
+                        </div>
+                        <div class="skill-row">
+                            <div class="field-label">
+                                {t('project-setting.field-label-2')}
+                            </div>
+                            <button class="dropdown-box">
+                                <div class="dropdown-icon">
+                                    <img
+                                        class="ph-caret-down"
+                                        src="/assets/images/Vector.svg"
+                                        alt=""
+                                    />
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="editor-sidebar-column">
+                <div class="sidebar-widget schedule-widget">
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            {t('project-setting.widget-title-1')}
+                        </div>
+                        <button class="btn-icon-circle-dark"
+                            ><img
+                                src="/assets/images/ic_round-plus.svg"
+                                alt=""
+                            />
+                        </button>
+                    </div>
+
+                    <div class="timeline-container">
+                        <div class="week-block">
+                            <div class="week-text">
+                                {t('project-setting.week-text-1')}
+                            </div>
+                            <div class="week-text">
+                                {t('project-setting.week-text-2')}
+                            </div>
+                            <div class="week-text">
+                                {t('project-setting.week-text-3')}
+                            </div>
+                            <div class="week-text">
+                                {t('project-setting.week-text-4')}
+                            </div>
+                        </div>
+                        <div class="bar">
+                            <img
+                                src="/assets/images/thanhthoigian.svg"
+                                alt=""
+                            />
+                        </div>
+                        <div class="task-block">
+                            <div class="task-box">
+                                <div class="task-name">
+                                    {t('project-setting.task-name')}
+                                </div>
+                                <div class="task-desc">
+                                    {t('project-setting.task-desc-1-top')}
+                                    <br />{
+                                        t('project-setting.task-desc-1-bottom')
+                                    }
+                                </div>
+                            </div>
+                            <div class="task-box">
+                                <div class="task-name">
+                                    {t('project-setting.task-name')}
+                                </div>
+                                <div class="task-desc">
+                                    {t('project-setting.task-desc-2-top')}
+                                    <br />{
+                                        t('project-setting.task-desc-2-bottom')
+                                    }
+                                </div>
+                            </div>
+                            <div class="task-box">
+                                <div class="task-name">
+                                    {t('project-setting.task-name')}
+                                </div>
+                                <div class="task-desc">
+                                    {t('project-setting.task-desc-3-top')}
+                                    <br />{
+                                        t('project-setting.task-desc-3-bottom')
+                                    }
+                                </div>
+                            </div>
+                            <div class="task-box">
+                                <div class="task-name">
+                                    {t('project-setting.task-name')}
+                                </div>
+                                <div class="task-desc">
+                                    {t('project-setting.task-desc-1-top')}
+                                    <br />{
+                                        t('project-setting.task-desc-1-bottom')
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-widget team-widget">
+                    <div class="widget-header">
+                        <div class="widget-title">
+                            {t('project-setting.widget-title-2')}
+                        </div>
+                        <button class="btn-icon-circle-dark"
+                            ><img
+                                src="/assets/images/ic_round-plus.svg"
+                                alt=""
+                            />
+                        </button>
+                    </div>
+
+                    <div class="member-list">
+                        <div class="member-item">
+                            <img
+                                src="/assets/images/avt-vừa.svg"
+                                alt="Avatar"
+                            />
+                            <div class="member-info">
+                                <div class="member-name">Bùi Thái Vy</div>
+                                <div class="member-handle">@tzecute</div>
+                            </div>
+                        </div>
+
+                        <div class="member-item">
+                            <img
+                                src="/assets/images/avt-vừa.svg"
+                                alt="Avatar"
+                            />
+                            <div class="member-info">
+                                <div class="member-name">Bùi Thái Vy</div>
+                                <div class="member-handle">@tzecute</div>
+                            </div>
+                        </div>
+
+                        <div class="member-item">
+                            <img
+                                src="/assets/images/avt-vừa.svg"
+                                alt="Avatar"
+                            />
+                            <div class="member-info">
+                                <div class="member-name">Bùi Thái Vy</div>
+                                <div class="member-handle">@tzecute</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</DefaultLayout>
