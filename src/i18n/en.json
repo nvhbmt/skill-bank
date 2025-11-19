@@ -141,7 +141,8 @@
         "toiDongTinh": "I agree to the ",
         "chinhSach": "Terms of Service and Privacy Policy",
         "quayLai": "Back",
-        "dang": "Submit"
+        "dang": "Submit",
+        "chiTiet": "Detail"
     },
     "header": {
         "aboutUs": "About us",

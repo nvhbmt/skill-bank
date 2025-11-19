@@ -5,332 +5,266 @@ function autoResizeTextarea(textarea) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // === 1. XỬ LÝ TIMELINE (MỐC THỜI GIAN) ===
-    const addMilestoneButton = document.getElementById('add-milestone-btn');
-    const milestoneList = document.getElementById('milestone-list');
+    // === HÀM TẠO NÚT XÓA CHUNG ===
+    function createDeleteButton(onClick) {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'btn-delete'; // Class chung style
+        deleteBtn.innerHTML = '×';
+        deleteBtn.title = 'Xóa mục này';
+        deleteBtn.addEventListener('click', onClick);
+        return deleteBtn;
+    }
 
-    // Hàm cập nhật số thứ tự và placeholder của các milestone
-    function updateMilestoneNumbers() {
+    // === 1. XỬ LÝ TIMELINE (MỐC THỜI GIAN) ===
+    const milestoneList = document.getElementById('milestone-list');
+    const addMilestoneButton = document.getElementById('add-milestone-btn');
+
+    function updateMilestoneState() {
         const milestones = milestoneList.querySelectorAll('.milestone-item');
+        const shouldShowDelete = milestones.length > 1;
+
         milestones.forEach((item, index) => {
+            const newIndex = index + 1;
+
+            // Cập nhật Input name/placeholder
             const textarea = item.querySelector('.milestone-input');
             if (textarea) {
-                const newIndex = index + 1;
                 textarea.name = `milestone-${newIndex}`;
                 textarea.placeholder = `Mốc ${newIndex}: ...`;
             }
-        });
-        // Cập nhật hiển thị nút xóa
-        updateDeleteButtonsVisibility();
-    }
 
-    // Hàm cập nhật hiển thị nút xóa (chỉ hiện khi có nhiều hơn 1 milestone)
-    function updateDeleteButtonsVisibility() {
-        const milestones = milestoneList.querySelectorAll('.milestone-item');
-        const shouldShowDelete = milestones.length > 1;
-        milestones.forEach((item) => {
-            const deleteBtn = item.querySelector('.btn-delete-milestone');
-            if (deleteBtn) {
-                deleteBtn.style.display = shouldShowDelete ? 'flex' : 'none';
+            // Xử lý nút xóa
+            let deleteBtn = item.querySelector('.btn-delete');
+
+            if (shouldShowDelete) {
+                if (!deleteBtn) {
+                    deleteBtn = createDeleteButton(() => {
+                        if (milestoneList.children.length > 1) {
+                            item.remove();
+                            updateMilestoneState();
+                        }
+                    });
+                    deleteBtn.classList.add('btn-delete-milestone'); // Thêm class định vị
+                    item.appendChild(deleteBtn); // Gắn cạnh input
+                } else {
+                    deleteBtn.style.display = 'flex';
+                }
+            } else {
+                if (deleteBtn) deleteBtn.style.display = 'none';
             }
         });
-    }
-
-    // Hàm tạo nút xóa milestone
-    function createDeleteButton(milestoneItem) {
-        const deleteBtn = document.createElement('button');
-        deleteBtn.type = 'button';
-        deleteBtn.className = 'btn-delete-milestone';
-        deleteBtn.innerHTML = '×';
-        deleteBtn.setAttribute('aria-label', 'Xóa mốc thời gian');
-        deleteBtn.addEventListener('click', () => {
-            // Chỉ cho phép xóa nếu còn nhiều hơn 1 milestone
-            if (milestoneList.children.length > 1) {
-                milestoneItem.remove();
-                updateMilestoneNumbers();
-            }
-        });
-        return deleteBtn;
     }
 
     if (addMilestoneButton && milestoneList) {
         addMilestoneButton.addEventListener('click', () => {
-            const currentCount = milestoneList.children.length;
-            const newIndex = currentCount + 1;
-
             const newItem = document.createElement('div');
             newItem.className = 'milestone-item';
 
+            // Chỉ tạo Textarea
             const newTextarea = document.createElement('textarea');
-            newTextarea.name = `milestone-${newIndex}`;
             newTextarea.className = 'milestone-input auto-resize-textarea';
-            newTextarea.placeholder = `Mốc ${newIndex}: ...`;
             newTextarea.rows = 1;
-
             newTextarea.addEventListener('input', () =>
                 autoResizeTextarea(newTextarea)
             );
 
-            // Thêm nút xóa
-            const deleteBtn = createDeleteButton(newItem);
             newItem.appendChild(newTextarea);
-            newItem.appendChild(deleteBtn);
             milestoneList.appendChild(newItem);
+
             newTextarea.focus();
-
-            // Thêm nút xóa vào milestone đầu tiên nếu chưa có
-            const firstMilestone = milestoneList.querySelector(
-                '.milestone-item:first-child'
-            );
-            if (
-                firstMilestone &&
-                !firstMilestone.querySelector('.btn-delete-milestone')
-            ) {
-                const firstDeleteBtn = createDeleteButton(firstMilestone);
-                firstMilestone.appendChild(firstDeleteBtn);
-            }
-
-            // Cập nhật hiển thị nút xóa
-            updateDeleteButtonsVisibility();
+            updateMilestoneState();
         });
 
-        // Thêm nút xóa vào tất cả milestones khi trang load
-        const initialMilestones = milestoneList.querySelectorAll(
-            '.milestone-item'
-        );
-        initialMilestones.forEach((item) => {
-            if (!item.querySelector('.btn-delete-milestone')) {
-                const deleteBtn = createDeleteButton(item);
-                item.appendChild(deleteBtn);
-            }
-        });
-
-        // Cập nhật hiển thị nút xóa ban đầu
-        updateDeleteButtonsVisibility();
-    } else {
-        console.error('Lỗi: Không tìm thấy nút Timeline hoặc List.');
+        updateMilestoneState();
     }
 
-    // === 2. XỬ LÝ THÊM KỸ NĂNG ===
+    // === 2. XỬ LÝ KỸ NĂNG ===
     const addSkillButton = document.getElementById('add-skill-btn');
     const skillListContainer = document.getElementById('skill-list-container');
 
-    if (addSkillButton && skillListContainer) {
-        addSkillButton.addEventListener('click', () => {
-            const currentCount = skillListContainer.children.length;
-            const newIndex = currentCount + 1;
+    function updateSkillState() {
+        const skillItems = skillListContainer.querySelectorAll('.skill-item');
+        const shouldShowDelete = skillItems.length > 1;
 
-            const firstSkillGroup =
-                skillListContainer.querySelector('.form-group');
-            if (!firstSkillGroup) return;
+        skillItems.forEach((item, index) => {
+            const newIndex = index + 1;
 
-            const newSkillGroup = firstSkillGroup.cloneNode(true);
-
-            const newLabel = newSkillGroup.querySelector('label');
-            if (newLabel) {
-                newLabel.htmlFor = `skill-${newIndex}`;
-                newLabel.textContent = `Kỹ năng ${newIndex}`;
+            const label = item.querySelector('label');
+            if (label) {
+                label.textContent = `Kỹ năng ${newIndex}`;
+                label.setAttribute('for', `skill-${newIndex}`);
+            }
+            const select = item.querySelector('select');
+            if (select) {
+                select.id = `skill-${newIndex}`;
+                select.name = `skill-${newIndex}`;
             }
 
-            const newSelect = newSkillGroup.querySelector('select');
-            if (newSelect) {
-                newSelect.id = `skill-${newIndex}`;
-                newSelect.name = `skill-${newIndex}`;
-                newSelect.value = '';
-            }
+            const labelWrapper = item.querySelector('.skill-label-wrapper');
+            let deleteBtn = labelWrapper
+                ? labelWrapper.querySelector('.btn-delete')
+                : null;
 
-            skillListContainer.appendChild(newSkillGroup);
+            if (shouldShowDelete && labelWrapper) {
+                if (!deleteBtn) {
+                    deleteBtn = createDeleteButton(() => {
+                        if (skillListContainer.children.length > 1) {
+                            item.remove();
+                            updateSkillState();
+                        }
+                    });
+                    deleteBtn.classList.add('btn-delete-skill'); // Thêm class định vị
+                    labelWrapper.appendChild(deleteBtn);
+                } else {
+                    deleteBtn.style.display = 'flex';
+                }
+            } else {
+                if (deleteBtn) deleteBtn.style.display = 'none';
+            }
         });
-    } else {
-        console.error('Lỗi: Không tìm thấy nút Kỹ năng hoặc List.');
     }
 
-    // === 3. XỬ LÝ ẢNH BÌA (ĐÃ CẬP NHẬT) ===
+    function setupDetailButton(button) {
+        button.addEventListener('click', () => {
+            const isFilled = button.classList.contains('filled');
+            if (!isFilled) {
+                button.classList.add('filled');
+            } else {
+                // Toggle logic...
+            }
+        });
+    }
+
+    if (addSkillButton && skillListContainer) {
+        skillListContainer
+            .querySelectorAll('.btn-skill-detail')
+            .forEach(setupDetailButton);
+        updateSkillState();
+
+        addSkillButton.addEventListener('click', () => {
+            const items = skillListContainer.querySelectorAll('.skill-item');
+            const lastItem = items[items.length - 1];
+            if (!lastItem) return;
+
+            const newItem = lastItem.cloneNode(true);
+            const select = newItem.querySelector('select');
+            if (select) select.value = '';
+
+            const detailBtn = newItem.querySelector('.btn-skill-detail');
+            if (detailBtn) {
+                detailBtn.classList.remove('filled');
+                setupDetailButton(detailBtn);
+            }
+
+            const oldDelete = newItem.querySelector('.btn-delete');
+            if (oldDelete) oldDelete.remove();
+
+            skillListContainer.appendChild(newItem);
+            updateSkillState();
+        });
+    }
+
+    // === 3. XỬ LÝ UPLOAD ẢNH (LOGIC KẾT HỢP) ===
     const coverUpload = document.getElementById('coverUpload');
-    const coverFileNameLink = document.getElementById('cover-file-name');
     const coverPreview = document.getElementById('cover-preview');
     const coverPreviewImg = document.getElementById('cover-preview-img');
     const btnRemoveCover = document.getElementById('btn-remove-cover');
+    // Thêm cả phần hiển thị link tên file
+    const coverFileNameLink = document.getElementById('cover-file-name');
 
-    // Hàm hiển thị preview ảnh
-    function showCoverPreview(file) {
-        if (!file || !file.type.startsWith('image/')) {
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            coverPreviewImg.src = e.target.result;
-            coverPreview.hidden = false;
-
-            // Ẩn upload box khi có preview
-            const uploadBox = document.querySelector('.upload-box');
-            if (uploadBox) {
-                uploadBox.style.display = 'none';
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // Hàm xóa preview và reset
-    function removeCoverPreview() {
-        // Xóa file khỏi input
-        if (coverUpload) {
-            coverUpload.value = '';
-        }
-
-        // Ẩn preview
-        if (coverPreview) {
-            coverPreview.hidden = true;
-        }
-        if (coverPreviewImg) {
-            coverPreviewImg.src = '';
-        }
-
-        // Hiện lại upload box
-        const uploadBox = document.querySelector('.upload-box');
-        if (uploadBox) {
-            uploadBox.style.display = 'flex';
-        }
-
-        // Reset file name link
-        if (coverFileNameLink) {
-            coverFileNameLink.textContent = '';
-            coverFileNameLink.href = '#';
-            coverFileNameLink.hidden = true;
-        }
-    }
-
-    if (coverUpload && coverPreview && coverPreviewImg) {
+    if (coverUpload && coverPreview && coverPreviewImg && coverFileNameLink) {
         coverUpload.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
-                // Tạo URL tạm thời cho file (dùng cho href)
-                const fileUrl = URL.createObjectURL(file);
+                // 1. Xử lý Preview Ảnh (nếu là ảnh)
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        coverPreviewImg.src = e.target.result;
+                        coverPreview.hidden = false;
 
-                // Hiển thị preview
-                showCoverPreview(file);
-
-                // Gán thuộc tính cho thẻ <a>
-                if (coverFileNameLink) {
-                    coverFileNameLink.textContent = file.name;
-                    coverFileNameLink.href = fileUrl;
-                    coverFileNameLink.download = file.name;
-                    coverFileNameLink.hidden = false;
+                        // Ẩn hộp upload box
+                        const uploadBox = document.querySelector('.upload-box');
+                        if (uploadBox) uploadBox.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
                 }
-            } else {
-                removeCoverPreview();
+
+                // 2. Xử lý Link Tên File
+                const fileUrl = URL.createObjectURL(file);
+                coverFileNameLink.textContent = file.name;
+                coverFileNameLink.href = fileUrl;
+                coverFileNameLink.download = file.name;
+                coverFileNameLink.hidden = false;
             }
         });
 
-        // Cho phép click vào preview để chọn ảnh mới
-        coverPreviewImg.addEventListener('click', () => {
-            if (coverUpload) {
-                coverUpload.click();
-            }
-        });
-
-        // Xử lý nút xóa preview
         if (btnRemoveCover) {
             btnRemoveCover.addEventListener('click', (e) => {
                 e.preventDefault();
-                e.stopPropagation();
-                removeCoverPreview();
+                coverUpload.value = '';
+
+                // Reset Preview
+                coverPreviewImg.src = '';
+                coverPreview.hidden = true;
+
+                // Reset Link Tên File
+                coverFileNameLink.textContent = '';
+                coverFileNameLink.hidden = true;
+
+                // Hiện lại hộp upload box
+                const uploadBox = document.querySelector('.upload-box');
+                if (uploadBox) uploadBox.style.display = 'flex';
             });
         }
-    } else {
-        console.error(
-            'Lỗi: Không tìm thấy các element cần thiết cho upload ảnh bìa.'
-        );
     }
 
-    // === 4. XỬ LÝ CO DÃN TEXTAREA (CHO CÁC Ô CÓ SẴN) ===
+    // === 4. AUTO RESIZE & FORM ===
     document.querySelectorAll('.auto-resize-textarea').forEach((textarea) => {
         textarea.addEventListener('input', () => autoResizeTextarea(textarea));
         autoResizeTextarea(textarea);
     });
 
-    // === 5. XỬ LÝ FORM SUBMISSION ===
     const form = document.getElementById('project-form');
-    if (form) {
+    if (form && window.JustValidate) {
         const validation = new window.JustValidate('#project-form');
-
+        // ... Rules cũ ...
         validation
-            .addField('[name="project_name"]', [
-                {
-                    rule: 'required',
-                    errorMessage: 'Vui lòng nhập tên dự án',
-                },
-                {
-                    rule: 'minLength',
-                    value: 1,
-                    errorMessage: 'Tên dự án không được để trống',
-                },
-                {
-                    rule: 'maxLength',
-                    value: 200,
-                    errorMessage: 'Tên dự án không được vượt quá 200 ký tự',
-                },
-            ])
-            .addField('[name="category"]', [
-                {
-                    rule: 'required',
-                    errorMessage: 'Vui lòng chọn phân loại dự án',
-                },
-            ])
-            .addField('[name="start_date"]', [
-                {
-                    rule: 'required',
-                    errorMessage: 'Vui lòng chọn thời gian bắt đầu',
-                },
-            ])
-            .addField('[name="terms"]', [
-                {
-                    rule: 'required',
-                    errorMessage: 'Bạn phải đồng ý với chính sách',
-                },
-            ])
+            .addField('[name="project_name"]', [{ rule: 'required' }])
+            .addField('[name="category"]', [{ rule: 'required' }])
+            .addField('[name="start_date"]', [{ rule: 'required' }])
+            .addField('[name="terms"]', [{ rule: 'required' }])
             .onSuccess(async (event) => {
-                event.preventDefault();
-
+                if (event && event.preventDefault) event.preventDefault();
                 const formData = new FormData(form);
-                const submitButton = form.querySelector('button[type="submit"]');
-                const originalButtonText = submitButton?.textContent;
-
-                // Disable button and show loading state
+                const submitButton = form.querySelector(
+                    'button[type="submit"]'
+                );
+                const originalText = submitButton?.textContent;
                 if (submitButton) {
                     submitButton.disabled = true;
-                    submitButton.textContent = 'Đang tạo dự án...';
+                    submitButton.textContent = 'Đang xử lý...';
                 }
-
                 try {
                     const response = await fetch('/api/projects/create', {
                         method: 'POST',
                         body: formData,
                     });
-
                     const result = await response.json();
-
                     if (result.success) {
-                        // Redirect to project page or home
-                        const currentLang =
+                        const lang =
                             window.location.pathname.split('/')[1] || 'vi';
-                        window.location.href = `/${currentLang}/project-search`;
+                        window.location.href = `/${lang}/project-search`;
                     } else {
-                        // Show error message
-                        alert(result.message || 'Có lỗi xảy ra khi tạo dự án');
-                        if (result.error) {
-                            console.error('Validation errors:', result.error);
-                        }
+                        alert(result.message || 'Lỗi');
                     }
                 } catch (error) {
-                    console.error('Error submitting form:', error);
-                    alert('Có lỗi xảy ra khi tạo dự án. Vui lòng thử lại.');
+                    alert('Lỗi kết nối.');
                 } finally {
-                    // Re-enable button
                     if (submitButton) {
                         submitButton.disabled = false;
-                        submitButton.textContent = originalButtonText;
+                        submitButton.textContent = originalText;
                     }
                 }
             });
