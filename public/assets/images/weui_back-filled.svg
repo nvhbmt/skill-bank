@@ -1,9 +1,9 @@
 <svg width="24" height="12" viewBox="0 0 24 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_1784_1002)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 8.65701L19.0711 1.58601L20.4851 3.00001L12.7071 10.778C12.5196 10.9655 12.2653 11.0708 12.0001 11.0708C11.735 11.0708 11.4807 10.9655 11.2931 10.778L3.51514 3.00001L4.92914 1.58601L12.0001 8.65701Z" fill="white"/>
+<g clip-path="url(#clip0_2613_3882)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 8.65653L19.0711 1.58553L20.4851 2.99953L12.7071 10.7775C12.5196 10.965 12.2653 11.0703 12.0001 11.0703C11.735 11.0703 11.4807 10.965 11.2931 10.7775L3.51514 2.99953L4.92914 1.58553L12.0001 8.65653Z" fill="black"/>
 </g>
 <defs>
-<clipPath id="clip0_1784_1002">
+<clipPath id="clip0_2613_3882">
 <rect width="12" height="24" fill="white" transform="matrix(0 -1 1 0 0 12)"/>
 </clipPath>
 </defs>
