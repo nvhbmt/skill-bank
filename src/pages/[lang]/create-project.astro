@@ -141,7 +141,9 @@ try {
                             </section>
 
                             <section class="form-section" id="ky-nang">
-                                <h3 class="section-title-with-button">
+                                <h3
+                                    class="section-title-with-button section-title-with-button-kn"
+                                >
                                     <span>{t('create-project.danhMucKN')}</span>
                                     <button
                                         type="button"
@@ -153,35 +155,65 @@ try {
                                     class="form-group-wrapper-2 group-left"
                                     id="skill-list-container"
                                 >
-                                    <div class="form-group">
-                                        <label for="skill-1"
-                                            >{t('create-project.KN1')}</label
-                                        >
-                                        <select
-                                            id="skill-1"
-                                            name="skill-1"
-                                            class="form-input"
-                                            required
-                                        >
-                                            <option
-                                                value=""
-                                                disabled
-                                                hidden
-                                                selected
-                                                >{
-                                                    t('create-project.chonKN')
-                                                }</option
-                                            >
-                                            {
-                                                skills.map((skill) => (
+                                    <!-- Item kỹ năng mẫu -->
+                                    <div class="skill-item">
+                                        <div class="form-group">
+                                            <!-- CẬP NHẬT: Wrapper mới cho Label để chứa nút xóa -->
+                                            <div class="skill-label-wrapper">
+                                                <label for="skill-1"
+                                                    >{
+                                                        t('create-project.KN1')
+                                                    }</label
+                                                >
+                                                <!-- Nút xóa sẽ được JS thêm vào đây -->
+                                            </div>
+
+                                            <!-- Wrapper flex cho Select và Nút Chi tiết -->
+                                            <div class="skill-controls">
+                                                <select
+                                                    id="skill-1"
+                                                    name="skill-1"
+                                                    class="form-input skill-select"
+                                                    required
+                                                >
                                                     <option
-                                                        value={skill.name.toLowerCase()}
+                                                        value=""
+                                                        disabled
+                                                        hidden
+                                                        selected
+                                                        >{
+                                                            t(
+                                                                'create-project.chonKN'
+                                                            )
+                                                        }</option
                                                     >
-                                                        {skill.name}
-                                                    </option>
-                                                ))
-                                            }
-                                        </select>
+                                                    {
+                                                        skills.map((skill) => (
+                                                            <option
+                                                                value={skill.name.toLowerCase()}
+                                                            >
+                                                                {skill.name}
+                                                            </option>
+                                                        ))
+                                                    }
+                                                </select>
+
+                                                <!-- Nút "Chi tiết" -->
+                                                <button
+                                                    type="button"
+                                                    class="btn-skill-detail"
+                                                    title="Thêm chi tiết cho kỹ năng này"
+                                                >
+                                                    <span
+                                                        >{
+                                                            t(
+                                                                'create-project.chiTiet'
+                                                            )
+                                                        }</span
+                                                    >
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </section>
@@ -271,7 +303,7 @@ try {
                             <section class="form-section" id="thanh-vien">
                                 <h3>{t('create-project.thanhVien')}</h3>
                                 <div class="list-wrapper">
-                                    <div class="member-item">
+                                    <a href="#" class="member-item">
                                         <img
                                             src="/assets/images/vy2.png"
                                             alt="avatar"
@@ -285,8 +317,8 @@ try {
                                                 >@vyxam</span
                                             >
                                         </div>
-                                    </div>
-                                    <div class="member-item">
+                                    </a>
+                                    <a href="#" class="member-item">
                                         <img
                                             src="/assets/images/vy2.png"
                                             alt="avatar"
@@ -300,8 +332,8 @@ try {
                                                 >@tredeadline</span
                                             >
                                         </div>
-                                    </div>
-                                    <div class="member-item">
+                                    </a>
+                                    <a href="#" class="member-item">
                                         <img
                                             src="/assets/images/vy2.png"
                                             alt="avatar"
@@ -315,7 +347,7 @@ try {
                                                 >@deptrais1tgioi</span
                                             >
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </section>
                         </div>
