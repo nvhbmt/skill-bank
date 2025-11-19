@@ -185,5 +185,35 @@
         "section-title-3": "Collaborator Description",
         "status-btn": "Edit status",
         "details-btn": "View project details"
+    },
+    "project-detail-creator": {
+        "ngayBatDau": "Start Date:",
+        "phanLoai": "Category:",
+        "điaDiem": "Location:",
+        "xemBanGiao": "View handover",
+        "xoaDuAn": "Delete project",
+        "moTa": "Description",
+        "danhMucKN": "Skills",
+        "KN1": "Skill 1",
+        "KN2": "Skill 2",
+        "detail": "Detail",
+        "timeLine": "Timeline",
+        "week1": "Week 1",
+        "Members": "Members"
+    },
+    "project-detail-collab": {
+        "ngayBatDau": "Start Date:",
+        "phanLoai": "Category:",
+        "điaDiem": "Location:",
+        "banGiao": "Handover",
+        "share": "Share",
+        "moTa": "Description",
+        "danhMucKN": "Skills",
+        "KN1": "Skill 1",
+        "KN2": "Skill 2",
+        "ungTuyen": "Apply",
+        "timeLine": "Timeline",
+        "week1": "Week 1",
+        "Members": "Members"
     }
 }

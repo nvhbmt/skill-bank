@@ -1,0 +1,517 @@
+/* --- ĐỊNH NGHĨA BIẾN CHUẨN (CỦA NHÓM) --- */
+:root {
+    --color-bg-light: #ffffff;
+    --color-bg-soft: #efeffe;
+    --color-surface: #e0e0fc;
+
+    --color-primary-light: #c1c1f9;
+    --color-primary: #6363f1;
+    --color-primary-dark: #4c3df2;
+    --color-secondary: #8282f4;
+    --color-accent: #a1a1f7;
+
+    --color-text: #2a2a79;
+    --color-text-muted: #212165;
+    --color-text-invert: #ffffff;
+
+    --color-bg-dark: #171751;
+    --color-bg-darker: #0e0e3d;
+    --color-bg-black: #000000;
+
+    --color-purple-base-dark: #7928ff;
+    --color-purple-base-light: #a68cff;
+    --color-purple-text: #a78bfa;
+    --color-purple-text-hover: #c4b5fd;
+
+    --color-purple-button: #7c3aed;
+    --color-purple-button-hover: #8b5cf6;
+    --color-purple-button-active: #623ea0;
+
+    /* Typography Scale */
+    --font-size-5xl: 2.986rem;
+    --font-size-4xl: 2.488rem;
+    --font-size-3xl: 2.074rem;
+    --font-size-2xl: 1.728rem;
+    --font-size-xl: 1.44rem;
+    --font-size-lg: 1.2rem;
+    --font-size-base: 1rem;
+    --font-size-sm: 0.833rem;
+    --font-size-xs: 0.694rem;
+
+    /* Container */
+    --container-max-width: 1280px;
+
+    /* --- BIẾN BỔ SUNG (Dành riêng cho trang View Detail) --- */
+    --color-bg-overlay: rgba(0, 0, 0, 0.6);
+    --color-purple-glow: rgba(124, 58, 237, 0.4);
+    --color-purple-light-box: #c4b5fd;
+    --color-card-glass: rgba(255, 255, 255, 0.05);
+    --color-border-glass: rgba(255, 255, 255, 0.1);
+    --color-text-gray-light: #d1d5db;
+    --color-red-danger: #ef4444;
+    --color-red-danger-hover: #dc2626;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Inter, sans-serif;
+}
+
+.wrapper {
+    background-image: url('/assets/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-attachment: fixed;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 4rem 0;
+}
+
+/* === CONTAINER CHÍNH === */
+.project-detail-container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    box-shadow: 0 0 60px rgba(124, 58, 237, 0.15);
+    border-radius: 30px;
+}
+
+.project-detail-body {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 4rem;
+
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 4rem;
+    color: var(--color-text-invert);
+}
+
+/* ============================ */
+/* CỘT TRÁI (MAIN INFO) */
+/* ============================ */
+.column-main {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+/* --- Header Section --- */
+.project-top-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.project-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.project-title {
+    font-size: var(--font-size-5xl);
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.project-meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.meta-row {
+    font-size: var(--font-size-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+.meta-label {
+    font-weight: 600;
+    color: var(--color-text-gray-light);
+}
+.meta-value {
+    color: var(--color-text-invert);
+    font-weight: 500;
+}
+
+/* --- CREATOR PROFILE CARD (NGƯỜI ĐĂNG - MỚI) --- */
+.creator-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 0.8rem 1.2rem 0.8rem 0.8rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(168, 85, 247, 0.4); /* Viền tím nhẹ */
+    border-radius: 50px; /* Bo tròn như pill */
+    width: fit-content;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+}
+.creator-profile-card:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.creator-avatar-wrapper {
+    position: relative;
+}
+.creator-avatar-wrapper img {
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-purple-button);
+}
+/* Badge vương miện nhỏ */
+.creator-badge-icon {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background-color: var(--color-purple-button);
+    color: white;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.creator-text-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+.creator-name {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--color-text-invert);
+}
+.creator-username {
+    font-size: var(--font-size-sm);
+    color: var(--color-accent); /* Màu tím nhạt */
+}
+
+/* --- ACTION BUTTONS (MỚI) --- */
+.action-buttons {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+.action-btn i {
+    font-size: 1.1em;
+}
+
+/* Nút Xem bàn giao (Glassmorphism Tím) */
+.btn-view-handover {
+    background-color: rgba(124, 58, 237, 0.15);
+    border: 1px solid rgba(124, 58, 237, 0.5);
+    color: var(--color-primary-light);
+}
+.btn-view-handover:hover {
+    background-color: rgba(124, 58, 237, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+}
+
+/* Nút Xóa dự án (Glassmorphism Đỏ) */
+.btn-delete-project {
+    background-color: rgba(9, 121, 225, 0.2);
+    border: 1px solid rgba(68, 216, 239, 0.4);
+    color: var(--color-bg-light);
+}
+.btn-delete-project:hover {
+    background-color: rgba(8, 159, 240, 0.4);
+    color: #fff;
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* --- Ảnh Dự Án --- */
+.project-image-wrapper {
+    width: 310px;
+    height: 370px;
+    flex-shrink: 0;
+}
+.project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px 8px 50% 50%;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Description Box --- */
+.description-box {
+    background-color: var(--color-purple-light-box);
+    color: var(--color-bg-dark);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+.box-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+.box-header h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+}
+.box-header i {
+    font-size: 1.2rem;
+}
+.box-content p {
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    text-align: justify;
+}
+
+/* --- Skills Section --- */
+.skills-section h3 {
+    font-size: var(--font-size-xl);
+    margin-bottom: 1.5rem;
+    color: var(--color-text-invert);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+.skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.skill-item-view {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+.skill-label {
+    /* width: 80px; */
+    color: var(--color-accent);
+    font-size: var(--font-size-lg);
+}
+.skill-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.skill-tag {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    color: var(--color-text-invert);
+    font-size: var(--font-size-base);
+    transition: background-color 0.2s;
+}
+.skill-tag:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+/* Nút Chi tiết fill màu */
+.btn-skill-detail {
+    border-radius: 12px;
+    border: none;
+    background-color: transparent;
+    border: 1px solid var(--color-purple-button);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 10px rgba(168, 85, 247, 0.3);
+}
+.btn-skill-detail:hover {
+    background-color: var(--color-purple-button-hover);
+}
+.btn-skill-detail span {
+    padding: 0.8rem 1.5rem;
+    font-size: var(--font-size-base);
+}
+
+/* ============================ */
+/* CỘT PHẢI (SIDEBAR) */
+/* ============================ */
+.column-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    padding-left: 3rem;
+}
+
+.sidebar-section h3 {
+    font-size: var(--font-size-xl);
+    margin-bottom: 1.5rem;
+    color: var(--color-text-invert);
+}
+
+/* --- Timeline (Input Style) --- */
+.timeline-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    padding-left: 2rem;
+}
+
+.timeline-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.6rem;
+    padding: 1.4rem 1.6rem;
+    color: var(--color-text-invert);
+    font-size: var(--font-size-base);
+    position: relative;
+    line-height: 1.5;
+    min-height: 4rem;
+}
+
+.timeline-card::before {
+    content: '';
+    position: absolute;
+    left: -2.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.2rem;
+    height: 1.2rem;
+    background-color: var(--color-bg-darker);
+    border: 2px solid var(--color-primary-light);
+    border-radius: 50%;
+    box-shadow: 0 0 6px 1px rgba(193, 193, 249, 0.5);
+}
+
+/* --- Members --- */
+.members-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.member-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    padding: 0.8rem;
+    border-radius: 12px;
+    transition: background-color 0.2s ease;
+}
+.member-card:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+.member-avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+.member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+.member-info .name {
+    font-weight: 600;
+    color: var(--color-text-invert);
+    font-size: var(--font-size-lg);
+}
+.member-info .username {
+    color: var(--color-accent);
+    font-size: var(--font-size-base);
+}
+
+/* Nút Ứng Tuyển (Sticky footer style hoặc trong header) */
+.btn-apply {
+    background-color: var(--color-purple-button);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+    white-space: nowrap;
+}
+.btn-apply:hover {
+    background-color: var(--color-purple-button-hover);
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .project-detail-body {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+    }
+    .column-sidebar {
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-left: 0;
+        padding-top: 3rem;
+    }
+    .timeline-cards {
+        border-left: none;
+        padding-left: 0;
+    }
+    .timeline-card::before {
+        display: none;
+    }
+    .project-top-section {
+        flex-direction: column-reverse;
+    }
+    .project-image-wrapper {
+        width: 100%;
+        height: 250px;
+        display: flex;
+        justify-content: center;
+    }
+    .project-image {
+        width: 200px;
+        height: 200px;
+    }
+}

@@ -1,0 +1,253 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import '@/assets/css/project-detail-creator.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <div class="wrapper">
+        <Header />
+
+        <main>
+            <div class="project-detail-container">
+                <div class="project-detail-body">
+                    <!-- CỘT TRÁI: THÔNG TIN CHÍNH -->
+                    <div class="column-main">
+                        <!-- Phần Header -->
+                        <div class="project-top-section">
+                            <div class="project-info">
+                                <h1 class="project-title">PROJECT 1</h1>
+
+                                <div class="project-meta-list">
+                                    <div class="meta-row">
+                                        <span class="meta-label"
+                                            >{
+                                                t(
+                                                    'project-detail-creator.ngayBatDau'
+                                                )
+                                            }</span
+                                        >
+                                        <span class="meta-value"
+                                            >14/11/2025</span
+                                        >
+                                    </div>
+                                    <div class="meta-row">
+                                        <span class="meta-label"
+                                            >{
+                                                t(
+                                                    'project-detail-creator.phanLoai'
+                                                )
+                                            }</span
+                                        >
+                                        <span class="meta-value">Website</span>
+                                    </div>
+                                    <div class="meta-row">
+                                        <span class="meta-label"
+                                            >{
+                                                t(
+                                                    'project-detail-creator.điaDiem'
+                                                )
+                                            }</span
+                                        >
+                                        <span class="meta-value">TPHCM</span>
+                                    </div>
+                                </div>
+
+                                <!-- CẬP NHẬT: Người đăng Profile Card -->
+                                <a href="#" class="creator-profile-card">
+                                    <div class="creator-avatar-wrapper">
+                                        <img
+                                            src="/assets/images/vy2.png"
+                                            alt="Creator"
+                                        />
+                                        <span class="creator-badge-icon"
+                                            ><i class="fa-solid fa-crown"
+                                            ></i></span
+                                        >
+                                    </div>
+                                    <div class="creator-text-info">
+                                        <span class="creator-name"
+                                            >Bùi Thái Vy</span
+                                        >
+                                        <span class="creator-username"
+                                            >@vyxam</span
+                                        >
+                                    </div>
+                                </a>
+
+                                <!-- CẬP NHẬT: Nút bấm UX đẹp -->
+                                <div class="action-buttons">
+                                    <button
+                                        class="action-btn btn-view-handover"
+                                    >
+                                        <i class="fa-solid fa-file-import"></i>
+                                        {t('project-detail-creator.xemBanGiao')}
+                                    </button>
+                                    <button
+                                        class="action-btn btn-delete-project"
+                                    >
+                                        <i class="fa-solid fa-x"></i>
+                                        {t('project-detail-creator.xoaDuAn')}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Ảnh dự án -->
+                            <div class="project-image-wrapper">
+                                <img
+                                    src="/assets/image/va2.jpg"
+                                    alt="Project Cover"
+                                    class="project-image"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Phần Mô tả -->
+                        <div class="description-box">
+                            <div class="box-header">
+                                <i class="fa-solid fa-caret-down"></i>
+                                <h3>{t('project-detail-creator.moTa')}</h3>
+                            </div>
+                            <div class="box-content">
+                                <p>
+                                    Lorem ipsum dolor sit amet consectetur.
+                                    Viverra elit urna imperdiet quam nulla neque
+                                    in. Nullam vel lacinia turpis turpis
+                                    sollicitudin sed pharetra. Mauris sodales
+                                    feugiat maecenas amet ultricies vitae vitae
+                                    molestie faucibus. Nam parturient fusce
+                                    ultrices sit proin.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Phần Kỹ năng -->
+                        <div class="skills-section">
+                            <h3>{t('project-detail-creator.danhMucKN')}</h3>
+                            <div class="skills-list">
+                                <div class="skill-item-view">
+                                    <span class="skill-label"
+                                        >{t('project-detail-creator.KN1')}</span
+                                    >
+                                    <div class="skill-content">
+                                        <div class="skill-tag">
+                                            ReactJS / Frontend
+                                        </div>
+                                        <button
+                                            class="btn-skill-detail"
+                                            title="Xem chi tiết"
+                                        >
+                                            <span
+                                                >{
+                                                    t(
+                                                        'project-detail-creator.detail'
+                                                    )
+                                                }</span
+                                            >
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="skill-item-view">
+                                    <span class="skill-label"
+                                        >{t('project-detail-creator.KN2')}</span
+                                    >
+                                    <div class="skill-content">
+                                        <div class="skill-tag">
+                                            NodeJS / Backend
+                                        </div>
+                                        <button
+                                            class="btn-skill-detail"
+                                            title="Xem chi tiết"
+                                        >
+                                            <span
+                                                >{
+                                                    t(
+                                                        'project-detail-creator.detail'
+                                                    )
+                                                }</span
+                                            >
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CỘT PHẢI: SIDEBAR -->
+                    <div class="column-sidebar">
+                        <!-- Hoạt động biểu (Timeline) -->
+                        <div class="sidebar-section timeline-section">
+                            <h3>Hoạt động biểu</h3>
+                            <div class="timeline-cards">
+                                <div class="timeline-card">
+                                    Project 1: Khởi động dự án, thiết kế giao
+                                    diện UI/UX
+                                </div>
+                                <div class="timeline-card">
+                                    Project 1: Chỉnh sửa giao diện wireframe,
+                                    thiết kế DB
+                                </div>
+                                <div class="timeline-card">
+                                    Project 1: Xử lý logic đăng nhập, đăng ký
+                                </div>
+                                <div class="timeline-card">
+                                    Project 1: Viết chức năng xử lý API, hoàn
+                                    thiện Admin
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thành viên -->
+                        <div class="sidebar-section members-section">
+                            <h3>{t('project-detail-creator.Members')}</h3>
+                            <div class="members-list">
+                                <a href="#" class="member-card">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Avatar"
+                                        class="member-avatar"
+                                    />
+                                    <div class="member-info">
+                                        <span class="name">Bùi Thái Vy</span>
+                                        <span class="username">@tzecute</span>
+                                    </div>
+                                </a>
+                                <a href="#" class="member-card">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Avatar"
+                                        class="member-avatar"
+                                    />
+                                    <div class="member-info">
+                                        <span class="name">Nguyễn Việt Anh</span
+                                        >
+                                        <span class="username"
+                                            >@tredeadline</span
+                                        >
+                                    </div>
+                                </a>
+                                <a href="#" class="member-card">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Avatar"
+                                        class="member-avatar"
+                                    />
+                                    <div class="member-info">
+                                        <span class="name">Trần Tường Vân</span>
+                                        <span class="username"
+                                            >@deptrais1tgioi</span
+                                        >
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</DefaultLayout>

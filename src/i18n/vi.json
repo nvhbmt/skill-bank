@@ -185,5 +185,35 @@
         "section-title-3": "Mô tả từ người cộng tác",
         "status-btn": "Chỉnh sửa trạng thái",
         "details-btn": "Xem chi tiết dự án"
+    },
+    "project-detail-creator": {
+        "ngayBatDau": "Bắt đầu:",
+        "phanLoai": "Phân loại:",
+        "điaDiem": "Địa điểm:",
+        "xemBanGiao": "Xem bàn giao",
+        "xoaDuAn": "Xóa dự án",
+        "moTa": "Mô tả",
+        "danhMucKN": "Kỹ năng",
+        "KN1": "Kỹ năng 1",
+        "KN2": "Kỹ năng 2",
+        "timeLine": "Tiến trình",
+        "detail": "Chi tiết",
+        "week1": "Tuần 1",
+        "Members": "Thành viên"
+    },
+    "project-detail-collab": {
+        "ngayBatDau": "Bắt đầu:",
+        "phanLoai": "Phân loại:",
+        "điaDiem": "Địa điểm:",
+        "banGiao": "Bàn giao",
+        "share": "Chia sẻ",
+        "moTa": "Mô tả",
+        "danhMucKN": "Kỹ năng",
+        "KN1": "Kỹ năng 1",
+        "KN2": "Kỹ năng 2",
+        "timeLine": "Tiến trình",
+        "ungTuyen": "Ứng tuyển",
+        "week1": "Tuần 1",
+        "Members": "Thành viên"
     }
 }
