@@ -185,5 +185,33 @@
         "section-title-3": "Collaborator Description",
         "status-btn": "Edit status",
         "details-btn": "View project details"
+    },
+    "project-setting": {
+        "project-title-text": "PROJECT 1",
+        "meta-label-1": "Start:",
+        "meta-label-2": "Category:",
+        "meta-label-3": "Contact:",
+        "meta-label-4": "Location:",
+        "meta-value": "Ho Chi Minh City",
+        "btn-cancel": "Cancel",
+        "btn-submit": "Submit",
+        "header-text": "Description",
+        "description-content": "Lorem ipsum dolor sit amet consectetur. Viverra elit urna imperdiet quam nulla neque in. Nullam vel lacinia turpis turpis sollicitudin sed pharetra. Mauris sodales feugiat maecenas amet ultricies vitae vitae molestie faucibus. Nam parturient fusce ultrices sit proin.",
+        "header-title": "Skills",
+        "field-label-1": "Skill 1",
+        "field-label-2": "Skill 2",
+        "widget-title-1": "Activity chart",
+        "week-text-1": "Week 1",
+        "week-text-2": "Week 2",
+        "week-text-3": "Week 3",
+        "week-text-4": "Week 4",
+        "task-name": "Project 1:",
+        "task-desc-1-top": "• Team up with collaborators. ",
+        "task-desc-1-bottom": "• Design UI/UX interface.",
+        "task-desc-3-top": "• Login and registration pages. ",
+        "task-desc-3-bottom": "• Design user interface.",
+        "task-desc-2-top": "• Edit the wireframe section. ",
+        "task-desc-2-bottom": "• Design homepage.",
+        "widget-title-2": "Members"
     }
 }
