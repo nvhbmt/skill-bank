@@ -186,5 +186,21 @@
         "section-title-3": "Mô tả từ người cộng tác",
         "status-btn": "Chỉnh sửa trạng thái",
         "details-btn": "Xem chi tiết dự án"
+    },
+    "footer": {
+        "description": "Nền tảng kết nối người có kỹ năng với các dự án thực tế. Nơi bạn chia sẻ chuyên môn, tham gia dự án và phát triển bản thân.",
+        "quickLinks": "Liên kết nhanh",
+        "home": "Trang chủ",
+        "exploreProjects": "Khám phá dự án",
+        "submitApplication": "Gửi ứng tuyển",
+        "about": "Giới thiệu",
+        "support": "Hỗ trợ",
+        "signIn": "Đăng nhập",
+        "signUp": "Đăng ký",
+        "forgotPassword": "Quên mật khẩu",
+        "faq": "Câu hỏi thường gặp",
+        "contactSupport": "Liên hệ hỗ trợ",
+        "contact": "Liên hệ",
+        "copyright": "Bản quyền © 2025 Skill Bank. Mọi quyền được bảo lưu."
     }
 }
