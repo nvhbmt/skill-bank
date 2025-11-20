@@ -1,0 +1,334 @@
+body {
+    background-image: url('/assets/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.admin-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Tabs */
+.admin-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.admin-tab-btn {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 32px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.admin-tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(139, 92, 246, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+}
+
+.admin-tab-btn.active {
+    background-color: #7c3aed;
+    border-color: #8b5cf6;
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+}
+
+/* Tab Content */
+.admin-tab-content {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+}
+
+.admin-section-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Table */
+.admin-table-container {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: white;
+}
+
+.admin-table thead {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+.admin-table th {
+    padding: 20px;
+    border-bottom: 2px solid #d46be9;
+    font-weight: 600;
+    color: white;
+    text-align: left;
+}
+
+.admin-table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(212, 107, 233, 0.2);
+}
+
+.admin-table tbody tr:nth-child(even) {
+    background-color: #f3e8ff;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #e9d5ff;
+    transform: scale(1.01);
+}
+
+.admin-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.admin-table td {
+    padding: 16px 20px;
+    color: #2a2a79;
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.role-admin {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.role-user {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view-btn {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.delete-btn {
+    background-color: #ef4444;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+}
+
+.approve-btn {
+    background-color: #22c55e;
+    color: white;
+}
+
+.approve-btn:hover {
+    background-color: #16a34a;
+    transform: translateY(-2px);
+}
+
+.reject-btn {
+    background-color: #f97316;
+    color: white;
+}
+
+.reject-btn:hover {
+    background-color: #ea580c;
+    transform: translateY(-2px);
+}
+
+/* Projects List */
+.projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.project-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(139, 92, 246, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.project-title {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.project-date {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+}
+
+.project-info {
+    margin-bottom: 1rem;
+}
+
+.project-description {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.project-owner {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+}
+
+.project-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.no-data {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 3rem;
+    font-size: 1.125rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-container {
+        padding: 1rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+    }
+
+    .admin-tab-content {
+        padding: 1rem;
+    }
+
+    .admin-table-container {
+        overflow-x: scroll;
+    }
+
+    .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .project-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+}

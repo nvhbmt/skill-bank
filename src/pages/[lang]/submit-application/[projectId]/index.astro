@@ -13,7 +13,7 @@ const projectId = (Astro.params as { projectId?: string }).projectId;
 
 // Check if user is logged in
 if (!session?.user) {
-    return Astro.redirect(`/${lang}/sign-in`);
+    return Astro.redirect(l(`/sign-in`));
 }
 
 // Fetch project info using types from database.types.ts
@@ -35,16 +35,16 @@ if (projectId) {
                 project = projectData;
             } else {
                 // Project not found, redirect
-                return Astro.redirect(`/${lang}/project-search`);
+                return Astro.redirect(l(`/project-search`));
             }
         }
     } catch (error) {
         console.error('Error loading project:', error);
-        return Astro.redirect(`/${lang}/project-search`);
+        return Astro.redirect(l(`/project-search`));
     }
 } else {
     // No projectId, redirect
-    return Astro.redirect(`/${lang}/project-search`);
+    return Astro.redirect(l(`/project-search`));
 }
 
 // Check if user already applied
@@ -77,7 +77,7 @@ if (project && session.user) {
                     hasApplied ? (
                         <div class="already-applied">
                             <p>Bạn đã ứng tuyển cho dự án này rồi.</p>
-                            <a href={`/${lang}/project-detail/${project?.id}`}>
+                            <a href={l(`/project/${project?.id}`)}>
                                 Quay lại trang dự án
                             </a>
                         </div>
@@ -137,7 +137,7 @@ if (project && session.user) {
                                 </div>
                                 <div class="send-button">
                                     <a
-                                        href={`/${lang}/project-detail/${project?.id}`}
+                                        href={l(`/project/${project?.id}`)}
                                         class="send-button-2"
                                     >
                                         {t('submit-application.send-button-2')}

@@ -154,7 +154,8 @@
         "dangXuat": "Sign out",
         "explore": "Explore projects",
         "createProject": "Post a project",
-        "viewProfile": "View profile"
+        "viewProfile": "View profile",
+        "adminPanel": "Admin panel"
     },
     "home": {
         "searchPlaceholder": "Search",
@@ -368,5 +369,27 @@
         "kiNang": "Skills",
         "duAn": "Projects",
         "danhGia": "Reviews"
+    },
+    "admin": {
+        "title": "Admin Dashboard",
+        "users": "Users",
+        "projects": "Projects",
+        "userManagement": "User Management",
+        "projectApproval": "Project Approval",
+        "username": "Username",
+        "email": "Email",
+        "fullName": "Full Name",
+        "role": "Role",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "view": "View",
+        "delete": "Delete",
+        "approve": "Approve",
+        "reject": "Reject",
+        "viewDetails": "View Details",
+        "owner": "Owner",
+        "noDescription": "No description",
+        "noUsers": "No users found",
+        "noPendingProjects": "No pending projects"
     }
 }

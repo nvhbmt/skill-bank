@@ -49,7 +49,7 @@ try {
         `
         )
         .is('deleted_at', null)
-        .eq('status', 'open')
+        .neq('status', 'pending')
         .order('created_at', { ascending: false })
         .limit(20);
 

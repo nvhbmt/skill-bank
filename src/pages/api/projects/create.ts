@@ -86,8 +86,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         }
 
         // Create project
-        // Note: status values are likely: 'open', 'closed', 'draft', 'completed'
-        // Using 'open' for newly created projects, or null if status is optional
+        // Default status is 'pending' for newly created projects
         const { data: project, error: projectError } =
             await authenticatedSupabase
                 .from('projects')
@@ -99,7 +98,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                     start_date: validated.data.start_date,
                     cover_image_url: coverImageUrl,
                     owner_id: session.user.id,
-                    status: 'open', // Changed from 'active' to 'open'
+                    status: 'pending', // Default status for new projects
                 })
                 .select()
                 .single();

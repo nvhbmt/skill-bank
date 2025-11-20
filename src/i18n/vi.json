@@ -154,7 +154,8 @@
         "dangXuat": "Đăng xuất",
         "explore": "Khám phá dự án",
         "createProject": "Đăng tải dự án",
-        "viewProfile": "Xem hồ sơ"
+        "viewProfile": "Xem hồ sơ",
+        "adminPanel": "Bảng điều khiển"
     },
     "home": {
         "searchPlaceholder": "Tìm kiếm",
@@ -368,5 +369,27 @@
         "kiNang": "Kĩ năng",
         "duAn": "Dự án",
         "danhGia": "Một số đánh giá"
+    },
+    "admin": {
+        "title": "Bảng điều khiển quản trị",
+        "users": "Người dùng",
+        "projects": "Dự án",
+        "userManagement": "Quản lý người dùng",
+        "projectApproval": "Duyệt dự án",
+        "username": "Tên người dùng",
+        "email": "Email",
+        "fullName": "Họ và tên",
+        "role": "Vai trò",
+        "createdAt": "Ngày tạo",
+        "actions": "Thao tác",
+        "view": "Xem",
+        "delete": "Xóa",
+        "approve": "Duyệt",
+        "reject": "Từ chối",
+        "viewDetails": "Xem chi tiết",
+        "owner": "Người tạo",
+        "noDescription": "Không có mô tả",
+        "noUsers": "Không có người dùng nào",
+        "noPendingProjects": "Không có dự án nào chờ duyệt"
     }
 }

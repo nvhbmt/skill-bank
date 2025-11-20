@@ -42,8 +42,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
             return httpResponse.fail('Dự án không tồn tại', 404);
         }
 
-        // Check if project is open
-        if (project.status !== 'open') {
+        // Check if project is approved (only approved projects accept applications)
+        if (project.status !== 'approved') {
             return httpResponse.fail('Dự án không còn nhận ứng viên', 400);
         }
 

@@ -12,7 +12,7 @@ const { lang, t, l } = useTranslate(Astro);
 
 // Redirect if not logged in
 if (!session?.user) {
-    return Astro.redirect(`/${lang}/sign-in`);
+    return Astro.redirect(l(`/sign-in`));
 }
 
 // Initialize data using types from database.types.ts
@@ -44,9 +44,7 @@ let userProjects: Array<
     >
 > = [];
 
-let allSkills: Array<
-    Pick<Tables<'skills'>, 'id' | 'name' | 'category'>
-> = [];
+let allSkills: Array<Pick<Tables<'skills'>, 'id' | 'name' | 'category'>> = [];
 
 // Fetch user data
 try {
@@ -64,7 +62,9 @@ try {
         // Fetch user_profiles
         const { data: profileData, error: profileError } = await supabase
             .from('user_profiles')
-            .select('phone, bio, address, portfolio_url, interests, experiences, projects, certifications')
+            .select(
+                'phone, bio, address, portfolio_url, interests, experiences, projects, certifications'
+            )
             .eq('user_id', userInfo.user_id)
             .is('deleted_at', null)
             .maybeSingle();
@@ -255,96 +255,143 @@ try {
                                 />
                             </div>
                             <div class="frame-8">
-                                <p class="text-wrapper-7">Lĩnh vực quan tâm (mỗi dòng một mục):</p>
+                                <p class="text-wrapper-7">
+                                    Lĩnh vực quan tâm (mỗi dòng một mục):
+                                </p>
                                 <textarea
                                     name="interests"
                                     id="interests-textarea"
-                                    placeholder="AI&#10;Web design"
+                                    placeholder="AI
+Web design"
                                     class="text-wrapper-7"
                                     style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem; min-height: 80px; resize: vertical; font-family: inherit;"
-                                >{
-                                    (() => {
-                                        try {
-                                            if (userProfile?.interests) {
-                                                const interests = JSON.parse(userProfile.interests);
-                                                return Array.isArray(interests) ? interests.join('\n') : '';
+                                    >{
+                                        (() => {
+                                            try {
+                                                if (userProfile?.interests) {
+                                                    const interests =
+                                                        JSON.parse(
+                                                            userProfile.interests
+                                                        );
+                                                    return Array.isArray(
+                                                        interests
+                                                    )
+                                                        ? interests.join('\n')
+                                                        : '';
+                                                }
+                                                return '';
+                                            } catch {
+                                                return '';
                                             }
-                                            return '';
-                                        } catch {
-                                            return '';
-                                        }
-                                    })()
-                                }</textarea>
+                                        })()
+                                    }</textarea
+                                >
                             </div>
                             <div class="frame-8">
-                                <p class="text-wrapper-7">Kinh nghiệm (mỗi dòng một mục):</p>
+                                <p class="text-wrapper-7">
+                                    Kinh nghiệm (mỗi dòng một mục):
+                                </p>
                                 <textarea
                                     name="experiences"
                                     id="experiences-textarea"
-                                    placeholder="1 năm kinh nghiệm tự học&#10;Học IT năm 2 tại IUH"
+                                    placeholder="1 năm kinh nghiệm tự học
+Học IT năm 2 tại IUH"
                                     class="text-wrapper-7"
                                     style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem; min-height: 80px; resize: vertical; font-family: inherit;"
-                                >{
-                                    (() => {
-                                        try {
-                                            if (userProfile?.experiences) {
-                                                const experiences = JSON.parse(userProfile.experiences);
-                                                return Array.isArray(experiences) ? experiences.join('\n') : '';
+                                    >{
+                                        (() => {
+                                            try {
+                                                if (userProfile?.experiences) {
+                                                    const experiences =
+                                                        JSON.parse(
+                                                            userProfile.experiences
+                                                        );
+                                                    return Array.isArray(
+                                                        experiences
+                                                    )
+                                                        ? experiences.join('\n')
+                                                        : '';
+                                                }
+                                                return '';
+                                            } catch {
+                                                return '';
                                             }
-                                            return '';
-                                        } catch {
-                                            return '';
-                                        }
-                                    })()
-                                }</textarea>
+                                        })()
+                                    }</textarea
+                                >
                             </div>
                         </section>
                         <section class="frame-10">
                             <h2 class="text-wrapper-3">Thành tựu</h2>
                             <div class="line"></div>
                             <div class="frame-5">
-                                <p class="text-wrapper-7">Dự án từng làm (mỗi dòng một mục):</p>
+                                <p class="text-wrapper-7">
+                                    Dự án từng làm (mỗi dòng một mục):
+                                </p>
                                 <textarea
                                     name="projects"
                                     id="projects-textarea"
-                                    placeholder="Website bán sách&#10;Phân loại ảnh AI"
+                                    placeholder="Website bán sách
+Phân loại ảnh AI"
                                     class="text-wrapper-7"
                                     style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem; min-height: 80px; resize: vertical; font-family: inherit;"
-                                >{
-                                    (() => {
-                                        try {
-                                            if (userProfile?.projects) {
-                                                const projects = JSON.parse(userProfile.projects);
-                                                return Array.isArray(projects) ? projects.join('\n') : '';
+                                    >{
+                                        (() => {
+                                            try {
+                                                if (userProfile?.projects) {
+                                                    const projects = JSON.parse(
+                                                        userProfile.projects
+                                                    );
+                                                    return Array.isArray(
+                                                        projects
+                                                    )
+                                                        ? projects.join('\n')
+                                                        : '';
+                                                }
+                                                return '';
+                                            } catch {
+                                                return '';
                                             }
-                                            return '';
-                                        } catch {
-                                            return '';
-                                        }
-                                    })()
-                                }</textarea>
+                                        })()
+                                    }</textarea
+                                >
                             </div>
                             <div class="frame-12">
-                                <p class="text-wrapper-7">Chứng chỉ (mỗi dòng một mục):</p>
+                                <p class="text-wrapper-7">
+                                    Chứng chỉ (mỗi dòng một mục):
+                                </p>
                                 <textarea
                                     name="certifications"
                                     id="certifications-textarea"
-                                    placeholder="TOEIC 600+&#10;MOS Excel"
+                                    placeholder="TOEIC 600+
+MOS Excel"
                                     class="text-wrapper-7"
                                     style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem; min-height: 80px; resize: vertical; font-family: inherit;"
-                                >{
-                                    (() => {
-                                        try {
-                                            if (userProfile?.certifications) {
-                                                const certifications = JSON.parse(userProfile.certifications);
-                                                return Array.isArray(certifications) ? certifications.join('\n') : '';
+                                    >{
+                                        (() => {
+                                            try {
+                                                if (
+                                                    userProfile?.certifications
+                                                ) {
+                                                    const certifications =
+                                                        JSON.parse(
+                                                            userProfile.certifications
+                                                        );
+                                                    return Array.isArray(
+                                                        certifications
+                                                    )
+                                                        ? certifications.join(
+                                                              '\n'
+                                                          )
+                                                        : '';
+                                                }
+                                                return '';
+                                            } catch {
+                                                return '';
                                             }
-                                            return '';
-                                        } catch {
-                                            return '';
-                                        }
-                                    })()
-                                }</textarea>
+                                        })()
+                                    }</textarea
+                                >
                             </div>
                         </section>
                     </div>
@@ -460,7 +507,7 @@ try {
                     </div>
                     <div class="frame-54">
                         <a
-                            href={`/${lang}/profile/${userInfo?.username}`}
+                            href={l(`/profile/${userInfo?.username}`)}
                             class="button-stroke-small"
                             style="text-decoration: none;"
                         >
