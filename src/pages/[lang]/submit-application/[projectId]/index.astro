@@ -4,6 +4,7 @@ import '@/assets/css/submit-application.css';
 import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
+import type { Tables } from '@/types/database.types';
 export { getStaticPaths };
 
 const session = Astro.locals.session;
@@ -15,12 +16,9 @@ if (!session?.user) {
     return Astro.redirect(`/${lang}/sign-in`);
 }
 
-// Fetch project info
-let project: {
-    id: number;
-    title: string;
-    owner_id: string;
-} | null = null;
+// Fetch project info using types from database.types.ts
+let project: Pick<Tables<'projects'>, 'id' | 'title' | 'owner_id'> | null =
+    null;
 
 if (projectId) {
     try {

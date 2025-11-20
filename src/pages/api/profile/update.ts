@@ -45,9 +45,47 @@ export const POST: APIRoute = async ({ request, locals }) => {
         const phone = formData.get('phone') as string | null;
         const bio = formData.get('bio') as string | null;
         const address = formData.get('address') as string | null;
+        const interestsText = formData.get('interests') as string | null;
+        const experiencesText = formData.get('experiences') as string | null;
+        const projectsText = formData.get('projects') as string | null;
+        const certificationsText = formData.get('certifications') as string | null;
         const skillIds = formData.getAll('skill_ids') as string[];
         const avatarFile = formData.get('avatar') as File | null;
         const coverImageFile = formData.get('cover_image') as File | null;
+
+        // Parse textarea inputs to JSON arrays (split by newline, filter empty lines)
+        const interests = interestsText
+            ? JSON.stringify(
+                  interestsText
+                      .split('\n')
+                      .map((line) => line.trim())
+                      .filter((line) => line.length > 0)
+              )
+            : null;
+        const experiences = experiencesText
+            ? JSON.stringify(
+                  experiencesText
+                      .split('\n')
+                      .map((line) => line.trim())
+                      .filter((line) => line.length > 0)
+              )
+            : null;
+        const projects = projectsText
+            ? JSON.stringify(
+                  projectsText
+                      .split('\n')
+                      .map((line) => line.trim())
+                      .filter((line) => line.length > 0)
+              )
+            : null;
+        const certifications = certificationsText
+            ? JSON.stringify(
+                  certificationsText
+                      .split('\n')
+                      .map((line) => line.trim())
+                      .filter((line) => line.length > 0)
+              )
+            : null;
 
         // Upload avatar if provided
         let avatarUrl: string | null = userInfo.avatar_url || null;
@@ -163,6 +201,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
                     bio: bio || null,
                     address: address || null,
                     portfolio_url: coverImageUrl || null,
+                    interests: interests || null,
+                    experiences: experiences || null,
+                    projects: projects || null,
+                    certifications: certifications || null,
                 })
                 .eq('id', existingProfile.id);
 
@@ -181,6 +223,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
                     bio: bio || null,
                     address: address || null,
                     portfolio_url: coverImageUrl || null,
+                    interests: interests || null,
+                    experiences: experiences || null,
+                    projects: projects || null,
+                    certifications: certifications || null,
                 });
 
             if (insertError) {

@@ -4,6 +4,7 @@ import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import { supabase } from '@/lib/supabase';
+import type { Tables } from '@/types/database.types';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
@@ -12,8 +13,8 @@ if (!session?.user) {
     return Astro.redirect(`/${lang}/sign-in`);
 }
 
-// Load skills from database
-let skills: Array<{ id: number; name: string }> = [];
+// Load skills from database using types from database.types.ts
+let skills: Array<Pick<Tables<'skills'>, 'id' | 'name'>> = [];
 try {
     const { data, error } = await supabase
         .from('skills')

@@ -336,7 +336,7 @@
         "trangThai": "Status",
         "tienTrinh": "Progress"
     },
-        "box-project-creator": {
+    "box-project-creator": {
         "title": "Exchange Skill",
         "skill1": "Skill 1",
         "skill2": "Skill 2",
@@ -351,5 +351,22 @@
         "job": "Job Description",
         "text": "text",
         "btn": "Apply"
+    },
+    "profile": {
+        "thongTinChung": "General Information",
+        "soDienThoai": "Phone Number",
+        "email": "Email",
+        "thongTinThem": "Additional Info",
+        "linhVucQuanTam": "Interests",
+        "kinhNghiem": "Experience",
+        "thanhTuu": "Achievements",
+        "duAnTungLam": "Projects Done",
+        "chungChi": "Certificates",
+        "chiaSe": "Share",
+        "chinhSua": "Edit",
+        "moTa": "Description",
+        "kiNang": "Skills",
+        "duAn": "Projects",
+        "danhGia": "Reviews"
     }
 }
