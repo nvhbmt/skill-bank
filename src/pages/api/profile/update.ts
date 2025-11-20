@@ -116,7 +116,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
         if (coverImageFile && coverImageFile.size > 0) {
             const fileExt = coverImageFile.name.split('.').pop();
-            const filePath = `cover-images/${session.user.id}/${Date.now()}.${fileExt}`;
+            const filePath = `${session.user.id}/${Date.now()}.${fileExt}`;
 
             const { data: uploadData, error: uploadError } =
                 await authenticatedSupabase.storage
