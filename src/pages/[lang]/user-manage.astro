@@ -1,0 +1,134 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+import '@/assets/css/user-manage.css';
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <Header />
+    <div class="user-manage-container container">
+        <div class="center-bypass">
+            <h1 class="page-title">{t('user-manage.userManagement')}</h1>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 300px;">
+                        {t('user-manage.userName')}
+                        <div class="center-bypass">
+                            <div class="search">
+                                <input
+                                    type="text"
+                                    placeholder={t(
+                                        'user-manage.searchUsername'
+                                    )}
+                                />
+                                <button>
+                                    <img
+                                        src="/assets/images/search-icon.svg"
+                                        alt=""
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    </th>
+                    <th style="width: 400px;">
+                        Email
+                        <div class="center-bypass">
+                            <div class="search">
+                                <input
+                                    type="text"
+                                    placeholder={t('user-manage.searchEmail')}
+                                />
+                                <button>
+                                    <img
+                                        src="/assets/images/search-icon.svg"
+                                        alt=""
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    </th>
+                    <th style="width: 200px;">
+                        {t('user-manage.role')}
+                        <div class="center-bypass">
+                            <div class="search">
+                                <input
+                                    type="text"
+                                    placeholder={t('user-manage.searchRole')}
+                                    style="width: 125px;"
+                                />
+                                <button>
+                                    <img
+                                        src="/assets/images/search-icon.svg"
+                                        alt=""
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    </th>
+                    <th style="width: 200px;">
+                        <div
+                            class="dropdown"
+                            style="display: flex; flex-direction: row; gap: 10px;"
+                        >
+                            <div>
+                                {t('user-manage.status')}
+                            </div>
+                            <button>
+                                <img src="/assets/images/dropdown.svg" alt="" />
+                            </button>
+                        </div>
+                    </th>
+                    <th style="width: 400px;">
+                        {t('user-manage.userDetails')}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 300px;">Nguyễn Xuân Việt Anh</td>
+                    <td style="width: 400px;">nguyenxuanvietanh@gmail.com</td>
+                    <td style="width: 200px; text-align: center;">Nô lệ</td>
+                    <td style="width: 100px; text-align: center;">Offline</td>
+                    <td style="width: 400px;">Chúa nhây</td>
+                </tr>
+                <tr>
+                    <td style="width: 300px;">Nguyễn Xuân Việt Em</td>
+                    <td style="width: 400px;">nguyenxuanvietem@gmail.com</td>
+                    <td style="width: 200px; text-align: center;"
+                        >Nô lệ cấp thấp</td
+                    >
+                    <td style="width: 100px; text-align: center;">Offline</td>
+                    <td style="width: 400px;">Chúa nhây</td>
+                </tr>
+                <tr>
+                    <td style="width: 300px;">Insert</td>
+                    <td style="width: 400px;">data</td>
+                    <td style="width: 200px; text-align: center;">từ</td>
+                    <td style="width: 100px; text-align: center;">js</td>
+                    <td style="width: 400px;">hoặc file</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="buttons">
+        <button class="action-button">
+            {t('user-manage.details')}
+        </button>
+        <button class="action-button">
+            {t('user-manage.change')}
+        </button>
+        <button class="action-button">
+            {t('user-manage.lock')}
+        </button>
+        <button class="action-button">
+            {t('user-manage.delete')}
+        </button>
+    </div>
+</DefaultLayout>

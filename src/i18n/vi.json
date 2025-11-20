@@ -214,6 +214,7 @@
         "task-desc-2-top": "• Chỉnh sửa phần wireframe. ",
         "task-desc-2-bottom": "• Thiết kế trang chủ.",
         "widget-title-2": "Thành viên"
+    },
     "footer": {
         "description": "Nền tảng kết nối người có kỹ năng với các dự án thực tế. Nơi bạn chia sẻ chuyên môn, tham gia dự án và phát triển bản thân.",
         "quickLinks": "Liên kết nhanh",
@@ -229,5 +230,33 @@
         "contactSupport": "Liên hệ hỗ trợ",
         "contact": "Liên hệ",
         "copyright": "Bản quyền © 2025 Skill Bank. Mọi quyền được bảo lưu."
+    },
+    "user-manage": {
+        "userManagement": "Quản lý người dùng",
+        "userName": "Tên người dùng",
+        "searchUsername": "Tìm kiếm tên người dùng...",
+        "searchEmail": "Tìm kiếm email...",
+        "role": "Vai trò",
+        "searchRole": "Tìm kiếm vai trò...",
+        "status": "Trạng thái",
+        "userDetails": "Chi tiết người dùng",
+        "details": "Xem",
+        "change": "Sửa",
+        "lock": "Khóa",
+        "delete": "Xóa"
+    },
+    "candidate-manage": {
+        "candidateManagement": "Quản lý ứng viên",
+        "candidateName": "Tên ứng viên",
+        "searchCandidateName": "Tìm kiếm tên ứng viên...",
+        "searchEmail": "Tìm kiếm email...",
+        "role": "Vai trò",
+        "searchRole": "Tìm kiếm vai trò...",
+        "status": "Trạng thái",
+        "userDetails": "Chi tiết người dùng",
+        "details": "Xem",
+        "change": "Sửa",
+        "lock": "Khóa",
+        "delete": "Xóa"
     }
 }
