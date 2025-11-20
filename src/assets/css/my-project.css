@@ -1,0 +1,273 @@
+/* --- TÁI SỬ DỤNG BIẾN CHUẨN --- */
+:root {
+    --color-status-green: #22c55e;
+    --color-status-orange: #f97316;
+    --color-status-blue: #3b82f6;
+
+    --color-text-gray: #9ca3af;
+}
+.wrapper {
+    background-image: url('/assets/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-attachment: fixed;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 0;
+}
+
+/* === CONTAINER CHÍNH === */
+.my-projects-container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    /* Hardcode nền đen mờ */
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    /* Hardcode viền glass */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2.5rem;
+    padding: 2.5rem 3.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80vh;
+    /* Hardcode shadow */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* === HEADER === */
+.page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+.page-title {
+    font-size: var(--font-size-4xl);
+    font-weight: 500;
+    color: var(--color-text-invert);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.625rem;
+}
+.page-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-gray);
+    font-weight: 400;
+}
+
+/* === TABS NAVIGATION === */
+.tabs-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    /* Hardcode nền tab thường */
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
+    color: var(--color-text-gray);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 10rem;
+    text-align: center;
+}
+
+.tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--color-text-invert);
+}
+
+.tab-btn.active {
+    /* Hardcode nền tab active (xám đậm) */
+    background-color: rgba(80, 80, 80, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-invert);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+}
+
+/* === PROJECTS GRID === */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.875rem;
+    width: 100%;
+}
+
+/* === PROJECT CARD === */
+.project-card {
+    /* Hardcode nền card */
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    /* Hardcode shadow tím khi hover */
+    box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+/* Header Card */
+.card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+}
+.card-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--color-text-invert);
+}
+
+/* Info Row */
+.card-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.3rem;
+}
+.member-avatars {
+    display: flex;
+    align-items: center;
+}
+.avatar-img {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3b3b3b; /* Viền trùng màu nền tối giả lập */
+    margin-left: -0.625rem;
+}
+.avatar-img:first-child {
+    margin-left: 0;
+}
+.avatar-more {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background-color: #525252;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid #3b3b3b;
+    margin-left: -0.625rem;
+}
+.project-date {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-gray);
+}
+
+/* Status Row */
+.card-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.status-label {
+    font-size: var(--font-size-base);
+    color: var(--color-text-invert);
+}
+.status-indicator {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 6px currentColor;
+}
+.status-green {
+    background-color: var(--color-status-green);
+    color: var(--color-status-green);
+}
+.status-orange {
+    background-color: var(--color-status-orange);
+    color: var(--color-status-orange);
+}
+.status-blue {
+    background-color: var(--color-status-blue);
+    color: var(--color-status-blue);
+}
+
+/* Progress Bar */
+.card-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.progress-label {
+    font-size: var(--font-size-base);
+    color: var(--color-text-invert);
+    min-width: 4.5rem;
+}
+.progress-track {
+    flex: 1;
+    height: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    /* Hardcode gradient tím */
+    background: linear-gradient(90deg, #a855f7 0%, #d8b4fe 100%);
+    border-radius: 10px;
+}
+.progress-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-gray);
+    min-width: 2.5rem;
+    text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .my-projects-container {
+        padding: 2rem;
+    }
+}
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    .tabs-container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .tab-btn {
+        width: 100%;
+    }
+}

@@ -298,5 +298,15 @@
         "change": "Sửa",
         "lock": "Khóa",
         "delete": "Xóa"
+    },
+    "my-project": {
+        "title": "Dự án của tôi",
+        "description": "Một số dự án mà bạn đang có",
+        "choDuyet": "Chờ duyệt",
+        "daDuyet": "Đã duyệt",
+        "thamGia": "Đã tham gia",
+        "hoanThanh": "Đã hoàn thành",
+        "trangThai": "Trạng thái",
+        "tienTrinh": "Tiến trình"
     }
 }

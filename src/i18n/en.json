@@ -298,5 +298,15 @@
         "change": "Edit",
         "lock": "Lock",
         "delete": "Delete"
+    },
+    "my-project": {
+        "title": "My Projects",
+        "description": "Some projects you currently have",
+        "choDuyet": "Pending",
+        "daDuyet": "Approved",
+        "thamGia": "Joined",
+        "hoanThanh": "Completed",
+        "trangThai": "Status",
+        "tienTrinh": "Progress"
     }
 }
