@@ -145,9 +145,15 @@
         "chiTiet": "Chi tiết"
     },
     "header": {
-        "aboutUs": "Về chúng tôi",
-        "viewAll": "Xem tất cả",
-        "createProject": "Đăng tải dự án"
+        "homepage": "Trang chủ",
+        "myProject": "Dự án của tôi",
+        "aboutUs": "Vể chúng tôi",
+        "help": "Trợ giúp",
+        "doiMK": "Đổi mật khẩu",
+        "dangXuat": "Đăng xuất",
+        "explore": "Khám phá dự án",
+        "createProject": "Đăng tải dự án",
+        "viewProfile": "Xem hồ sơ"
     },
     "home": {
         "searchPlaceholder": "Tìm kiếm",
