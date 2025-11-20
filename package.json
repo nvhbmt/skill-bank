@@ -12,6 +12,7 @@
         "format:staged": "prettier --write --ignore-unknown"
     },
     "dependencies": {
+        "@astrojs/vercel": "^9.0.1",
         "@supabase/ssr": "^0.7.0",
         "@supabase/supabase-js": "^2.76.1",
         "astro": "^5.15.1",

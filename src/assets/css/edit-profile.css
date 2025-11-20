@@ -827,16 +827,6 @@ label[for='cover-image-upload']:hover .cover-image-overlay {
     position: relative;
     width: 300px;
     height: 149px;
-    background-image: url('/assets/images/Frame 572.svg');
-    background-size: cover;
-    background-position: 50% 50%;
-}
-
-.section .frame-33 {
-    position: relative;
-    width: 300px;
-    height: 149px;
-    background-image: url(./img/frame-572-2.png);
     background-size: cover;
     background-position: 50% 50%;
 }
@@ -848,24 +838,6 @@ label[for='cover-image-upload']:hover .cover-image-overlay {
     align-items: flex-end;
     gap: 4px;
     position: relative;
-}
-
-.section .frame-35 {
-    position: relative;
-    width: 300px;
-    height: 149px;
-    background-image: url(./img/image.png);
-    background-size: cover;
-    background-position: 50% 50%;
-}
-
-.section .frame-36 {
-    position: relative;
-    width: 300px;
-    height: 149px;
-    background-image: url(./img/frame-572.png);
-    background-size: cover;
-    background-position: 50% 50%;
 }
 
 .section .ic-round-plus-wrapper {
