@@ -4,56 +4,52 @@ import '@/assets/css/personal-profile.css';
 import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
+import type { Tables } from '@/types/database.types';
 export { getStaticPaths };
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
 const username = (Astro.params as { username?: string }).username;
 
-// Initialize data
-let userInfo: {
-    user_id: string;
-    email: string;
-    full_name: string | null;
-    username: string;
-    avatar_url: string | null;
-    role: string;
-} | null = null;
+// Initialize data using types from database.types.ts
+let userInfo: Tables<'user_info'> | null = null;
 
-let userProfile: {
-    phone: string | null;
-    bio: string | null;
-    address: string | null;
-    portfolio_url: string | null;
-} | null = null;
+let userProfile: Pick<
+    Tables<'user_profiles'>,
+    | 'phone'
+    | 'bio'
+    | 'address'
+    | 'portfolio_url'
+    | 'interests'
+    | 'experiences'
+    | 'projects'
+    | 'certifications'
+> | null = null;
 
-let userSkills: Array<{
-    id: number;
-    name: string;
-    category: string | null;
-    level: string | null;
-}> = [];
+let userSkills: Array<
+    Pick<Tables<'skills'>, 'id' | 'name' | 'category'> & {
+        level: string | null;
+    }
+> = [];
 
-let userProjects: Array<{
-    id: number;
-    title: string;
-    cover_image_url: string | null;
-    project_type: string | null;
-    status: string | null;
-}> = [];
+let userProjects: Array<
+    Pick<
+        Tables<'projects'>,
+        'id' | 'title' | 'cover_image_url' | 'project_type' | 'status'
+    >
+> = [];
 
-let reviews: Array<{
-    id: number;
-    rating: number | null;
-    comment: string | null;
-    reviewer_id: string;
-    reviewer_info: {
-        full_name: string | null;
-        username: string;
-        avatar_url: string | null;
-    } | null;
-    created_at: string | null;
-}> = [];
+let reviews: Array<
+    Pick<
+        Tables<'reviews'>,
+        'id' | 'rating' | 'comment' | 'reviewer_id' | 'created_at'
+    > & {
+        reviewer_info: Pick<
+            Tables<'user_info'>,
+            'full_name' | 'username' | 'avatar_url'
+        > | null;
+    }
+> = [];
 
 let isOwner = false;
 
@@ -79,7 +75,9 @@ if (username) {
             // Fetch user_profiles
             const { data: profileData, error: profileError } = await supabase
                 .from('user_profiles')
-                .select('phone, bio, address, portfolio_url')
+                .select(
+                    'phone, bio, address, portfolio_url, interests, experiences, projects, certifications'
+                )
                 .eq('user_id', userInfo.user_id)
                 .is('deleted_at', null)
                 .maybeSingle();
@@ -182,405 +180,372 @@ function getStarCount(rating: number | null): {
 ---
 
 <DefaultLayout>
-    <Header />
+    <div class="wrapper">
+        <Header />
 
-    <main class="section">
-        <div class="container profile-container">
-            <aside class="frame">
-                <section class="frame-wrapper">
-                    <div class="div">
-                        <div
-                            class="avt-va"
-                            role="img"
-                            aria-label={`Avatar của ${userInfo?.full_name || userInfo?.username || 'User'}`}
-                        >
+        <main>
+            <div class="profile-container">
+                <!-- === CỘT TRÁI: SIDEBAR === -->
+                <div class="left-sidebar">
+                    <!-- 1. User Card -->
+                    <div class="sidebar-card user-card">
+                        <div class="user-avatar-wrapper">
                             <img
-                                src={userInfo?.avatar_url ||
-                                    '/assets/images/vy2.png'}
+                                src={
+                                    userInfo?.avatar_url ||
+                                    '/assets/images/vy2.png'
+                                }
                                 alt={`Avatar của ${userInfo?.full_name || userInfo?.username || 'User'}`}
+                                class="user-avatar"
                             />
                         </div>
-                        <div class="frame-2">
-                            <h1 class="text-wrapper">
-                                {
-                                    userInfo?.full_name ||
-                                        userInfo?.username ||
-                                        'User'
-                                }
-                            </h1>
-                            <div class="div-wrapper">
-                                <span class="text-wrapper-2">
-                                    @{userInfo?.username || 'username'}
-                                </span>
-                            </div>
+                        <div class="user-info">
+                            <h3>
+                                {userInfo?.full_name ||
+                                    userInfo?.username ||
+                                    'User'}
+                            </h3>
+                            <span>@{userInfo?.username || 'username'}</span>
                         </div>
                     </div>
-                </section>
-                <div class="frame-3">
-                    <section class="frame-4">
-                        <h2 class="text-wrapper-3">Thông tin chung</h2>
-                        <div class="line"></div>
-                        <div class="frame-5">
-                            <div class="frame-6">
-                                <p class="text-wrapper-4">
-                                    {
-                                        userInfo?.full_name ||
-                                            userInfo?.username ||
-                                            'User'
-                                    }
-                                </p>
-                                <p class="text-wrapper-5">
-                                    @{userInfo?.username || 'username'}
-                                </p>
-                            </div>
-                            {
-                                userProfile?.phone && (
-                                    <p class="div-2">
-                                        <span class="span">
-                                            Số điện thoại: <br />
-                                        </span>
-                                        <span class="text-wrapper-6">
-                                            {userProfile.phone}
-                                        </span>
-                                    </p>
-                                )
-                            }
-                            {
-                                userInfo?.email && (
-                                    <p class="div-2">
-                                        <span class="span">Email:</span>
-                                        <span class="text-wrapper-6">
-                                            {userInfo.email}
-                                        </span>
-                                    </p>
-                                )
-                            }
+
+                    <!-- 2. Thông tin chung -->
+                    <div class="sidebar-card section-card">
+                        <h4>{t('profile.thongTinChung')}</h4>
+                        <div class="info-list">
+                            {userProfile?.phone && (
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        {t('profile.soDienThoai')}:
+                                    </span>
+                                    <span class="info-value">
+                                        {userProfile.phone}
+                                    </span>
+                                </div>
+                            )}
+                            {userInfo?.email && (
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        {t('profile.email')}:
+                                    </span>
+                                    <span class="info-value">
+                                        {userInfo.email}
+                                    </span>
+                                </div>
+                            )}
                         </div>
-                    </section>
-                    {
-                        userProfile?.address && (
-                            <section class="frame-7">
-                                <h2 class="text-wrapper-3">Thông tin thêm</h2>
-                                <div class="line" />
-                                <div class="frame-8">
-                                    <p class="text-wrapper-7">Địa chỉ:</p>
-                                    <ul class="frame-9">
-                                        <li class="text-wrapper-7">
+                    </div>
+
+                    <!-- 3. Thông tin thêm -->
+                    {(userProfile?.address ||
+                        userProfile?.interests ||
+                        userProfile?.experiences) && (
+                        <div class="sidebar-card section-card">
+                            <h4>{t('profile.thongTinThem')}</h4>
+                            <div class="info-list">
+                                {userProfile?.address && (
+                                    <div class="info-item">
+                                        <span class="info-label">Địa chỉ:</span>
+                                        <span class="info-value">
                                             {userProfile.address}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </section>
-                        )
-                    }
-                </div>
-            </aside>
-            <section class="frame-13">
-                {
-                    userProfile?.portfolio_url && (
-                        <img
-                            class="rectangle"
-                            src={userProfile.portfolio_url}
-                            alt="Ảnh bìa"
-                        />
-                    )
-                }
-                <div class="frame-14">
-                    {
-                        userProfile?.bio && (
-                            <section class="frame-15">
-                                <h2 class="text-wrapper-9">Mô tả :</h2>
-                                <p class="p">{userProfile.bio}</p>
-                            </section>
-                        )
-                    }
-                    {
-                        userSkills.length > 0 && (
-                            <section class="frame-15">
-                                <div class="frame-16">
-                                    <h2 class="text-wrapper-10">Kĩ năng :</h2>
-                                </div>
-                                <div class="frame-15">
-                                    <div class="frame-17">
-                                        {userSkills.map((skill, index) => (
-                                            <span
-                                                class={
-                                                    index % 2 === 0
-                                                        ? 'frame-18'
-                                                        : 'frame-19'
-                                                }
-                                            >
-                                                <span class="text-wrapper-11">
-                                                    {skill.name}
-                                                    {skill.category
-                                                        ? ` / ${skill.category}`
-                                                        : ''}
-                                                </span>
-                                            </span>
-                                        ))}
+                                        </span>
                                     </div>
-                                </div>
-                            </section>
-                        )
-                    }
-                    {
-                        userProjects.length > 0 && (
-                            <section class="frame-15">
-                                <div class="frame-16">
-                                    <h2 class="text-wrapper-10">Dự án :</h2>
-                                </div>
-                                <div class="group">
-                                    <div class="frame-23">
-                                        {userProjects.map((project) => (
-                                            <article class="frame-24">
-                                                <a
-                                                    href={`/${lang}/project-detail/${project.id}`}
-                                                    style="text-decoration: none; color: inherit;"
-                                                >
-                                                    <div class="card-d-n-nh">
-                                                        <div
-                                                            class="frame-25"
-                                                            style={
-                                                                project.cover_image_url
-                                                                    ? `background-image: url('${project.cover_image_url}'); background-size: cover; background-position: 50% 50%;`
-                                                                    : ''
-                                                            }
-                                                        />
-                                                        <div class="frame-26">
-                                                            <div class="frame-27">
-                                                                <h3 class="text-wrapper-14">
-                                                                    {
-                                                                        project.title
-                                                                    }
-                                                                </h3>
-                                                                <p class="text-wrapper-15">
-                                                                    {project.project_type ||
-                                                                        'N/A'}
-                                                                </p>
-                                                            </div>
-                                                            <div class="frame-28">
-                                                                <span class="frame-29">
-                                                                    <span class="text-wrapper-16">
-                                                                        {project.status ||
-                                                                            'N/A'}
-                                                                    </span>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </article>
-                                        ))}
-                                    </div>
-                                </div>
-                            </section>
-                        )
-                    }
-                    {
-                        reviews.length > 0 && (
-                            <section class="frame-37">
-                                <h2 class="text-wrapper-9">Một số đánh giá:</h2>
-                                <div class="group-2">
-                                    <div class="frame-38">
-                                        <div class="frame-39">
-                                            {reviews
-                                                .slice(0, 3)
-                                                .map((review) => {
-                                                    const starCount =
-                                                        getStarCount(
-                                                            review.rating
-                                                        );
-                                                    const isFullRating =
-                                                        review.rating === 5;
-                                                    return (
-                                                        <article
-                                                            class={
-                                                                isFullRating
-                                                                    ? 'frame-47'
-                                                                    : 'frame-40'
-                                                            }
-                                                        >
-                                                            <div
-                                                                class={
-                                                                    isFullRating
-                                                                        ? 'frame-48'
-                                                                        : 'frame-41'
-                                                                }
-                                                            >
-                                                                <div
-                                                                    class={
-                                                                        isFullRating
-                                                                            ? 'frame-49'
-                                                                            : 'frame-42'
-                                                                    }
-                                                                >
-                                                                    {isFullRating ? (
-                                                                        <div class="frame-50">
-                                                                            <div
-                                                                                class="avt-ln"
-                                                                                style={
-                                                                                    review
-                                                                                        .reviewer_info
-                                                                                        ?.avatar_url
-                                                                                        ? `background-image: url('${review.reviewer_info.avatar_url}'); background-size: cover; background-position: 50% 50%;`
-                                                                                        : ''
-                                                                                }
-                                                                                role="img"
-                                                                                aria-label={`Avatar của ${review.reviewer_info?.full_name || review.reviewer_info?.username || 'Reviewer'}`}
-                                                                            />
-                                                                            <div class="star-box">
-                                                                                {Array.from(
-                                                                                    {
-                                                                                        length: 5,
-                                                                                    }
-                                                                                ).map(
-                                                                                    () => (
-                                                                                        <div class="ystar" />
-                                                                                    )
-                                                                                )}
-                                                                            </div>
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div class="frame-43">
-                                                                            <div class="frame-43">
-                                                                                <div class="frame-44">
-                                                                                    <img
-                                                                                        class="avt-nh"
-                                                                                        src={
-                                                                                            review
-                                                                                                .reviewer_info
-                                                                                                ?.avatar_url ||
-                                                                                            '/assets/images/avt-nhỏ.svg'
-                                                                                        }
-                                                                                        alt={`Avatar của ${review.reviewer_info?.full_name || review.reviewer_info?.username || 'Reviewer'}`}
-                                                                                    />
-                                                                                    <div class="star-box-small">
-                                                                                        {Array.from(
-                                                                                            {
-                                                                                                length: 5,
-                                                                                            }
-                                                                                        ).map(
-                                                                                            (
-                                                                                                _,
-                                                                                                i
-                                                                                            ) => (
-                                                                                                <div
-                                                                                                    class={
-                                                                                                        i <
-                                                                                                        starCount.full
-                                                                                                            ? 'ystar'
-                                                                                                            : 'gstar'
-                                                                                                    }
-                                                                                                />
-                                                                                            )
-                                                                                        )}
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    )}
-                                                                    <p
-                                                                        class={
-                                                                            isFullRating
-                                                                                ? 'text-wrapper-21'
-                                                                                : 'text-wrapper-18'
-                                                                        }
-                                                                    >
-                                                                        {review.comment ||
-                                                                            'Không có nhận xét'}
-                                                                    </p>
-                                                                </div>
-                                                                <div
-                                                                    class={
-                                                                        isFullRating
-                                                                            ? 'frame-52'
-                                                                            : 'frame-46'
-                                                                    }
-                                                                >
-                                                                    <p
-                                                                        class={
-                                                                            isFullRating
-                                                                                ? 'text-wrapper-22'
-                                                                                : 'text-wrapper-19'
-                                                                        }
-                                                                    >
-                                                                        {review
-                                                                            .reviewer_info
-                                                                            ?.full_name ||
-                                                                            review
-                                                                                .reviewer_info
-                                                                                ?.username ||
-                                                                            'Anonymous'}
-                                                                    </p>
-                                                                    <p
-                                                                        class={
-                                                                            isFullRating
-                                                                                ? 'text-wrapper-23'
-                                                                                : 'text-wrapper-20'
-                                                                        }
-                                                                    >
-                                                                        @
-                                                                        {review
-                                                                            .reviewer_info
-                                                                            ?.username ||
-                                                                            'anonymous'}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </article>
+                                )}
+                                {userProfile?.interests && (
+                                    <div class="info-item">
+                                        <span class="info-label">
+                                            {t('profile.linhVucQuanTam')}:
+                                        </span>
+                                        <ul class="bullet-list">
+                                            {(() => {
+                                                try {
+                                                    const interests = JSON.parse(
+                                                        userProfile.interests
                                                     );
-                                                })}
+                                                    return Array.isArray(
+                                                        interests
+                                                    )
+                                                        ? interests
+                                                        : [];
+                                                } catch {
+                                                    return [];
+                                                }
+                                            })().map(
+                                                (interest: string) => (
+                                                    <li>{interest}</li>
+                                                )
+                                            )}
+                                        </ul>
+                                    </div>
+                                )}
+                                {userProfile?.experiences && (
+                                    <div class="info-item" style="margin-top: 1rem;">
+                                        <span class="info-label">
+                                            {t('profile.kinhNghiem')}:
+                                        </span>
+                                        <ul class="bullet-list">
+                                            {(() => {
+                                                try {
+                                                    const experiences = JSON.parse(
+                                                        userProfile.experiences
+                                                    );
+                                                    return Array.isArray(
+                                                        experiences
+                                                    )
+                                                        ? experiences
+                                                        : [];
+                                                } catch {
+                                                    return [];
+                                                }
+                                            })().map(
+                                                (experience: string) => (
+                                                    <li>{experience}</li>
+                                                )
+                                            )}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    <!-- 4. Thành tựu -->
+                    {(userProfile?.projects ||
+                        userProfile?.certifications) && (
+                        <div class="sidebar-card section-card">
+                            <h4>{t('profile.thanhTuu')}</h4>
+                            <div class="info-list">
+                                {userProfile?.projects && (
+                                    <div class="info-item">
+                                        <span class="info-label">
+                                            {t('profile.duAnTungLam')}:
+                                        </span>
+                                        <ul class="bullet-list">
+                                            {(() => {
+                                                try {
+                                                    const projects = JSON.parse(
+                                                        userProfile.projects
+                                                    );
+                                                    return Array.isArray(
+                                                        projects
+                                                    )
+                                                        ? projects
+                                                        : [];
+                                                } catch {
+                                                    return [];
+                                                }
+                                            })().map(
+                                                (project: string) => (
+                                                    <li>{project}</li>
+                                                )
+                                            )}
+                                        </ul>
+                                    </div>
+                                )}
+                                {userProfile?.certifications && (
+                                    <div class="info-item" style="margin-top: 1rem;">
+                                        <span class="info-label">
+                                            {t('profile.chungChi')}:
+                                        </span>
+                                        <ul class="bullet-list">
+                                            {(() => {
+                                                try {
+                                                    const certifications = JSON.parse(
+                                                        userProfile.certifications
+                                                    );
+                                                    return Array.isArray(
+                                                        certifications
+                                                    )
+                                                        ? certifications
+                                                        : [];
+                                                } catch {
+                                                    return [];
+                                                }
+                                            })().map(
+                                                (certification: string) => (
+                                                    <li>{certification}</li>
+                                                )
+                                            )}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <!-- === CỘT PHẢI: CONTENT CHÍNH === -->
+                <div class="right-content">
+                    <!-- 1. Banner -->
+                    <div class="banner-section">
+                        <img
+                            src={
+                                userProfile?.portfolio_url ||
+                                'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1600&auto=format&fit=crop'
+                            }
+                            alt="Cover"
+                            class="banner-image"
+                        />
+                        <div class="banner-overlay">
+                            <button class="btn-banner btn-share">
+                                <i class="fa-solid fa-share-nodes"></i>
+                                {t('profile.chiaSe')}
+                            </button>
+                            {isOwner && (
+                                <a
+                                    href={l('/edit-profile')}
+                                    class="btn-banner btn-edit"
+                                    style="text-decoration: none;"
+                                >
+                                    <i class="fa-solid fa-pen"></i>
+                                    {t('profile.chinhSua')}
+                                </a>
+                            )}
+                        </div>
+                    </div>
+
+                    <!-- 2. Mô tả -->
+                    {userProfile?.bio && (
+                        <div class="content-block">
+                            <h3 class="content-title">{t('profile.moTa')} :</h3>
+                            <p class="description-text">{userProfile.bio}</p>
+                        </div>
+                    )}
+
+                    <!-- 3. Kỹ năng -->
+                    {userSkills.length > 0 && (
+                        <div class="content-block">
+                            <h3 class="content-title">{t('profile.kiNang')} :</h3>
+                            <div class="skills-wrapper">
+                                {userSkills.map((skill) => (
+                                    <span class="skill-tag">
+                                        {skill.name}
+                                        {skill.category
+                                            ? ` / ${skill.category}`
+                                            : ''}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <!-- 4. Dự án (Grid Card) -->
+                    {userProjects.length > 0 && (
+                        <div class="content-block">
+                            <h3 class="content-title">{t('profile.duAn')} :</h3>
+                            <div class="projects-row">
+                                {userProjects.map((project) => (
+                                    <a
+                                        href={l(`/project/${project.id}`)}
+                                        class="project-card-new"
+                                    >
+                                        <div class="project-thumb-wrapper">
+                                            <img
+                                                src={
+                                                    project.cover_image_url ||
+                                                    '/assets/images/vy2.png'
+                                                }
+                                                alt={project.title}
+                                                class="project-thumb-new"
+                                            />
                                         </div>
-                                        {reviews.length > 3 && (
-                                            <nav
-                                                class="frame-53"
-                                                aria-label="Điều hướng đánh giá"
+                                        <div class="project-info-new">
+                                            <div class="project-header-row">
+                                                <span class="project-title-new">
+                                                    {project.title}
+                                                </span>
+                                                <span class="project-tag-badge">
+                                                    {project.project_type || 'N/A'}
+                                                </span>
+                                            </div>
+                                            <span class="project-email">
+                                                {project.status || 'N/A'}
+                                            </span>
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <!-- 5. Đánh giá (Carousel Tự động + Swipe) -->
+                    {reviews.length > 0 && (
+                        <div class="content-block">
+                            <h3 class="content-title">{t('profile.danhGia')}:</h3>
+
+                            <div class="reviews-container" id="reviews-container">
+                                <div class="reviews-viewport">
+                                    <div class="reviews-track" id="reviews-track">
+                                        {reviews.map((review, index) => (
+                                            <div
+                                                class={`review-slide ${index === 0 ? 'active' : ''}`}
                                             >
-                                                {Array.from({
-                                                    length: Math.ceil(
-                                                        reviews.length / 3
-                                                    ),
-                                                }).map((_, index) => (
-                                                    <button
-                                                        class={
-                                                            index === 0
-                                                                ? 'ellipse-2'
-                                                                : 'ellipse'
+                                                <div class="review-card-featured">
+                                                    <img
+                                                        src={
+                                                            review.reviewer_info
+                                                                ?.avatar_url ||
+                                                            '/assets/images/vy2.png'
                                                         }
-                                                        type="button"
-                                                        aria-label={`Đánh giá ${index + 1}`}
-                                                        aria-current={
-                                                            index === 0
-                                                                ? 'true'
-                                                                : undefined
+                                                        alt={
+                                                            review.reviewer_info
+                                                                ?.full_name ||
+                                                            review.reviewer_info
+                                                                ?.username ||
+                                                            'Reviewer'
                                                         }
+                                                        class="reviewer-avatar"
                                                     />
-                                                ))}
-                                            </nav>
-                                        )}
+                                                    <div class="review-stars">
+                                                        {Array(
+                                                            review.rating || 0
+                                                        )
+                                                            .fill('★')
+                                                            .join('')}
+                                                    </div>
+                                                    <p class="review-text">
+                                                        "{review.comment ||
+                                                            'Không có nhận xét'}"
+                                                    </p>
+                                                    <div class="reviewer-info">
+                                                        <h5>
+                                                            {review.reviewer_info
+                                                                ?.full_name ||
+                                                                review
+                                                                    .reviewer_info
+                                                                    ?.username ||
+                                                                'Anonymous'}
+                                                        </h5>
+                                                        <span>
+                                                            @
+                                                            {review.reviewer_info
+                                                                ?.username ||
+                                                                'anonymous'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                            </section>
-                        )
-                    }
+
+                                <!-- Dots Navigation -->
+                                <div class="review-dots" id="review-dots">
+                                    {reviews.map((_, index) => (
+                                        <span
+                                            class={`dot ${index === 0 ? 'active' : ''}`}
+                                            data-index={index}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            </section>
-            <div class="box-home-wrapper">
-                <button class="home-wrapper">
-                    <span class="home-2">Chia sẻ</span>
-                </button>
-                {
-                    isOwner && (
-                        <a
-                            href={`/${lang}/edit-profile`}
-                            class="home-wrapper1"
-                            style="text-decoration: none;"
-                        >
-                            <span class="home-2">Chỉnh sửa</span>
-                        </a>
-                    )
-                }
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
+
+    <!-- Import Script -->
+    <script src="@/assets/script/personal-profile.js"></script>
 </DefaultLayout>

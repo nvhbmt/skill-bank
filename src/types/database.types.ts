@@ -521,28 +521,40 @@ export type Database = {
         Row: {
           address: string | null
           bio: string | null
+          certifications: string | null
           deleted_at: string | null
+          experiences: string | null
           id: number
+          interests: string | null
           phone: string | null
           portfolio_url: string | null
+          projects: string | null
           user_id: string
         }
         Insert: {
           address?: string | null
           bio?: string | null
+          certifications?: string | null
           deleted_at?: string | null
+          experiences?: string | null
           id?: number
+          interests?: string | null
           phone?: string | null
           portfolio_url?: string | null
+          projects?: string | null
           user_id: string
         }
         Update: {
           address?: string | null
           bio?: string | null
+          certifications?: string | null
           deleted_at?: string | null
+          experiences?: string | null
           id?: number
+          interests?: string | null
           phone?: string | null
           portfolio_url?: string | null
+          projects?: string | null
           user_id?: string
         }
         Relationships: []

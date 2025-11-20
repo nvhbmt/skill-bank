@@ -530,3 +530,418 @@ main {
         width: 80vw;
     }
 }
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .section .container {
+        gap: 30px;
+        padding: 30px 20px;
+    }
+
+    .section .frame-13 {
+        width: 100%;
+        max-width: 700px;
+    }
+
+    .section .frame-23 {
+        width: 100%;
+        left: 0;
+        padding: 0 20px;
+    }
+
+    .section .group {
+        background-size: cover;
+    }
+
+    .section .frame-38 {
+        width: 100%;
+        left: 0;
+        padding: 0 20px;
+    }
+
+    .section .box-home-wrapper {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin-top: 20px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 992px) {
+    .section .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        padding: 30px 20px;
+    }
+
+    .section .frame {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .section .frame-13 {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .section .rectangle {
+        height: 250px;
+    }
+
+    .section .frame-17 {
+        flex-wrap: wrap;
+    }
+
+    .section .frame-20 {
+        flex-wrap: wrap;
+    }
+
+    .section .group {
+        height: auto;
+        min-height: 280px;
+    }
+
+    .section .frame-23 {
+        width: 100%;
+        left: 0;
+        padding: 20px;
+        overflow-x: auto;
+    }
+
+    .section .frame-24 {
+        min-width: 280px;
+    }
+
+    .section .group-2 {
+        height: auto;
+        min-height: 466px;
+    }
+
+    .section .frame-38 {
+        width: 100%;
+        left: 0;
+        padding: 20px;
+    }
+
+    .section .frame-39 {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .section .frame-40,
+    .section .frame-47 {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .section .box-home-wrapper {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin-top: 30px;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .section .home-wrapper,
+    .section .home-wrapper1 {
+        width: 140px;
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 10px;
+    }
+
+    .section .container {
+        padding: 20px 15px;
+        gap: 24px;
+    }
+
+    .section .frame {
+        padding: 24px 16px;
+        border-radius: 30px;
+    }
+
+    .section .frame-wrapper {
+        padding: 16px 12px;
+        height: auto;
+        min-height: 100px;
+    }
+
+    .section .avt-va {
+        width: 50px;
+        height: 50px;
+    }
+
+    .section .text-wrapper {
+        font-size: 14px;
+    }
+
+    .section .text-wrapper-2 {
+        font-size: 9px;
+    }
+
+    .section .frame-4,
+    .section .frame-7,
+    .section .frame-10 {
+        padding: 12px 16px;
+    }
+
+    .section .text-wrapper-3 {
+        font-size: 14px;
+    }
+
+    .section .text-wrapper-4 {
+        font-size: 14px;
+    }
+
+    .section .text-wrapper-5,
+    .section .text-wrapper-6,
+    .section .text-wrapper-7,
+    .section .text-wrapper-8 {
+        font-size: 12px;
+    }
+
+    .section .frame-8 {
+        width: 100%;
+    }
+
+    .section .frame-13 {
+        width: 100%;
+    }
+
+    .section .rectangle {
+        height: 200px;
+    }
+
+    .section .p {
+        font-size: 18px;
+    }
+
+    .section .text-wrapper-9,
+    .section .text-wrapper-10 {
+        font-size: 16px;
+    }
+
+    .section .frame-17 {
+        gap: 8px;
+    }
+
+    .section .frame-18,
+    .section .frame-19 {
+        padding: 8px 16px;
+    }
+
+    .section .text-wrapper-11,
+    .section .text-wrapper-12 {
+        font-size: 14px;
+    }
+
+    .section .group {
+        height: auto;
+        min-height: 240px;
+        background-size: cover;
+    }
+
+    .section .frame-23 {
+        width: 100%;
+        left: 0;
+        top: 20px;
+        padding: 15px;
+        gap: 16px;
+    }
+
+    .section .frame-24 {
+        min-width: 250px;
+        width: 250px;
+    }
+
+    .section .card-d-n-nh {
+        height: 180px;
+    }
+
+    .section .frame-25,
+    .section .frame-32 {
+        height: 120px;
+    }
+
+    .section .text-wrapper-14 {
+        font-size: 14px;
+    }
+
+    .section .text-wrapper-15 {
+        font-size: 9px;
+    }
+
+    .section .group-2 {
+        height: auto;
+        min-height: 400px;
+        background-size: cover;
+    }
+
+    .section .frame-38 {
+        width: 100%;
+        left: 0;
+        top: 30px;
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .section .frame-39 {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .section .frame-40 {
+        width: 100%;
+        max-width: 100%;
+        padding: 16px 24px;
+    }
+
+    .section .frame-47 {
+        width: 100%;
+        max-width: 100%;
+        padding: 16px 24px;
+    }
+
+    .section .frame-41,
+    .section .frame-48 {
+        width: 100%;
+    }
+
+    .section .frame-50 {
+        width: 80px;
+    }
+
+    .section .avt-ln {
+        height: 80px;
+        border-radius: 40px;
+    }
+
+    .section .text-wrapper-21,
+    .section .text-wrapper-22 {
+        font-size: 16px;
+    }
+
+    .section .text-wrapper-23 {
+        font-size: 9px;
+    }
+
+    .section .box-home-wrapper {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin-top: 24px;
+        width: 100%;
+        gap: 12px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .section .home-wrapper,
+    .section .home-wrapper1 {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .section .home-2 {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section .container {
+        padding: 15px 10px;
+    }
+
+    .section .frame {
+        padding: 20px 12px;
+        border-radius: 24px;
+    }
+
+    .section .avt-va {
+        width: 45px;
+        height: 45px;
+    }
+
+    .section .text-wrapper {
+        font-size: 13px;
+    }
+
+    .section .text-wrapper-2 {
+        font-size: 8px;
+    }
+
+    .section .frame-4,
+    .section .frame-7,
+    .section .frame-10 {
+        padding: 10px 12px;
+    }
+
+    .section .rectangle {
+        height: 150px;
+    }
+
+    .section .p {
+        font-size: 16px;
+    }
+
+    .section .frame-18,
+    .section .frame-19 {
+        padding: 6px 12px;
+    }
+
+    .section .text-wrapper-11,
+    .section .text-wrapper-12 {
+        font-size: 12px;
+    }
+
+    .section .frame-24 {
+        min-width: 220px;
+        width: 220px;
+    }
+
+    .section .card-d-n-nh {
+        height: 160px;
+    }
+
+    .section .frame-25,
+    .section .frame-32 {
+        height: 100px;
+    }
+
+    .section .frame-40,
+    .section .frame-47 {
+        padding: 12px 16px;
+    }
+
+    .section .frame-50 {
+        width: 70px;
+    }
+
+    .section .avt-ln {
+        height: 70px;
+        border-radius: 35px;
+    }
+
+    .section .text-wrapper-21,
+    .section .text-wrapper-22 {
+        font-size: 14px;
+    }
+
+    .section .home-wrapper,
+    .section .home-wrapper1 {
+        width: 100%;
+        max-width: 180px;
+        height: 36px;
+    }
+
+    .section .home-2 {
+        font-size: 14px;
+    }
+}

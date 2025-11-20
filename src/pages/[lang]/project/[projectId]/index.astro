@@ -4,53 +4,40 @@ import Header from '@/components/Header.astro';
 import '@/assets/css/project.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
+import type { Tables } from '@/types/database.types';
 export { getStaticPaths };
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
 const projectId = (Astro.params as { projectId?: string }).projectId;
 
-// Initialize data
-let project: {
-    id: number;
-    title: string;
-    description: string | null;
-    cover_image_url: string | null;
-    project_type: string | null;
-    location: string | null;
-    start_date: string | null;
-    status: string | null;
-    owner_id: string;
-} | null = null;
+// Initialize data using types from database.types.ts
+let project: Tables<'projects'> | null = null;
 
-let owner: {
-    user_id: string;
-    email: string;
-    full_name: string | null;
-    username: string;
-    avatar_url: string | null;
-} | null = null;
+let owner: Pick<
+    Tables<'user_info'>,
+    'user_id' | 'email' | 'full_name' | 'username' | 'avatar_url'
+> | null = null;
 
-let projectSkills: Array<{
-    id: number;
-    name: string;
-    category: string | null;
-}> = [];
+let projectSkills: Array<
+    Pick<Tables<'skills'>, 'id' | 'name' | 'category'>
+> = [];
 
-let members: Array<{
-    user_id: string;
-    full_name: string | null;
-    username: string;
-    avatar_url: string | null;
-    role: string | null;
-}> = [];
+let members: Array<
+    Pick<
+        Tables<'user_info'>,
+        'user_id' | 'full_name' | 'username' | 'avatar_url'
+    > & {
+        role: string | null;
+    }
+> = [];
 
-let milestones: Array<{
-    id: number;
-    title: string;
-    description: string | null;
-    order_index: number | null;
-}> = [];
+let milestones: Array<
+    Pick<
+        Tables<'project_milestones'>,
+        'id' | 'title' | 'description' | 'order_index'
+    >
+> = [];
 
 // Check user permissions (after data is fetched)
 let isOwner = false;

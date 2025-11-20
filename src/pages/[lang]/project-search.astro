@@ -4,30 +4,32 @@ import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import { supabase } from '@/lib/supabase';
+import type { Tables } from '@/types/database.types';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
 
-// Load initial projects from database
-let projects: Array<{
-    id: number;
-    title: string;
-    description: string | null;
-    cover_image_url: string | null;
-    project_type: string | null;
-    location: string | null;
-    start_date: string | null;
-    status: string | null;
-    created_at: string | null;
-    owner_id: string;
-    user_info: {
-        user_id: string;
-        email: string;
-        full_name: string | null;
-        username: string;
-        avatar_url: string | null;
-    } | null;
-}> = [];
+// Load initial projects from database using types from database.types.ts
+let projects: Array<
+    Pick<
+        Tables<'projects'>,
+        | 'id'
+        | 'title'
+        | 'description'
+        | 'cover_image_url'
+        | 'project_type'
+        | 'location'
+        | 'start_date'
+        | 'status'
+        | 'created_at'
+        | 'owner_id'
+    > & {
+        user_info: Pick<
+            Tables<'user_info'>,
+            'user_id' | 'email' | 'full_name' | 'username' | 'avatar_url'
+        > | null;
+    }
+> = [];
 
 try {
     const { data, error } = await supabase
