@@ -336,6 +336,21 @@
         "trangThai": "Trạng thái",
         "tienTrinh": "Tiến trình"
     },
+    "box-project-creator": {
+        "title": "Kỹ năng trao đổi",
+        "skill1": "Kỹ năng 1",
+        "skill2": "Kỹ năng 2",
+        "skill3": "Kỹ năng 3",
+        "job": "Mô tả công việc",
+        "text": "văn bản",
+        "btn": "Đồng ý"
+    },
+    "box-project-collab": {
+        "title": "Kỹ năng trao đổi",
+        "skill1": "Kỹ năng 1",
+        "job": "Mô tả công việc",
+        "text": "văn bản",
+        "btn": "Ứng tuyển"
     "profile": {
         "thongTinChung": "Thông tin chung",
         "soDienThoai": "Số điện thoại",

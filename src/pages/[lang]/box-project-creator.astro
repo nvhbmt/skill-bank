@@ -1,0 +1,26 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/box-project-creator.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <div class="card">
+        <label class="label">{t('box-project-creator.title')}</label>
+        <div class="select-wrapper">
+            <select>
+                <option>{t('box-project-creator.skill1')}</option>
+                <option>{t('box-project-creator.skill2')}</option>
+                <option>{t('box-project-creator.skill3')}</option>
+            </select>
+        </div>
+
+        <label class="label">{t('box-project-creator.job')}</label>
+        <textarea class="textarea" placeholder={t('box-project-creator.text')}></textarea>
+
+        <button class="btn">{t('box-project-creator.btn')}</button>
+    </div>
+</DefaultLayout>

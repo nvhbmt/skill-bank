@@ -1,0 +1,55 @@
+.card {
+    width: 600px;
+    height: auto;
+    background: #3b3845;
+    border-radius: 20px;
+    padding: 30px;
+    color: #fff;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 20px;
+}
+
+.fake-select {
+    width: 100%;
+    padding: 14px 18px;
+    background: #5a5761;
+    border: 1px solid #76727d;
+    border-radius: 20px;
+    color: #e0e0e0;
+}
+
+.textarea {
+    width: 100%;
+    height: 160px;
+    padding: 15px;
+    font-size: 20px;
+    background: #4a4656;
+    color: white;
+    border: 1px solid #6e6b75;
+    border-radius: 20px;
+    outline: none;
+    resize: none;
+}
+
+/* Button */
+.btn {
+    margin-left: auto;
+    padding: 12px 28px;
+    background: #8a2bff;
+    border: none;
+    color: white;
+    font-size: 20px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.btn:hover {
+    opacity: 0.9;
+}
