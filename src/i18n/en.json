@@ -112,12 +112,13 @@
     "projectHandover-collaborator": {
         "title": "Project Handover",
         "description": "Description",
-        "notes": "Notes",
+        "notes": "Is the project completed? Do you have any notes or recommendations for the manager?",
         "project1": "Project 1: Adjust padding and margin.",
         "project2": "Project 2: Update fonts.",
         "upload": "Upload project file/link:",
         "uploadhere": "Upload here",
         "file": "File name",
+        "back": "Back",
         "send": "Send"
     },
     "create-project": {
@@ -304,6 +305,26 @@
         "change": "Edit",
         "lock": "Lock",
         "delete": "Delete"
+    },
+    "edit-profile": {
+        "generalInfo": "General Information",
+        "fullName": "Full Name",
+        "username": "Username",
+        "phone": "Phone Number",
+        "email": "Email",
+        "additionalInfo": "Additional Information",
+        "address": "Address",
+        "description": "Description",
+        "skills": "Skills",
+        "addSkill": "Add Skill",
+        "projects": "Projects",
+        "edit": "Edit",
+        "deleteProject": "Delete Project",
+        "reviews": "Reviews",
+        "cancel": "Cancel",
+        "submit": "Submit",
+        "editCoverImage": "Edit Cover Image",
+        "portfolioUrl": "Portfolio URL"
     },
     "my-project": {
         "title": "My Projects",

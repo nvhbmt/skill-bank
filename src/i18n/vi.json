@@ -88,7 +88,7 @@
         "email": "Email",
         "password": "Mật khẩu",
         "agree": "Tôi đồng ý với các",
-        "TermsAndConditions": ">Điều khoản & Điều kiện",
+        "TermsAndConditions": "Điều khoản & Điều kiện",
         "or": "hoặc",
         "gmail": "Gmail",
         "facebook": "Facebook",
@@ -112,12 +112,13 @@
     "projectHandover-collaborator": {
         "title": "Bàn giao dự án",
         "description": "Mô tả",
-        "notes": "Lưu ý",
+        "notes": "Đã xong dự án? Bạn có một số lưu ý gì cho người quản lý không?",
         "project1": "Dự án 1 cần sửa một số điểm như padding, margin.",
         "project2": "Dự án 2 cần thay đổi font chữ.",
         "upload": "Đăng tải file/ link dự án:",
         "uploadhere": "Đăng tải ở đây",
         "file": "Tên file",
+        "back": "Quay lại",
         "send": "Gửi"
     },
     "create-project": {
@@ -304,6 +305,26 @@
         "change": "Sửa",
         "lock": "Khóa",
         "delete": "Xóa"
+    },
+    "edit-profile": {
+        "generalInfo": "Thông tin chung",
+        "fullName": "Họ và tên",
+        "username": "Tên người dùng",
+        "phone": "Số điện thoại",
+        "email": "Email",
+        "additionalInfo": "Thông tin thêm",
+        "address": "Địa chỉ",
+        "description": "Mô tả",
+        "skills": "Kĩ năng",
+        "addSkill": "Thêm kỹ năng",
+        "projects": "Dự án",
+        "edit": "Chỉnh sửa",
+        "deleteProject": "Xóa dự án",
+        "reviews": "Một số đánh giá",
+        "cancel": "Hủy",
+        "submit": "Hoàn tất",
+        "editCoverImage": "Chỉnh sửa ảnh bìa",
+        "portfolioUrl": "URL Portfolio"
     },
     "my-project": {
         "title": "Dự án của tôi",

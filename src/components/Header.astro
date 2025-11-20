@@ -4,7 +4,7 @@ interface Props {}
 const {} = Astro.props;
 
 import { getStaticPaths, useTranslate } from '@/i18n';
-
+import { supabase } from '@/lib/supabase';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
@@ -12,13 +12,18 @@ const { lang, t, l } = useTranslate(Astro);
 const session = Astro.locals.session;
 
 const user = session?.user;
-
-// Lấy thông tin user để hiển thị trong dropdown (Thêm mới)
-const userAvatar = user?.user_metadata?.avatar_url || '/assets/image/me2.png';
-const userName = user?.user_metadata?.full_name || 'User Name';
-// Logic lấy username có @
-let rawUsername = user?.user_metadata?.username || 'username';
-const userUsername = rawUsername.startsWith('@') ? rawUsername : '@' + rawUsername;
+let avatarUrl = null;
+if (user) {
+    const { data: userData, error: userError } = await supabase
+        .from('user_info')
+        .select('avatar_url')
+        .eq('user_id', user.id)
+        .is('deleted_at', null)
+        .single();
+    if (!userError && userData) {
+        avatarUrl = userData.avatar_url;
+    }
+}
 ---
 
 <header class="header">

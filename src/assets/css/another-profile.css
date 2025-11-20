@@ -187,7 +187,6 @@ a {
 .section .frame-6 {
     display: flex;
     flex-direction: column;
-    width: 89px;
     align-items: flex-start;
     position: relative;
     flex: 0 0 auto;

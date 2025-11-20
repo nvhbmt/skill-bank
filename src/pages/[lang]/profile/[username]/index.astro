@@ -1,0 +1,586 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/personal-profile.css';
+import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import { supabase } from '@/lib/supabase';
+export { getStaticPaths };
+
+const session = Astro.locals.session;
+const { lang, t, l } = useTranslate(Astro);
+const username = (Astro.params as { username?: string }).username;
+
+// Initialize data
+let userInfo: {
+    user_id: string;
+    email: string;
+    full_name: string | null;
+    username: string;
+    avatar_url: string | null;
+    role: string;
+} | null = null;
+
+let userProfile: {
+    phone: string | null;
+    bio: string | null;
+    address: string | null;
+    portfolio_url: string | null;
+} | null = null;
+
+let userSkills: Array<{
+    id: number;
+    name: string;
+    category: string | null;
+    level: string | null;
+}> = [];
+
+let userProjects: Array<{
+    id: number;
+    title: string;
+    cover_image_url: string | null;
+    project_type: string | null;
+    status: string | null;
+}> = [];
+
+let reviews: Array<{
+    id: number;
+    rating: number | null;
+    comment: string | null;
+    reviewer_id: string;
+    reviewer_info: {
+        full_name: string | null;
+        username: string;
+        avatar_url: string | null;
+    } | null;
+    created_at: string | null;
+}> = [];
+
+let isOwner = false;
+
+// Fetch user data
+if (username) {
+    try {
+        // Fetch user_info
+        const { data: userData, error: userError } = await supabase
+            .from('user_info')
+            .select('*')
+            .eq('username', username)
+            .is('deleted_at', null)
+            .single();
+
+        if (!userError && userData) {
+            userInfo = userData;
+
+            // Check if current user is owner
+            if (session?.user) {
+                isOwner = session.user.id === userInfo.user_id;
+            }
+
+            // Fetch user_profiles
+            const { data: profileData, error: profileError } = await supabase
+                .from('user_profiles')
+                .select('phone, bio, address, portfolio_url')
+                .eq('user_id', userInfo.user_id)
+                .is('deleted_at', null)
+                .maybeSingle();
+
+            if (!profileError && profileData) {
+                userProfile = profileData;
+            }
+
+            // Fetch user_skills
+            const { data: userSkillsData, error: skillsError } = await supabase
+                .from('user_skills')
+                .select('skill_id, level')
+                .eq('user_id', userInfo.user_id)
+                .is('deleted_at', null);
+
+            if (!skillsError && userSkillsData && userSkillsData.length > 0) {
+                const skillIds = userSkillsData.map((us) => us.skill_id);
+                const { data: skillsData, error: skillsDataError } =
+                    await supabase
+                        .from('skills')
+                        .select('id, name, category')
+                        .in('id', skillIds);
+
+                if (!skillsDataError && skillsData) {
+                    const skillsMap = new Map(
+                        userSkillsData.map((us) => [us.skill_id, us.level])
+                    );
+                    userSkills = skillsData.map((skill) => ({
+                        ...skill,
+                        level: skillsMap.get(skill.id) || null,
+                    }));
+                }
+            }
+
+            // Fetch user projects (as owner)
+            const { data: projectsData, error: projectsError } = await supabase
+                .from('projects')
+                .select('id, title, cover_image_url, project_type, status')
+                .eq('owner_id', userInfo.user_id)
+                .is('deleted_at', null)
+                .order('created_at', { ascending: false })
+                .limit(10);
+
+            if (!projectsError && projectsData) {
+                userProjects = projectsData;
+            }
+
+            // Fetch reviews for this user
+            const { data: reviewsData, error: reviewsError } = await supabase
+                .from('reviews')
+                .select('id, rating, comment, reviewer_id, created_at')
+                .eq('reviewee_id', userInfo.user_id)
+                .is('deleted_at', null)
+                .order('created_at', { ascending: false })
+                .limit(10);
+
+            if (!reviewsError && reviewsData && reviewsData.length > 0) {
+                const reviewerIds = reviewsData.map((r) => r.reviewer_id);
+                const { data: reviewersData, error: reviewersError } =
+                    await supabase
+                        .from('user_info')
+                        .select('user_id, full_name, username, avatar_url')
+                        .in('user_id', reviewerIds)
+                        .is('deleted_at', null);
+
+                if (!reviewersError && reviewersData) {
+                    const reviewersMap = new Map(
+                        reviewersData.map((r) => [r.user_id, r])
+                    );
+                    reviews = reviewsData.map((review) => ({
+                        ...review,
+                        reviewer_info:
+                            reviewersMap.get(review.reviewer_id) || null,
+                    }));
+                }
+            }
+        } else {
+            // User not found, redirect
+            return Astro.redirect(`/${lang}/project-search`);
+        }
+    } catch (error) {
+        console.error('Error loading user profile:', error);
+        return Astro.redirect(`/${lang}/project-search`);
+    }
+} else {
+    // No username, redirect
+    return Astro.redirect(`/${lang}/project-search`);
+}
+
+// Helper function to get star count
+function getStarCount(rating: number | null): {
+    full: number;
+    hasHalf: boolean;
+} {
+    if (!rating) return { full: 0, hasHalf: false };
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    return { full: fullStars, hasHalf: hasHalfStar };
+}
+---
+
+<DefaultLayout>
+    <Header />
+
+    <main class="section">
+        <div class="container profile-container">
+            <aside class="frame">
+                <section class="frame-wrapper">
+                    <div class="div">
+                        <div
+                            class="avt-va"
+                            role="img"
+                            aria-label={`Avatar của ${userInfo?.full_name || userInfo?.username || 'User'}`}
+                        >
+                            <img
+                                src={userInfo?.avatar_url ||
+                                    '/assets/images/vy2.png'}
+                                alt={`Avatar của ${userInfo?.full_name || userInfo?.username || 'User'}`}
+                            />
+                        </div>
+                        <div class="frame-2">
+                            <h1 class="text-wrapper">
+                                {
+                                    userInfo?.full_name ||
+                                        userInfo?.username ||
+                                        'User'
+                                }
+                            </h1>
+                            <div class="div-wrapper">
+                                <span class="text-wrapper-2">
+                                    @{userInfo?.username || 'username'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="frame-3">
+                    <section class="frame-4">
+                        <h2 class="text-wrapper-3">Thông tin chung</h2>
+                        <div class="line"></div>
+                        <div class="frame-5">
+                            <div class="frame-6">
+                                <p class="text-wrapper-4">
+                                    {
+                                        userInfo?.full_name ||
+                                            userInfo?.username ||
+                                            'User'
+                                    }
+                                </p>
+                                <p class="text-wrapper-5">
+                                    @{userInfo?.username || 'username'}
+                                </p>
+                            </div>
+                            {
+                                userProfile?.phone && (
+                                    <p class="div-2">
+                                        <span class="span">
+                                            Số điện thoại: <br />
+                                        </span>
+                                        <span class="text-wrapper-6">
+                                            {userProfile.phone}
+                                        </span>
+                                    </p>
+                                )
+                            }
+                            {
+                                userInfo?.email && (
+                                    <p class="div-2">
+                                        <span class="span">Email:</span>
+                                        <span class="text-wrapper-6">
+                                            {userInfo.email}
+                                        </span>
+                                    </p>
+                                )
+                            }
+                        </div>
+                    </section>
+                    {
+                        userProfile?.address && (
+                            <section class="frame-7">
+                                <h2 class="text-wrapper-3">Thông tin thêm</h2>
+                                <div class="line" />
+                                <div class="frame-8">
+                                    <p class="text-wrapper-7">Địa chỉ:</p>
+                                    <ul class="frame-9">
+                                        <li class="text-wrapper-7">
+                                            {userProfile.address}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </section>
+                        )
+                    }
+                </div>
+            </aside>
+            <section class="frame-13">
+                {
+                    userProfile?.portfolio_url && (
+                        <img
+                            class="rectangle"
+                            src={userProfile.portfolio_url}
+                            alt="Ảnh bìa"
+                        />
+                    )
+                }
+                <div class="frame-14">
+                    {
+                        userProfile?.bio && (
+                            <section class="frame-15">
+                                <h2 class="text-wrapper-9">Mô tả :</h2>
+                                <p class="p">{userProfile.bio}</p>
+                            </section>
+                        )
+                    }
+                    {
+                        userSkills.length > 0 && (
+                            <section class="frame-15">
+                                <div class="frame-16">
+                                    <h2 class="text-wrapper-10">Kĩ năng :</h2>
+                                </div>
+                                <div class="frame-15">
+                                    <div class="frame-17">
+                                        {userSkills.map((skill, index) => (
+                                            <span
+                                                class={
+                                                    index % 2 === 0
+                                                        ? 'frame-18'
+                                                        : 'frame-19'
+                                                }
+                                            >
+                                                <span class="text-wrapper-11">
+                                                    {skill.name}
+                                                    {skill.category
+                                                        ? ` / ${skill.category}`
+                                                        : ''}
+                                                </span>
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </section>
+                        )
+                    }
+                    {
+                        userProjects.length > 0 && (
+                            <section class="frame-15">
+                                <div class="frame-16">
+                                    <h2 class="text-wrapper-10">Dự án :</h2>
+                                </div>
+                                <div class="group">
+                                    <div class="frame-23">
+                                        {userProjects.map((project) => (
+                                            <article class="frame-24">
+                                                <a
+                                                    href={`/${lang}/project-detail/${project.id}`}
+                                                    style="text-decoration: none; color: inherit;"
+                                                >
+                                                    <div class="card-d-n-nh">
+                                                        <div
+                                                            class="frame-25"
+                                                            style={
+                                                                project.cover_image_url
+                                                                    ? `background-image: url('${project.cover_image_url}'); background-size: cover; background-position: 50% 50%;`
+                                                                    : ''
+                                                            }
+                                                        />
+                                                        <div class="frame-26">
+                                                            <div class="frame-27">
+                                                                <h3 class="text-wrapper-14">
+                                                                    {
+                                                                        project.title
+                                                                    }
+                                                                </h3>
+                                                                <p class="text-wrapper-15">
+                                                                    {project.project_type ||
+                                                                        'N/A'}
+                                                                </p>
+                                                            </div>
+                                                            <div class="frame-28">
+                                                                <span class="frame-29">
+                                                                    <span class="text-wrapper-16">
+                                                                        {project.status ||
+                                                                            'N/A'}
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </article>
+                                        ))}
+                                    </div>
+                                </div>
+                            </section>
+                        )
+                    }
+                    {
+                        reviews.length > 0 && (
+                            <section class="frame-37">
+                                <h2 class="text-wrapper-9">Một số đánh giá:</h2>
+                                <div class="group-2">
+                                    <div class="frame-38">
+                                        <div class="frame-39">
+                                            {reviews
+                                                .slice(0, 3)
+                                                .map((review) => {
+                                                    const starCount =
+                                                        getStarCount(
+                                                            review.rating
+                                                        );
+                                                    const isFullRating =
+                                                        review.rating === 5;
+                                                    return (
+                                                        <article
+                                                            class={
+                                                                isFullRating
+                                                                    ? 'frame-47'
+                                                                    : 'frame-40'
+                                                            }
+                                                        >
+                                                            <div
+                                                                class={
+                                                                    isFullRating
+                                                                        ? 'frame-48'
+                                                                        : 'frame-41'
+                                                                }
+                                                            >
+                                                                <div
+                                                                    class={
+                                                                        isFullRating
+                                                                            ? 'frame-49'
+                                                                            : 'frame-42'
+                                                                    }
+                                                                >
+                                                                    {isFullRating ? (
+                                                                        <div class="frame-50">
+                                                                            <div
+                                                                                class="avt-ln"
+                                                                                style={
+                                                                                    review
+                                                                                        .reviewer_info
+                                                                                        ?.avatar_url
+                                                                                        ? `background-image: url('${review.reviewer_info.avatar_url}'); background-size: cover; background-position: 50% 50%;`
+                                                                                        : ''
+                                                                                }
+                                                                                role="img"
+                                                                                aria-label={`Avatar của ${review.reviewer_info?.full_name || review.reviewer_info?.username || 'Reviewer'}`}
+                                                                            />
+                                                                            <div class="star-box">
+                                                                                {Array.from(
+                                                                                    {
+                                                                                        length: 5,
+                                                                                    }
+                                                                                ).map(
+                                                                                    () => (
+                                                                                        <div class="ystar" />
+                                                                                    )
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div class="frame-43">
+                                                                            <div class="frame-43">
+                                                                                <div class="frame-44">
+                                                                                    <img
+                                                                                        class="avt-nh"
+                                                                                        src={
+                                                                                            review
+                                                                                                .reviewer_info
+                                                                                                ?.avatar_url ||
+                                                                                            '/assets/images/avt-nhỏ.svg'
+                                                                                        }
+                                                                                        alt={`Avatar của ${review.reviewer_info?.full_name || review.reviewer_info?.username || 'Reviewer'}`}
+                                                                                    />
+                                                                                    <div class="star-box-small">
+                                                                                        {Array.from(
+                                                                                            {
+                                                                                                length: 5,
+                                                                                            }
+                                                                                        ).map(
+                                                                                            (
+                                                                                                _,
+                                                                                                i
+                                                                                            ) => (
+                                                                                                <div
+                                                                                                    class={
+                                                                                                        i <
+                                                                                                        starCount.full
+                                                                                                            ? 'ystar'
+                                                                                                            : 'gstar'
+                                                                                                    }
+                                                                                                />
+                                                                                            )
+                                                                                        )}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                    <p
+                                                                        class={
+                                                                            isFullRating
+                                                                                ? 'text-wrapper-21'
+                                                                                : 'text-wrapper-18'
+                                                                        }
+                                                                    >
+                                                                        {review.comment ||
+                                                                            'Không có nhận xét'}
+                                                                    </p>
+                                                                </div>
+                                                                <div
+                                                                    class={
+                                                                        isFullRating
+                                                                            ? 'frame-52'
+                                                                            : 'frame-46'
+                                                                    }
+                                                                >
+                                                                    <p
+                                                                        class={
+                                                                            isFullRating
+                                                                                ? 'text-wrapper-22'
+                                                                                : 'text-wrapper-19'
+                                                                        }
+                                                                    >
+                                                                        {review
+                                                                            .reviewer_info
+                                                                            ?.full_name ||
+                                                                            review
+                                                                                .reviewer_info
+                                                                                ?.username ||
+                                                                            'Anonymous'}
+                                                                    </p>
+                                                                    <p
+                                                                        class={
+                                                                            isFullRating
+                                                                                ? 'text-wrapper-23'
+                                                                                : 'text-wrapper-20'
+                                                                        }
+                                                                    >
+                                                                        @
+                                                                        {review
+                                                                            .reviewer_info
+                                                                            ?.username ||
+                                                                            'anonymous'}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                    );
+                                                })}
+                                        </div>
+                                        {reviews.length > 3 && (
+                                            <nav
+                                                class="frame-53"
+                                                aria-label="Điều hướng đánh giá"
+                                            >
+                                                {Array.from({
+                                                    length: Math.ceil(
+                                                        reviews.length / 3
+                                                    ),
+                                                }).map((_, index) => (
+                                                    <button
+                                                        class={
+                                                            index === 0
+                                                                ? 'ellipse-2'
+                                                                : 'ellipse'
+                                                        }
+                                                        type="button"
+                                                        aria-label={`Đánh giá ${index + 1}`}
+                                                        aria-current={
+                                                            index === 0
+                                                                ? 'true'
+                                                                : undefined
+                                                        }
+                                                    />
+                                                ))}
+                                            </nav>
+                                        )}
+                                    </div>
+                                </div>
+                            </section>
+                        )
+                    }
+                </div>
+            </section>
+            <div class="box-home-wrapper">
+                <button class="home-wrapper">
+                    <span class="home-2">Chia sẻ</span>
+                </button>
+                {
+                    isOwner && (
+                        <a
+                            href={`/${lang}/edit-profile`}
+                            class="home-wrapper1"
+                            style="text-decoration: none;"
+                        >
+                            <span class="home-2">Chỉnh sửa</span>
+                        </a>
+                    )
+                }
+            </div>
+        </div>
+    </main>
+</DefaultLayout>
