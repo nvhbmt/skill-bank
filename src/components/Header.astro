@@ -12,6 +12,8 @@ const { lang, t, l } = useTranslate(Astro);
 const session = Astro.locals.session;
 
 const user = session?.user;
+const userName = user?.user_metadata?.full_name;
+const userUsername = user?.user_metadata?.username;
 let avatarUrl = null;
 if (user) {
     const { data: userData, error: userError } = await supabase
@@ -73,7 +75,7 @@ if (user) {
                                 aria-label="User menu"
                             >
                                 <img
-                                    src={userAvatar}
+                                    src={avatarUrl}
                                     alt={userName}
                                     class="user-avatar-dropdown__avatar"
                                 />
@@ -84,7 +86,7 @@ if (user) {
                                 <!-- 1. Header: Avatar + Info -->
                                 <a href={l('/personal-profile')}
 								class="dropdown-profile-section">
-                                    <img src={userAvatar} alt={userName} class="dropdown-profile-avatar" />
+                                    <img src={avatarUrl} alt={userName} class="dropdown-profile-avatar" />
                                     <div class="dropdown-profile-info">
                                         <p class="dropdown-profile-name">{userName}</p>
                                         <p class="dropdown-profile-username">{userUsername}</p>
