@@ -368,5 +368,37 @@
         "kiNang": "Skills",
         "duAn": "Projects",
         "danhGia": "Reviews"
+    },
+    "faq": {
+        "title": "Frequently Asked Questions",
+        "q1": "1. What is SkillBank?",
+        "a1": "SkillBank is a 'skill banking' platform that allows users to share, exchange, and collaborate based on their skills to execute projects.",
+
+        "q2": "2. Is there a fee to create an account on SkillBank?",
+        "a2": "No. Registration and account creation are completely free. Advanced features (if any) will be clearly announced later.",
+
+        "q3": "3. How can I post my skills?",
+        "a3": "Simply go to your profile page, select 'Add Skill', provide a detailed description and proficiency level.",
+
+        "q4": "4. How do I find the right person to support my project?",
+        "a4": "You can use the skill-based search function, filter by experience level, or post a project request for the community to see.",
+
+        "q5": "5. How many projects can I join at the same time?",
+        "a5": "There is no specific limit. However, SkillBank encourages you to join only a suitable number to ensure work quality.",
+
+        "q6": "6. How is skill exchange calculated?",
+        "a6": "Each skill has a corresponding exchange value agreed upon by the community or suggested by the system. Both parties can agree before collaborating.",
+
+        "q7": "7. Can I rate someone who helped me?",
+        "a7": "Yes. After project completion, you can rate satisfaction level and quality of contribution from team members.",
+
+        "q8": "8. Does SkillBank ensure the safety of personal information?",
+        "a8": "Yes. We implement security measures to protect user data and commit to not sharing information without authorization.",
+
+        "q9": "9. Can I edit or delete posted skills?",
+        "a9": "Absolutely. You can update, edit, or delete any skill anytime in your profile section.",
+
+        "q10": "10. Where can I contact if I encounter errors or need support?",
+        "a10": "You can submit requests through 'Technical Support', contact customer care email, or chat directly with SkillBank's support team."
     }
 }

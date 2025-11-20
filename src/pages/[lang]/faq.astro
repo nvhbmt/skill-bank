@@ -1,0 +1,135 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import '@/assets/css/faq.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <Header />
+    <div id="container">
+        <h1>{t('faq.title')}</h1>
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q1')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a1')}
+                </p>
+            </div>
+        </div>
+
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q2')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a2')}
+                </p>
+            </div>
+        </div>
+
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q3')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a3')}
+                </p>
+            </div>
+        </div>
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q4')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a4')}
+                </p>
+            </div>
+        </div>
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q5')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a5')}
+                </p>
+            </div>
+        </div>
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q6')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a6')}
+                </p>
+            </div>
+        </div>
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q7')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a7')}
+                </p>
+            </div>
+        </div>
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q8')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a8')}
+                </p>
+            </div>
+        </div>
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q9')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a9')}
+                </p>
+            </div>
+        </div>
+        <div class="info-dropdown">
+            <button class="info-btn"
+                >{t('faq.q10')}<span class="arrow">▼</span></button
+            >
+            <div class="info-content">
+                <p>
+                    {t('faq.a10')}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <Footer />
+
+    <script>
+        const buttons = document.querySelectorAll('.info-btn');
+
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const arrow = button.querySelector('.arrow');
+
+                content.classList.toggle('open');
+                arrow.classList.toggle('open');
+            });
+        });
+    </script>
+</DefaultLayout>
