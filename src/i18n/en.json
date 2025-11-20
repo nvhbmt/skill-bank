@@ -335,5 +335,22 @@
         "hoanThanh": "Completed",
         "trangThai": "Status",
         "tienTrinh": "Progress"
+    },
+    "profile": {
+        "thongTinChung": "General Information",
+        "soDienThoai": "Phone Number",
+        "email": "Email",
+        "thongTinThem": "Additional Info",
+        "linhVucQuanTam": "Interests",
+        "kinhNghiem": "Experience",
+        "thanhTuu": "Achievements",
+        "duAnTungLam": "Projects Done",
+        "chungChi": "Certificates",
+        "chiaSe": "Share",
+        "chinhSua": "Edit",
+        "moTa": "Description",
+        "kiNang": "Skills",
+        "duAn": "Projects",
+        "danhGia": "Reviews"
     }
 }

@@ -335,5 +335,22 @@
         "hoanThanh": "Đã hoàn thành",
         "trangThai": "Trạng thái",
         "tienTrinh": "Tiến trình"
+    },
+    "profile": {
+        "thongTinChung": "Thông tin chung",
+        "soDienThoai": "Số điện thoại",
+        "email": "Email",
+        "thongTinThem": "Thông tin thêm",
+        "linhVucQuanTam": "Lĩnh vực quan tâm",
+        "kinhNghiem": "Kinh nghiệm",
+        "thanhTuu": "Thành tựu",
+        "duAnTungLam": "Dự án từng làm",
+        "chungChi": "Chứng chỉ",
+        "chiaSe": "Chia sẻ",
+        "chinhSua": "Chỉnh sửa",
+        "moTa": "Mô tả",
+        "kiNang": "Kĩ năng",
+        "duAn": "Dự án",
+        "danhGia": "Một số đánh giá"
     }
 }
