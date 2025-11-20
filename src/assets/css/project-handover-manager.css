@@ -1,0 +1,242 @@
+body {
+    background-image: url('/assets/images/nen-gui-ung-tuyen.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: Inter, sans-serif;
+}
+.project-handover-page {
+    display: flex;
+    margin: 2.5rem;
+    justify-content: center;
+    height: 67.25rem;
+}
+.project-handover-container {
+    width: 75rem;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    background-color: #00000090;
+    border-radius: 6.25rem;
+}
+
+.profile-list {
+    display: flex;
+    gap: 0.75rem;
+    flex-direction: column;
+}
+
+.skillbank-dropdown {
+    padding: 0.875rem 1.5rem;
+    border: none;
+    background: var(--color-bg-light);
+    font-weight: 500;
+    width: 11.25rem;
+    border-radius: 0.625rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.skillbank-dropdown:hover {
+    background-color: var(--color-bg-soft);
+    border-color: var(--color-bg-soft);
+}
+
+.skillbank-dropdown:focus {
+    outline: none;
+    border-color: var(--color-purple-button);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+}
+.profile-items {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.profile-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 0.0625rem solid var(--color-bg-light);
+    border-radius: 1.875rem;
+    width: 12.5rem;
+    height: 5rem;
+    justify-content: center;
+}
+.profile-item:hover {
+    background: #d9d9d9c7;
+    transition: all 0.3s ease;
+}
+
+.profile-item:active {
+    background: #d9d9d9;
+}
+.profile-item img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.user-name {
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+    color: var(--color-bg-light);
+    margin-bottom: 0.5rem;
+}
+
+.email {
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+    color: var(--color-bg-light);
+}
+
+/* -------- Main Content layout ------- */
+.handover-content {
+    margin-top: 5.5rem;
+    display: flex;
+    gap: 6.7rem;
+    padding: 3.125rem 0;
+}
+
+.requests-column,
+.description-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-bg-light);
+}
+
+.divider {
+    width: 1px;
+    background: #d2d2d2;
+}
+
+/* -------- Request Items ------- */
+
+.request-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 1.625rem;
+}
+
+.request-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    border-radius: 40px;
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+    color: var(--color-bg-black);
+    width: 25rem;
+    height: 3.75rem;
+}
+
+.request-item img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+/* Colors */
+.request-item.light {
+    background: var(--color-bg-soft);
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+    color: var(--color-bg-black);
+    width: 25rem;
+    height: 3.75rem;
+}
+
+.request-item.green {
+    background: #39b769;
+}
+
+.request-item.orange {
+    background: #e6a32c;
+}
+
+.request-item.red {
+    background: #c73535;
+}
+
+/* -------- Right column inputs ------- */
+.collab-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--color-bg-light);
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+}
+
+.collab-inputs input {
+    width: 25rem;
+    height: 5rem;
+    padding: 14px 20px;
+    border-radius: 1.25rem;
+    border: none;
+    background: var(--color-surface);
+    font-size: 14px;
+}
+
+/* -------- Buttons ------- */
+
+.action-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.status-btn,
+.details-btn {
+    width: 15rem;
+    height: 3.25rem;
+    border-radius: 1.875rem;
+    border: none;
+    background: var(--color-purple-button);
+    color: var(--color-bg-light);
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+}
+.details-btn:hover {
+    background: var(--color-purple-button-hover);
+    color: var(--color-bg-light);
+}
+.details-btn:active {
+    background: var(--color-purple-button-active);
+    color: var(--color-bg-light);
+}
+.status-btn:hover {
+    background: var(--color-purple-button-hover);
+    color: var(--color-bg-light);
+}
+.status-btn:active {
+    background: var(--color-purple-button-active);
+    color: var(--color-bg-light);
+}
