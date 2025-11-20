@@ -260,5 +260,33 @@
         "contactSupport": "Contact Support",
         "contact": "Contact",
         "copyright": "Copyright © 2025 Skill Bank. All rights reserved."
+    },
+    "user-manage": {
+        "userManagement": "User Management",
+        "userName": "User Name",
+        "searchUsername": "Search user name...",
+        "searchEmail": "Search email...",
+        "role": "Role",
+        "searchRole": "Search role...",
+        "status": "Status",
+        "userDetails": "User Details",
+        "details": "View",
+        "change": "Edit",
+        "lock": "Lock",
+        "delete": "Delete"
+    },
+    "candidate-manage": {
+        "candidateManagement": "Candidate Management",
+        "candidateName": "Candidate Name",
+        "searchCandidateName": "Search candidate name...",
+        "searchEmail": "Search email...",
+        "role": "Role",
+        "searchRole": "Search role...",
+        "status": "Status",
+        "userDetails": "User Details",
+        "details": "View",
+        "change": "Edit",
+        "lock": "Lock",
+        "delete": "Delete"
     }
 }
