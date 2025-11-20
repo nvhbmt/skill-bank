@@ -300,6 +300,26 @@
         "lock": "Lock",
         "delete": "Delete"
     },
+    "edit-profile": {
+        "generalInfo": "General Information",
+        "fullName": "Full Name",
+        "username": "Username",
+        "phone": "Phone Number",
+        "email": "Email",
+        "additionalInfo": "Additional Information",
+        "address": "Address",
+        "description": "Description",
+        "skills": "Skills",
+        "addSkill": "Add Skill",
+        "projects": "Projects",
+        "edit": "Edit",
+        "deleteProject": "Delete Project",
+        "reviews": "Reviews",
+        "cancel": "Cancel",
+        "submit": "Submit",
+        "editCoverImage": "Edit Cover Image",
+        "portfolioUrl": "Portfolio URL"
+    },
     "my-project": {
         "title": "My Projects",
         "description": "Some projects you currently have",

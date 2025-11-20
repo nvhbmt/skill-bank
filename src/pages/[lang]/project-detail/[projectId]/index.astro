@@ -1,0 +1,492 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import '@/assets/css/project-detail-collab.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import { supabase } from '@/lib/supabase';
+export { getStaticPaths };
+
+const session = Astro.locals.session;
+const { lang, t, l } = useTranslate(Astro);
+const projectId = (Astro.params as { projectId?: string }).projectId;
+
+// Initialize data
+let project: {
+    id: number;
+    title: string;
+    description: string | null;
+    cover_image_url: string | null;
+    project_type: string | null;
+    location: string | null;
+    start_date: string | null;
+    status: string | null;
+    owner_id: string;
+} | null = null;
+
+let owner: {
+    user_id: string;
+    email: string;
+    full_name: string | null;
+    username: string;
+    avatar_url: string | null;
+} | null = null;
+
+let projectSkills: Array<{
+    id: number;
+    name: string;
+    category: string | null;
+}> = [];
+
+let members: Array<{
+    user_id: string;
+    full_name: string | null;
+    username: string;
+    avatar_url: string | null;
+    role: string | null;
+}> = [];
+
+let milestones: Array<{
+    id: number;
+    title: string;
+    description: string | null;
+    order_index: number | null;
+}> = [];
+
+// Check user permissions (after data is fetched)
+let isOwner = false;
+let isMember = false;
+
+// Fetch project data
+if (projectId) {
+    try {
+        const projectIdNum = parseInt(projectId);
+        if (!isNaN(projectIdNum)) {
+            // Fetch project
+            const { data: projectData, error: projectError } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('id', projectIdNum)
+                .is('deleted_at', null)
+                .single();
+
+            if (!projectError && projectData) {
+                project = projectData;
+
+                // Fetch owner info
+                const { data: ownerData, error: ownerError } = await supabase
+                    .from('user_info')
+                    .select('user_id, email, full_name, username, avatar_url')
+                    .eq('user_id', project.owner_id)
+                    .is('deleted_at', null)
+                    .single();
+
+                if (!ownerError && ownerData) {
+                    owner = ownerData;
+                }
+
+                // Fetch project skills
+                // First get skill_ids from project_skills
+                const { data: projectSkillsData, error: skillsError } =
+                    await supabase
+                        .from('project_skills')
+                        .select('skill_id')
+                        .eq('project_id', projectIdNum);
+
+                if (
+                    !skillsError &&
+                    projectSkillsData &&
+                    projectSkillsData.length > 0
+                ) {
+                    const skillIds = projectSkillsData.map((ps) => ps.skill_id);
+
+                    // Then fetch skills details
+                    const { data: skillsData, error: skillsDataError } =
+                        await supabase
+                            .from('skills')
+                            .select('id, name, category')
+                            .in('id', skillIds);
+                    if (!skillsDataError && skillsData) {
+                        projectSkills = skillsData;
+                    } else if (skillsDataError) {
+                        console.error(
+                            'Error fetching skills:',
+                            skillsDataError
+                        );
+                    }
+                } else if (skillsError) {
+                    console.error(
+                        'Error fetching project_skills:',
+                        skillsError
+                    );
+                }
+
+                // Fetch project members
+                const { data: membersData, error: membersError } =
+                    await supabase
+                        .from('project_members')
+                        .select('user_id, role')
+                        .eq('project_id', projectIdNum)
+                        .is('deleted_at', null)
+                        .is('left_at', null);
+
+                if (!membersError && membersData && membersData.length > 0) {
+                    const memberIds = membersData.map((m) => m.user_id);
+                    const { data: membersInfoData, error: membersInfoError } =
+                        await supabase
+                            .from('user_info')
+                            .select('user_id, full_name, username, avatar_url')
+                            .in('user_id', memberIds)
+                            .is('deleted_at', null);
+
+                    if (!membersInfoError && membersInfoData) {
+                        const membersMap = new Map(
+                            membersInfoData.map((m) => [m.user_id, m])
+                        );
+                        members = membersData
+                            .map((m) => {
+                                const info = membersMap.get(m.user_id);
+                                return info
+                                    ? {
+                                          ...info,
+                                          role: m.role,
+                                      }
+                                    : null;
+                            })
+                            .filter(
+                                (m): m is NonNullable<typeof m> => m !== null
+                            );
+                    }
+                }
+
+                // Fetch project milestones (timeline)
+                const { data: milestonesData, error: milestonesError } =
+                    await supabase
+                        .from('project_milestones')
+                        .select('id, title, description, order_index')
+                        .eq('project_id', projectIdNum)
+                        .order('order_index', { ascending: true });
+
+                if (!milestonesError && milestonesData) {
+                    milestones = milestonesData;
+                }
+
+                // Check user permissions after fetching all data
+                if (session?.user && project) {
+                    isOwner = session.user.id === project.owner_id;
+                    isMember =
+                        isOwner ||
+                        members.some(
+                            (member) => member.user_id === session.user.id
+                        );
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error loading project:', error);
+    }
+}
+
+// Format date helper
+function formatDate(dateString: string | null): string {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    } catch {
+        return dateString;
+    }
+}
+---
+
+<DefaultLayout>
+    <div class="wrapper">
+        <Header />
+
+        <main>
+            <div class="project-detail-container">
+                <div class="project-detail-body">
+                    <!-- CỘT TRÁI: THÔNG TIN CHÍNH -->
+                    <div class="column-main">
+                        <!-- Phần Header -->
+                        <div class="project-top-section">
+                            <div class="project-info">
+                                <h1 class="project-title">
+                                    {
+                                        project?.title ||
+                                            t(
+                                                'project-detail-collab.projectTitle'
+                                            )
+                                    }
+                                </h1>
+
+                                <div class="project-meta-list">
+                                    <div class="meta-row">
+                                        <span class="meta-label">
+                                            {
+                                                t(
+                                                    'project-detail-collab.ngayBatDau'
+                                                )
+                                            }
+                                        </span>
+                                        <span class="meta-value">
+                                            {
+                                                project?.start_date
+                                                    ? formatDate(
+                                                          project.start_date
+                                                      )
+                                                    : '-'
+                                            }
+                                        </span>
+                                    </div>
+                                    <div class="meta-row">
+                                        <span class="meta-label">
+                                            {
+                                                t(
+                                                    'project-detail-collab.phanLoai'
+                                                )
+                                            }
+                                        </span>
+                                        <span class="meta-value">
+                                            {project?.project_type || '-'}
+                                        </span>
+                                    </div>
+                                    <div class="meta-row">
+                                        <span class="meta-label">
+                                            {t('project-detail-collab.điaDiem')}
+                                        </span>
+                                        <span class="meta-value">
+                                            {project?.location || '-'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- CẬP NHẬT: Người đăng Profile Card -->
+                                {
+                                    owner && (
+                                        <a
+                                            href={`/${lang}/profile/${owner.username}`}
+                                            class="creator-profile-card"
+                                        >
+                                            <div class="creator-avatar-wrapper">
+                                                <img
+                                                    src={
+                                                        owner.avatar_url ||
+                                                        '/assets/images/vy2.png'
+                                                    }
+                                                    alt={t(
+                                                        'project-detail-collab.creator'
+                                                    )}
+                                                />
+                                                <span class="creator-badge-icon">
+                                                    <i class="fa-solid fa-crown" />
+                                                </span>
+                                            </div>
+                                            <div class="creator-text-info">
+                                                <span class="creator-name">
+                                                    {owner.full_name ||
+                                                        owner.username}
+                                                </span>
+                                                <span class="creator-username">
+                                                    @{owner.username}
+                                                </span>
+                                            </div>
+                                        </a>
+                                    )
+                                }
+
+                                <!-- CẬP NHẬT: Nút bấm UX đẹp -->
+                                <div class="action-buttons">
+                                    <!-- Nút "Xem bàn giao" - chỉ hiện cho owner -->
+                                    {
+                                        isOwner && (
+                                            <button class="action-btn btn-view-handover">
+                                                <i class="fa-solid fa-file-import" />
+                                                {t(
+                                                    'project-detail-creator.xemBanGiao'
+                                                )}
+                                            </button>
+                                        )
+                                    }
+                                    <!-- Nút "Bàn giao" - chỉ hiện cho member (không phải owner) -->
+                                    {
+                                        isMember && !isOwner && (
+                                            <button class="action-btn btn-view-handover">
+                                                <i class="fa-solid fa-file-import" />
+                                                {t(
+                                                    'project-detail-collab.banGiao'
+                                                )}
+                                            </button>
+                                        )
+                                    }
+                                    <!-- Nút "Share" - hiện cho tất cả -->
+                                    <button
+                                        class="action-btn btn-share-project"
+                                    >
+                                        <i class="fa-solid fa-share"></i>
+                                        {t('project-detail-collab.share')}
+                                    </button>
+                                    <!-- Nút "Xóa dự án" - chỉ hiện cho owner -->
+                                    {
+                                        isOwner && (
+                                            <button class="action-btn btn-delete-project">
+                                                <i class="fa-solid fa-x" />
+                                                {t(
+                                                    'project-detail-creator.xoaDuAn'
+                                                )}
+                                            </button>
+                                        )
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Ảnh dự án -->
+                            {
+                                project?.cover_image_url && (
+                                    <div class="project-image-wrapper">
+                                        <img
+                                            src={project.cover_image_url}
+                                            alt={t(
+                                                'project-detail-collab.projectCover'
+                                            )}
+                                            class="project-image"
+                                        />
+                                    </div>
+                                )
+                            }
+                        </div>
+
+                        <!-- Phần Mô tả -->
+                        {
+                            project?.description && (
+                                <div class="description-box">
+                                    <div class="box-header">
+                                        <i class="fa-solid fa-caret-down" />
+                                        <h3>
+                                            {t('project-detail-collab.moTa')}
+                                        </h3>
+                                    </div>
+                                    <div class="box-content">
+                                        <p>{project.description}</p>
+                                    </div>
+                                </div>
+                            )
+                        }
+
+                        <!-- Phần Kỹ năng -->
+                        {
+                            projectSkills.length > 0 && (
+                                <div class="skills-section">
+                                    <h3>
+                                        {t('project-detail-collab.danhMucKN')}
+                                    </h3>
+                                    <div class="skills-list">
+                                        {projectSkills.map((skill, index) => (
+                                            <div class="skill-item-view">
+                                                <span class="skill-label">
+                                                    {t(
+                                                        'project-detail-collab.KN1'
+                                                    )}{' '}
+                                                    {index + 1}
+                                                </span>
+                                                <div class="skill-content">
+                                                    <div class="skill-tag">
+                                                        {skill.name}
+                                                        {skill.category
+                                                            ? ` / ${skill.category}`
+                                                            : ''}
+                                                    </div>
+                                                    <a
+                                                        href={`/${lang}/submit-application/${project?.id}`}
+                                                        class="btn-skill-detail"
+                                                        title={t(
+                                                            'project-detail-collab.viewDetails'
+                                                        )}
+                                                    >
+                                                        <span>
+                                                            {t(
+                                                                'project-detail-collab.ungTuyen'
+                                                            )}
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    <!-- CỘT PHẢI: SIDEBAR -->
+                    <div class="column-sidebar">
+                        <!-- Hoạt động biểu (Timeline) -->
+                        {
+                            milestones.length > 0 && (
+                                <div class="sidebar-section timeline-section">
+                                    <h3>
+                                        {t(
+                                            'project-detail-collab.activityChart'
+                                        )}
+                                    </h3>
+                                    <div class="timeline-cards">
+                                        {milestones.map((milestone) => (
+                                            <div class="timeline-card">
+                                                {milestone.title}
+                                                {milestone.description
+                                                    ? `: ${milestone.description}`
+                                                    : ''}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )
+                        }
+
+                        <!-- Thành viên -->
+                        {
+                            members.length > 0 && (
+                                <div class="sidebar-section members-section">
+                                    <h3>
+                                        {t('project-detail-collab.Members')}
+                                    </h3>
+                                    <div class="members-list">
+                                        {members.map((member) => (
+                                            <a
+                                                href={`/${lang}/profile/${member.username}`}
+                                                class="member-card"
+                                            >
+                                                <img
+                                                    src={
+                                                        member.avatar_url ||
+                                                        '/assets/images/vy2.png'
+                                                    }
+                                                    alt={t(
+                                                        'project-detail-collab.avatar'
+                                                    )}
+                                                    class="member-avatar"
+                                                />
+                                                <div class="member-info">
+                                                    <span class="name">
+                                                        {member.full_name ||
+                                                            member.username}
+                                                    </span>
+                                                    <span class="username">
+                                                        @{member.username}
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</DefaultLayout>

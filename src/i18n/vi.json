@@ -300,6 +300,26 @@
         "lock": "Khóa",
         "delete": "Xóa"
     },
+    "edit-profile": {
+        "generalInfo": "Thông tin chung",
+        "fullName": "Họ và tên",
+        "username": "Tên người dùng",
+        "phone": "Số điện thoại",
+        "email": "Email",
+        "additionalInfo": "Thông tin thêm",
+        "address": "Địa chỉ",
+        "description": "Mô tả",
+        "skills": "Kĩ năng",
+        "addSkill": "Thêm kỹ năng",
+        "projects": "Dự án",
+        "edit": "Chỉnh sửa",
+        "deleteProject": "Xóa dự án",
+        "reviews": "Một số đánh giá",
+        "cancel": "Hủy",
+        "submit": "Hoàn tất",
+        "editCoverImage": "Chỉnh sửa ảnh bìa",
+        "portfolioUrl": "URL Portfolio"
+    },
     "my-project": {
         "title": "Dự án của tôi",
         "description": "Một số dự án mà bạn đang có",

@@ -1,0 +1,159 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/submit-application.css';
+import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import { supabase } from '@/lib/supabase';
+export { getStaticPaths };
+
+const session = Astro.locals.session;
+const { lang, t, l } = useTranslate(Astro);
+const projectId = (Astro.params as { projectId?: string }).projectId;
+
+// Check if user is logged in
+if (!session?.user) {
+    return Astro.redirect(`/${lang}/sign-in`);
+}
+
+// Fetch project info
+let project: {
+    id: number;
+    title: string;
+    owner_id: string;
+} | null = null;
+
+if (projectId) {
+    try {
+        const projectIdNum = parseInt(projectId);
+        if (!isNaN(projectIdNum)) {
+            const { data: projectData, error: projectError } = await supabase
+                .from('projects')
+                .select('id, title, owner_id')
+                .eq('id', projectIdNum)
+                .is('deleted_at', null)
+                .single();
+
+            if (!projectError && projectData) {
+                project = projectData;
+            } else {
+                // Project not found, redirect
+                return Astro.redirect(`/${lang}/project-search`);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading project:', error);
+        return Astro.redirect(`/${lang}/project-search`);
+    }
+} else {
+    // No projectId, redirect
+    return Astro.redirect(`/${lang}/project-search`);
+}
+
+// Check if user already applied
+let hasApplied = false;
+if (project && session.user) {
+    const { data: existingApplication } = await supabase
+        .from('applications')
+        .select('id')
+        .eq('project_id', project.id)
+        .eq('applicant_id', session.user.id)
+        .is('deleted_at', null)
+        .maybeSingle();
+
+    hasApplied = !!existingApplication;
+}
+---
+
+<DefaultLayout>
+    <Header />
+    <div class="ung-tuyen">
+        <div class="ung-tuyen-container">
+            <div class="ung-tuyen-section">
+                <div class="title">
+                    <h1>{t('submit-application.title')}</h1>
+                    <div class="mo-ta">
+                        {t('submit-application.mo-ta')}
+                    </div>
+                </div>
+                {
+                    hasApplied ? (
+                        <div class="already-applied">
+                            <p>Bạn đã ứng tuyển cho dự án này rồi.</p>
+                            <a href={`/${lang}/project-detail/${project?.id}`}>
+                                Quay lại trang dự án
+                            </a>
+                        </div>
+                    ) : (
+                        <>
+                            <form
+                                id="submit-application-form"
+                                method="POST"
+                                action={`/api/applications/submit`}
+                            >
+                                <input
+                                    type="hidden"
+                                    name="project_id"
+                                    value={project?.id}
+                                />
+                                <div class="ung-tuyen-content">
+                                    <div class="reason">
+                                        <h5>
+                                            {t('submit-application.reason')}
+                                        </h5>
+                                    </div>
+                                    <textarea
+                                        name="cover_letter"
+                                        class="reason-input"
+                                        placeholder={t(
+                                            'submit-application.reason-input'
+                                        )}
+                                        required
+                                    />
+                                    <div class="cv">
+                                        <h5>{t('submit-application.cv')}</h5>
+                                        <div class="upload">
+                                            <input
+                                                type="file"
+                                                id="cv-upload"
+                                                name="cv_file"
+                                                accept=".pdf,.doc,.docx"
+                                                style="display: none;"
+                                            />
+                                            <button
+                                                type="button"
+                                                class="upload-box-button"
+                                                onclick="document.getElementById('cv-upload').click()"
+                                            >
+                                                <img
+                                                    src="/assets/images/solar_upload-square-outline.svg"
+                                                    alt="icon"
+                                                />
+                                                {t('submit-application.here')}
+                                            </button>
+                                            <div
+                                                class="upload-box-list"
+                                                id="upload-list"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="send-button">
+                                    <a
+                                        href={`/${lang}/project-detail/${project?.id}`}
+                                        class="send-button-2"
+                                    >
+                                        {t('submit-application.send-button-2')}
+                                    </a>
+                                    <button type="submit" class="send-button-1">
+                                        {t('submit-application.send-button-1')}
+                                    </button>
+                                </div>
+                            </form>
+                        </>
+                    )
+                }
+            </div>
+        </div>
+    </div>
+    <script src="/assets/script/submit-application.js"></script>
+</DefaultLayout>
