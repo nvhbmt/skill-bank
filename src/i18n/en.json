@@ -122,7 +122,7 @@
         "send": "Send"
     },
     "create-project": {
-        "title": "Create project",
+        "title": "Post a project",
         "thongTinChung": "General information",
         "tenDuAn": "Project name:",
         "điaDiem": "Work location:",
@@ -146,9 +146,15 @@
         "chiTiet": "Detail"
     },
     "header": {
+        "homepage": "Home",
+        "myProject": "My projects",
         "aboutUs": "About us",
-        "viewAll": "View all",
-        "createProject": "Create project"
+        "help": "Help",
+        "doiMK": "Change password",
+        "dangXuat": "Sign out",
+        "explore": "Explore projects",
+        "createProject": "Post a project",
+        "viewProfile": "View profile"
     },
     "home": {
         "searchPlaceholder": "Search",
