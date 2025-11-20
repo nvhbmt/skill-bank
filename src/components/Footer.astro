@@ -1,5 +1,9 @@
 ---
 import '@/assets/css/footer.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
 ---
 
 <footer class="footer">
@@ -13,9 +17,7 @@ import '@/assets/css/footer.css';
                     />
                 </div>
                 <p class="footer__desc">
-                    Nền tảng kết nối người có kỹ năng với các dự án thực tế. Nơi
-                    bạn chia sẻ chuyên môn, tham gia dự án và phát triển bản
-                    thân.
+                    {t('footer.description')}
                 </p>
                 <div class="footer__social">
                     <a
@@ -81,9 +83,9 @@ import '@/assets/css/footer.css';
                 </div>
             </div>
             <div class="footer__column">
-                <h3 class="footer__heading">Liên kết nhanh</h3>
+                <h3 class="footer__heading">{t('footer.quickLinks')}</h3>
                 <nav class="footer__links">
-                    <a href="/" class="footer__link">
+                    <a href={l('/')} class="footer__link">
                         <svg
                             width="16"
                             height="16"
@@ -94,9 +96,9 @@ import '@/assets/css/footer.css';
                         >
                             <path d="M5 12h14M12 5l7 7-7 7"></path>
                         </svg>
-                        Trang chủ
+                        {t('footer.home')}
                     </a>
-                    <a href="/tim-kiem-du-an" class="footer__link">
+                    <a href={l('/project-search')} class="footer__link">
                         <svg
                             width="16"
                             height="16"
@@ -107,9 +109,9 @@ import '@/assets/css/footer.css';
                         >
                             <path d="M5 12h14M12 5l7 7-7 7"></path>
                         </svg>
-                        Khám phá dự án
+                        {t('footer.exploreProjects')}
                     </a>
-                    <a href="/gui-ung-tuyen" class="footer__link">
+                    <a href={l('/submit-application')} class="footer__link">
                         <svg
                             width="16"
                             height="16"
@@ -120,9 +122,9 @@ import '@/assets/css/footer.css';
                         >
                             <path d="M5 12h14M12 5l7 7-7 7"></path>
                         </svg>
-                        Gửi ứng tuyển
+                        {t('footer.submitApplication')}
                     </a>
-                    <a href="/about" class="footer__link">
+                    <a href="#" class="footer__link">
                         <svg
                             width="16"
                             height="16"
@@ -133,26 +135,32 @@ import '@/assets/css/footer.css';
                         >
                             <path d="M5 12h14M12 5l7 7-7 7"></path>
                         </svg>
-                        Giới thiệu
+                        {t('footer.about')}
                     </a>
                 </nav>
             </div>
             <div class="footer__column">
-                <h3 class="footer__heading">Hỗ trợ</h3>
+                <h3 class="footer__heading">{t('footer.support')}</h3>
                 <nav class="footer__links">
-                    <a href="/dang-nhap" class="footer__link">Đăng nhập</a>
-                    <a href="/dang-ky" class="footer__link">Đăng ký</a>
-                    <a href="/quen-mat-khau" class="footer__link"
-                        >Quên mật khẩu</a
+                    <a href={l('/sign-in')} class="footer__link"
+                        >{t('footer.signIn')}</a
+                    >
+                    <a href={l('/sign-up')} class="footer__link"
+                        >{t('footer.signUp')}</a
+                    >
+                    <a href={l('/forgot-password')} class="footer__link"
+                        >{t('footer.forgotPassword')}</a
                     >
                     <a href="#qna-section" class="footer__link"
-                        >Câu hỏi thường gặp</a
+                        >{t('footer.faq')}</a
                     >
-                    <a href="/contact" class="footer__link">Liên hệ hỗ trợ</a>
+                    <a href="#" class="footer__link"
+                        >{t('footer.contactSupport')}</a
+                    >
                 </nav>
             </div>
             <div class="footer__column">
-                <h3 class="footer__heading">Liên hệ</h3>
+                <h3 class="footer__heading">{t('footer.contact')}</h3>
                 <div class="footer__contact">
                     <a
                         href="mailto:support@skillbank.com"
@@ -193,7 +201,7 @@ import '@/assets/css/footer.css';
         </div>
         <div class="footer__bottom">
             <p class="footer__copyright">
-                Bản quyền © 2025 Skill Bank. Mọi quyền được bảo lưu.
+                {t('footer.copyright')}
             </p>
         </div>
     </div>

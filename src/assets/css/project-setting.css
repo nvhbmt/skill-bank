@@ -1,0 +1,342 @@
+body {
+    background-image: url('/assets/images/nen-gui-ung-tuyen.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: Inter, sans-serif;
+}
+.project-setting-page {
+    display: flex;
+    margin: 2.5rem;
+    justify-content: center;
+    height: 61.25rem;
+}
+.project-setting-layout {
+    gap: 3.25rem;
+    width: 70.75rem;
+    padding: 2.5rem;
+    display: flex;
+    background-color: #00000090;
+    border-radius: 3.125rem;
+}
+
+.editor-main-column {
+    width: 700px;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-sidebar-column {
+    width: 18.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+/* --- COMPONENT: OVERVIEW PANEL --- */
+.overview-panel {
+    background-color: #ffffff28;
+    border-radius: 1.25rem 1.25rem 0 0;
+    display: flex;
+    height: 28rem;
+    padding: 2.5rem 1.6rem;
+    gap: 2rem;
+}
+
+.panel-info {
+    flex: 1;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.project-title-text {
+    font-size: 3.25rem;
+    font-weight: 700;
+    color: var(--color-bg-light);
+}
+
+.meta-row {
+    display: flex;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.meta-label {
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+    color: var(--color-bg-light);
+    margin-right: 0.5rem;
+    width: 5.6rem;
+}
+
+.meta-value {
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+    color: #ffffffcb;
+}
+
+.action-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn {
+    border-radius: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-cancel {
+    background: #c1c1f9ae;
+    color: var(--color-bg-black);
+    border: none;
+    width: 8.3rem;
+    height: 2.5rem;
+}
+
+.btn-submit {
+    background: #6363f1cf;
+    color: var(--color-bg-black);
+    border: none;
+    width: 8.3rem;
+    height: 2.5rem;
+}
+
+/* Image Circle */
+
+.artwork-img {
+    height: 100%;
+    width: 100%;
+}
+
+/* --- COMPONENT: DESCRIPTION --- */
+.content-panel {
+    background: #ffffff6f;
+    padding: 2.5rem 1.6rem;
+    border-radius: 0 0 1.25rem 1.25rem;
+    height: 28.25rem;
+}
+.description-section {
+    background-color: #7a28ff2f;
+    padding: 0 3rem;
+    color: var(--text-black);
+    border-radius: 1.25rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.description-content {
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+    line-height: 1.5;
+    text-align: justify;
+    color: var(--color-bg-black);
+}
+
+/* --- COMPONENT: SKILLS --- */
+.skills-section {
+    display: flex;
+    flex-direction: column;
+    padding: 2.8rem;
+}
+
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-weight: 700;
+    font-size: 18px;
+    width: 31.25rem;
+}
+
+.btn-icon-circle {
+    width: 3.75rem;
+    height: 2.5rem;
+    background-color: #efeffecc;
+    color: #333;
+    border-radius: 1.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    margin-right: 1.25rem;
+}
+
+.skill-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    width: 31.25rem;
+}
+
+.skill-row .field-label {
+    width: 80px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+/* Dropdown Button Input */
+.dropdown-box {
+    height: 2.5rem;
+    width: 25rem;
+    background-color: #efeffecc;
+    border-radius: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    color: #403e41;
+    border: none;
+}
+.dropdown-icon {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 22rem;
+}
+
+.sidebar-widget {
+    background-color: #ffffff28;
+    border-radius: 1.875rem;
+    padding: 1.25rem;
+    border: 1px solid #333;
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.schedule-widget {
+    background-color: #ffffff28;
+}
+.team-widget {
+    background-color: #323131;
+    height: 23.125rem;
+}
+.widget-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-bg-light);
+}
+
+.btn-icon-circle-dark {
+    width: 24px;
+    height: 24px;
+    background-color: #d9d9d9;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+.timeline-container {
+    display: flex;
+    gap: 0.3125rem;
+    position: relative;
+}
+.week-block {
+    height: 17.875rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4.375rem;
+}
+
+.week-text {
+    font-size: 0.875rem;
+    font-weight: 400;
+    font-family:
+        Open Sans,
+        sans-serif;
+    color: var(--color-bg-light);
+}
+.task-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9375rem;
+}
+.task-box {
+    flex: 1;
+    background-color: var(--color-bg-soft);
+    color: black;
+    padding: 0.75rem 0.94rem;
+    border-radius: 0.5rem;
+    font-size: 0.5rem;
+    text-align: left;
+    width: 11.125rem;
+}
+.task-box:hover {
+    background: var(--color-surface);
+    color: var(--color-bg-black);
+}
+.task-box:active {
+    background: var(--color-surface);
+    color: var(--color-bg-black);
+}
+
+.task-name {
+    font-weight: 700;
+    margin-bottom: 4px;
+    font-size: 11px;
+}
+
+.task-desc {
+    line-height: 1.4;
+}
+
+/* Member List */
+.member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.member-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.member-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.member-name {
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: var(--color-bg-light);
+}
+
+.member-handle {
+    font-size: 12px;
+    color: #888;
+}
