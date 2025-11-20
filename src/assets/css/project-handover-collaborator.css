@@ -1,7 +1,6 @@
 body {
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url('/assets/images/background.png');
     font-family: Arial, sans-serif;
     width: 100%;
     min-height: 100vh;
@@ -17,7 +16,7 @@ main {
 
 .project-handover {
     width: 1000px;
-    height: 852px;
+    height: auto;
     background-color: #00000081;
     border-radius: 50px;
     padding: 20px 0;
@@ -34,7 +33,7 @@ main {
 
 .inner-project-handover.container {
     max-width: 1920px;
-    width: 80%;
+    width: 95%;
     margin: 0 auto;
 }
 
@@ -61,6 +60,7 @@ textarea:focus {
     flex-direction: column;
     gap: 33px;
     width: 100%;
+    padding: 0 56px;
 }
 
 .project-handover-section {
@@ -68,10 +68,11 @@ textarea:focus {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    align-items: center;
 }
 
 .project-handover-label {
-    font-size: 28.8px;
+    font-size: 24px;
     color: var(--color-bg-light);
     font-weight: 400;
 }
@@ -212,11 +213,39 @@ textarea:focus {
     opacity: 80%;
 }
 
-.project-handover-submit {
+.box-project-handover-submit {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    gap: 24px;
+}
+
+.project-handover-submit1 {
+    border-radius: 30px;
+    background: transparent;
+    color: var(--color-bg-light);
+    border: 1px solid var(--color-purple-button);
+    width: 188px;
+    height: 52px;
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.1s ease;
+}
+
+.project-handover-submit1:hover {
+    border:2px solid var(--color-purple-button-hover);
+}
+
+.project-handover-submit1:active {
+    border:2px solid var(--color-purple-button-active);
+}
+
+.project-handover-submit2 {
     border-radius: 30px;
     background: var(--color-purple-button);
     color: var(--color-bg-light);
-    width: 400px;
+    width: 188px;
     height: 52px;
     font-size: 24px;
     font-weight: 500;
@@ -225,11 +254,11 @@ textarea:focus {
     transition: color 0.1s ease;
 }
 
-.project-handover-submit:hover {
+.project-handover-submit2:hover {
     background: var(--color-purple-button-hover);
 }
 
-.project-handover-submit:active {
+.project-handover-submit2:active {
     background: var(--color-purple-button-active);
 }
 
