@@ -1,4 +1,5 @@
 /* Using global CSS variables from global.css */
+@import url('./shared-utilities.css');
 
 @import url('https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css');
 * {
@@ -6,18 +7,26 @@
     box-sizing: border-box;
 }
 html,
-body {
-    margin: 0px;
-    height: 100%;
-    background-color: var(--color-bg-dark);
-}
-button:focus-visible {
-    outline: 2px solid #4a90e2;
-    outline: -webkit-focus-ring-color auto 5px;
-}
 a {
     text-decoration: none;
 }
+
+body {
+    background-image: url('/assets/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.edit-profile-container {
+    margin-top: 32px;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 40px 24px;
+}
+
 .section {
     display: flex;
     align-items: center;
@@ -61,7 +70,7 @@ a {
     align-self: stretch;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.22);
-    border-radius: 20px;
+    border-radius: 20px; /* Using shared .radius-sm would require class changes, keeping for now */
 }
 
 .section .div {
@@ -74,12 +83,24 @@ a {
 
 .section .avt-va {
     position: relative;
-    width: 80px;
-    height: 80px;
-    border-radius: 40px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
     background-image: url('/assets/images/avt-vừa.svg');
     background-size: cover;
     background-position: 50% 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    flex: 1;
+}
+
+.section .avt-va img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    aspect-ratio: 1 / 1;
 }
 
 .section .frame-2 {
@@ -148,7 +169,7 @@ a {
     width: 100%;
     flex: 0 0 auto;
     background-color: rgba(0, 0, 0, 0.22);
-    border-radius: 20px;
+    border-radius: 20px; /* Using shared .radius-sm would require class changes, keeping for now */
 }
 
 .section .text-wrapper-3 {
@@ -187,7 +208,6 @@ a {
 .section .frame-6 {
     display: flex;
     flex-direction: column;
-    width: 89px;
     align-items: flex-start;
     position: relative;
     flex: 0 0 auto;
@@ -252,7 +272,7 @@ a {
     width: 100%;
     flex: 0 0 auto;
     background-color: rgba(0, 0, 0, 0.22);
-    border-radius: 20px;
+    border-radius: 20px; /* Using shared .radius-sm would require class changes, keeping for now */
 }
 
 .section .img {
@@ -306,7 +326,7 @@ a {
     width: 100%;
     flex: 0 0 auto;
     background-color: rgba(0, 0, 0, 0.22);
-    border-radius: 20px;
+    border-radius: 20px; /* Using shared .radius-sm would require class changes, keeping for now */
 }
 
 .section .frame-11 {
@@ -359,6 +379,20 @@ a {
     width: 100%;
     height: 300px;
     object-fit: cover;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* Fix for cover image preview label */
+label[for='cover-image-upload'] {
+    display: block;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+label[for='cover-image-upload']:hover .cover-image-overlay {
+    opacity: 1 !important;
 }
 
 .section .frame-14 {
@@ -530,6 +564,7 @@ a {
     justify-content: space-between;
     padding: 10px 24px;
     position: relative;
+    /* Note: rgba(193, 193, 249, 0.7) matches .bg-purple-overlay in shared-utilities.css */
     background-color: rgba(193, 193, 249, 0.7);
     border-radius: 20px;
 }
@@ -912,6 +947,7 @@ a {
     padding: 20px 40px;
     position: relative;
     flex: 0 0 auto;
+    /* Note: rgba(193, 193, 249, 0.06) matches .bg-purple-overlay-light in shared-utilities.css */
     background-color: rgba(193, 193, 249, 0.06);
     border-radius: 35px;
 }
@@ -1234,15 +1270,70 @@ a {
     justify-content: center;
     gap: 8px;
     padding: 0px 24px;
-    position: absolute;
-    top: 273px;
-    left: 934px;
+    position: relative;
     background-color: var(--color-purple-button);
     border-radius: 30px;
     overflow: hidden;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 /* Original CSS code should be injected here */
 
+/* Avatar hover effect */
+.section .avt-va:hover .avatar-overlay {
+    opacity: 1 !important;
+}
+
+.section .avt-va:hover img {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.7);
+}
+
+/* Skill select styling */
+#new-skill-select:hover {
+    border-color: var(--color-purple-text-hover);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    transform: translateY(-1px);
+}
+
+#new-skill-select:focus {
+    border-color: var(--color-purple-button-hover);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+    transform: translateY(-1px);
+}
+
+#new-skill-select option {
+    background-color: var(--color-bg-darker);
+    color: var(--color-text-invert);
+}
+
+/* Add skill button hover - using shared purple button pattern */
+#add-skill-btn:hover {
+    background: var(--color-purple-button-hover) !important;
+    border-color: var(--color-purple-button-hover) !important;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+#add-skill-btn:active {
+    background: var(--color-purple-button-active) !important;
+    border-color: var(--color-purple-button-active) !important;
+    transform: translateY(0) !important;
+}
+
+/* Remove skill button hover */
+.remove-skill-btn:hover {
+    background: rgba(220, 38, 38, 1) !important;
+    transform: scale(1.15) !important;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.6) !important;
+}
+
+.remove-skill-btn:active {
+    transform: scale(1.05) !important;
+}
+
+/* Interactive button states - using shared utilities pattern */
 .section .frame-18,
 .section .frame-19,
 .section .frame-21,
@@ -1356,6 +1447,45 @@ a {
 .section .frame-11 {
     padding: 0 0 0 10%;
     margin: 0;
+}
+
+/* Add Skill Dialog Styles */
+.add-skill-dialog-overlay {
+    animation: fadeIn 0.3s ease;
+}
+
+.add-skill-dialog {
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close-dialog-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    opacity: 1 !important;
+    transform: scale(1.1);
+}
+
+.close-dialog-btn:active {
+    transform: scale(0.95);
 }
 
 .star-box {

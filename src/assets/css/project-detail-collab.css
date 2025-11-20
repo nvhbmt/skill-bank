@@ -208,15 +208,29 @@ main {
 }
 
 /* Nút Xóa dự án (Glassmorphism Đỏ) */
-.btn-delete-project {
+.btn-share-project {
     background-color: rgba(9, 121, 225, 0.2);
     border: 1px solid rgba(68, 216, 239, 0.4);
     color: var(--color-bg-light);
 }
-.btn-delete-project:hover {
+.btn-share-project:hover {
     background-color: rgba(8, 159, 240, 0.4);
     color: #fff;
     border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* Nút Xóa dự án (Glassmorphism Đỏ) */
+.btn-delete-project {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+}
+.btn-delete-project:hover {
+    background-color: rgba(239, 68, 68, 0.25);
+    color: #fff;
+    border-color: var(--color-red-danger);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }

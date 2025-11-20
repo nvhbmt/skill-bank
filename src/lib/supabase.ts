@@ -12,15 +12,20 @@ export const supabase = createClient<Database>(
  * For server-side API routes, we use the access token in headers
  */
 export function createAuthenticatedClient(session: Session) {
-    return createClient<Database>(
+    const supabase = createClient(
         import.meta.env.SUPABASE_URL,
         import.meta.env.SUPABASE_ANON_KEY,
         {
-            global: {
-                headers: {
-                    Authorization: `Bearer ${session.access_token}`,
-                },
+            auth: {
+                persistSession: false,
             },
         }
     );
+
+    supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+    });
+
+    return supabase;
 }

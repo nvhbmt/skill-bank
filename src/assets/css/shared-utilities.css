@@ -1,0 +1,136 @@
+/* Shared CSS Utilities - Common styles used across multiple pages */
+
+/* ============================================
+   COMMON BUTTON STYLES
+   ============================================ */
+
+/* Base button hover effect */
+.btn:hover {
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+/* Common button interactive states */
+.btn-interactive {
+    cursor: pointer;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.btn-interactive:hover {
+    opacity: 0.8;
+}
+
+.btn-interactive:active {
+    transform: scale(0.98);
+}
+
+/* Purple button hover states */
+.btn-purple:hover {
+    background-color: var(--color-purple-button-hover);
+    border-color: var(--color-purple-button-hover);
+}
+
+.btn-purple:active {
+    background-color: var(--color-purple-button-active);
+    border-color: var(--color-purple-button-active);
+}
+
+/* ============================================
+   COMMON TYPOGRAPHY
+   ============================================ */
+
+/* Open Sans font family utilities */
+.font-open-sans {
+    font-family: 'Open Sans', Helvetica, sans-serif;
+}
+
+.font-open-sans-bold {
+    font-family: 'Open Sans-Bold', Helvetica, sans-serif;
+    font-weight: 700;
+}
+
+.font-open-sans-semibold {
+    font-family: 'Open Sans-SemiBold', Helvetica, sans-serif;
+    font-weight: 600;
+}
+
+.font-open-sans-regular {
+    font-family: 'Open Sans-Regular', Helvetica, sans-serif;
+    font-weight: 400;
+}
+
+.font-open-sans-light {
+    font-family: 'Open Sans-Light', Helvetica, sans-serif;
+    font-weight: 300;
+}
+
+/* ============================================
+   COMMON BORDER RADIUS
+   ============================================ */
+
+.radius-sm {
+    border-radius: 20px;
+}
+
+.radius-md {
+    border-radius: 30px;
+}
+
+.radius-lg {
+    border-radius: 1.25rem; /* 20px */
+}
+
+.radius-xl {
+    border-radius: 1.875rem; /* 30px */
+}
+
+/* ============================================
+   COMMON BACKGROUND PATTERNS
+   ============================================ */
+
+.bg-dark-overlay {
+    background-color: rgba(0, 0, 0, 0.22);
+}
+
+.bg-dark-overlay-strong {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.bg-soft-overlay {
+    background-color: rgba(255, 255, 255, 0.28);
+}
+
+.bg-purple-overlay {
+    background-color: rgba(193, 193, 249, 0.7);
+}
+
+.bg-purple-overlay-light {
+    background-color: rgba(193, 193, 249, 0.06);
+}
+
+/* ============================================
+   COMMON FOCUS STATES
+   ============================================ */
+
+button:focus-visible {
+    outline: 2px solid #4a90e2;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+/* ============================================
+   COMMON TRANSITIONS
+   ============================================ */
+
+.transition-smooth {
+    transition: all 0.2s ease;
+}
+
+.transition-opacity {
+    transition: opacity 0.2s ease;
+}
+
+.transition-transform {
+    transition: transform 0.2s ease;
+}

@@ -1,3 +1,6 @@
+/* Using shared utilities */
+@import url('./shared-utilities.css');
+
 body {
     background-image: url('/assets/images/nen-gui-ung-tuyen.svg');
     background-repeat: no-repeat;
@@ -65,9 +68,7 @@ body {
 .meta-label {
     font-size: 1.25rem;
     font-weight: 400;
-    font-family:
-        Open Sans,
-        sans-serif;
+    font-family: 'Open Sans', sans-serif;
     color: var(--color-bg-light);
     margin-right: 0.5rem;
     width: 5.6rem;
@@ -76,9 +77,7 @@ body {
 .meta-value {
     font-size: 1.25rem;
     font-weight: 400;
-    font-family:
-        Open Sans,
-        sans-serif;
+    font-family: 'Open Sans', sans-serif;
     color: #ffffffcb;
 }
 
@@ -87,6 +86,7 @@ body {
     gap: 0.75rem;
 }
 
+/* Button styles - using shared utilities pattern */
 .btn {
     border-radius: 1.25rem;
     font-size: 0.875rem;
@@ -97,6 +97,7 @@ body {
     transition: opacity 0.2s;
 }
 
+/* Hover effect matches shared .btn:hover pattern from shared-utilities.css */
 .btn:hover {
     opacity: 0.9;
 }
@@ -149,9 +150,7 @@ body {
 .description-content {
     font-size: 1.25rem;
     font-weight: 400;
-    font-family:
-        Open Sans,
-        sans-serif;
+    font-family: 'Open Sans', sans-serif;
     line-height: 1.5;
     text-align: justify;
     color: var(--color-bg-black);
@@ -273,9 +272,7 @@ body {
 .week-text {
     font-size: 0.875rem;
     font-weight: 400;
-    font-family:
-        Open Sans,
-        sans-serif;
+    font-family: 'Open Sans', sans-serif;
     color: var(--color-bg-light);
 }
 .task-block {

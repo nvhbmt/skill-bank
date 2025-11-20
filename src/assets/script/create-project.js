@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (result.success) {
                         const lang =
                             window.location.pathname.split('/')[1] || 'vi';
-                        window.location.href = `/${lang}/project-search`;
+                        window.location.href = `/${lang}/project-detail/${result.data.project_id}`;
                     } else {
                         alert(result.message || 'Lỗi');
                     }
