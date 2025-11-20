@@ -370,6 +370,36 @@
         "duAn": "Dự án",
         "danhGia": "Một số đánh giá"
     },
+    "faq": {
+        "title": "Câu hỏi thường gặp",
+        "q1": "1. SkillBank là gì?",
+        "a1": "SkillBank là nền tảng “ngân hàng kỹ năng” cho phép người dùng chia sẻ, trao đổi và hợp tác dựa trên kỹ năng của mình để thực hiện các dự án.",
+
+        "q2": "2. Tạo tài khoản trên SkillBank có mất phí không?",
+        "a2": "Không. Việc đăng ký và tạo tài khoản hoàn toàn miễn phí. Các tính năng nâng cao (nếu có) sẽ được thông báo rõ ràng sau.",
+        "q3": "3. Tôi có thể đăng kỹ năng của mình như thế nào?",
+        "a3": "Bạn chỉ cần vào trang hồ sơ cá nhân, chọn “Thêm kỹ năng”, cung cấp mô tả chi tiết và mức độ thành thạo.",
+
+        "q4": "4. Làm sao để tìm người phù hợp hỗ trợ dự án?",
+        "a4": "Bạn có thể dùng chức năng tìm kiếm theo kỹ năng, lọc theo cấp độ kinh nghiệm hoặc đăng yêu cầu dự án để cộng đồng nhìn thấy.",
+
+        "q5": "5. Tôi có thể tham gia bao nhiêu dự án cùng lúc?",
+        "a5": "Không có giới hạn cụ thể. Tuy nhiên, SkillBank khuyến khích bạn chỉ tham gia số lượng phù hợp để đảm bảo chất lượng công việc.",
+
+        "q6": "6. Việc trao đổi kỹ năng được tính như thế nào?",
+        "a6": "Mỗi kỹ năng có giá trị quy đổi tương ứng do cộng đồng tự thỏa thuận hoặc được gợi ý bởi hệ thống. Hai bên có thể thống nhất trước khi hợp tác.",
+
+        "q7": "7. Tôi có thể đánh giá người đã hỗ trợ mình không?",
+        "a7": "Có. Sau khi kết thúc dự án, bạn có thể đánh giá mức độ hài lòng và chất lượng đóng góp của các thành viên.",
+
+        "q8": "8. SkillBank có đảm bảo an toàn cho thông tin cá nhân không?",
+        "a8": "Có. Chúng tôi áp dụng các biện pháp bảo mật để bảo vệ dữ liệu người dùng và cam kết không chia sẻ thông tin trái phép.",
+        "q9": "9. Tôi có thể chỉnh sửa hoặc xóa kỹ năng đã đăng không?",
+        "a9": "Hoàn toàn được. Bạn có thể cập nhật, chỉnh sửa hoặc xóa kỹ năng bất kỳ lúc nào trong phần hồ sơ cá nhân.",
+
+        "q10": "10. Nếu gặp lỗi hoặc cần hỗ trợ, tôi liên hệ ở đâu?",
+        "a10": "Bạn có thể gửi yêu cầu qua mục “Hỗ trợ kỹ thuật”, liên hệ email chăm sóc khách hàng hoặc chat trực tiếp với đội ngũ hỗ trợ của SkillBank."
+    },
     "admin": {
         "title": "Bảng điều khiển quản trị",
         "users": "Người dùng",
