@@ -1,0 +1,373 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import '@/assets/css/admin.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import {
+    getAllUsers,
+    getPendingProjects,
+    type UserInfo,
+    type ProjectInfo,
+} from '@/services/admin';
+import { supabase } from '@/lib/supabase';
+export { getStaticPaths };
+
+const session = Astro.locals.session;
+const { lang, t, l } = useTranslate(Astro);
+
+// Redirect if not logged in
+if (!session?.user) {
+    return Astro.redirect(l(`/sign-in`));
+}
+
+// Check if user is admin
+let isAdmin = false;
+try {
+    const { data: userInfo } = await supabase
+        .from('user_info')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .single();
+
+    isAdmin = userInfo?.role === 'admin';
+} catch (error) {
+    console.error('Error checking admin status:', error);
+}
+
+if (!isAdmin) {
+    return Astro.redirect(l(`/`));
+}
+
+// Fetch data
+let users: UserInfo[] = [];
+let pendingProjects: ProjectInfo[] = [];
+
+try {
+    users = await getAllUsers();
+    pendingProjects = await getPendingProjects();
+} catch (error) {
+    console.error('Error loading admin data:', error);
+}
+
+// Helper function to format date
+function formatDate(dateString: string | null): string {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    } catch {
+        return dateString;
+    }
+}
+---
+
+<DefaultLayout>
+    <Header />
+    <div class="admin-wrapper">
+        <div class="admin-container">
+            <h1 class="admin-title">{t('admin.title')}</h1>
+
+            <!-- Tabs Navigation -->
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="users">
+                    {t('admin.users')}
+                </button>
+                <button class="admin-tab-btn" data-tab="projects">
+                    {t('admin.projects')}
+                </button>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users-tab" class="admin-tab-content">
+                <div class="admin-section">
+                    <h2 class="admin-section-title">
+                        {t('admin.userManagement')}
+                    </h2>
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>{t('admin.username')}</th>
+                                    <th>{t('admin.email')}</th>
+                                    <th>{t('admin.fullName')}</th>
+                                    <th>{t('admin.role')}</th>
+                                    <th>{t('admin.createdAt')}</th>
+                                    <th>{t('admin.actions')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    users.length > 0 ? (
+                                        users.map((user) => (
+                                            <tr>
+                                                <td>
+                                                    <div class="user-cell">
+                                                        {user.avatar_url && (
+                                                            <img
+                                                                src={
+                                                                    user.avatar_url
+                                                                }
+                                                                alt={
+                                                                    user.username
+                                                                }
+                                                                class="user-avatar"
+                                                            />
+                                                        )}
+                                                        <span>
+                                                            {user.username}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>{user.email}</td>
+                                                <td>{user.full_name || '-'}</td>
+                                                <td>
+                                                    <span
+                                                        class={`role-badge role-${user.role}`}
+                                                    >
+                                                        {user.role}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {formatDate(
+                                                        user.created_at
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <a
+                                                            href={l(
+                                                                `/profile/${user.username}`
+                                                            )}
+                                                            class="action-btn view-btn"
+                                                        >
+                                                            {t('admin.view')}
+                                                        </a>
+                                                        <button
+                                                            class="action-btn delete-btn"
+                                                            data-user-id={
+                                                                user.user_id
+                                                            }
+                                                            onclick={`deleteUser('${user.user_id}')`}
+                                                        >
+                                                            {t('admin.delete')}
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colspan="6" class="no-data">
+                                                {t('admin.noUsers')}
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div
+                id="projects-tab"
+                class="admin-tab-content"
+                style="display: none;"
+            >
+                <div class="admin-section">
+                    <h2 class="admin-section-title">
+                        {t('admin.projectApproval')}
+                    </h2>
+                    <div class="projects-list">
+                        {
+                            pendingProjects.length > 0 ? (
+                                pendingProjects.map((project) => (
+                                    <div class="project-card">
+                                        <div class="project-header">
+                                            <h3 class="project-title">
+                                                {project.title}
+                                            </h3>
+                                            <span class="project-date">
+                                                {formatDate(project.created_at)}
+                                            </span>
+                                        </div>
+                                        <div class="project-info">
+                                            <p class="project-description">
+                                                {project.description ||
+                                                    t('admin.noDescription')}
+                                            </p>
+                                            <div class="project-owner">
+                                                <strong>
+                                                    {t('admin.owner')}:
+                                                </strong>{' '}
+                                                {project.owner
+                                                    ? `${project.owner.full_name || project.owner.username} (${project.owner.email})`
+                                                    : '-'}
+                                            </div>
+                                        </div>
+                                        <div class="project-actions">
+                                            <a
+                                                href={l(
+                                                    `/project/${project.id}`
+                                                )}
+                                                class="action-btn view-btn"
+                                                target="_blank"
+                                            >
+                                                {t('admin.viewDetails')}
+                                            </a>
+                                            <button
+                                                class="action-btn approve-btn"
+                                                data-project-id={project.id}
+                                                onclick={`approveProject(${project.id})`}
+                                            >
+                                                {t('admin.approve')}
+                                            </button>
+                                            <button
+                                                class="action-btn reject-btn"
+                                                data-project-id={project.id}
+                                                onclick={`rejectProject(${project.id})`}
+                                            >
+                                                {t('admin.reject')}
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div class="no-data">
+                                    {t('admin.noPendingProjects')}
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.admin-tab-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const tabName = btn.getAttribute('data-tab');
+
+                // Update buttons
+                document.querySelectorAll('.admin-tab-btn').forEach((b) => {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+
+                // Update content
+                document
+                    .querySelectorAll('.admin-tab-content')
+                    .forEach((content) => {
+                        // @ts-ignore
+                        content.style.display = 'none';
+                    });
+                // @ts-ignore
+                document.getElementById(`${tabName}-tab`).style.display =
+                    'block';
+            });
+        });
+
+        // Approve project
+        // @ts-ignore
+        window.approveProject = async function (projectId: number) {
+            if (!confirm('Bạn có chắc chắn muốn duyệt dự án này?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `/api/admin/projects/${projectId}/approve`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Duyệt dự án thành công!');
+                    location.reload();
+                } else {
+                    alert(result.message || 'Có lỗi xảy ra');
+                }
+            } catch (error) {
+                alert('Có lỗi xảy ra khi duyệt dự án');
+                console.error(error);
+            }
+        };
+
+        // Reject project
+        // @ts-ignore
+        window.rejectProject = async function (projectId) {
+            if (!confirm('Bạn có chắc chắn muốn từ chối dự án này?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `/api/admin/projects/${projectId}/reject`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Từ chối dự án thành công!');
+                    location.reload();
+                } else {
+                    alert(result.message || 'Có lỗi xảy ra');
+                }
+            } catch (error) {
+                alert('Có lỗi xảy ra khi từ chối dự án');
+                console.error(error);
+            }
+        };
+
+        // Delete user
+        // @ts-ignore
+        window.deleteUser = async function (userId) {
+            if (!confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/users', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        updates: {
+                            deleted_at: new Date().toISOString(),
+                        },
+                    }),
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Xóa người dùng thành công!');
+                    location.reload();
+                } else {
+                    alert(result.message || 'Có lỗi xảy ra');
+                }
+            } catch (error) {
+                alert('Có lỗi xảy ra khi xóa người dùng');
+                console.error(error);
+            }
+        };
+    </script>
+</DefaultLayout>

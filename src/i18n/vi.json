@@ -154,7 +154,8 @@
         "dangXuat": "Đăng xuất",
         "explore": "Khám phá dự án",
         "createProject": "Đăng tải dự án",
-        "viewProfile": "Xem hồ sơ"
+        "viewProfile": "Xem hồ sơ",
+        "adminPanel": "Bảng điều khiển"
     },
     "home": {
         "searchPlaceholder": "Tìm kiếm",
@@ -398,5 +399,27 @@
 
         "q10": "10. Nếu gặp lỗi hoặc cần hỗ trợ, tôi liên hệ ở đâu?",
         "a10": "Bạn có thể gửi yêu cầu qua mục “Hỗ trợ kỹ thuật”, liên hệ email chăm sóc khách hàng hoặc chat trực tiếp với đội ngũ hỗ trợ của SkillBank."
+    },
+    "admin": {
+        "title": "Bảng điều khiển quản trị",
+        "users": "Người dùng",
+        "projects": "Dự án",
+        "userManagement": "Quản lý người dùng",
+        "projectApproval": "Duyệt dự án",
+        "username": "Tên người dùng",
+        "email": "Email",
+        "fullName": "Họ và tên",
+        "role": "Vai trò",
+        "createdAt": "Ngày tạo",
+        "actions": "Thao tác",
+        "view": "Xem",
+        "delete": "Xóa",
+        "approve": "Duyệt",
+        "reject": "Từ chối",
+        "viewDetails": "Xem chi tiết",
+        "owner": "Người tạo",
+        "noDescription": "Không có mô tả",
+        "noUsers": "Không có người dùng nào",
+        "noPendingProjects": "Không có dự án nào chờ duyệt"
     }
 }

@@ -10,7 +10,7 @@ export { getStaticPaths };
 const { lang, t, l } = useTranslate(Astro);
 const session = Astro.locals.session;
 if (!session?.user) {
-    return Astro.redirect(`/${lang}/sign-in`);
+    return Astro.redirect(l(`/sign-in`));
 }
 
 // Load skills from database using types from database.types.ts

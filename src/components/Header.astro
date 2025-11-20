@@ -35,7 +35,7 @@ if (user) {
                 <img src="/assets/images/logo-full-ngang.svg" alt="logo" />
             </a>
             <nav class="header-nav">
-                <a href="#" class="header-nav-link">{t('header.explore')}</a>
+                <a href={l('/project-search')} class="header-nav-link">{t('header.explore')}</a>
             </nav>
             <select
                 name="language"
@@ -96,6 +96,14 @@ if (user) {
                                 <div class="dropdown-divider"></div>
 
                                 <!-- 2. Main Navigation -->
+								{
+									user && user.user_metadata.role === 'admin' && (
+									<a href={l('/admin')} class="dropdown-item">
+										<div class="dropdown-icon"><ion-icon name="key-outline"></ion-icon></div>
+										<span>{t('header.adminPanel')}</span>
+									</a>
+									)
+								}
                                 <a href={l('/')} class="dropdown-item">
                                     <div class="dropdown-icon"><ion-icon name="home-outline"></ion-icon></div>
                                     <span>{t('header.homepage')}</span>

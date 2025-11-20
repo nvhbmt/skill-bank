@@ -19,9 +19,8 @@ let owner: Pick<
     'user_id' | 'email' | 'full_name' | 'username' | 'avatar_url'
 > | null = null;
 
-let projectSkills: Array<
-    Pick<Tables<'skills'>, 'id' | 'name' | 'category'>
-> = [];
+let projectSkills: Array<Pick<Tables<'skills'>, 'id' | 'name' | 'category'>> =
+    [];
 
 let members: Array<
     Pick<
@@ -255,7 +254,9 @@ function formatDate(dateString: string | null): string {
                                 {
                                     owner && (
                                         <a
-                                            href={`/${lang}/profile/${owner.username}`}
+                                            href={l(
+                                                `/profile/${owner.username}`
+                                            )}
                                             class="creator-profile-card"
                                         >
                                             <div class="creator-avatar-wrapper">
@@ -379,7 +380,9 @@ function formatDate(dateString: string | null): string {
                                                     </div>
                                                     {!isOwner && (
                                                         <a
-                                                            href={`/${lang}/submit-application/${project?.id}`}
+                                                            href={l(
+                                                                `/submit-application/${project?.id}`
+                                                            )}
                                                             class="btn-skill-detail"
                                                             title={t(
                                                                 'project-detail-collab.viewDetails'
@@ -436,7 +439,9 @@ function formatDate(dateString: string | null): string {
                                     <div class="members-list">
                                         {members.map((member) => (
                                             <a
-                                                href={`/${lang}/profile/${member.username}`}
+                                                href={l(
+                                                    `/profile/${member.username}`
+                                                )}
                                                 class="member-card"
                                             >
                                                 <img

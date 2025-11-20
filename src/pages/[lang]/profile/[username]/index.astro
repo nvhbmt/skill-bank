@@ -156,15 +156,15 @@ if (username) {
             }
         } else {
             // User not found, redirect
-            return Astro.redirect(`/${lang}/project-search`);
+            return Astro.redirect(l(`/project-search`));
         }
     } catch (error) {
         console.error('Error loading user profile:', error);
-        return Astro.redirect(`/${lang}/project-search`);
+        return Astro.redirect(l(`/project-search`));
     }
 } else {
     // No username, redirect
-    return Astro.redirect(`/${lang}/project-search`);
+    return Astro.redirect(l(`/project-search`));
 }
 
 // Helper function to get star count

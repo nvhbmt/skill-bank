@@ -17,7 +17,7 @@ export const GET: APIRoute = async ({ url }) => {
                 'id, title, description, cover_image_url, project_type, location, start_date, status, created_at, owner_id'
             )
             .is('deleted_at', null)
-            .eq('status', 'open')
+            .eq('status', 'approved')
             .order('created_at', { ascending: false })
             .range(offset, offset + limit - 1);
 
@@ -61,7 +61,7 @@ export const GET: APIRoute = async ({ url }) => {
             .from('projects')
             .select('id', { count: 'exact', head: true })
             .is('deleted_at', null)
-            .eq('status', 'open');
+            .eq('status', 'approved');
 
         if (searchQuery.trim()) {
             countQuery = countQuery.or(
