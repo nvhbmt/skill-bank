@@ -26,6 +26,7 @@ a:hover {
     height: 846px;
     border-radius: 30px;
     overflow: hidden;
+    transform: scale(0.8);
 }
 
 .login-page-left {
