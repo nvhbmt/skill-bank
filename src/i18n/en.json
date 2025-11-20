@@ -335,5 +335,21 @@
         "hoanThanh": "Completed",
         "trangThai": "Status",
         "tienTrinh": "Progress"
+    },
+        "box-project-creator": {
+        "title": "Exchange Skill",
+        "skill1": "Skill 1",
+        "skill2": "Skill 2",
+        "skill3": "Skill 3",
+        "job": "Job Description",
+        "text": "text",
+        "btn": "Confirm"
+    },
+    "box-project-collab": {
+        "title": "Exchange Skill",
+        "skill1": "Skill 1",
+        "job": "Job Description",
+        "text": "text",
+        "btn": "Apply"
     }
 }
