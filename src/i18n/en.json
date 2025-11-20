@@ -112,12 +112,13 @@
     "projectHandover-collaborator": {
         "title": "Project Handover",
         "description": "Description",
-        "notes": "Notes",
+        "notes": "Is the project completed? Do you have any notes or recommendations for the manager?",
         "project1": "Project 1: Adjust padding and margin.",
         "project2": "Project 2: Update fonts.",
         "upload": "Upload project file/link:",
         "uploadhere": "Upload here",
         "file": "File name",
+        "back": "Back",
         "send": "Send"
     },
     "create-project": {
@@ -318,5 +319,15 @@
         "submit": "Submit",
         "editCoverImage": "Edit Cover Image",
         "portfolioUrl": "Portfolio URL"
+    },
+    "my-project": {
+        "title": "My Projects",
+        "description": "Some projects you currently have",
+        "choDuyet": "Pending",
+        "daDuyet": "Approved",
+        "thamGia": "Joined",
+        "hoanThanh": "Completed",
+        "trangThai": "Status",
+        "tienTrinh": "Progress"
     }
 }

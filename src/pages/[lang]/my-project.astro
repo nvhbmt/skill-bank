@@ -1,0 +1,290 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import '@/assets/css/my-project.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <div class="wrapper">
+        <Header />
+
+        <main>
+            <div class="my-projects-container">
+                <!-- Header -->
+                <div class="page-header">
+                    <h1 class="page-title">{t('my-project.title')}</h1>
+                    <p class="page-subtitle">{t('my-project.description')}</p>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="tabs-container">
+                    <button class="tab-btn active" data-tab="pending"
+                        >{t('my-project.choDuyet')}</button
+                    >
+                    <button class="tab-btn" data-tab="approved"
+                        >{t('my-project.daDuyet')}</button
+                    >
+                    <button class="tab-btn" data-tab="joined"
+                        >{t('my-project.thamGia')}</button
+                    >
+                    <button class="tab-btn" data-tab="completed"
+                        >{t('my-project.hoanThanh')}</button
+                    >
+                </div>
+
+                <!-- CONTENT TAB 1: DỰ ÁN CHỜ DUYỆT -->
+                <div id="pending" class="projects-grid tab-content">
+                    <!-- Card 1 -->
+                    <a href="#" class="project-card">
+                        <div class="card-header">
+                            <h3 class="card-title">E-commerce App</h3>
+                            <div class="card-info-row">
+                                <div class="member-avatars">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                    <div class="avatar-more">+2</div>
+                                </div>
+                                <span class="project-date">20/11/2025</span>
+                            </div>
+                        </div>
+                        <div class="card-status-row">
+                            <span class="status-label"
+                                >{t('my-project.trangThai')}</span
+                            >
+                            <span class="status-indicator status-orange"></span>
+                            <!-- Cam = Chờ duyệt -->
+                        </div>
+                        <div class="card-progress-row">
+                            <span class="progress-label"
+                                >{t('my-project.tienTrinh')}</span
+                            >
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 0%">
+                                </div>
+                            </div>
+                            <span class="progress-text">0%</span>
+                        </div>
+                    </a>
+
+                    <!-- Card 2 -->
+                    <a href="#" class="project-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Booking System</h3>
+                            <div class="card-info-row">
+                                <div class="member-avatars">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                </div>
+                                <span class="project-date">21/11/2025</span>
+                            </div>
+                        </div>
+                        <div class="card-status-row">
+                            <span class="status-label">Trạng thái</span>
+                            <span class="status-indicator status-orange"></span>
+                        </div>
+                        <div class="card-progress-row">
+                            <span class="progress-label">Tiến trình</span>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 0%">
+                                </div>
+                            </div>
+                            <span class="progress-text">0%</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- CONTENT TAB 2: DỰ ÁN ĐÃ DUYỆT -->
+                <div
+                    id="approved"
+                    class="projects-grid tab-content"
+                    style="display: none;"
+                >
+                    <!-- Card 1 -->
+                    <a href="#" class="project-card">
+                        <div class="card-header">
+                            <h3 class="card-title">SkillBank Web</h3>
+                            <div class="card-info-row">
+                                <div class="member-avatars">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                    <div class="avatar-more">+4</div>
+                                </div>
+                                <span class="project-date">18/11/2025</span>
+                            </div>
+                        </div>
+                        <div class="card-status-row">
+                            <span class="status-label">Trạng thái</span>
+                            <span class="status-indicator status-green"></span>
+                            <!-- Xanh lá = Đã duyệt/Đang chạy -->
+                        </div>
+                        <div class="card-progress-row">
+                            <span class="progress-label">Tiến trình</span>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 52%">
+                                </div>
+                            </div>
+                            <span class="progress-text">52%</span>
+                        </div>
+                    </a>
+
+                    <!-- Card 2 -->
+                    <a href="#" class="project-card">
+                        <div class="card-header">
+                            <h3 class="card-title">AI Chatbot</h3>
+                            <div class="card-info-row">
+                                <div class="member-avatars">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                </div>
+                                <span class="project-date">15/11/2025</span>
+                            </div>
+                        </div>
+                        <div class="card-status-row">
+                            <span class="status-label">Trạng thái</span>
+                            <span class="status-indicator status-green"></span>
+                        </div>
+                        <div class="card-progress-row">
+                            <span class="progress-label">Tiến trình</span>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 30%">
+                                </div>
+                            </div>
+                            <span class="progress-text">30%</span>
+                        </div>
+                    </a>
+
+                    <!-- Card 3 -->
+                    <a href="#" class="project-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Mobile App UI</h3>
+                            <div class="card-info-row">
+                                <div class="member-avatars">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                </div>
+                                <span class="project-date">10/11/2025</span>
+                            </div>
+                        </div>
+                        <div class="card-status-row">
+                            <span class="status-label">Trạng thái</span>
+                            <span class="status-indicator status-green"></span>
+                        </div>
+                        <div class="card-progress-row">
+                            <span class="progress-label">Tiến trình</span>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 80%">
+                                </div>
+                            </div>
+                            <span class="progress-text">80%</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- CONTENT TAB 3: DỰ ÁN ĐÃ THAM GIA -->
+                <div
+                    id="joined"
+                    class="projects-grid tab-content"
+                    style="display: none;"
+                >
+                    <!-- Card 1 -->
+                    <a href="#" class="project-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Social Network</h3>
+                            <div class="card-info-row">
+                                <div class="member-avatars">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                    <div class="avatar-more">+10</div>
+                                </div>
+                                <span class="project-date">01/10/2025</span>
+                            </div>
+                        </div>
+                        <div class="card-status-row">
+                            <span class="status-label">Trạng thái</span>
+                            <span class="status-indicator status-green"></span>
+                        </div>
+                        <div class="card-progress-row">
+                            <span class="progress-label">Tiến trình</span>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 65%">
+                                </div>
+                            </div>
+                            <span class="progress-text">65%</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- CONTENT TAB 4: DỰ ÁN HOÀN THÀNH -->
+                <div
+                    id="completed"
+                    class="projects-grid tab-content"
+                    style="display: none;"
+                >
+                    <!-- Card 1 -->
+                    <a href="#" class="project-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Portfolio Website</h3>
+                            <div class="card-info-row">
+                                <div class="member-avatars">
+                                    <img
+                                        src="/assets/images/vy2.png"
+                                        alt="Member"
+                                        class="avatar-img"
+                                    />
+                                </div>
+                                <span class="project-date">01/09/2025</span>
+                            </div>
+                        </div>
+                        <div class="card-status-row">
+                            <span class="status-label">Trạng thái</span>
+                            <span class="status-indicator status-blue"></span>
+                            <!-- Xanh dương = Hoàn thành -->
+                        </div>
+                        <div class="card-progress-row">
+                            <span class="progress-label">Tiến trình</span>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: 100%">
+                                </div>
+                            </div>
+                            <span class="progress-text">100%</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="@/assets/script/my-project.js"></script>
+</DefaultLayout>
