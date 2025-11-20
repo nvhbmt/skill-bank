@@ -20,39 +20,37 @@ const { lang, t, l } = useTranslate(Astro);
                         <!-- Phần Header -->
                         <div class="project-top-section">
                             <div class="project-info">
-                                <h1 class="project-title">PROJECT 1</h1>
+                                <h1 class="project-title">
+                                    {t('project-detail-collab.projectTitle')}
+                                </h1>
 
                                 <div class="project-meta-list">
                                     <div class="meta-row">
-                                        <span class="meta-label"
-                                            >{
+                                        <span class="meta-label">
+                                            {
                                                 t(
                                                     'project-detail-collab.ngayBatDau'
                                                 )
-                                            }</span
-                                        >
+                                            }
+                                        </span>
                                         <span class="meta-value"
                                             >14/11/2025</span
                                         >
                                     </div>
                                     <div class="meta-row">
-                                        <span class="meta-label"
-                                            >{
+                                        <span class="meta-label">
+                                            {
                                                 t(
-                                                    'project-detail-creator.phanLoai'
+                                                    'project-detail-collab.phanLoai'
                                                 )
-                                            }</span
-                                        >
+                                            }
+                                        </span>
                                         <span class="meta-value">Website</span>
                                     </div>
                                     <div class="meta-row">
-                                        <span class="meta-label"
-                                            >{
-                                                t(
-                                                    'project-detail-creator.điaDiem'
-                                                )
-                                            }</span
-                                        >
+                                        <span class="meta-label">
+                                            {t('project-detail-collab.điaDiem')}
+                                        </span>
                                         <span class="meta-value">TPHCM</span>
                                     </div>
                                 </div>
@@ -62,20 +60,21 @@ const { lang, t, l } = useTranslate(Astro);
                                     <div class="creator-avatar-wrapper">
                                         <img
                                             src="/assets/images/vy2.png"
-                                            alt="Creator"
+                                            alt={t(
+                                                'project-detail-collab.creator'
+                                            )}
                                         />
-                                        <span class="creator-badge-icon"
-                                            ><i class="fa-solid fa-crown"
-                                            ></i></span
-                                        >
+                                        <span class="creator-badge-icon">
+                                            <i class="fa-solid fa-crown"></i>
+                                        </span>
                                     </div>
                                     <div class="creator-text-info">
-                                        <span class="creator-name"
-                                            >Bùi Thái Vy</span
-                                        >
-                                        <span class="creator-username"
-                                            >@vyxam</span
-                                        >
+                                        <span class="creator-name">
+                                            Bùi Thái Vy
+                                        </span>
+                                        <span class="creator-username">
+                                            @vyxam
+                                        </span>
                                     </div>
                                 </a>
 
@@ -99,8 +98,10 @@ const { lang, t, l } = useTranslate(Astro);
                             <!-- Ảnh dự án -->
                             <div class="project-image-wrapper">
                                 <img
-                                    src="/assets/image/va2.jpg"
-                                    alt="Project Cover"
+                                    src="/assets/images/vy2.png"
+                                    alt={t(
+                                        'project-detail-collab.projectCover'
+                                    )}
                                     class="project-image"
                                 />
                             </div>
@@ -139,15 +140,17 @@ const { lang, t, l } = useTranslate(Astro);
                                         </div>
                                         <button
                                             class="btn-skill-detail"
-                                            title="Xem chi tiết"
+                                            title={t(
+                                                'project-detail-collab.viewDetails'
+                                            )}
                                         >
-                                            <span
-                                                >{
+                                            <span>
+                                                {
                                                     t(
                                                         'project-detail-collab.ungTuyen'
                                                     )
-                                                }</span
-                                            >
+                                                }
+                                            </span>
                                         </button>
                                     </div>
                                 </div>
@@ -161,15 +164,17 @@ const { lang, t, l } = useTranslate(Astro);
                                         </div>
                                         <button
                                             class="btn-skill-detail"
-                                            title="Xem chi tiết"
+                                            title={t(
+                                                'project-detail-collab.viewDetails'
+                                            )}
                                         >
-                                            <span
-                                                >{
+                                            <span>
+                                                {
                                                     t(
                                                         'project-detail-collab.ungTuyen'
                                                     )
-                                                }</span
-                                            >
+                                                }
+                                            </span>
                                         </button>
                                     </div>
                                 </div>
@@ -181,22 +186,19 @@ const { lang, t, l } = useTranslate(Astro);
                     <div class="column-sidebar">
                         <!-- Hoạt động biểu (Timeline) -->
                         <div class="sidebar-section timeline-section">
-                            <h3>Hoạt động biểu</h3>
+                            <h3>{t('project-detail-collab.activityChart')}</h3>
                             <div class="timeline-cards">
                                 <div class="timeline-card">
-                                    Project 1: Khởi động dự án, thiết kế giao
-                                    diện UI/UX
+                                    {t('project-detail-collab.timeline1')}
                                 </div>
                                 <div class="timeline-card">
-                                    Project 1: Chỉnh sửa giao diện wireframe,
-                                    thiết kế DB
+                                    {t('project-detail-collab.timeline2')}
                                 </div>
                                 <div class="timeline-card">
-                                    Project 1: Xử lý logic đăng nhập, đăng ký
+                                    {t('project-detail-collab.timeline3')}
                                 </div>
                                 <div class="timeline-card">
-                                    Project 1: Viết chức năng xử lý API, hoàn
-                                    thiện Admin
+                                    {t('project-detail-collab.timeline4')}
                                 </div>
                             </div>
                         </div>
@@ -208,7 +210,7 @@ const { lang, t, l } = useTranslate(Astro);
                                 <a href="#" class="member-card">
                                     <img
                                         src="/assets/images/vy2.png"
-                                        alt="Avatar"
+                                        alt={t('project-detail-collab.avatar')}
                                         class="member-avatar"
                                     />
                                     <div class="member-info">
@@ -219,7 +221,7 @@ const { lang, t, l } = useTranslate(Astro);
                                 <a href="#" class="member-card">
                                     <img
                                         src="/assets/images/vy2.png"
-                                        alt="Avatar"
+                                        alt={t('project-detail-collab.avatar')}
                                         class="member-avatar"
                                     />
                                     <div class="member-info">
@@ -233,7 +235,7 @@ const { lang, t, l } = useTranslate(Astro);
                                 <a href="#" class="member-card">
                                     <img
                                         src="/assets/images/vy2.png"
-                                        alt="Avatar"
+                                        alt={t('project-detail-collab.avatar')}
                                         class="member-avatar"
                                     />
                                     <div class="member-info">
