@@ -1,7 +1,7 @@
 ---
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import Header from '@/components/Header.astro';
-import '@/assets/css/project-detail-collab.css';
+import '@/assets/css/project.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 export { getStaticPaths };
@@ -299,48 +299,6 @@ function formatDate(dateString: string | null): string {
                                 }
 
                                 <!-- CẬP NHẬT: Nút bấm UX đẹp -->
-                                <div class="action-buttons">
-                                    <!-- Nút "Xem bàn giao" - chỉ hiện cho owner -->
-                                    {
-                                        isOwner && (
-                                            <button class="action-btn btn-view-handover">
-                                                <i class="fa-solid fa-file-import" />
-                                                {t(
-                                                    'project-detail-creator.xemBanGiao'
-                                                )}
-                                            </button>
-                                        )
-                                    }
-                                    <!-- Nút "Bàn giao" - chỉ hiện cho member (không phải owner) -->
-                                    {
-                                        isMember && !isOwner && (
-                                            <button class="action-btn btn-view-handover">
-                                                <i class="fa-solid fa-file-import" />
-                                                {t(
-                                                    'project-detail-collab.banGiao'
-                                                )}
-                                            </button>
-                                        )
-                                    }
-                                    <!-- Nút "Share" - hiện cho tất cả -->
-                                    <button
-                                        class="action-btn btn-share-project"
-                                    >
-                                        <i class="fa-solid fa-share"></i>
-                                        {t('project-detail-collab.share')}
-                                    </button>
-                                    <!-- Nút "Xóa dự án" - chỉ hiện cho owner -->
-                                    {
-                                        isOwner && (
-                                            <button class="action-btn btn-delete-project">
-                                                <i class="fa-solid fa-x" />
-                                                {t(
-                                                    'project-detail-creator.xoaDuAn'
-                                                )}
-                                            </button>
-                                        )
-                                    }
-                                </div>
                             </div>
 
                             <!-- Ảnh dự án -->
@@ -358,7 +316,40 @@ function formatDate(dateString: string | null): string {
                                 )
                             }
                         </div>
-
+                        <div class="action-buttons">
+                            <!-- Nút "Xem bàn giao" - chỉ hiện cho owner -->
+                            {
+                                isOwner && (
+                                    <button class="action-btn btn-view-handover">
+                                        <i class="fa-solid fa-file-import" />
+                                        {t('project-detail-creator.xemBanGiao')}
+                                    </button>
+                                )
+                            }
+                            <!-- Nút "Bàn giao" - chỉ hiện cho member (không phải owner) -->
+                            {
+                                isMember && !isOwner && (
+                                    <button class="action-btn btn-view-handover">
+                                        <i class="fa-solid fa-file-import" />
+                                        {t('project-detail-collab.banGiao')}
+                                    </button>
+                                )
+                            }
+                            <!-- Nút "Share" - hiện cho tất cả -->
+                            <button class="action-btn btn-share-project">
+                                <i class="fa-solid fa-share"></i>
+                                {t('project-detail-collab.share')}
+                            </button>
+                            <!-- Nút "Xóa dự án" - chỉ hiện cho owner -->
+                            {
+                                isOwner && (
+                                    <button class="action-btn btn-delete-project">
+                                        <i class="fa-solid fa-x" />
+                                        {t('project-detail-creator.xoaDuAn')}
+                                    </button>
+                                )
+                            }
+                        </div>
                         <!-- Phần Mô tả -->
                         {
                             project?.description && (
@@ -399,19 +390,21 @@ function formatDate(dateString: string | null): string {
                                                             ? ` / ${skill.category}`
                                                             : ''}
                                                     </div>
-                                                    <a
-                                                        href={`/${lang}/submit-application/${project?.id}`}
-                                                        class="btn-skill-detail"
-                                                        title={t(
-                                                            'project-detail-collab.viewDetails'
-                                                        )}
-                                                    >
-                                                        <span>
-                                                            {t(
-                                                                'project-detail-collab.ungTuyen'
+                                                    {!isOwner && (
+                                                        <a
+                                                            href={`/${lang}/submit-application/${project?.id}`}
+                                                            class="btn-skill-detail"
+                                                            title={t(
+                                                                'project-detail-collab.viewDetails'
                                                             )}
-                                                        </span>
-                                                    </a>
+                                                        >
+                                                            <span>
+                                                                {t(
+                                                                    'project-detail-collab.ungTuyen'
+                                                                )}
+                                                            </span>
+                                                        </a>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
