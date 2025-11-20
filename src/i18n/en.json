@@ -215,7 +215,17 @@
         "ungTuyen": "Apply",
         "timeLine": "Timeline",
         "week1": "Week 1",
-        "Members": "Members"
+        "Members": "Members",
+        "projectTitle": "PROJECT 1",
+        "activityChart": "Activity Chart",
+        "viewDetails": "View details",
+        "creator": "Creator",
+        "projectCover": "Project Cover",
+        "avatar": "Avatar",
+        "timeline1": "Project 1: Launch project, design UI/UX interface",
+        "timeline2": "Project 1: Edit wireframe interface, design DB",
+        "timeline3": "Project 1: Handle login and registration logic",
+        "timeline4": "Project 1: Write API processing functions, complete Admin"
     },
     "project-setting": {
         "project-title-text": "PROJECT 1",

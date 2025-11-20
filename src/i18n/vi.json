@@ -215,6 +215,17 @@
         "timeLine": "Tiến trình",
         "ungTuyen": "Ứng tuyển",
         "week1": "Tuần 1",
+        "Members": "Thành viên",
+        "projectTitle": "DỰ ÁN 1",
+        "activityChart": "Hoạt động biểu",
+        "viewDetails": "Xem chi tiết",
+        "creator": "Người tạo",
+        "projectCover": "Ảnh bìa dự án",
+        "avatar": "Ảnh đại diện",
+        "timeline1": "Dự án 1: Khởi động dự án, thiết kế giao diện UI/UX",
+        "timeline2": "Dự án 1: Chỉnh sửa giao diện wireframe, thiết kế DB",
+        "timeline3": "Dự án 1: Xử lý logic đăng nhập, đăng ký",
+        "timeline4": "Dự án 1: Viết chức năng xử lý API, hoàn thiện Admin"
     },
     "project-setting": {
         "project-title-text": "DỰ ÁN 1",
