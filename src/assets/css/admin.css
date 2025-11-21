@@ -107,16 +107,17 @@ body {
 }
 
 .admin-table thead {
-    background-color: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
+    background-color: #7c3aed;
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
 }
 
 .admin-table th {
     padding: 20px;
-    border-bottom: 2px solid #d46be9;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     font-weight: 600;
     color: white;
     text-align: left;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .admin-table tbody tr {

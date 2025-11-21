@@ -14,7 +14,7 @@ const session = Astro.locals.session;
 const user = session?.user;
 const userName = user?.user_metadata?.full_name;
 const userUsername = user?.user_metadata?.username;
-let avatarUrl = null;
+let avatarUrl = null
 if (user) {
     const { data: userData, error: userError } = await supabase
         .from('user_info')
@@ -23,7 +23,7 @@ if (user) {
         .is('deleted_at', null)
         .single();
     if (!userError && userData) {
-        avatarUrl = userData.avatar_url;
+        avatarUrl = userData.avatar_url ?? '/assets/images/avatar-default-icon.png';
     }
 }
 ---

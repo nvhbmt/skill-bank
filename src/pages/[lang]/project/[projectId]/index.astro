@@ -133,7 +133,7 @@ if (projectId) {
                                 const info = membersMap.get(m.user_id);
                                 return info
                                     ? {
-                                          ...info,
+                                          ...(info as object),
                                           role: m.role,
                                       }
                                     : null;
@@ -367,7 +367,7 @@ function formatDate(dateString: string | null): string {
                                             <div class="skill-item-view">
                                                 <span class="skill-label">
                                                     {t(
-                                                        'project-detail-collab.KN1'
+                                                        'project-detail-collab.KN'
                                                     )}{' '}
                                                     {index + 1}
                                                 </span>
@@ -378,7 +378,7 @@ function formatDate(dateString: string | null): string {
                                                             ? ` / ${skill.category}`
                                                             : ''}
                                                     </div>
-                                                    {!isOwner && (
+                                                    {!isOwner && !isMember && (
                                                         <a
                                                             href={l(
                                                                 `/submit-application/${project?.id}`
@@ -447,7 +447,7 @@ function formatDate(dateString: string | null): string {
                                                 <img
                                                     src={
                                                         member.avatar_url ||
-                                                        '/assets/images/vy2.png'
+                                                        '/assets/images/avatar-default-icon.png'
                                                     }
                                                     alt={t(
                                                         'project-detail-collab.avatar'

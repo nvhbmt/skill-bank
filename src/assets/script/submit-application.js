@@ -48,15 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success) {
                 // Show success message
                 alert(result.message || 'Gửi đơn ứng tuyển thành công!');
-                
+
                 // Redirect to project detail page
                 const projectId = formData.get('project_id');
                 const lang = window.location.pathname.split('/')[1];
-                window.location.href = `/${lang}/project-detail/${projectId}`;
+                window.location.href = `/${lang}/project/${projectId}`;
             } else {
                 // Show error message
                 alert(result.message || 'Có lỗi xảy ra khi gửi đơn ứng tuyển');
-                
+
                 // Re-enable button
                 if (submitButton) {
                     submitButton.disabled = false;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error submitting application:', error);
             alert('Có lỗi xảy ra khi gửi đơn ứng tuyển. Vui lòng thử lại.');
-            
+
             // Re-enable button
             if (submitButton) {
                 submitButton.disabled = false;
@@ -75,4 +75,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-

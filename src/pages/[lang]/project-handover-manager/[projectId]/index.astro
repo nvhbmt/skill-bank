@@ -1,0 +1,374 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/project-handover-manager.css';
+import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import { supabase } from '@/lib/supabase';
+import {
+    getProjectApplications,
+    getProjectMembers,
+    type ApplicationWithApplicant,
+    type ProjectMember,
+} from '@/services/project-handover';
+import type { Tables } from '@/types/database.types';
+export { getStaticPaths };
+
+const session = Astro.locals.session;
+const { lang, t, l } = useTranslate(Astro);
+const projectId = (Astro.params as { projectId?: string }).projectId;
+
+// Redirect if not logged in
+if (!session?.user) {
+    return Astro.redirect(l(`/sign-in`));
+}
+
+// Initialize data
+let project: Pick<Tables<'projects'>, 'id' | 'title' | 'owner_id'> | null =
+    null;
+let isOwner = false;
+let pendingApplications: ApplicationWithApplicant[] = [];
+let approvedApplications: ApplicationWithApplicant[] = [];
+let projectMembers: ProjectMember[] = [];
+
+// Fetch project and check ownership
+if (projectId) {
+    try {
+        const projectIdNum = parseInt(projectId);
+        if (!isNaN(projectIdNum)) {
+            const { data: projectData, error: projectError } = await supabase
+                .from('projects')
+                .select('id, title, owner_id')
+                .eq('id', projectIdNum)
+                .is('deleted_at', null)
+                .single();
+
+            if (!projectError && projectData) {
+                project = projectData;
+                isOwner = session.user.id === project.owner_id;
+
+                // Only fetch data if user is owner
+                if (isOwner) {
+                    const applications =
+                        await getProjectApplications(projectIdNum);
+                    pendingApplications = applications.pending;
+                    approvedApplications = applications.approved;
+
+                    projectMembers = await getProjectMembers(projectIdNum);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error loading project handover:', error);
+    }
+}
+
+// Redirect if not owner
+if (!isOwner || !project) {
+    return Astro.redirect(l(`/project/${projectId || ''}`));
+}
+
+// Helper function to format date
+function formatDate(dateString: string | null): string {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    } catch {
+        return dateString;
+    }
+}
+---
+
+<DefaultLayout>
+    <Header />
+    <!-- Main Project Handover Container -->
+    <div class="project-handover-page">
+        <div class="project-handover-container">
+            <div class="profile-list">
+                <a
+                    href={l(`/project/${project.id}`)}
+                    class="skillbank-dropdown"
+                >
+                    {project.title}
+                    <img src="/assets/images/Vector.svg" alt="" />
+                </a>
+
+                <div class="profile-items">
+                    {
+                        projectMembers.length > 0 ? (
+                            projectMembers.map((member) => (
+                                <a
+                                    href={l(`/profile/${member.username}`)}
+                                    class="profile-item"
+                                >
+                                    <img
+                                        src={
+                                            member.avatar_url ||
+                                            '/assets/images/avt-nhỏ.svg'
+                                        }
+                                        alt={member.username}
+                                    />
+                                    <div class="profile-info">
+                                        <div class="user-name">
+                                            {member.full_name ||
+                                                member.username}
+                                        </div>
+                                        <div class="email">{member.email}</div>
+                                    </div>
+                                </a>
+                            ))
+                        ) : (
+                            <div class="no-members">
+                                {t('project-handover-manager.noMembers')}
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
+
+            <div class="handover-content">
+                <div class="requests-column">
+                    <div class="section-title">
+                        {t('project-handover-manager.section-title-1')}
+                    </div>
+                    <div class="request-list">
+                        {
+                            pendingApplications.length > 0 ? (
+                                pendingApplications.map((application) => (
+                                    <div class="request-item light">
+                                        <img
+                                            src={
+                                                application.applicant
+                                                    ?.avatar_url ||
+                                                '/assets/images/avt-nhỏ.svg'
+                                            }
+                                            alt={
+                                                application.applicant
+                                                    ?.username || ''
+                                            }
+                                        />
+                                        <div class="request-info">
+                                            <div class="request-name">
+                                                {application.applicant
+                                                    ?.full_name ||
+                                                    application.applicant
+                                                        ?.username ||
+                                                    'Unknown'}
+                                            </div>
+                                            <div class="request-date">
+                                                {formatDate(
+                                                    application.applied_at
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div class="request-actions">
+                                            <button
+                                                class="action-btn-small approve-btn"
+                                                onclick={`approveApplication(${application.id}, ${project.id})`}
+                                                title={t(
+                                                    'project-handover-manager.approve'
+                                                )}
+                                            >
+                                                ✓
+                                            </button>
+                                            <button
+                                                class="action-btn-small reject-btn"
+                                                onclick={`rejectApplication(${application.id}, ${project.id})`}
+                                                title={t(
+                                                    'project-handover-manager.reject'
+                                                )}
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div class="no-requests">
+                                    {t(
+                                        'project-handover-manager.noPendingRequests'
+                                    )}
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    <div class="section-title">
+                        {t('project-handover-manager.section-title-2')}
+                    </div>
+                    <div class="request-list">
+                        {
+                            approvedApplications.length > 0 ? (
+                                approvedApplications.map((application) => (
+                                    <div class="request-item green">
+                                        <img
+                                            src={
+                                                application.applicant
+                                                    ?.avatar_url ||
+                                                '/assets/images/avt-nhỏ.svg'
+                                            }
+                                            alt={
+                                                application.applicant
+                                                    ?.username || ''
+                                            }
+                                        />
+                                        <div class="request-info">
+                                            <div class="request-name">
+                                                {application.applicant
+                                                    ?.full_name ||
+                                                    application.applicant
+                                                        ?.username ||
+                                                    'Unknown'}
+                                            </div>
+                                            <div class="request-date">
+                                                {formatDate(
+                                                    application.applied_at
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div class="no-requests">
+                                    {t(
+                                        'project-handover-manager.noApprovedRequests'
+                                    )}
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="description-column">
+                    <h4 class="section-title">
+                        {t('project-handover-manager.section-title-3')}
+                    </h4>
+
+                    <div class="collab-inputs">
+                        {
+                            (() => {
+                                // Combine all applications (pending + approved)
+                                const allApplications = [
+                                    ...pendingApplications,
+                                    ...approvedApplications,
+                                ];
+
+                                return allApplications.length > 0 ? (
+                                    allApplications.map((application) => (
+                                        <div class="collab-input-item">
+                                            <div class="collab-label">
+                                                @
+                                                {application.applicant
+                                                    ?.username || 'Unknown'}
+                                            </div>
+                                            <div class="collab-content">
+                                                {application.cover_letter ||
+                                                    t(
+                                                        'project-handover-manager.noCoverLetter'
+                                                    )}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div class="no-notes">
+                                        {t(
+                                            'project-handover-manager.noCoverLetters'
+                                        )}
+                                    </div>
+                                );
+                            })()
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <a
+                    href={l(`/project-setting/${project.id}`)}
+                    class="status-btn"
+                >
+                    {t('project-handover-manager.status-btn')}
+                </a>
+                <a href={l(`/project/${project.id}`)} class="details-btn">
+                    {t('project-handover-manager.details-btn')}
+                </a>
+            </div>
+
+            <script>
+                // @ts-ignore
+                window.approveApplication = async function (
+                    applicationId: number,
+                    projectId: number
+                ) {
+                    if (!confirm('Bạn có chắc chắn muốn duyệt ứng viên này?')) {
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(
+                            `/api/projects/${projectId}/applications/${applicationId}/approve`,
+                            {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            }
+                        );
+
+                        const result = await response.json();
+                        if (result.success) {
+                            alert('Duyệt ứng viên thành công!');
+                            location.reload();
+                        } else {
+                            alert(result.message || 'Có lỗi xảy ra');
+                        }
+                    } catch (error) {
+                        alert('Có lỗi xảy ra khi duyệt ứng viên');
+                        console.error(error);
+                    }
+                };
+
+                // Reject application
+                // @ts-ignore
+                window.rejectApplication = async function (
+                    applicationId: number,
+                    projectId: number
+                ) {
+                    if (
+                        !confirm('Bạn có chắc chắn muốn từ chối ứng viên này?')
+                    ) {
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(
+                            `/api/projects/${projectId}/applications/${applicationId}/reject`,
+                            {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            }
+                        );
+
+                        const result = await response.json();
+                        if (result.success) {
+                            alert('Từ chối ứng viên thành công!');
+                            location.reload();
+                        } else {
+                            alert(result.message || 'Có lỗi xảy ra');
+                        }
+                    } catch (error) {
+                        alert('Có lỗi xảy ra khi từ chối ứng viên');
+                        console.error(error);
+                    }
+                };
+            </script>
+        </div>
+    </div>
+</DefaultLayout>
