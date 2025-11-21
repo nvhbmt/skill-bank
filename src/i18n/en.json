@@ -157,33 +157,7 @@
         "viewProfile": "View profile",
         "adminPanel": "Admin panel"
     },
-    "home": {
-        "searchPlaceholder": "Search",
-        "signIn": "Sign in",
-        "signUp": "Sign up",
-        "editProfile": "Edit profile",
-        "logout": "Logout",
-        "heroTitle": "More than just skills.<br /> This is the sandbox of<br /> projects.",
-        "heroDescription": "Think of each project as a piece of code waiting to be compiled – you are the one who writes the logic, fixes bugs, and makes it work. Opportunities only come when you take action.",
-        "getStarted": "Get Started",
-        "learnMore": "Learn More",
-        "usersCount": "Over 1k users",
-        "creatorsTitle": "The faces that make the difference.",
-        "creatorsDescription": "Discover outstanding users – individuals who never stop experimenting, sharing and inspiring.",
-        "projectsHeading": "Explore ideas that are changing the future",
-        "projectsDescription": "From technology to art - where unique projects are shared, connected and inspired.",
-        "qnaTitle": "FREQUENTLY ASKED QUESTIONS",
-        "qnaSubtitle": "Need help? Let us support you",
-        "qna": {
-            "q1": "What is Skill Bank?",
-            "q2": "Is this platform free?",
-            "q3": "How to join a project?",
-            "q4": "How to find people with suitable skills?",
-            "q5": "Are there any rules when joining the community?",
-            "q6": "Who can use this platform?",
-            "q7": "How to contact the support team?"
-        }
-    },
+
     "project-handover-manager": {
         "skillbank-dropdown": "SkillBank",
         "user-name": "User name",
@@ -429,6 +403,40 @@
         "noDescription": "No description",
         "noUsers": "No users found",
         "noPendingProjects": "No pending projects"
+    },
+    "home": {
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "editProfile": "Edit Profile",
+        "logout": "Logout",
+
+        "heroTitle": "The Skill Bank \nTurn Ideas Into Reality",
+        "heroSubtitle": "Got an idea but lack the skills? Don't let money stop you. At SkillBank, we exchange skills for skills to build real products together.",
+        "btnExplore": "Explore Ideas",
+        "btnPost": "Post Your Idea",
+
+        "sectionProjects": "Projects Seeking Teammates",
+        "sectionProfiles": "Featured Talents",
+        "sectionFAQ": "Common Questions",
+
+        "readMore": "Read more",
+        "viewProfile": "View Profile",
+
+        "statProjects": "Ideas Posted",
+        "statTalents": "Available Skills",
+        "statConnects": "Successful Collabs",
+        "statTechs": "Tech Stacks",
+
+        "ctaTitle": "Don't let your ideas stay on paper",
+        "ctaSubtitle": "Join the SkillBank community today. Use your skills to 'pay' for the missing pieces of your dream project.",
+        "ctaBtn": "Join Now",
+
+        "faq1_q": "How does SkillBank work?",
+        "faq1_a": "It's simple: You 'borrow' the skills you lack and 'repay' with the skills you have. E.g., You code but need a logo? Find a Designer who needs a website and collaborate.",
+        "faq2_q": "Do I have to pay money?",
+        "faq2_a": "Absolutely not. At SkillBank, the only currencies are Skills and Time. We remove financial barriers so you can focus on creating.",
+        "faq3_q": "Are these part-time jobs?",
+        "faq3_a": "Not exactly. This is a place for students to build real products (Pet Projects, MVPs) together to learn and enhance their Portfolios."
     },
     "change-password": {
         "title": "Change password",
