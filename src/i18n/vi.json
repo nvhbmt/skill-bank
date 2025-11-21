@@ -427,5 +427,13 @@
         "noDescription": "Không có mô tả",
         "noUsers": "Không có người dùng nào",
         "noPendingProjects": "Không có dự án nào chờ duyệt"
+    },
+    "change-password": {
+        "title": "Đổi mật khẩu",
+        "currentPass": "Nhập mật khẩu hiện tại",
+        "password": "Nhập mật khẩu mới",
+        "confirmPass": "Xác nhận mật khẩu",
+        "resetPass": "Đặt lại mật khẩu",
+        "backToSignIn": "Quay lại đăng nhập"
     }
 }
