@@ -429,5 +429,13 @@
         "noDescription": "No description",
         "noUsers": "No users found",
         "noPendingProjects": "No pending projects"
+    },
+    "change-password": {
+        "title": "Change password",
+        "currentPass": "Enter current password",
+        "password": "Set new password",
+        "confirmPass": "Confirm password",
+        "resetPass": "Reset password",
+        "backToSignIn": "Back to sign in"
     }
 }
