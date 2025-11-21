@@ -1,0 +1,77 @@
+---
+import '@/assets/css/explore.css';
+import Header from '@/components/Header.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import { getExploreProjects } from '@/services/projects';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+
+// Load initial projects from database
+const projects = await getExploreProjects(20);
+---
+
+<DefaultLayout>
+    <div class="grid-overlay"></div>
+    <Header />
+    <div class="explore-wrapper container">
+        <div class="title">
+            <h1>{t('project-search.title')}</h1>
+        </div>
+        <div class="search-container">
+            <div class="search-bar">
+                <div class="icon-search">
+                    <img src="/assets/images/Icon-search.svg" alt="" />
+                </div>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder={t('project-search.enterKeywords')}
+                />
+            </div>
+        </div>
+        <div class="content">
+            <div class="project">
+                <div class="project-container" id="projects-container">
+                    {
+                        projects.length > 0 ? (
+                            projects.map((project) => {
+                                const owner = project.user_info;
+                                const projectTypeLabel =
+                                    project.project_type === 'website'
+                                        ? 'Website'
+                                        : project.project_type === 'mobile-app'
+                                          ? 'Mobile App'
+                                          : project.project_type ===
+                                              'desktop-app'
+                                            ? 'Desktop App'
+                                            : project.project_type || '';
+
+                                return (
+                                    <ProjectCard
+                                        project={{
+                                            image: project.cover_image_url,
+                                            title: project.title,
+                                            tag: projectTypeLabel,
+                                            description: project.description,
+                                            author: owner?.full_name || '',
+                                            likes: 0,
+                                            projectId: project.id,
+                                        }}
+                                    />
+                                );
+                            })
+                        ) : (
+                            <div class="no-projects">
+                                <p>Không có dự án nào</p>
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="@/assets/script/explore.js"></script>
+</DefaultLayout>

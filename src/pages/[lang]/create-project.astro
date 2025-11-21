@@ -3,32 +3,17 @@ import '@/assets/css/create-project.css';
 import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
-import { supabase } from '@/lib/supabase';
-import type { Tables } from '@/types/database.types';
+import { getAllSkills } from '@/services/skills';
 export { getStaticPaths };
 
-const { lang, t, l } = useTranslate(Astro);
+const { t, l } = useTranslate(Astro);
 const session = Astro.locals.session;
 if (!session?.user) {
     return Astro.redirect(l(`/sign-in`));
 }
 
-// Load skills from database using types from database.types.ts
-let skills: Array<Pick<Tables<'skills'>, 'id' | 'name'>> = [];
-try {
-    const { data, error } = await supabase
-        .from('skills')
-        .select('id, name')
-        .order('name', { ascending: true });
-
-    if (!error && data) {
-        skills = data;
-    } else {
-        console.error('Error loading skills:', error);
-    }
-} catch (error) {
-    console.error('Error loading skills:', error);
-}
+// Load skills from database
+const skills = await getAllSkills();
 ---
 
 <DefaultLayout>

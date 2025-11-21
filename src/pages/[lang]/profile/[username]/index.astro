@@ -1,183 +1,38 @@
 ---
-import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/personal-profile.css';
 import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
-import { supabase } from '@/lib/supabase';
-import type { Tables } from '@/types/database.types';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import { getUserProfileByUsername } from '@/services/user-profile';
 export { getStaticPaths };
 
 const session = Astro.locals.session;
-const { lang, t, l } = useTranslate(Astro);
+const {  t, l } = useTranslate(Astro);
 const username = (Astro.params as { username?: string }).username;
 
-// Initialize data using types from database.types.ts
-let userInfo: Tables<'user_info'> | null = null;
-
-let userProfile: Pick<
-    Tables<'user_profiles'>,
-    | 'phone'
-    | 'bio'
-    | 'address'
-    | 'portfolio_url'
-    | 'interests'
-    | 'experiences'
-    | 'projects'
-    | 'certifications'
-> | null = null;
-
-let userSkills: Array<
-    Pick<Tables<'skills'>, 'id' | 'name' | 'category'> & {
-        level: string | null;
-    }
-> = [];
-
-let userProjects: Array<
-    Pick<
-        Tables<'projects'>,
-        'id' | 'title' | 'cover_image_url' | 'project_type' | 'status'
-    >
-> = [];
-
-let reviews: Array<
-    Pick<
-        Tables<'reviews'>,
-        'id' | 'rating' | 'comment' | 'reviewer_id' | 'created_at'
-    > & {
-        reviewer_info: Pick<
-            Tables<'user_info'>,
-            'full_name' | 'username' | 'avatar_url'
-        > | null;
-    }
-> = [];
-
-let isOwner = false;
-
-// Fetch user data
-if (username) {
-    try {
-        // Fetch user_info
-        const { data: userData, error: userError } = await supabase
-            .from('user_info')
-            .select('*')
-            .eq('username', username)
-            .is('deleted_at', null)
-            .single();
-
-        if (!userError && userData) {
-            userInfo = userData;
-
-            // Check if current user is owner
-            if (session?.user) {
-                isOwner = session.user.id === userInfo.user_id;
-            }
-
-            // Fetch user_profiles
-            const { data: profileData, error: profileError } = await supabase
-                .from('user_profiles')
-                .select(
-                    'phone, bio, address, portfolio_url, interests, experiences, projects, certifications'
-                )
-                .eq('user_id', userInfo.user_id)
-                .is('deleted_at', null)
-                .maybeSingle();
-
-            if (!profileError && profileData) {
-                userProfile = profileData;
-            }
-
-            // Fetch user_skills
-            const { data: userSkillsData, error: skillsError } = await supabase
-                .from('user_skills')
-                .select('skill_id, level')
-                .eq('user_id', userInfo.user_id)
-                .is('deleted_at', null);
-
-            if (!skillsError && userSkillsData && userSkillsData.length > 0) {
-                const skillIds = userSkillsData.map((us) => us.skill_id);
-                const { data: skillsData, error: skillsDataError } =
-                    await supabase
-                        .from('skills')
-                        .select('id, name, category')
-                        .in('id', skillIds);
-
-                if (!skillsDataError && skillsData) {
-                    const skillsMap = new Map(
-                        userSkillsData.map((us) => [us.skill_id, us.level])
-                    );
-                    userSkills = skillsData.map((skill) => ({
-                        ...skill,
-                        level: skillsMap.get(skill.id) || null,
-                    }));
-                }
-            }
-
-            // Fetch user projects (as owner)
-            const { data: projectsData, error: projectsError } = await supabase
-                .from('projects')
-                .select('id, title, cover_image_url, project_type, status')
-                .eq('owner_id', userInfo.user_id)
-                .is('deleted_at', null)
-				.neq('status', 'pending')
-                .order('created_at', { ascending: false })
-                .limit(10);
-
-            if (!projectsError && projectsData) {
-                userProjects = projectsData;
-            }
-
-            // Fetch reviews for this user
-            const { data: reviewsData, error: reviewsError } = await supabase
-                .from('reviews')
-                .select('id, rating, comment, reviewer_id, created_at')
-                .eq('reviewee_id', userInfo.user_id)
-                .is('deleted_at', null)
-                .order('created_at', { ascending: false })
-                .limit(10);
-
-            if (!reviewsError && reviewsData && reviewsData.length > 0) {
-                const reviewerIds = reviewsData.map((r) => r.reviewer_id);
-                const { data: reviewersData, error: reviewersError } =
-                    await supabase
-                        .from('user_info')
-                        .select('user_id, full_name, username, avatar_url')
-                        .in('user_id', reviewerIds)
-                        .is('deleted_at', null);
-
-                if (!reviewersError && reviewersData) {
-                    const reviewersMap = new Map(
-                        reviewersData.map((r) => [r.user_id, r])
-                    );
-                    reviews = reviewsData.map((review) => ({
-                        ...review,
-                        reviewer_info:
-                            reviewersMap.get(review.reviewer_id) || null,
-                    }));
-                }
-            }
-        } else {
-            // User not found, redirect
-            return Astro.redirect(l(`/project-search`));
-        }
-    } catch (error) {
-        console.error('Error loading user profile:', error);
-        return Astro.redirect(l(`/project-search`));
-    }
-} else {
-    // No username, redirect
-    return Astro.redirect(l(`/project-search`));
+// Fetch user profile data
+if (!username) {
+    return Astro.redirect(l(`/explore`));
 }
 
-// Helper function to get star count
-function getStarCount(rating: number | null): {
-    full: number;
-    hasHalf: boolean;
-} {
-    if (!rating) return { full: 0, hasHalf: false };
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    return { full: fullStars, hasHalf: hasHalfStar };
+const profileData = await getUserProfileByUsername(
+    username,
+    session?.user?.id
+);
+
+if (!profileData) {
+    return Astro.redirect(l(`/explore`));
 }
+
+const {
+    userInfo,
+    userProfile,
+    userSkills,
+    userProjects,
+    reviews,
+    isOwner,
+} = profileData;
+
 ---
 
 <DefaultLayout>
@@ -194,7 +49,7 @@ function getStarCount(rating: number | null): {
                             <img
                                 src={
                                     userInfo?.avatar_url ||
-                                    '/assets/images/vy2.png'
+                                    '/assets/images/avatar-default-icon.png'
                                 }
                                 alt={`Avatar của ${userInfo?.full_name || userInfo?.username || 'User'}`}
                                 class="user-avatar"
@@ -444,7 +299,7 @@ function getStarCount(rating: number | null): {
                                             <img
                                                 src={
                                                     project.cover_image_url ||
-                                                    '/assets/images/vy2.png'
+                                                    '/assets/images/avatar-default-icon.png'
                                                 }
                                                 alt={project.title}
                                                 class="project-thumb-new"
@@ -486,7 +341,7 @@ function getStarCount(rating: number | null): {
                                                         src={
                                                             review.reviewer_info
                                                                 ?.avatar_url ||
-                                                            '/assets/images/vy2.png'
+                                                            '/assets/images/avatar-default-icon.png'
                                                         }
                                                         alt={
                                                             review.reviewer_info

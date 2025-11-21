@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createAuthenticatedClient } from '@/lib/supabase';
 import httpResponse from '@/utils/response';
+import { notifyApplicationReceived } from '@/services/notifications';
 
 export const POST: APIRoute = async ({ request, locals }) => {
     try {
@@ -29,11 +30,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
             return httpResponse.fail('ID dự án không hợp lệ', 400);
         }
 
-        // Check if project exists
+        // Check if project exists and get title
         const { data: project, error: projectError } =
             await authenticatedSupabase
                 .from('projects')
-                .select('id, owner_id, status')
+                .select('id, owner_id, status, title')
                 .eq('id', projectIdNum)
                 .is('deleted_at', null)
                 .single();
@@ -115,6 +116,31 @@ export const POST: APIRoute = async ({ request, locals }) => {
             return httpResponse.fail(
                 'Lỗi khi gửi đơn ứng tuyển: ' + applicationError?.message,
                 500
+            );
+        }
+
+        // Get applicant info for notification
+        const { data: applicantInfo } = await authenticatedSupabase
+            .from('user_info')
+            .select('full_name, username')
+            .eq('user_id', session.user.id)
+            .is('deleted_at', null)
+            .single();
+
+        // Get language from request headers or default to 'vi'
+        const acceptLanguage = request.headers.get('accept-language') || '';
+        const lang = acceptLanguage.includes('en') ? 'en' : 'vi';
+
+        // Notify project owner
+        if (applicantInfo && project.title) {
+            await notifyApplicationReceived(
+                project.owner_id,
+                applicantInfo.full_name || applicantInfo.username || 'Người dùng',
+                applicantInfo.username || 'unknown',
+                projectIdNum,
+                project.title,
+                lang,
+                authenticatedSupabase
             );
         }
 

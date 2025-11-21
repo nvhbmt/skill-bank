@@ -3,174 +3,38 @@ import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import Header from '@/components/Header.astro';
 import '@/assets/css/project.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
-import { supabase } from '@/lib/supabase';
-import type { Tables } from '@/types/database.types';
+import { getProjectDetailById } from '@/services/project-detail';
 export { getStaticPaths };
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
 const projectId = (Astro.params as { projectId?: string }).projectId;
 
-// Initialize data using types from database.types.ts
-let project: Tables<'projects'> | null = null;
-
-let owner: Pick<
-    Tables<'user_info'>,
-    'user_id' | 'email' | 'full_name' | 'username' | 'avatar_url'
-> | null = null;
-
-let projectSkills: Array<Pick<Tables<'skills'>, 'id' | 'name' | 'category'>> =
-    [];
-
-let members: Array<
-    Pick<
-        Tables<'user_info'>,
-        'user_id' | 'full_name' | 'username' | 'avatar_url'
-    > & {
-        role: string | null;
-    }
-> = [];
-
-let milestones: Array<
-    Pick<
-        Tables<'project_milestones'>,
-        'id' | 'title' | 'description' | 'order_index'
-    >
-> = [];
-
-// Check user permissions (after data is fetched)
-let isOwner = false;
-let isMember = false;
-
 // Fetch project data
-if (projectId) {
-    try {
-        const projectIdNum = parseInt(projectId);
-        if (!isNaN(projectIdNum)) {
-            // Fetch project
-            const { data: projectData, error: projectError } = await supabase
-                .from('projects')
-                .select('*')
-                .eq('id', projectIdNum)
-                .is('deleted_at', null)
-                .single();
-
-            if (!projectError && projectData) {
-                project = projectData;
-
-                // Fetch owner info
-                const { data: ownerData, error: ownerError } = await supabase
-                    .from('user_info')
-                    .select('user_id, email, full_name, username, avatar_url')
-                    .eq('user_id', project.owner_id)
-                    .is('deleted_at', null)
-                    .single();
-
-                if (!ownerError && ownerData) {
-                    owner = ownerData;
-                }
-
-                // Fetch project skills
-                // First get skill_ids from project_skills
-                const { data: projectSkillsData, error: skillsError } =
-                    await supabase
-                        .from('project_skills')
-                        .select('skill_id')
-                        .eq('project_id', projectIdNum);
-
-                if (
-                    !skillsError &&
-                    projectSkillsData &&
-                    projectSkillsData.length > 0
-                ) {
-                    const skillIds = projectSkillsData.map((ps) => ps.skill_id);
-
-                    // Then fetch skills details
-                    const { data: skillsData, error: skillsDataError } =
-                        await supabase
-                            .from('skills')
-                            .select('id, name, category')
-                            .in('id', skillIds);
-                    if (!skillsDataError && skillsData) {
-                        projectSkills = skillsData;
-                    } else if (skillsDataError) {
-                        console.error(
-                            'Error fetching skills:',
-                            skillsDataError
-                        );
-                    }
-                } else if (skillsError) {
-                    console.error(
-                        'Error fetching project_skills:',
-                        skillsError
-                    );
-                }
-
-                // Fetch project members
-                const { data: membersData, error: membersError } =
-                    await supabase
-                        .from('project_members')
-                        .select('user_id, role')
-                        .eq('project_id', projectIdNum)
-                        .is('deleted_at', null)
-                        .is('left_at', null);
-
-                if (!membersError && membersData && membersData.length > 0) {
-                    const memberIds = membersData.map((m) => m.user_id);
-                    const { data: membersInfoData, error: membersInfoError } =
-                        await supabase
-                            .from('user_info')
-                            .select('user_id, full_name, username, avatar_url')
-                            .in('user_id', memberIds)
-                            .is('deleted_at', null);
-
-                    if (!membersInfoError && membersInfoData) {
-                        const membersMap = new Map(
-                            membersInfoData.map((m) => [m.user_id, m])
-                        );
-                        members = membersData
-                            .map((m) => {
-                                const info = membersMap.get(m.user_id);
-                                return info
-                                    ? {
-                                          ...(info as object),
-                                          role: m.role,
-                                      }
-                                    : null;
-                            })
-                            .filter(
-                                (m): m is NonNullable<typeof m> => m !== null
-                            );
-                    }
-                }
-
-                // Fetch project milestones (timeline)
-                const { data: milestonesData, error: milestonesError } =
-                    await supabase
-                        .from('project_milestones')
-                        .select('id, title, description, order_index')
-                        .eq('project_id', projectIdNum)
-                        .order('order_index', { ascending: true });
-
-                if (!milestonesError && milestonesData) {
-                    milestones = milestonesData;
-                }
-
-                // Check user permissions after fetching all data
-                if (session?.user && project) {
-                    isOwner = session.user.id === project.owner_id;
-                    isMember =
-                        isOwner ||
-                        members.some(
-                            (member) => member.user_id === session.user.id
-                        );
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Error loading project:', error);
-    }
+if (!projectId) {
+    return Astro.redirect(l(`/explore`));
 }
+
+const projectIdNum = parseInt(projectId);
+if (isNaN(projectIdNum)) {
+    return Astro.redirect(l(`/explore`));
+}
+
+const projectData = await getProjectDetailById(projectIdNum, session?.user?.id);
+
+if (!projectData || !projectData.project) {
+    return Astro.redirect(l(`/explore`));
+}
+
+const {
+    project,
+    owner,
+    projectSkills,
+    members,
+    milestones,
+    isOwner,
+    isMember,
+} = projectData;
 
 // Format date helper
 function formatDate(dateString: string | null): string {
@@ -263,7 +127,7 @@ function formatDate(dateString: string | null): string {
                                                 <img
                                                     src={
                                                         owner.avatar_url ||
-                                                        '/assets/images/vy2.png'
+                                                        '/assets/images/avatar-default-icon.png'
                                                     }
                                                     alt={t(
                                                         'project-detail-collab.creator'

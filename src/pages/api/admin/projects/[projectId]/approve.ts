@@ -4,8 +4,9 @@ import type { APIRoute } from 'astro';
 import { createAuthenticatedClient } from '@/lib/supabase';
 import httpResponse from '@/utils/response';
 import { approveProject } from '@/services/admin';
+import { notifyProjectApproved } from '@/services/notifications';
 
-export const PUT: APIRoute = async ({ params, locals }) => {
+export const PUT: APIRoute = async ({ params, locals, request }) => {
     try {
         const session = locals.session;
         if (!session?.user) {
@@ -29,10 +30,36 @@ export const PUT: APIRoute = async ({ params, locals }) => {
             return httpResponse.fail('ID dự án không hợp lệ', 400);
         }
 
+        // Get project info before approving
+        const { data: project } = await authenticatedSupabase
+            .from('projects')
+            .select('owner_id, title')
+            .eq('id', projectId)
+            .single();
+
+        if (!project) {
+            return httpResponse.fail('Dự án không tồn tại', 404);
+        }
+
         const success = await approveProject(projectId);
 
         if (!success) {
             return httpResponse.fail('Duyệt dự án thất bại', 500);
+        }
+
+        // Notify project owner
+        if (project.title) {
+            // Get language from request headers or default to 'vi'
+            const acceptLanguage = request.headers.get('accept-language') || '';
+            const lang = acceptLanguage.includes('en') ? 'en' : 'vi';
+
+            await notifyProjectApproved(
+                project.owner_id,
+                projectId,
+                project.title,
+                lang,
+                authenticatedSupabase
+            );
         }
 
         return httpResponse.ok(null, 'Duyệt dự án thành công', 200);

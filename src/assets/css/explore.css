@@ -1,11 +1,28 @@
+/* --- 1. ĐỊNH NGHĨA BIẾN CHUẨN (Dựa trên root ông cung cấp) --- */
+:root {
+    /* --- BIẾN BỔ SUNG CHO HOMEPAGE (Dark Theme) --- */
+    --color-card-glass: rgba(255, 255, 255, 0.03);
+    --color-card-border: rgba(255, 255, 255, 0.1);
+    --color-purple-glow: rgba(124, 58, 237, 0.6);
+    --color-blue-glow: rgba(59, 130, 246, 0.6);
+    --color-project-card-bg: #ede9fe;
+    --color-project-text: #2e1065;
+    --color-text-gray: #9ca3af;
+}
+
 body {
-    box-sizing: border-box;
-    background-image: url('/assets/images/nen-tim-kiem-du-an.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    font-family: Inter, sans-serif;
-    background-position: center;
-    background-attachment: fixed;
+    background-color: #0f0f1a; /* Nền tối */
+}
+
+.grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .title {
@@ -23,6 +40,7 @@ body {
 .search-container {
     display: flex;
     justify-content: center;
+    margin-bottom: 40px;
 }
 .search-bar {
     position: relative;
@@ -48,20 +66,10 @@ body {
 }
 /* end search-bar */
 
-.project {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-}
 .project-container {
-    display: flex;
-    gap: 2rem 8rem;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-width: 1230px;
-    left: 0.8rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
 }
 .project-image {
     width: 300px;

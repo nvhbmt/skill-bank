@@ -1,0 +1,312 @@
+---
+interface Props {
+    id: string;
+    titleId?: string;
+    messageId?: string;
+    timeId?: string;
+    typeId?: string;
+    closeButtonId?: string;
+    showMeta?: boolean;
+    translations?: string;
+    currentLang?: 'vi' | 'en';
+}
+
+const {
+    id,
+    titleId = `${id}-title`,
+    messageId = `${id}-message`,
+    timeId = `${id}-time`,
+    typeId = `${id}-type`,
+    closeButtonId = `${id}-close`,
+    showMeta = true,
+    translations = '{}',
+    currentLang = 'vi',
+} = Astro.props;
+---
+
+<div id={id} class="dialog">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <h2 class="dialog-title" id={titleId}></h2>
+            <button class="dialog-close" id={closeButtonId}>
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </div>
+        <div class="dialog-body">
+            <div class="dialog-message" id={messageId}></div>
+            {showMeta && (
+                <div class="dialog-meta">
+                    <div class="dialog-meta-item">
+                        <ion-icon name="time-outline"></ion-icon>
+                        <span id={timeId}></span>
+                    </div>
+                    <div class="dialog-meta-item">
+                        <ion-icon name="pricetag-outline"></ion-icon>
+                        <span id={typeId}></span>
+                    </div>
+                </div>
+            )}
+        </div>
+    </div>
+</div>
+
+<style>
+    .dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100000;
+        padding: 2rem;
+    }
+
+    .dialog.active {
+        display: flex;
+    }
+
+    .dialog-content {
+        background: rgba(30, 30, 35, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 600px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        position: relative;
+    }
+
+    .dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.6rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .dialog-title {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .dialog-close {
+        background: none;
+        border: none;
+        color: #a1a1aa;
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dialog-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+
+    .dialog-body {
+        color: #e4e4e7;
+        line-height: 1.6;
+    }
+
+    .dialog-message {
+        font-size: var(--font-size-base);
+        margin-bottom: 1.2rem;
+        white-space: pre-wrap;
+    }
+
+    .dialog-meta {
+        display: flex;
+        gap: 1.6rem;
+        font-size: var(--font-size-sm);
+        color: #71717a;
+        margin-top: 1.6rem;
+        padding-top: 1.6rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .dialog-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+</style>
+
+<script define:vars={{ dialogId: id, titleId, messageId, timeId, typeId, closeButtonId, translations, currentLang }}>
+    (function() {
+        // Parse translations
+        const notificationTranslations = JSON.parse(translations || '{}');
+        const lang = currentLang || 'vi';
+        
+        // Helper function to render notification message
+        function renderNotificationMessage(type, messageJson) {
+            if (!type || !messageJson) {
+                return { text: messageJson || '', link: null };
+            }
+
+            try {
+                const data = JSON.parse(messageJson);
+                const template = notificationTranslations[type];
+
+                if (!template) {
+                    return { text: messageJson, link: null };
+                }
+
+                // Replace template variables
+                let message = template.message;
+                message = message.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+                    return data[key] || match;
+                });
+
+                // Extract project link if projectId exists
+                let link = null;
+                if (data.projectId) {
+                    link = {
+                        url: `/project/${data.projectId}`,
+                        text: template.viewProject,
+                    };
+                }
+
+                return { text: message, link };
+            } catch (error) {
+                console.error('Error parsing notification message:', error);
+                return { text: messageJson, link: null };
+            }
+        }
+
+        // Helper function to get notification title
+        function getNotificationTitle(type, fallbackTitle) {
+            if (!type) {
+                return fallbackTitle || 'Thông báo';
+            }
+
+            const template = notificationTranslations[type];
+            return template?.title || fallbackTitle || 'Thông báo';
+        }
+
+        // Create a unique function name based on dialog ID
+        // Convert "notification-dialog" to "NotificationDialog"
+        const functionName = dialogId.split('-').map((word) => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join('');
+        const openFunctionName = `open${functionName}`;
+        const closeFunctionName = `close${functionName}`;
+
+        // Export open function to window for global access
+        window[openFunctionName] = function(title, message, type, createdAt) {
+            const dialog = document.getElementById(dialogId);
+            
+            if (!dialog) {
+                console.error(`Dialog element with id "${dialogId}" not found!`);
+                return;
+            }
+
+            // Set content
+            const titleEl = document.getElementById(titleId);
+            const messageEl = document.getElementById(messageId);
+            const timeEl = document.getElementById(timeId);
+            const typeEl = document.getElementById(typeId);
+
+            // Get title from template if type is provided
+            const notificationTitle = getNotificationTitle(type, title);
+            if (titleEl) titleEl.textContent = notificationTitle || 'Thông báo';
+            
+            // Render message from JSON template
+            if (messageEl) {
+                const rendered = renderNotificationMessage(type, message);
+                
+                // Clear previous content
+                messageEl.innerHTML = '';
+                
+                // Add message text
+                messageEl.appendChild(document.createTextNode(rendered.text));
+                
+                // Add link if exists
+                if (rendered.link) {
+                    const link = document.createElement('a');
+                    const fullPath = `/${lang}${rendered.link.url}`;
+                    link.href = fullPath;
+                    link.textContent = ` ${rendered.link.text}`;
+                    link.style.color = 'var(--color-purple-button, #7c3aed)';
+                    link.style.textDecoration = 'underline';
+                    link.style.cursor = 'pointer';
+                    link.style.marginLeft = '0.4rem';
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.location.href = fullPath;
+                    });
+                    messageEl.appendChild(link);
+                }
+            }
+            
+            if (timeEl) timeEl.textContent = createdAt || new Date().toLocaleString('vi-VN');
+            if (typeEl) typeEl.textContent = type || 'Thông thường';
+
+            // Show dialog
+            dialog.classList.add('active');
+        };
+
+        // Export close function to window
+        window[closeFunctionName] = function() {
+            const dialog = document.getElementById(dialogId);
+            if (dialog) {
+                dialog.classList.remove('active');
+            }
+        };
+
+        // Setup dialog close handlers
+        function setupDialogHandlers() {
+            const dialog = document.getElementById(dialogId);
+            if (!dialog) return;
+
+            // Close button handler
+            const closeButton = document.getElementById(closeButtonId);
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    window[closeFunctionName]();
+                });
+            }
+
+            // Close on backdrop click
+            dialog.addEventListener('click', function (e) {
+                if (e.target === dialog) {
+                    window[closeFunctionName]();
+                }
+            });
+
+            // Close on Escape key
+            const escapeHandler = function (e) {
+                if (e.key === 'Escape' && dialog.classList.contains('active')) {
+                    window[closeFunctionName]();
+                }
+            };
+            document.addEventListener('keydown', escapeHandler);
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupDialogHandlers);
+        } else {
+            setTimeout(setupDialogHandlers, 0);
+        }
+
+        // Fallback initialization
+        setTimeout(setupDialogHandlers, 200);
+    })();
+</script>
+

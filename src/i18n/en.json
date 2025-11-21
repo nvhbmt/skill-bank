@@ -445,5 +445,32 @@
         "confirmPass": "Confirm password",
         "resetPass": "Reset password",
         "backToSignIn": "Back to sign in"
+    },
+    "notifications": {
+        "application_received": {
+            "title": "Someone wants to join your project",
+            "message": "{{applicantName}} (@{{applicantUsername}}) wants to join your project \"{{projectTitle}}\".",
+            "viewProject": "View details"
+        },
+        "project_approved": {
+            "title": "Your project has been approved",
+            "message": "Your project \"{{projectTitle}}\" has been approved and is now publicly visible.",
+            "viewProject": "View project"
+        },
+        "application_approved": {
+            "title": "You have been approved for the project",
+            "message": "You have been approved to join the project \"{{projectTitle}}\".",
+            "viewProject": "View project"
+        },
+        "project_rejected": {
+            "title": "Your project has been rejected",
+            "message": "Your project \"{{projectTitle}}\" has been rejected. Please review and edit your project.",
+            "viewProject": "View project"
+        },
+        "application_rejected": {
+            "title": "Your application has been rejected",
+            "message": "Your application for the project \"{{projectTitle}}\" has been rejected.",
+            "viewProject": "View project"
+        }
     }
 }

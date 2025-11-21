@@ -443,5 +443,32 @@
         "confirmPass": "Xác nhận mật khẩu",
         "resetPass": "Đặt lại mật khẩu",
         "backToSignIn": "Quay lại đăng nhập"
+    },
+    "notifications": {
+        "application_received": {
+            "title": "Có người muốn tham gia dự án của bạn",
+            "message": "{{applicantName}} (@{{applicantUsername}}) muốn tham gia dự án \"{{projectTitle}}\".",
+            "viewProject": "Xem chi tiết"
+        },
+        "project_approved": {
+            "title": "Dự án của bạn đã được duyệt",
+            "message": "Dự án \"{{projectTitle}}\" của bạn đã được duyệt và đang hiển thị công khai.",
+            "viewProject": "Xem dự án"
+        },
+        "application_approved": {
+            "title": "Bạn đã được duyệt vào dự án",
+            "message": "Bạn đã được duyệt tham gia dự án \"{{projectTitle}}\".",
+            "viewProject": "Xem dự án"
+        },
+        "project_rejected": {
+            "title": "Dự án của bạn đã bị từ chối",
+            "message": "Dự án \"{{projectTitle}}\" của bạn đã bị từ chối. Vui lòng kiểm tra và chỉnh sửa lại dự án.",
+            "viewProject": "Xem dự án"
+        },
+        "application_rejected": {
+            "title": "Bạn đã bị từ chối khi tham gia dự án",
+            "message": "Đơn ứng tuyển của bạn cho dự án \"{{projectTitle}}\" đã bị từ chối.",
+            "viewProject": "Xem dự án"
+        }
     }
 }

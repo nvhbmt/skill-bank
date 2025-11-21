@@ -5,6 +5,9 @@ import Footer from '@/components/Footer.astro';
 // Import CSS bằng đường dẫn tương đối để chắc chắn hoạt động
 import '@/assets/css/homepage.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { getFeaturedProjects } from '@/services/projects';
+import { getFeaturedProfiles } from '@/services/user-profile';
 export { getStaticPaths };
 
 const { t, l } = useTranslate(Astro);
@@ -15,67 +18,9 @@ const titleParts = heroTitle.includes('\n')
     ? heroTitle.split('\n')
     : [heroTitle, ''];
 
-// Mock Data
-const featuredProjects = [
-    {
-        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop',
-        tag: 'Web App',
-        title: 'E-commerce Dashboard Pro',
-        description:
-            'Hệ thống quản lý bán hàng đa kênh tích hợp AI phân tích dữ liệu.',
-        author: 'alex_dev',
-        likes: 520,
-    },
-    {
-        image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=800&auto=format&fit=crop',
-        tag: 'Mobile',
-        title: 'Health Tracking App',
-        description:
-            'Ứng dụng theo dõi sức khỏe cá nhân với giao diện Dark Mode hiện đại.',
-        author: 'sarah_ux',
-        likes: 342,
-    },
-    {
-        image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop',
-        tag: 'AI/ML',
-        title: 'Smart Home Controller',
-        description:
-            'Giải pháp điều khiển nhà thông minh bằng giọng nói tiếng Việt.',
-        author: 'tech_team_vn',
-        likes: 890,
-    },
-];
-
-const featuredProfiles = [
-    {
-        name: 'Trần Tường Vân',
-        role: 'Fullstack Developer',
-        avatar: '/assets/images/vy2.png',
-        skills: ['React', 'NodeJS'],
-        rating: 5,
-    },
-    {
-        name: 'Bùi Thái Vy',
-        role: 'UI/UX Designer',
-        avatar: '/assets/images/vy2.png',
-        skills: ['Figma', 'Adobe XD'],
-        rating: 5,
-    },
-    {
-        name: 'Nguyễn Xuân Việt Anh',
-        role: 'Mobile Developer',
-        avatar: '/assets/images/vy2.png',
-        skills: ['Flutter', 'Swift'],
-        rating: 4,
-    },
-    {
-        name: 'Nguyễn Việt Hoàng',
-        role: 'DevOps Engineer',
-        avatar: '/assets/images/vy2.png',
-        skills: ['Docker', 'K8s'],
-        rating: 5,
-    },
-];
+// Load featured projects and profiles from database
+const featuredProjects = await getFeaturedProjects();
+const featuredProfiles = await getFeaturedProfiles();
 ---
 
 <DefaultLayout>
@@ -199,39 +144,7 @@ const featuredProfiles = [
                     <div class="projects-grid">
                         {
                             featuredProjects.map((project) => (
-                                <a href="#" class="project-card-new">
-                                    <div class="project-thumb-wrapper">
-                                        <img
-                                            src={project.image}
-                                            alt={project.title}
-                                            class="project-thumb-new"
-                                        />
-                                    </div>
-                                    <div class="project-info-new">
-                                        <div class="project-header-row">
-                                            <span class="project-title-new">
-                                                {project.title}
-                                            </span>
-                                            <span class="project-tag-badge">
-                                                {project.tag}
-                                            </span>
-                                        </div>
-                                        <p class="project-desc">
-                                            {project.description}
-                                        </p>
-                                        <div class="project-stats-row">
-                                            <span class="author-info">
-                                                by {project.author}
-                                            </span>
-                                            <div class="stats-icons">
-                                                <div class="stat-icon">
-                                                    <i class="fa-regular fa-thumbs-up" />{' '}
-                                                    <span>{project.likes}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
+                                <ProjectCard project={project} />
                             ))
                         }
                     </div>
@@ -247,29 +160,42 @@ const featuredProfiles = [
                     </div>
                     <div class="profiles-grid">
                         {
-                            featuredProfiles.map((profile) => (
-                                <a href="#" class="profile-card">
-                                    <img
-                                        src={profile.avatar}
-                                        alt={profile.name}
-                                        class="profile-avatar"
-                                    />
-                                    <h3 class="profile-name">{profile.name}</h3>
-                                    <p class="profile-role">{profile.role}</p>
-                                    <div class="profile-skills">
-                                        {profile.skills.map((skill) => (
-                                            <span class="skill-pill">
-                                                {skill}
-                                            </span>
-                                        ))}
-                                    </div>
-                                    <div class="profile-rating">
-                                        {Array(profile.rating)
-                                            .fill('★')
-                                            .join('')}
-                                    </div>
-                                </a>
-                            ))
+                            featuredProfiles.length > 0 ? (
+                                featuredProfiles.map((profile) => (
+                                    <a
+                                        href={l(`/profile/${profile.username}`)}
+                                        class="profile-card"
+                                    >
+                                        <img
+                                            src={profile.avatar}
+                                            alt={profile.name}
+                                            class="profile-avatar"
+                                        />
+                                        <h3 class="profile-name">
+                                            {profile.name}
+                                        </h3>
+                                        <p class="profile-role">
+                                            {profile.role}
+                                        </p>
+                                        <div class="profile-skills">
+                                            {profile.skills.map((skill) => (
+                                                <span class="skill-pill">
+                                                    {skill}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <div class="profile-rating">
+                                            {Array(profile.rating)
+                                                .fill('★')
+                                                .join('')}
+                                        </div>
+                                    </a>
+                                ))
+                            ) : (
+                                <p style="color: #9ca3af; text-align: center; grid-column: 1 / -1;">
+                                    Chưa có profile nổi bật.
+                                </p>
+                            )
                         }
                     </div>
                 </section>

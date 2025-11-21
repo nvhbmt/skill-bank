@@ -3,8 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/submit-application.css';
 import Header from '@/components/Header.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
-import { supabase } from '@/lib/supabase';
-import type { Tables } from '@/types/database.types';
+import { getProjectForApplication } from '@/services/projects';
 export { getStaticPaths };
 
 const session = Astro.locals.session;
@@ -16,50 +15,27 @@ if (!session?.user) {
     return Astro.redirect(l(`/sign-in`));
 }
 
-// Fetch project info using types from database.types.ts
-let project: Pick<Tables<'projects'>, 'id' | 'title' | 'owner_id'> | null =
-    null;
-
-if (projectId) {
-    try {
-        const projectIdNum = parseInt(projectId);
-        if (!isNaN(projectIdNum)) {
-            const { data: projectData, error: projectError } = await supabase
-                .from('projects')
-                .select('id, title, owner_id')
-                .eq('id', projectIdNum)
-                .is('deleted_at', null)
-                .single();
-
-            if (!projectError && projectData) {
-                project = projectData;
-            } else {
-                // Project not found, redirect
-                return Astro.redirect(l(`/project-search`));
-            }
-        }
-    } catch (error) {
-        console.error('Error loading project:', error);
-        return Astro.redirect(l(`/project-search`));
-    }
-} else {
-    // No projectId, redirect
-    return Astro.redirect(l(`/project-search`));
+// Validate projectId
+if (!projectId) {
+    return Astro.redirect(l(`/explore`));
 }
 
-// Check if user already applied
-let hasApplied = false;
-if (project && session.user) {
-    const { data: existingApplication } = await supabase
-        .from('applications')
-        .select('id')
-        .eq('project_id', project.id)
-        .eq('applicant_id', session.user.id)
-        .is('deleted_at', null)
-        .maybeSingle();
-
-    hasApplied = !!existingApplication;
+const projectIdNum = parseInt(projectId);
+if (isNaN(projectIdNum)) {
+    return Astro.redirect(l(`/explore`));
 }
+
+// Fetch project info and check if user already applied
+const applicationData = await getProjectForApplication(
+    projectIdNum,
+    session.user.id
+);
+
+if (!applicationData || !applicationData.project) {
+    return Astro.redirect(l(`/explore`));
+}
+
+const { project, hasApplied } = applicationData;
 ---
 
 <DefaultLayout>
