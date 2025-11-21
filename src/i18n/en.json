@@ -437,5 +437,13 @@
         "faq2_a": "Absolutely not. At SkillBank, the only currencies are Skills and Time. We remove financial barriers so you can focus on creating.",
         "faq3_q": "Are these part-time jobs?",
         "faq3_a": "Not exactly. This is a place for students to build real products (Pet Projects, MVPs) together to learn and enhance their Portfolios."
+    },
+    "change-password": {
+        "title": "Change password",
+        "currentPass": "Enter current password",
+        "password": "Set new password",
+        "confirmPass": "Confirm password",
+        "resetPass": "Reset password",
+        "backToSignIn": "Back to sign in"
     }
 }

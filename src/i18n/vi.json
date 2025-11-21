@@ -435,5 +435,13 @@
         "faq2_a": "Hoàn toàn không. Tại SkillBank, đơn vị tiền tệ duy nhất là Kỹ năng và Thời gian. Chúng tôi loại bỏ rào cản tài chính để bạn tập trung vào sáng tạo.",
         "faq3_q": "Dự án ở đây có phải là việc làm thêm?",
         "faq3_a": "Không hẳn. Đây là nơi các bạn sinh viên cùng nhau xây dựng các sản phẩm thực tế (Pet Project, Startup MVP...) để học hỏi và làm đẹp Portfolio."
+    },
+    "change-password": {
+        "title": "Đổi mật khẩu",
+        "currentPass": "Nhập mật khẩu hiện tại",
+        "password": "Nhập mật khẩu mới",
+        "confirmPass": "Xác nhận mật khẩu",
+        "resetPass": "Đặt lại mật khẩu",
+        "backToSignIn": "Quay lại đăng nhập"
     }
 }

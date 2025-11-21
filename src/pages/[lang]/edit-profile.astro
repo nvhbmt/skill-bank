@@ -10,45 +10,15 @@ export { getStaticPaths };
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
 
-// Redirect if not logged in
-if (!session?.user) {
-    return Astro.redirect(l(`/sign-in`));
-}
+if (!session?.user) return Astro.redirect(l(`/sign-in`));
 
-// Initialize data using types from database.types.ts
 let userInfo: Tables<'user_info'> | null = null;
+let userProfile: any = null;
+let userSkills: any[] = [];
+let allSkills: any[] = [];
+let userProjects: any[] = [];
 
-let userProfile: Pick<
-    Tables<'user_profiles'>,
-    | 'phone'
-    | 'bio'
-    | 'address'
-    | 'portfolio_url'
-    | 'interests'
-    | 'experiences'
-    | 'projects'
-    | 'certifications'
-> | null = null;
-
-let userSkills: Array<
-    Pick<Tables<'skills'>, 'id' | 'name' | 'category'> & {
-        level: string | null;
-        skill_id: number;
-    }
-> = [];
-
-let userProjects: Array<
-    Pick<
-        Tables<'projects'>,
-        'id' | 'title' | 'cover_image_url' | 'project_type' | 'status'
-    >
-> = [];
-
-let allSkills: Array<Pick<Tables<'skills'>, 'id' | 'name' | 'category'>> = [];
-
-// Fetch user data
 try {
-    // Fetch user_info
     const { data: userData, error: userError } = await supabase
         .from('user_info')
         .select('*')
@@ -58,536 +28,472 @@ try {
 
     if (!userError && userData) {
         userInfo = userData;
-
-        // Fetch user_profiles
-        const { data: profileData, error: profileError } = await supabase
+        const { data: profileData } = await supabase
             .from('user_profiles')
-            .select(
-                'phone, bio, address, portfolio_url, interests, experiences, projects, certifications'
-            )
+            .select('*')
             .eq('user_id', userInfo.user_id)
             .is('deleted_at', null)
             .maybeSingle();
+        if (profileData) userProfile = profileData;
 
-        if (!profileError && profileData) {
-            userProfile = profileData;
-        }
-
-        // Fetch user_skills
-        const { data: userSkillsData, error: skillsError } = await supabase
+        const { data: userSkillsData } = await supabase
             .from('user_skills')
             .select('skill_id, level')
             .eq('user_id', userInfo.user_id)
             .is('deleted_at', null);
 
-        if (!skillsError && userSkillsData && userSkillsData.length > 0) {
+        if (userSkillsData?.length) {
             const skillIds = userSkillsData.map((us) => us.skill_id);
-            const { data: skillsData, error: skillsDataError } = await supabase
+            const { data: skillsData } = await supabase
                 .from('skills')
                 .select('id, name, category')
                 .in('id', skillIds);
-
-            if (!skillsDataError && skillsData) {
-                const skillsMap = new Map(
-                    userSkillsData.map((us) => [us.skill_id, us.level])
-                );
+            if (skillsData)
                 userSkills = skillsData.map((skill) => ({
                     ...skill,
-                    level: skillsMap.get(skill.id) || null,
                     skill_id: skill.id,
                 }));
-            }
         }
 
-        // Fetch all available skills for dropdown
-        const { data: allSkillsData, error: allSkillsError } = await supabase
+        const { data: allSkillsData } = await supabase
             .from('skills')
             .select('id, name, category')
             .order('name', { ascending: true });
+        if (allSkillsData) allSkills = allSkillsData;
 
-        if (!allSkillsError && allSkillsData) {
-            allSkills = allSkillsData;
-        }
-
-        // Fetch user projects (as owner)
-        const { data: projectsData, error: projectsError } = await supabase
+        const { data: projectsData } = await supabase
             .from('projects')
-            .select('id, title, cover_image_url, project_type, status')
+            .select('*')
             .eq('owner_id', userInfo.user_id)
             .is('deleted_at', null)
-            .order('created_at', { ascending: false })
-            .limit(10);
-
-        if (!projectsError && projectsData) {
-            userProjects = projectsData;
-        }
+            .limit(5);
+        if (projectsData) userProjects = projectsData;
     }
 } catch (error) {
-    console.error('Error loading user profile:', error);
+    console.error('Error loading profile:', error);
 }
+
+const safeJoin = (jsonVal: string | null | undefined) => {
+    try {
+        if (!jsonVal) return '';
+        const parsed = JSON.parse(jsonVal);
+        return Array.isArray(parsed) ? parsed.join('\n') : '';
+    } catch (e) {
+        return '';
+    }
+};
+
+const educationText = safeJoin(userProfile?.interests);
+const experienceText = safeJoin(userProfile?.experiences);
+const achievementsText = safeJoin(userProfile?.projects);
+const certificationsText = safeJoin(userProfile?.certifications);
+
+const reviews = [
+    {
+        id: 1,
+        name: 'Ly Huy',
+        username: '@lyhuy2201',
+        avatar: '/assets/images/vy2.png',
+        rating: 5,
+        text: 'Rất uy tín và linh hoạt.',
+    },
+    {
+        id: 2,
+        name: 'Nguyễn Văn A',
+        username: '@nguyenvana',
+        avatar: '/assets/images/vy2.png',
+        rating: 5,
+        text: 'Giao diện đẹp.',
+    },
+    {
+        id: 3,
+        name: 'Trần Thị B',
+        username: '@tranthib',
+        avatar: '/assets/images/vy2.png',
+        rating: 4,
+        text: 'Hoàn thành đúng hạn.',
+    },
+];
 ---
 
 <DefaultLayout>
-    <Header />
-    <main class="section">
-        <form
-            method="POST"
-            enctype="multipart/form-data"
-            id="edit-profile-form"
-        >
-            <input
-                type="file"
-                id="avatar-upload"
-                name="avatar"
-                accept="image/*"
-                style="display: none;"
-            />
-            <input
-                type="file"
-                id="cover-image-upload"
-                name="cover_image"
-                accept="image/*"
-                style="display: none;"
-            />
-            <div class="container edit-profile-container">
-                <aside class="frame">
-                    <section class="frame-wrapper">
-                        <div class="div">
-                            <div
-                                class="avt-va"
-                                role="img"
-                                aria-label={`Avatar của ${userInfo?.full_name || userInfo?.username || 'User'}`}
-                                style="position: relative; cursor: pointer; overflow: hidden; border-radius: 50%; width: 80px; height: 80px; flex-shrink: 0;"
-                            >
-                                <label
-                                    for="avatar-upload"
-                                    style="cursor: pointer; display: block; width: 100%; position: relative; border-radius: 50%; overflow: hidden;"
+    <div class="wrapper">
+        <Header />
+        <main>
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="edit-profile-form"
+            >
+                <input
+                    type="file"
+                    id="avatar-upload"
+                    name="avatar"
+                    accept="image/*"
+                    style="display: none;"
+                />
+                <input
+                    type="file"
+                    id="cover-image-upload"
+                    name="cover_image"
+                    accept="image/*"
+                    style="display: none;"
+                />
+                <input
+                    type="hidden"
+                    name="delete_avatar"
+                    id="delete-avatar-upload"
+                    value="false"
+                />
+                <input
+                    type="hidden"
+                    name="delete_cover"
+                    id="delete-cover-image-upload"
+                    value="false"
+                />
+
+                <div class="edit-profile-container">
+                    <!-- SIDEBAR -->
+                    <div class="left-sidebar">
+                        <div class="sidebar-card user-card">
+                            <div class="user-avatar-wrapper">
+                                <button
+                                    type="button"
+                                    id="remove-avatar-btn"
+                                    class="btn-remove-image"
+                                    title="Gỡ ảnh">×</button
                                 >
+                                <label for="avatar-upload" class="avatar-label">
                                     <img
                                         id="avatar-preview"
                                         src={userInfo?.avatar_url ||
-                                            '/assets/images/vy2.png'}
-                                        alt={`Avatar của ${userInfo?.full_name || userInfo?.username || 'User'}`}
-                                        style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 50%; border: 3px solid var(--color-purple-button); box-shadow: 0 0 10px rgba(124, 58, 237, 0.5); transition: all 0.3s ease; display: block; aspect-ratio: 1 / 1;"
+                                            '/assets/images/default-avatar.png'}
+                                        alt="Avatar"
+                                        class="user-avatar"
                                     />
-                                    <div
-                                        class="avatar-overlay"
-                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;"
-                                    >
+                                    <div class="avatar-overlay">
                                         <i
                                             class="fa-solid fa-camera"
-                                            style="color: white; font-size: 1.5rem;"
+                                            style="color: white; font-size: 2rem;"
                                         ></i>
                                     </div>
                                 </label>
                             </div>
-                            <div class="frame-2">
-                                <h1 class="text-wrapper" id="user-fullname">
-                                    {
-                                        userInfo?.full_name ||
-                                            userInfo?.username ||
-                                            'User'
-                                    }
-                                </h1>
-                                <div class="div-wrapper">
-                                    <span
-                                        class="text-wrapper-2"
-                                        id="user-username"
-                                        >@{
-                                            userInfo?.username || 'username'
-                                        }</span
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <div class="frame-3">
-                        <section class="frame-4">
-                            <h2 class="text-wrapper-3">Thông tin chung</h2>
-                            <div class="line"></div>
-                            <div class="frame-5">
-                                <div class="frame-6">
-                                    <input
-                                        type="text"
-                                        name="full_name"
-                                        id="full-name-input"
-                                        value={userInfo?.full_name || ''}
-                                        placeholder="Họ và tên"
-                                        class="text-wrapper-4"
-                                        style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%;"
-                                    />
-                                </div>
-                                <p class="div-2">
-                                    <span class="span"
-                                        >Số điện thoại: <br /></span
-                                    >
-                                    <input
-                                        type="text"
-                                        name="phone"
-                                        id="phone-input"
-                                        value={userProfile?.phone || ''}
-                                        placeholder="Số điện thoại"
-                                        class="text-wrapper-6"
-                                        style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%;"
-                                    />
-                                </p>
-                                <p class="div-2">
-                                    <span class="span">Email:</span>
-                                    <span class="text-wrapper-6"
-                                        >{userInfo?.email || 'N/A'}</span
-                                    >
-                                </p>
-                            </div>
-                        </section>
-                        <section class="frame-7">
-                            <h2 class="text-wrapper-3">Thông tin thêm</h2>
-                            <div class="line"></div>
-                            <div class="frame-8">
-                                <p class="text-wrapper-7">Địa chỉ:</p>
+                            <div class="user-info-edit">
                                 <input
                                     type="text"
-                                    name="address"
-                                    id="address-input"
-                                    value={userProfile?.address || ''}
-                                    placeholder="Địa chỉ"
-                                    class="text-wrapper-7"
-                                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem;"
+                                    name="full_name"
+                                    class="form-input"
+                                    value={userInfo?.full_name || ''}
+                                    placeholder="Họ và tên"
+                                    style="text-align: center; font-weight: 700;"
                                 />
-                            </div>
-                            <div class="frame-8">
-                                <p class="text-wrapper-7">
-                                    Lĩnh vực quan tâm (mỗi dòng một mục):
-                                </p>
-                                <textarea
-                                    name="interests"
-                                    id="interests-textarea"
-                                    placeholder="AI
-Web design"
-                                    class="text-wrapper-7"
-                                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem; min-height: 80px; resize: vertical; font-family: inherit;"
-                                    >{
-                                        (() => {
-                                            try {
-                                                if (userProfile?.interests) {
-                                                    const interests =
-                                                        JSON.parse(
-                                                            userProfile.interests
-                                                        );
-                                                    return Array.isArray(
-                                                        interests
-                                                    )
-                                                        ? interests.join('\n')
-                                                        : '';
-                                                }
-                                                return '';
-                                            } catch {
-                                                return '';
-                                            }
-                                        })()
-                                    }</textarea
+                                <span
+                                    style="color: var(--color-text-gray); font-size: 0.9rem;"
+                                    >@{userInfo?.username}</span
                                 >
                             </div>
-                            <div class="frame-8">
-                                <p class="text-wrapper-7">
-                                    Kinh nghiệm (mỗi dòng một mục):
-                                </p>
-                                <textarea
-                                    name="experiences"
-                                    id="experiences-textarea"
-                                    placeholder="1 năm kinh nghiệm tự học
-Học IT năm 2 tại IUH"
-                                    class="text-wrapper-7"
-                                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem; min-height: 80px; resize: vertical; font-family: inherit;"
-                                    >{
-                                        (() => {
-                                            try {
-                                                if (userProfile?.experiences) {
-                                                    const experiences =
-                                                        JSON.parse(
-                                                            userProfile.experiences
-                                                        );
-                                                    return Array.isArray(
-                                                        experiences
-                                                    )
-                                                        ? experiences.join('\n')
-                                                        : '';
-                                                }
-                                                return '';
-                                            } catch {
-                                                return '';
-                                            }
-                                        })()
-                                    }</textarea
-                                >
-                            </div>
-                        </section>
-                        <section class="frame-10">
-                            <h2 class="text-wrapper-3">Thành tựu</h2>
-                            <div class="line"></div>
-                            <div class="frame-5">
-                                <p class="text-wrapper-7">
-                                    Dự án từng làm (mỗi dòng một mục):
-                                </p>
-                                <textarea
-                                    name="projects"
-                                    id="projects-textarea"
-                                    placeholder="Website bán sách
-Phân loại ảnh AI"
-                                    class="text-wrapper-7"
-                                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem; min-height: 80px; resize: vertical; font-family: inherit;"
-                                    >{
-                                        (() => {
-                                            try {
-                                                if (userProfile?.projects) {
-                                                    const projects = JSON.parse(
-                                                        userProfile.projects
-                                                    );
-                                                    return Array.isArray(
-                                                        projects
-                                                    )
-                                                        ? projects.join('\n')
-                                                        : '';
-                                                }
-                                                return '';
-                                            } catch {
-                                                return '';
-                                            }
-                                        })()
-                                    }</textarea
-                                >
-                            </div>
-                            <div class="frame-12">
-                                <p class="text-wrapper-7">
-                                    Chứng chỉ (mỗi dòng một mục):
-                                </p>
-                                <textarea
-                                    name="certifications"
-                                    id="certifications-textarea"
-                                    placeholder="TOEIC 600+
-MOS Excel"
-                                    class="text-wrapper-7"
-                                    style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; padding: 0.5rem; color: var(--color-text-invert); width: 100%; margin-top: 0.5rem; min-height: 80px; resize: vertical; font-family: inherit;"
-                                    >{
-                                        (() => {
-                                            try {
-                                                if (
-                                                    userProfile?.certifications
-                                                ) {
-                                                    const certifications =
-                                                        JSON.parse(
-                                                            userProfile.certifications
-                                                        );
-                                                    return Array.isArray(
-                                                        certifications
-                                                    )
-                                                        ? certifications.join(
-                                                              '\n'
-                                                          )
-                                                        : '';
-                                                }
-                                                return '';
-                                            } catch {
-                                                return '';
-                                            }
-                                        })()
-                                    }</textarea
-                                >
-                            </div>
-                        </section>
-                    </div>
-                </aside>
-                <section class="frame-13">
-                    <label
-                        for="cover-image-upload"
-                        style="position: relative; display: block; cursor: pointer; overflow: hidden; border-radius: 20px;"
-                    >
-                        {
-                            userProfile?.portfolio_url ? (
-                                <img
-                                    id="cover-image-preview"
-                                    class="rectangle"
-                                    src={userProfile.portfolio_url}
-                                    alt="Ảnh bìa"
-                                    style="width: 100%; height: 300px; object-fit: cover; border-radius: 20px; transition: all 0.3s ease; display: block;"
-                                />
-                            ) : (
-                                <div
-                                    class="rectangle"
-                                    id="cover-image-preview"
-                                    style="width: 100%; height: 300px; background: rgba(0, 0, 0, 0.3); border: 2px dashed rgba(255, 255, 255, 0.3); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: var(--color-text-invert); transition: all 0.3s ease;"
-                                >
-                                    <div style="text-align: center;">
-                                        <i
-                                            class="fa-solid fa-image"
-                                            style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"
-                                        />
-                                        <p>Nhấn để tải ảnh bìa</p>
-                                    </div>
-                                </div>
-                            )
-                        }
-                        <div
-                            class="cover-image-overlay"
-                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); border-radius: 20px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;"
-                        >
-                            <i
-                                class="fa-solid fa-camera"
-                                style="color: white; font-size: 2rem;"></i>
                         </div>
-                    </label>
-                    <div class="frame-14">
-                        <section class="frame-15">
-                            <h2 class="text-wrapper-9">Mô tả :</h2>
+
+                        <div class="sidebar-card section-card">
+                            <h4>Thông tin chung</h4>
+                            <div class="info-list">
+                                <div class="form-group">
+                                    <label class="form-label"
+                                        >Số điện thoại</label
+                                    ><input
+                                        type="text"
+                                        name="phone"
+                                        class="form-input"
+                                        value={userProfile?.phone || ''}
+                                        placeholder="Nhập số điện thoại"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email</label
+                                    ><input
+                                        type="text"
+                                        class="form-input"
+                                        value={userInfo?.email || ''}
+                                        disabled
+                                        style="opacity: 0.7; cursor: not-allowed;"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Địa chỉ</label
+                                    ><input
+                                        type="text"
+                                        name="address"
+                                        class="form-input"
+                                        value={userProfile?.address || ''}
+                                        placeholder="Nhập địa chỉ"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-card section-card">
+                            <h4>Thông tin thêm</h4>
+                            <div class="info-list">
+                                <div class="form-group">
+                                    <label class="form-label"
+                                        >Lĩnh vực quan tâm</label
+                                    ><textarea
+                                        name="interests"
+                                        class="form-input"
+                                        rows="4">{educationText}</textarea
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Kinh nghiệm</label
+                                    ><textarea
+                                        name="experiences"
+                                        class="form-input"
+                                        rows="4">{experienceText}</textarea
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-card section-card">
+                            <h4>Thành tựu</h4>
+                            <div class="info-list">
+                                <div class="form-group">
+                                    <label class="form-label"
+                                        >Dự án từng làm</label
+                                    ><textarea
+                                        name="projects"
+                                        class="form-input"
+                                        rows="4">{achievementsText}</textarea
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Chứng chỉ</label
+                                    ><textarea
+                                        name="certifications"
+                                        class="form-input"
+                                        rows="4">{certificationsText}</textarea
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTENT -->
+                    <div class="right-content">
+                        <div class="banner-section">
+                            <button
+                                type="button"
+                                id="remove-cover-btn"
+                                class="btn-remove-image"
+                                title="Gỡ ảnh bìa">×</button
+                            >
+                            <img
+                                id="cover-image-preview"
+                                src={userProfile?.portfolio_url ||
+                                    '/assets/images/background.png'}
+                                alt="Cover"
+                                class="banner-image"
+                            />
+                            <label
+                                for="cover-image-upload"
+                                class="banner-overlay-edit"
+                            >
+                                <div class="upload-text">
+                                    <i class="fa-solid fa-image"></i><span
+                                        >Thay đổi ảnh bìa</span
+                                    >
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="content-block">
+                            <h3 class="content-title">Mô tả :</h3>
                             <textarea
                                 name="bio"
-                                id="bio-textarea"
-                                class="p"
-                                style="width: 100%; min-height: 100px; padding: 1rem; background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; color: var(--color-text-invert); font-family: inherit; font-size: inherit; resize: vertical;"
-                                placeholder="Mô tả về bản thân"
+                                class="form-input"
+                                rows="5"
+                                placeholder="Giới thiệu..."
                                 >{userProfile?.bio || ''}</textarea
                             >
-                        </section>
-                        <section class="frame-15">
-                            <div class="frame-16">
-                                <h2 class="text-wrapper-10">Kĩ năng :</h2>
-                                <button
-                                    class="tabler-plus-wrapper"
-                                    type="button"
-                                    aria-label="Thêm kỹ năng"
-                                >
-                                    <img
-                                        class="vector-wrapper"
-                                        src="/assets/images/tabler_plus.svg"
-                                        alt="vector"
-                                        role="presentation"
-                                    />
-                                </button>
-                            </div>
-                            <div class="frame-15">
-                                <div class="frame-17" id="skills-container">
-                                    {
-                                        userSkills.map((skill, index) => (
-                                            <span
-                                                class={
-                                                    index % 2 === 0
-                                                        ? 'frame-18'
-                                                        : 'frame-19'
-                                                }
-                                                style="position: relative; cursor: pointer;"
-                                                data-skill-id={skill.skill_id}
-                                                data-skill-name={`${skill.name}${skill.category ? ` / ${skill.category}` : ''}`}
+                        </div>
+
+                        <div class="content-block">
+                            <h3 class="content-title">Kĩ năng :</h3>
+                            <div
+                                class="skills-edit-wrapper"
+                                id="skills-container"
+                            >
+                                {
+                                    userSkills.map((skill) => (
+                                        <span
+                                            class="skill-tag-edit"
+                                            data-skill-id={skill.skill_id}
+                                            data-skill-name={skill.name}
+                                        >
+                                            {skill.name}
+                                            <input
+                                                type="checkbox"
+                                                name="skill_ids"
+                                                value={skill.skill_id}
+                                                checked
+                                                style="display:none;"
+                                            />
+                                            <button
+                                                type="button"
+                                                class="remove-skill-btn"
                                             >
-                                                <span class="text-wrapper-11">
-                                                    {skill.name}
-                                                    {skill.category
-                                                        ? ` / ${skill.category}`
-                                                        : ''}
-                                                </span>
-                                                <input
-                                                    type="checkbox"
-                                                    name="skill_ids"
-                                                    value={skill.skill_id}
-                                                    checked
-                                                    style="position: absolute; top: 0; left: 0; opacity: 0; pointer-events: none;"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    class="remove-skill-btn"
-                                                    style="position: absolute; top: -8px; right: -8px; background: rgba(220, 38, 38, 0.9); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; width: 24px; height: 24px; color: white; cursor: pointer; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4); z-index: 10;"
-                                                    aria-label="Xóa kỹ năng"
+                                                ×
+                                            </button>
+                                        </span>
+                                    ))
+                                }
+                            </div>
+                            <div class="add-skill-controls">
+                                <select
+                                    id="new-skill-select"
+                                    class="form-input skill-select"
+                                >
+                                    <option value="">Chọn kỹ năng...</option>
+                                    {
+                                        allSkills.map((skill) => (
+                                            <option value={skill.id}>
+                                                {skill.name}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                                <button
+                                    type="button"
+                                    id="add-skill-btn"
+                                    class="btn-add-skill"
+                                    ><i class="fa-solid fa-plus"></i> Thêm</button
+                                >
+                            </div>
+                        </div>
+
+                        <!-- PROJECTS (READ ONLY) -->
+                        <div class="content-block">
+                            <h3 class="content-title">Dự án của tôi :</h3>
+                            {
+                                userProjects.length > 0 ? (
+                                    <div class="projects-row">
+                                        {userProjects.map((proj) => (
+                                            <a
+                                                href={`/project/${proj.id}`}
+                                                class="project-card-new"
+                                                target="_blank"
+                                            >
+                                                <div class="project-thumb-wrapper">
+                                                    <img
+                                                        src={
+                                                            proj.cover_image_url ||
+                                                            '/assets/images/vy2.png'
+                                                        }
+                                                        alt={proj.title}
+                                                        class="project-thumb-new"
+                                                    />
+                                                </div>
+                                                <div class="project-info-new">
+                                                    <div class="project-header-row">
+                                                        <span class="project-title-new">
+                                                            {proj.title}
+                                                        </span>
+                                                        <span class="project-tag-badge">
+                                                            {proj.project_type}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p style="color: #9ca3af;">
+                                        Chưa có dự án.
+                                    </p>
+                                )
+                            }
+                        </div>
+
+                        <!-- REVIEWS (READ ONLY) -->
+                        <div class="content-block">
+                            <h3 class="content-title">Đánh giá :</h3>
+                            <div
+                                class="reviews-container"
+                                id="reviews-container"
+                            >
+                                <div class="reviews-viewport">
+                                    <div
+                                        class="reviews-track"
+                                        id="reviews-track"
+                                    >
+                                        {
+                                            reviews.map((review, index) => (
+                                                <div
+                                                    class={`review-slide ${index === 0 ? 'active' : ''}`}
                                                 >
-                                                    ×
-                                                </button>
-                                            </span>
+                                                    <div class="review-card-featured">
+                                                        <img
+                                                            src={review.avatar}
+                                                            alt={review.name}
+                                                            class="reviewer-avatar"
+                                                        />
+                                                        <div class="review-stars">
+                                                            {Array(
+                                                                review.rating
+                                                            )
+                                                                .fill('★')
+                                                                .join('')}
+                                                        </div>
+                                                        <p class="review-text">
+                                                            "{review.text}"
+                                                        </p>
+                                                        <div class="reviewer-info">
+                                                            <>
+                                                                <h5>
+                                                                    {
+                                                                        review.name
+                                                                    }
+                                                                </h5>
+                                                                <span>
+                                                                    {
+                                                                        review.username
+                                                                    }
+                                                                </span>
+                                                            </>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                </div>
+                                <div class="review-dots" id="review-dots">
+                                    {
+                                        reviews.map((_, index) => (
+                                            <span
+                                                class={`dot ${index === 0 ? 'active' : ''}`}
+                                                data-index={index}
+                                            />
                                         ))
                                     }
                                 </div>
                             </div>
-                        </section>
-                    </div>
-                    <div class="frame-54">
-                        <a
-                            href={l(`/profile/${userInfo?.username}`)}
-                            class="button-stroke-small"
-                            style="text-decoration: none;"
-                        >
-                            <span class="home">Hủy</span>
-                        </a>
-                        <button class="button-fill-small" type="submit">
-                            <span class="home-2">Hoàn tất</span>
-                        </button>
-                    </div>
-                </section>
-            </div>
-        </form>
-    </main>
+                        </div>
 
-    <!-- Add Skill Dialog -->
-    <div
-        id="add-skill-dialog"
-        class="add-skill-dialog-overlay"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center;"
-    >
-        <div
-            class="add-skill-dialog"
-            style="background: rgba(50, 49, 49, 0.95); backdrop-filter: blur(10px); border-radius: 24px; padding: 2rem; min-width: 400px; max-width: 500px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.1); position: relative;"
-        >
-            <button
-                type="button"
-                id="close-add-skill-dialog"
-                class="close-dialog-btn"
-                style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--color-text-invert); font-size: 1.5rem; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s ease; opacity: 0.7;"
-                aria-label="Đóng"
-            >
-                ×
-            </button>
-            <h3
-                style="margin: 0 0 1.5rem 0; color: var(--color-text-invert); font-size: 1.5rem; font-weight: 600;"
-            >
-                Thêm kỹ năng
-            </h3>
-            <div
-                class="frame-20"
-                style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; padding: 1rem; background: rgba(0, 0, 0, 0.2); border-radius: 20px; border: 2px solid rgba(255, 255, 255, 0.1);"
-            >
-                <div style="position: relative; flex: 1; min-width: 250px;">
-                    <select
-                        name="new_skill"
-                        id="new-skill-select"
-                        style="width: 100%; padding: 0.875rem 1.25rem; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 32px; color: var(--color-text-invert); font-size: var(--font-size-base); outline: none; transition: all 0.3s ease; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'white\'><path d=\'M7 10l5 5 5-5z\'/></svg>'); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.5rem; padding-right: 3rem; cursor: pointer;"
-                    >
-                        <option value="">Chọn kỹ năng</option>
-                        {
-                            allSkills
-                                .filter(
-                                    (skill) =>
-                                        !userSkills.some(
-                                            (us) => us.skill_id === skill.id
-                                        )
-                                )
-                                .map((skill) => (
-                                    <option value={skill.id}>
-                                        {skill.name}
-                                        {skill.category
-                                            ? ` / ${skill.category}`
-                                            : ''}
-                                    </option>
-                                ))
-                        }
-                    </select>
+                        <div class="form-actions">
+                            <a
+                                href={l(`/profile/${userInfo?.username}`)}
+                                class="btn btn-cancel">Hủy bỏ</a
+                            >
+                            <button type="submit" class="btn btn-save"
+                                >Lưu thay đổi</button
+                            >
+                        </div>
+                    </div>
                 </div>
-                <button
-                    class="frame-21"
-                    type="button"
-                    id="add-skill-btn"
-                    style="padding: 0.875rem 1.75rem; background: var(--color-purple-button); border: 2px solid var(--color-purple-button); border-radius: 32px; color: var(--color-text-invert); font-size: var(--font-size-base); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3); white-space: nowrap;"
-                >
-                    <i class="fa-solid fa-plus"></i>
-                    <span class="text-wrapper-11">Thêm</span>
-                </button>
-            </div>
-        </div>
+            </form>
+        </main>
     </div>
-
     <script src="@/assets/script/edit-profile.js"></script>
 </DefaultLayout>
