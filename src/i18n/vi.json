@@ -157,33 +157,7 @@
         "viewProfile": "Xem hồ sơ",
         "adminPanel": "Bảng điều khiển"
     },
-    "home": {
-        "searchPlaceholder": "Tìm kiếm",
-        "signIn": "Đăng nhập",
-        "signUp": "Đăng ký",
-        "editProfile": "Chỉnh sửa profile",
-        "logout": "Đăng xuất",
-        "heroTitle": "Không chỉ là kỹ năng.<br /> Đây là sandbox của<br /> những dự án.",
-        "heroDescription": "Hãy xem mỗi dự án như một đoạn code đang chờ được biên dịch – chính bạn là người viết nên logic, sửa bug, và khiến nó hoạt động. Cơ hội chỉ đến khi bạn bắt tay vào làm.",
-        "getStarted": "Get Started",
-        "learnMore": "Learn More",
-        "usersCount": "Hơn 1k người sử dụng",
-        "creatorsTitle": "Những gương mặt tạo nên sự khác biệt.",
-        "creatorsDescription": "Cùng khám phá những người dùng nổi bật – những cá nhân không ngừng thử nghiệm, chia sẻ và truyền cảm hứng.",
-        "projectsHeading": "Khám phá những ý tưởng đang thay đổi tương lai",
-        "projectsDescription": "Từ công nghệ đến nghệ thuật - nơi các dự án độc đáo được chia sẻ, kết nối và truyền cảm hứng.",
-        "qnaTitle": "CÁC CÂU HỎI THƯỜNG GẶP",
-        "qnaSubtitle": "Cần giúp đỡ? Hãy để chúng tôi hỗ trợ bạn",
-        "qna": {
-            "q1": "Ngân hàng kỹ năng là gì?",
-            "q2": "Nền tảng này có tính phí không?",
-            "q3": "Làm thế nào để tham gia dự án?",
-            "q4": "Làm sao để tìm người có kỹ năng phù hợp?",
-            "q5": "Có quy định nào khi tham gia cộng đồng không?",
-            "q6": "Ai có thể sử dụng nền tảng này?",
-            "q7": "Làm thế nào để liên hệ với đội ngũ hỗ trợ?"
-        }
-    },
+
     "project-handover-manager": {
         "skillbank-dropdown": "SkillBank",
         "user-name": "Tên người dùng",
@@ -374,7 +348,7 @@
         "moTa": "Mô tả",
         "kiNang": "Kĩ năng",
         "duAn": "Dự án",
-        "danhGia": "Một số đánh giá"
+        "danhGia": "Đánh giá"
     },
     "faq": {
         "title": "Câu hỏi thường gặp",
@@ -427,5 +401,39 @@
         "noDescription": "Không có mô tả",
         "noUsers": "Không có người dùng nào",
         "noPendingProjects": "Không có dự án nào chờ duyệt"
+    },
+    "home": {
+        "signIn": "Đăng nhập",
+        "signUp": "Đăng ký",
+        "editProfile": "Chỉnh sửa hồ sơ",
+        "logout": "Đăng xuất",
+
+        "heroTitle": "Ngân Hàng Kỹ Năng \nHiện Thực Hóa Ý Tưởng",
+        "heroSubtitle": "Bạn có ý tưởng nhưng thiếu kỹ năng? Đừng để tài chính ngăn cản bạn. Tại SkillBank, chúng ta dùng kỹ năng để đổi lấy kỹ năng, cùng nhau xây dựng sản phẩm thực tế.",
+        "btnExplore": "Khám phá ý tưởng",
+        "btnPost": "Đăng ý tưởng ngay",
+
+        "sectionProjects": "Dự án đang tìm đồng đội",
+        "sectionProfiles": "Thành viên nổi bật",
+        "sectionFAQ": "Giải đáp thắc mắc",
+
+        "readMore": "Đọc thêm",
+        "viewProfile": "Xem hồ sơ",
+
+        "statProjects": "Ý tưởng được đăng",
+        "statTalents": "Kỹ năng sẵn có",
+        "statConnects": "Hợp tác thành công",
+        "statTechs": "Công nghệ hỗ trợ",
+
+        "ctaTitle": "Đừng để ý tưởng chỉ nằm trên giấy",
+        "ctaSubtitle": "Tham gia cộng đồng SkillBank ngay hôm nay. Dùng kỹ năng của bạn để 'mua' những mảnh ghép còn thiếu cho dự án mơ ước.",
+        "ctaBtn": "Tham gia ngay",
+
+        "faq1_q": "SkillBank hoạt động như thế nào?",
+        "faq1_a": "Rất đơn giản: Bạn 'vay' kỹ năng mình thiếu và 'trả' bằng kỹ năng mình giỏi. Ví dụ: Bạn biết code nhưng cần logo? Hãy tìm một Designer cần làm web và hợp tác cùng nhau.",
+        "faq2_q": "Tôi có phải trả tiền để thuê người không?",
+        "faq2_a": "Hoàn toàn không. Tại SkillBank, đơn vị tiền tệ duy nhất là Kỹ năng và Thời gian. Chúng tôi loại bỏ rào cản tài chính để bạn tập trung vào sáng tạo.",
+        "faq3_q": "Dự án ở đây có phải là việc làm thêm?",
+        "faq3_a": "Không hẳn. Đây là nơi các bạn sinh viên cùng nhau xây dựng các sản phẩm thực tế (Pet Project, Startup MVP...) để học hỏi và làm đẹp Portfolio."
     }
 }
