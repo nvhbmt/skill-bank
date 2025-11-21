@@ -1,0 +1,304 @@
+---
+interface Props {
+    id: string;
+    titleId?: string;
+    linkInputId?: string;
+    copyButtonId?: string;
+    closeButtonId?: string;
+    title?: string;
+    linkLabel?: string;
+    copyButtonText?: string;
+    copiedButtonText?: string;
+    closeButtonText?: string;
+}
+
+const {
+    id,
+    titleId = `${id}-title`,
+    linkInputId = `${id}-link-input`,
+    copyButtonId = `${id}-copy-button`,
+    closeButtonId = `${id}-close`,
+    title = 'Chia sẻ dự án',
+    linkLabel = 'Link dự án:',
+    copyButtonText = 'Sao chép',
+    copiedButtonText = 'Đã sao chép!',
+    closeButtonText = 'Đóng',
+} = Astro.props;
+---
+
+<div id={id} class="share-dialog">
+    <div class="share-dialog-content">
+        <div class="share-dialog-header">
+            <h2 class="share-dialog-title" id={titleId}>{title}</h2>
+            <button class="share-dialog-close" id={closeButtonId}>
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </div>
+        <div class="share-dialog-body">
+            <label class="share-dialog-label">{linkLabel}</label>
+            <div class="share-dialog-input-group">
+                <input
+                    type="text"
+                    id={linkInputId}
+                    class="share-dialog-input"
+                    readonly
+                />
+                <button class="share-dialog-copy-btn" id={copyButtonId}>
+                    {copyButtonText}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .share-dialog {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100000;
+        padding: 2rem;
+        box-sizing: border-box;
+        margin: 0;
+    }
+
+    .share-dialog.active {
+        display: flex !important;
+    }
+
+    .share-dialog-content {
+        background: rgba(30, 30, 35, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 500px;
+        width: calc(100% - 4rem);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        position: relative;
+        margin: 0 auto;
+        box-sizing: border-box;
+        transform: translate(0, 0);
+    }
+
+    .share-dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.6rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .share-dialog-title {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .share-dialog-close {
+        background: none;
+        border: none;
+        color: #a1a1aa;
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .share-dialog-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+
+    .share-dialog-body {
+        color: #e4e4e7;
+    }
+
+    .share-dialog-label {
+        display: block;
+        font-size: var(--font-size-base);
+        font-weight: 500;
+        color: #e4e4e7;
+        margin-bottom: 0.8rem;
+    }
+
+    .share-dialog-input-group {
+        display: flex;
+        gap: 0.8rem;
+        align-items: stretch;
+    }
+
+    .share-dialog-input {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        color: #ffffff;
+        font-size: var(--font-size-base);
+        font-family: inherit;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+
+    .share-dialog-input:focus {
+        border-color: var(--color-purple-button);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .share-dialog-copy-btn {
+        padding: 0.75rem 1.6rem;
+        background: var(--color-purple-button);
+        border: none;
+        border-radius: 10px;
+        color: #ffffff;
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .share-dialog-copy-btn:hover {
+        background: var(--color-purple-button-hover);
+        transform: translateY(-1px);
+    }
+
+    .share-dialog-copy-btn:active {
+        transform: translateY(0);
+    }
+
+    .share-dialog-copy-btn.copied {
+        background: #10b981;
+    }
+</style>
+
+<script
+    define:vars={{
+        dialogId: id,
+        linkInputId,
+        copyButtonId,
+        closeButtonId,
+        copyButtonText,
+        copiedButtonText,
+    }}
+>
+    (function () {
+        // Create a unique function name based on dialog ID
+        const functionName = dialogId
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join('');
+        const openFunctionName = `open${functionName}`;
+        const closeFunctionName = `close${functionName}`;
+
+        // Export open function to window for global access
+        window[openFunctionName] = function (link) {
+            const dialog = document.getElementById(dialogId);
+
+            if (!dialog) {
+                console.error(`Dialog element with id "${dialogId}" not found!`);
+                return;
+            }
+
+            // Set link value
+            const linkInput = document.getElementById(linkInputId);
+            if (linkInput) {
+                linkInput.value = link;
+            }
+
+            // Show dialog
+            dialog.classList.add('active');
+        };
+
+        // Export close function to window
+        window[closeFunctionName] = function () {
+            const dialog = document.getElementById(dialogId);
+            if (dialog) {
+                dialog.classList.remove('active');
+            }
+        };
+
+        // Setup handlers
+        function setupDialogHandlers() {
+            const dialog = document.getElementById(dialogId);
+            if (!dialog) return;
+
+            const copyButton = document.getElementById(copyButtonId);
+            const closeButton = document.getElementById(closeButtonId);
+            const linkInput = document.getElementById(linkInputId);
+
+            // Copy button handler
+            if (copyButton && linkInput) {
+                copyButton.addEventListener('click', async function () {
+                    try {
+                        await navigator.clipboard.writeText(linkInput.value);
+                        // Visual feedback
+                        const originalText = copyButton.textContent;
+                        copyButton.textContent = copiedButtonText || 'Đã sao chép!';
+                        copyButton.classList.add('copied');
+
+                        setTimeout(() => {
+                            copyButton.textContent = originalText;
+                            copyButton.classList.remove('copied');
+                        }, 2000);
+                    } catch (error) {
+                        console.error('Failed to copy:', error);
+                        // Fallback: select text
+                        linkInput.select();
+                        linkInput.setSelectionRange(0, 99999);
+                        alert('Không thể sao chép. Vui lòng sao chép thủ công.');
+                    }
+                });
+            }
+
+            // Close button handler
+            if (closeButton) {
+                closeButton.addEventListener('click', function () {
+                    window[closeFunctionName]();
+                });
+            }
+
+            // Close on backdrop click
+            dialog.addEventListener('click', function (e) {
+                if (e.target === dialog) {
+                    window[closeFunctionName]();
+                }
+            });
+
+            // Close on Escape key
+            const escapeHandler = function (e) {
+                if (e.key === 'Escape' && dialog.classList.contains('active')) {
+                    window[closeFunctionName]();
+                }
+            };
+            document.addEventListener('keydown', escapeHandler);
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupDialogHandlers);
+        } else {
+            setTimeout(setupDialogHandlers, 0);
+        }
+
+        // Fallback initialization
+        setTimeout(setupDialogHandlers, 200);
+    })();
+</script>
+

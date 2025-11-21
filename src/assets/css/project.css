@@ -207,6 +207,19 @@ main {
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
 }
 
+/* Nút Share (Glassmorphism Xanh) */
+.btn-share-project {
+    background-color: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
+}
+.btn-share-project:hover {
+    background-color: rgba(59, 130, 246, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
 /* Nút Xóa dự án (Glassmorphism Đỏ) */
 .btn-delete-project {
     background-color: rgba(239, 68, 68, 0.1);

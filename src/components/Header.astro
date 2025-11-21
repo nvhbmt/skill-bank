@@ -5,14 +5,10 @@ const {} = Astro.props;
 
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
-import Dialog from '@/components/Dialog.astro';
-import { renderNotificationMessage, getNotificationTitle } from '@/utils/notification-renderer';
-import viTranslations from '@/i18n/vi.json';
-import enTranslations from '@/i18n/en.json';
+import NotificationDropdown from '@/components/NotificationDropdown.astro';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
-const translations = lang === 'vi' ? viTranslations.notifications : enTranslations.notifications;
 
 const session = Astro.locals.session;
 
@@ -20,15 +16,6 @@ const user = session?.user;
 const userName = user?.user_metadata?.full_name;
 const userUsername = user?.user_metadata?.username;
 let avatarUrl = null;
-let notifications: Array<{
-    id: number;
-    title: string | null;
-    message: string | null;
-    type: string | null;
-    is_read: boolean | null;
-    created_at: string | null;
-}> = [];
-let unreadCount = 0;
 
 if (user) {
     const { data: userData, error: userError } = await supabase
@@ -39,19 +26,6 @@ if (user) {
         .single();
     if (!userError && userData) {
         avatarUrl = userData.avatar_url ?? '/assets/images/avatar-default-icon.png';
-    }
-
-    // Fetch notifications
-    const { data: notificationsData, error: notificationsError } = await supabase
-        .from('notifications')
-        .select('id, title, message, type, is_read, created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-    if (!notificationsError && notificationsData) {
-        notifications = notificationsData;
-        unreadCount = notifications.filter((n) => !n.is_read).length;
     }
 }
 ---
@@ -77,98 +51,7 @@ if (user) {
         <div class="header-right">
             {
                 user && (
-                    <div class="notification-dropdown">
-                        <button
-                            class="header-notification"
-                            id="notification-button"
-                            aria-label="Notifications"
-                        >
-                            <ion-icon name="notifications-outline" />
-                            {
-                                unreadCount > 0 && (
-                                    <span class="notification-badge">{unreadCount}</span>
-                                )
-                            }
-                        </button>
-
-                        <!-- Notification Dropdown Menu -->
-                        <div class="notification-dropdown__menu" id="notification-dropdown-menu">
-                            <div class="notification-header">
-                                <h3 class="notification-title">Thông báo</h3>
-                                {
-                                    unreadCount > 0 && (
-                                        <span class="notification-unread-count">{unreadCount} chưa đọc</span>
-                                    )
-                                }
-                            </div>
-                            <div class="notification-list">
-                                {
-                                    notifications.length > 0 ? (
-                                        notifications.map((notification) => {
-                                            const rendered = renderNotificationMessage(
-                                                notification.type,
-                                                notification.message,
-                                                translations,
-                                                lang
-                                            );
-                                            const notificationTitle = getNotificationTitle(
-                                                notification.type,
-                                                translations,
-                                                notification.title || undefined
-                                            );
-                                            
-                                            return (
-                                                <button
-                                                    class={`notification-item ${!notification.is_read ? 'unread' : ''}`}
-                                                    data-notification-id={notification.id}
-                                                    data-notification-title={notificationTitle}
-                                                    data-notification-message={notification.message || ''}
-                                                    data-notification-type={notification.type || ''}
-                                                    data-notification-link={rendered.link?.url || ''}
-                                                >
-                                                    <div class="notification-item-content">
-                                                        <h4 class="notification-item-title">{notificationTitle}</h4>
-                                                        <p class="notification-item-message">
-                                                            {rendered.text}
-                                                            {rendered.link && (
-                                                                <a 
-                                                                    href={l(rendered.link.url)} 
-                                                                    class="notification-link"
-                                                                    onclick={`event.stopPropagation(); window.location.href='${l(rendered.link.url)}'`}
-                                                                >
-                                                                    {rendered.link.text}
-                                                                </a>
-                                                            )}
-                                                        </p>
-                                                        <span class="notification-item-time">
-                                                            {notification.created_at
-                                                                ? new Date(notification.created_at).toLocaleString('vi-VN', {
-                                                                    day: '2-digit',
-                                                                    month: '2-digit',
-                                                                    year: 'numeric',
-                                                                    hour: '2-digit',
-                                                                    minute: '2-digit',
-                                                                })
-                                                                : ''}
-                                                        </span>
-                                                    </div>
-                                                    {
-                                                        !notification.is_read && (
-                                                            <div class="notification-dot"></div>
-                                                        )
-                                                    }
-                                                </button>
-                                            );
-                                        })
-                                    ) : (
-                                        <div class="notification-empty">
-                                            <p>Không có thông báo nào</p>
-                                        </div>
-                                    )
-                                }
-                            </div>
-                        </div>
-                    </div>
+                    <NotificationDropdown userId={user.id} lang={lang} l={l} />
                 )
             }
             {
@@ -230,15 +113,15 @@ if (user) {
                                 <div class="dropdown-divider"></div>
 
                                 <!-- 3. Sub Navigation -->
-                                <a href="#" class="dropdown-item">
+                                <a href={l('/about-us')} class="dropdown-item">
                                     <div class="dropdown-icon"><ion-icon name="information-circle-outline"></ion-icon></div>
                                     <span>{t('header.aboutUs')}</span>
                                 </a>
-                                <a href="#" class="dropdown-item">
+                                <a href={l('/help')} class="dropdown-item">
                                     <div class="dropdown-icon"><ion-icon name="help-circle-outline"></ion-icon></div>
                                     <span>{t('header.help')}</span>
                                 </a>
-                                <a href="#" class="dropdown-item">
+                                <a href={l('/change-password')} class="dropdown-item">
                                     <div class="dropdown-icon"><ion-icon name="lock-closed-outline"></ion-icon></div>
                                     <span>{t('header.doiMK')}</span>
                                 </a>
@@ -269,19 +152,6 @@ if (user) {
         </div>
     </div>
 </header>
-
-<!-- Notification Dialog -->
-<Dialog 
-    id="notification-dialog"
-    titleId="notification-dialog-title"
-    messageId="notification-dialog-message"
-    timeId="notification-dialog-time"
-    typeId="notification-dialog-type"
-    closeButtonId="notification-dialog-close"
-    showMeta={true}
-    translations={JSON.stringify(translations)}
-    currentLang={lang}
-/>
 
 <style>
     .header {
@@ -400,208 +270,6 @@ if (user) {
         align-items: center;
         gap: 1.2rem;
     }
-
-    .notification-dropdown {
-        position: relative;
-    }
-
-    .header-notification {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2.8rem;
-        height: 2.8rem;
-        background: transparent;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        color: var(--color-text-invert);
-        position: relative;
-    }
-
-    .header-notification:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-2px);
-    }
-
-    .header-notification ion-icon {
-        font-size: 1.8rem;
-    }
-
-    .notification-badge {
-        position: absolute;
-        top: -0.2rem;
-        right: -0.2rem;
-        background: #ef4444;
-        color: white;
-        font-size: 0.7rem;
-        font-weight: 600;
-        padding: 0.2rem 0.4rem;
-        border-radius: 10px;
-        min-width: 1.2rem;
-        text-align: center;
-        line-height: 1;
-    }
-
-    /* Notification Dropdown Menu */
-    .notification-dropdown__menu {
-        position: absolute;
-        top: calc(100% + 1.2rem);
-        right: 0;
-        width: 380px;
-        max-height: 500px;
-        background: rgba(30, 30, 35, 0.98);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        padding: 0;
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transform: translateY(-8px);
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 10000;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .notification-dropdown__menu.active {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-        transform: translateY(0);
-    }
-
-    .notification-header {
-        padding: 1.2rem 1.6rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .notification-title {
-        font-size: var(--font-size-lg);
-        font-weight: 700;
-        color: #ffffff;
-        margin: 0;
-    }
-
-    .notification-unread-count {
-        font-size: var(--font-size-sm);
-        color: var(--color-purple-button);
-        font-weight: 500;
-    }
-
-    .notification-list {
-        max-height: 400px;
-        overflow-y: auto;
-        padding: 0.4rem 0;
-    }
-
-    .notification-list::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .notification-list::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
-    }
-
-    .notification-list::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 3px;
-    }
-
-    .notification-list::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.3);
-    }
-
-    .notification-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        width: 100%;
-        padding: 1rem 1.6rem;
-        border: none;
-        background: none;
-        text-align: left;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        position: relative;
-    }
-
-    .notification-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .notification-item.unread {
-        background-color: rgba(124, 58, 237, 0.1);
-    }
-
-    .notification-item.unread:hover {
-        background-color: rgba(124, 58, 237, 0.15);
-    }
-
-    .notification-item-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-    }
-
-    .notification-item-title {
-        font-size: var(--font-size-base);
-        font-weight: 600;
-        color: #ffffff;
-        margin: 0;
-    }
-
-    .notification-item-message {
-        font-size: var(--font-size-sm);
-        color: #a1a1aa;
-        margin: 0;
-        line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .notification-item-time {
-        font-size: var(--font-size-xs);
-        color: #71717a;
-    }
-
-    .notification-link {
-        color: var(--color-purple-button);
-        text-decoration: underline;
-        margin-left: 0.4rem;
-        cursor: pointer;
-    }
-
-    .notification-link:hover {
-        color: var(--color-purple-button-hover);
-    }
-
-    .notification-dot {
-        width: 8px;
-        height: 8px;
-        background: var(--color-purple-button);
-        border-radius: 50%;
-        flex-shrink: 0;
-        margin-top: 0.4rem;
-    }
-
-    .notification-empty {
-        padding: 3rem 1.6rem;
-        text-align: center;
-        color: #71717a;
-    }
-
 
     .header-user {
         display: flex;

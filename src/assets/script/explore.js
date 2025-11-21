@@ -43,6 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Render projects using ProjectCard format
+        const currentLang = window.location.pathname.split('/')[1] || 'vi';
+
         projectsContainer.innerHTML = projects
             .map((project) => {
                 const owner = project.user_info;
@@ -56,46 +59,31 @@ document.addEventListener('DOMContentLoaded', () => {
                             : project.project_type || '';
 
                 return `
-                    <div class="project-image" data-project-id="${project.id}">
-                        <img
-                            src="${
-                                project.cover_image_url ||
-                                '/assets/images/project-image.svg'
-                            }"
-                            alt="${project.title}"
-                        />
-                        <div class="project-content">
-                            <div class="left-project-content">
-                                <div class="design-web">
-                                    ${project.title}
-                                </div>
-                                <div class="email-address">
-                                    ${owner?.email || 'N/A'}
-                                </div>
+                    <a href="/${currentLang}/project/${project.id}" class="project-card-new">
+                        <div class="project-thumb-wrapper">
+                            <img
+                                src="${project.cover_image_url || '/assets/images/project-image.svg'}"
+                                alt="${project.title}"
+                                class="project-thumb-new"
+                            />
+                        </div>
+                        <div class="project-info-new">
+                            <div class="project-header-row">
+                                <span class="project-title-new">${project.title || ''}</span>
+                                <span class="project-tag-badge">${projectTypeLabel}</span>
                             </div>
-                            <div class="right-project-content">
-                                <div class="interact">
-                                    <div class="eyes">
-                                        <img
-                                            src="/assets/images/teenyicons_eye-outline.svg"
-                                            alt=""
-                                        />
-                                        <span class="view-count">0</span>
+                            <p class="project-desc">${project.description || ''}</p>
+                            <div class="project-stats-row">
+                                <span class="author-info">by ${owner?.full_name || owner?.username || 'N/A'}</span>
+                                <div class="stats-icons">
+                                    <div class="stat-icon">
+                                        <i class="fa-regular fa-thumbs-up"></i>
+                                        <span>0</span>
                                     </div>
-                                    <div class="like">
-                                        <img
-                                            src="/assets/images/solar_like-outline.svg"
-                                            alt=""
-                                        />
-                                        <span class="like-count">0</span>
-                                    </div>
-                                </div>
-                                <div class="view-more">
-                                    Xem thêm
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 `;
             })
             .join('');
@@ -108,19 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function addClickHandlers() {
         if (!projectsContainer) return;
 
-        projectsContainer
-            .querySelectorAll('.project-image')
-            .forEach((card) => {
-                card.style.cursor = 'pointer';
-                const projectId = card.getAttribute('data-project-id');
-                if (projectId) {
-                    card.addEventListener('click', () => {
-                        const currentLang =
-                            window.location.pathname.split('/')[1] || 'vi';
-                        window.location.href = `/${currentLang}/project/${projectId}`;
-                    });
-                }
-            });
+        // ProjectCard components are already links, so no need for additional handlers
+        // This function is kept for compatibility but doesn't need to do anything
+        // since ProjectCard uses <a> tags
     }
 
     // Handle search input
@@ -132,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Reset to initial projects if search is cleared
                 // Reload page to show initial projects
-                window.location.href = window.location.pathname;
+                window.location.reload();
             }
         });
 
@@ -148,4 +126,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-

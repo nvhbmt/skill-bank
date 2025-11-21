@@ -62,3 +62,38 @@ export function useTranslate(Astro: any) {
     const l = getPathWithLang(Astro);
     return { lang, t, l };
 }
+
+/**
+ * Get notifications translations for a specific language
+ */
+export function getNotificationTranslations(lang: 'vi' | 'en') {
+    return translations[lang]?.notifications || translations.vi.notifications;
+}
+
+/**
+ * Get translation for a specific key and language
+ */
+export function getTranslation(lang: 'vi' | 'en', key: string): string {
+    const langTranslations = translations[lang] || translations.vi;
+    const keys = key.split('.');
+    let value: any = langTranslations;
+
+    for (const k of keys) {
+        if (value && typeof value === 'object' && k in value) {
+            value = value[k];
+        } else {
+            // Fallback to vi if not found
+            value = translations.vi;
+            for (const k2 of keys) {
+                if (value && typeof value === 'object' && k2 in value) {
+                    value = value[k2];
+                } else {
+                    return key;
+                }
+            }
+            break;
+        }
+    }
+
+    return typeof value === 'string' ? value : key;
+}

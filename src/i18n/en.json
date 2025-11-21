@@ -155,7 +155,10 @@
         "explore": "Explore projects",
         "createProject": "Post a project",
         "viewProfile": "View profile",
-        "adminPanel": "Admin panel"
+        "adminPanel": "Admin panel",
+        "notifications": "Notifications",
+        "unread": "unread",
+        "noNotifications": "No notifications"
     },
 
     "project-handover-manager": {
@@ -189,7 +192,16 @@
         "detail": "Detail",
         "timeLine": "Timeline",
         "week1": "Week 1",
-        "Members": "Members"
+        "Members": "Members",
+        "confirmDeleteTitle": "Confirm Delete Project",
+        "confirmDeleteMessage": "Are you sure you want to delete the project \"{{projectTitle}}\"? This action cannot be undone.",
+        "confirmDeleteButton": "Delete Project",
+        "cancelButton": "Cancel",
+        "shareTitle": "Share Project",
+        "shareLinkLabel": "Project link:",
+        "copyButton": "Copy",
+        "copiedButton": "Copied!",
+        "closeButton": "Close"
     },
     "project-detail-collab": {
         "ngayBatDau": "Start Date:",

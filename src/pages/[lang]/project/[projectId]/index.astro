@@ -1,6 +1,8 @@
 ---
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import Header from '@/components/Header.astro';
+import ConfirmDialog from '@/components/ConfirmDialog.astro';
+import ShareDialog from '@/components/ShareDialog.astro';
 import '@/assets/css/project.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { getProjectDetailById } from '@/services/project-detail';
@@ -188,14 +190,25 @@ function formatDate(dateString: string | null): string {
                                 )
                             }
                             <!-- Nút "Share" - hiện cho tất cả -->
-                            <button class="action-btn btn-share-project">
+                            <button
+                                class="action-btn btn-share-project"
+                                id="share-project-btn"
+                                data-project-id={project?.id}
+                            >
                                 <i class="fa-solid fa-share"></i>
                                 {t('project-detail-collab.share')}
                             </button>
                             <!-- Nút "Xóa dự án" - chỉ hiện cho owner -->
                             {
                                 isOwner && (
-                                    <button class="action-btn btn-delete-project">
+                                    <button
+                                        class="action-btn btn-delete-project"
+                                        id="delete-project-btn"
+                                        data-project-id={project?.id}
+                                        data-project-title={
+                                            project?.title || ''
+                                        }
+                                    >
                                         <i class="fa-solid fa-x" />
                                         {t('project-detail-creator.xoaDuAn')}
                                     </button>
@@ -338,4 +351,105 @@ function formatDate(dateString: string | null): string {
             </div>
         </main>
     </div>
+
+    <!-- Confirm Delete Dialog -->
+    <ConfirmDialog
+        id="delete-project-dialog"
+        titleId="delete-project-dialog-title"
+        messageId="delete-project-dialog-message"
+        confirmButtonId="delete-project-dialog-confirm"
+        cancelButtonId="delete-project-dialog-cancel"
+        confirmText={t('project-detail-creator.confirmDeleteButton')}
+        cancelText={t('project-detail-creator.cancelButton')}
+    />
+
+    <!-- Share Dialog -->
+    <ShareDialog
+        id="share-project-dialog"
+        titleId="share-project-dialog-title"
+        linkInputId="share-project-dialog-link-input"
+        copyButtonId="share-project-dialog-copy-button"
+        closeButtonId="share-project-dialog-close"
+        title={t('project-detail-creator.shareTitle')}
+        linkLabel={t('project-detail-creator.shareLinkLabel')}
+        copyButtonText={t('project-detail-creator.copyButton')}
+        copiedButtonText={t('project-detail-creator.copiedButton')}
+        closeButtonText={t('project-detail-creator.closeButton')}
+    />
 </DefaultLayout>
+
+<script
+    define:vars={{
+        projectId: project?.id || 0,
+        projectTitle: project?.title || '',
+        lang: lang,
+        confirmDeleteTitle: t('project-detail-creator.confirmDeleteTitle'),
+        confirmDeleteMessage: t('project-detail-creator.confirmDeleteMessage'),
+    }}
+>
+    (function () {
+        // Delete button handler
+        const deleteBtn = document.getElementById('delete-project-btn');
+
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function () {
+                // Replace {{projectTitle}} in message
+                const message = confirmDeleteMessage.replace(
+                    '{{projectTitle}}',
+                    projectTitle
+                );
+
+                // Open confirm dialog
+                if (window.openDeleteProjectDialog) {
+                    window.openDeleteProjectDialog(
+                        confirmDeleteTitle,
+                        message,
+                        async function () {
+                            // Handle delete
+                            try {
+                                const response = await fetch(
+                                    `/api/projects/${projectId}/delete`,
+                                    {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                    }
+                                );
+
+                                const result = await response.json();
+                                if (result.success) {
+                                    // Redirect to my projects page
+                                    window.location.href = `/${lang}/my-project`;
+                                } else {
+                                    alert(
+                                        result.message ||
+                                            'Có lỗi xảy ra khi xóa dự án'
+                                    );
+                                }
+                            } catch (error) {
+                                console.error('Error deleting project:', error);
+                                alert('Có lỗi xảy ra khi xóa dự án');
+                            }
+                        }
+                    );
+                }
+            });
+        }
+
+        // Share button handler
+        const shareBtn = document.getElementById('share-project-btn');
+
+        if (shareBtn) {
+            shareBtn.addEventListener('click', function () {
+                // Get current URL
+                const currentUrl = window.location.href;
+
+                // Open share dialog
+                if (window.openShareProjectDialog) {
+                    window.openShareProjectDialog(currentUrl);
+                }
+            });
+        }
+    })();
+</script>

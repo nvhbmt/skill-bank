@@ -34,41 +34,44 @@ const {
         </div>
         <div class="dialog-body">
             <div class="dialog-message" id={messageId}></div>
-            {showMeta && (
-                <div class="dialog-meta">
-                    <div class="dialog-meta-item">
-                        <ion-icon name="time-outline"></ion-icon>
-                        <span id={timeId}></span>
+            {
+                showMeta && (
+                    <div class="dialog-meta">
+                        <div class="dialog-meta-item">
+                            <ion-icon name="time-outline" />
+                            <span id={timeId} />
+                        </div>
                     </div>
-                    <div class="dialog-meta-item">
-                        <ion-icon name="pricetag-outline"></ion-icon>
-                        <span id={typeId}></span>
-                    </div>
-                </div>
-            )}
+                )
+            }
         </div>
     </div>
 </div>
 
 <style>
     .dialog {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
         display: none;
-        align-items: center;
-        justify-content: center;
+        align-items: center !important;
+        justify-content: center !important;
         z-index: 100000;
         padding: 2rem;
+        box-sizing: border-box;
+        margin: 0 !important;
+        overflow: auto;
     }
 
     .dialog.active {
-        display: flex;
+        display: flex !important;
     }
 
     .dialog-content {
@@ -77,11 +80,14 @@ const {
         border-radius: 20px;
         padding: 2rem;
         max-width: 600px;
-        width: 100%;
-        max-height: 80vh;
+        width: calc(100% - 4rem);
+        max-height: calc(100vh - 4rem);
         overflow-y: auto;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
         position: relative;
+        margin: auto !important;
+        box-sizing: border-box;
+        flex-shrink: 0;
     }
 
     .dialog-header {
@@ -147,12 +153,23 @@ const {
     }
 </style>
 
-<script define:vars={{ dialogId: id, titleId, messageId, timeId, typeId, closeButtonId, translations, currentLang }}>
-    (function() {
+<script
+    define:vars={{
+        dialogId: id,
+        titleId,
+        messageId,
+        timeId,
+        typeId,
+        closeButtonId,
+        translations,
+        currentLang,
+    }}
+>
+    (function () {
         // Parse translations
         const notificationTranslations = JSON.parse(translations || '{}');
         const lang = currentLang || 'vi';
-        
+
         // Helper function to render notification message
         function renderNotificationMessage(type, messageJson) {
             if (!type || !messageJson) {
@@ -201,18 +218,21 @@ const {
 
         // Create a unique function name based on dialog ID
         // Convert "notification-dialog" to "NotificationDialog"
-        const functionName = dialogId.split('-').map((word) => 
-            word.charAt(0).toUpperCase() + word.slice(1)
-        ).join('');
+        const functionName = dialogId
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join('');
         const openFunctionName = `open${functionName}`;
         const closeFunctionName = `close${functionName}`;
 
         // Export open function to window for global access
-        window[openFunctionName] = function(title, message, type, createdAt) {
+        window[openFunctionName] = function (title, message, type, createdAt) {
             const dialog = document.getElementById(dialogId);
-            
+
             if (!dialog) {
-                console.error(`Dialog element with id "${dialogId}" not found!`);
+                console.error(
+                    `Dialog element with id "${dialogId}" not found!`
+                );
                 return;
             }
 
@@ -225,17 +245,17 @@ const {
             // Get title from template if type is provided
             const notificationTitle = getNotificationTitle(type, title);
             if (titleEl) titleEl.textContent = notificationTitle || 'Thông báo';
-            
+
             // Render message from JSON template
             if (messageEl) {
                 const rendered = renderNotificationMessage(type, message);
-                
+
                 // Clear previous content
                 messageEl.innerHTML = '';
-                
+
                 // Add message text
                 messageEl.appendChild(document.createTextNode(rendered.text));
-                
+
                 // Add link if exists
                 if (rendered.link) {
                     const link = document.createElement('a');
@@ -253,8 +273,10 @@ const {
                     messageEl.appendChild(link);
                 }
             }
-            
-            if (timeEl) timeEl.textContent = createdAt || new Date().toLocaleString('vi-VN');
+
+            if (timeEl)
+                timeEl.textContent =
+                    createdAt || new Date().toLocaleString('vi-VN');
             if (typeEl) typeEl.textContent = type || 'Thông thường';
 
             // Show dialog
@@ -262,7 +284,7 @@ const {
         };
 
         // Export close function to window
-        window[closeFunctionName] = function() {
+        window[closeFunctionName] = function () {
             const dialog = document.getElementById(dialogId);
             if (dialog) {
                 dialog.classList.remove('active');
@@ -277,7 +299,7 @@ const {
             // Close button handler
             const closeButton = document.getElementById(closeButtonId);
             if (closeButton) {
-                closeButton.addEventListener('click', function() {
+                closeButton.addEventListener('click', function () {
                     window[closeFunctionName]();
                 });
             }
@@ -309,4 +331,3 @@ const {
         setTimeout(setupDialogHandlers, 200);
     })();
 </script>
-

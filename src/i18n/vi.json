@@ -155,7 +155,10 @@
         "explore": "Khám phá dự án",
         "createProject": "Đăng tải dự án",
         "viewProfile": "Xem hồ sơ",
-        "adminPanel": "Bảng điều khiển"
+        "adminPanel": "Bảng điều khiển",
+        "notifications": "Thông báo",
+        "unread": "chưa đọc",
+        "noNotifications": "Không có thông báo nào"
     },
 
     "project-handover-manager": {
@@ -189,7 +192,16 @@
         "timeLine": "Tiến trình",
         "detail": "Chi tiết",
         "week1": "Tuần 1",
-        "Members": "Thành viên"
+        "Members": "Thành viên",
+        "confirmDeleteTitle": "Xác nhận xóa dự án",
+        "confirmDeleteMessage": "Bạn có chắc chắn muốn xóa dự án \"{{projectTitle}}\"? Hành động này không thể hoàn tác.",
+        "confirmDeleteButton": "Xóa dự án",
+        "cancelButton": "Hủy",
+        "shareTitle": "Chia sẻ dự án",
+        "shareLinkLabel": "Link dự án:",
+        "copyButton": "Sao chép",
+        "copiedButton": "Đã sao chép!",
+        "closeButton": "Đóng"
     },
     "project-detail-collab": {
         "ngayBatDau": "Bắt đầu:",

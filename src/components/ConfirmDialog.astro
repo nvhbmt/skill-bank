@@ -1,0 +1,296 @@
+---
+interface Props {
+    id: string;
+    titleId?: string;
+    messageId?: string;
+    confirmButtonId?: string;
+    cancelButtonId?: string;
+    confirmText?: string;
+    cancelText?: string;
+}
+
+const {
+    id,
+    titleId = `${id}-title`,
+    messageId = `${id}-message`,
+    confirmButtonId = `${id}-confirm`,
+    cancelButtonId = `${id}-cancel`,
+    confirmText = 'Confirm',
+    cancelText = 'Cancel',
+} = Astro.props;
+---
+
+<div id={id} class="confirm-dialog">
+    <div class="confirm-dialog-content">
+        <div class="confirm-dialog-header">
+            <h2 class="confirm-dialog-title" id={titleId}></h2>
+            <button class="confirm-dialog-close" id={`${id}-close`}>
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </div>
+        <div class="confirm-dialog-body">
+            <div class="confirm-dialog-message" id={messageId}></div>
+        </div>
+        <div class="confirm-dialog-footer">
+            <button
+                class="confirm-dialog-btn confirm-dialog-btn-cancel"
+                id={cancelButtonId}
+            >
+                {cancelText}
+            </button>
+            <button
+                class="confirm-dialog-btn confirm-dialog-btn-confirm"
+                id={confirmButtonId}
+            >
+                {confirmText}
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .confirm-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100000;
+        padding: 2rem;
+    }
+
+    .confirm-dialog.active {
+        display: flex;
+    }
+
+    .confirm-dialog-content {
+        background: rgba(30, 30, 35, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        position: relative;
+    }
+
+    .confirm-dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.6rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .confirm-dialog-title {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .confirm-dialog-close {
+        background: none;
+        border: none;
+        color: #a1a1aa;
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .confirm-dialog-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+
+    .confirm-dialog-body {
+        color: #e4e4e7;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .confirm-dialog-message {
+        font-size: var(--font-size-base);
+        white-space: pre-wrap;
+    }
+
+    .confirm-dialog-footer {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    .confirm-dialog-btn {
+        padding: 0.75rem 1.6rem;
+        border-radius: 10px;
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+    }
+
+    .confirm-dialog-btn-cancel {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e4e4e7;
+    }
+
+    .confirm-dialog-btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+    }
+
+    .confirm-dialog-btn-confirm {
+        background: #ef4444;
+        color: #ffffff;
+    }
+
+    .confirm-dialog-btn-confirm:hover {
+        background: #dc2626;
+    }
+</style>
+
+<script
+    define:vars={{
+        dialogId: id,
+        titleId,
+        messageId,
+        confirmButtonId,
+        cancelButtonId,
+    }}
+>
+    (function () {
+        // Create a unique function name based on dialog ID
+        const functionName = dialogId
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join('');
+        const openFunctionName = `open${functionName}`;
+        const closeFunctionName = `close${functionName}`;
+
+        // Export open function to window for global access
+        window[openFunctionName] = function (title, message, onConfirm) {
+            const dialog = document.getElementById(dialogId);
+
+            if (!dialog) {
+                console.error(
+                    `Dialog element with id "${dialogId}" not found!`
+                );
+                return;
+            }
+
+            // Set content
+            const titleEl = document.getElementById(titleId);
+            const messageEl = document.getElementById(messageId);
+            const confirmBtn = document.getElementById(confirmButtonId);
+            const cancelBtn = document.getElementById(cancelButtonId);
+            const closeBtn = document.getElementById(`${dialogId}-close`);
+
+            if (titleEl) titleEl.textContent = title || 'Xác nhận';
+            if (messageEl) messageEl.textContent = message || '';
+
+            // Setup handlers
+            const closeDialog = () => {
+                dialog.classList.remove('active');
+            };
+
+            // Remove old listeners
+            const newConfirmBtn = confirmBtn?.cloneNode(true);
+            const newCancelBtn = cancelBtn?.cloneNode(true);
+            const newCloseBtn = closeBtn?.cloneNode(true);
+
+            if (confirmBtn && newConfirmBtn) {
+                confirmBtn.parentNode?.replaceChild(newConfirmBtn, confirmBtn);
+                const freshConfirmBtn =
+                    document.getElementById(confirmButtonId);
+                if (freshConfirmBtn) {
+                    freshConfirmBtn.addEventListener('click', () => {
+                        if (onConfirm) {
+                            onConfirm();
+                        }
+                        closeDialog();
+                    });
+                }
+            }
+
+            if (cancelBtn && newCancelBtn) {
+                cancelBtn.parentNode?.replaceChild(newCancelBtn, cancelBtn);
+                const freshCancelBtn = document.getElementById(cancelButtonId);
+                if (freshCancelBtn) {
+                    freshCancelBtn.addEventListener('click', closeDialog);
+                }
+            }
+
+            if (closeBtn && newCloseBtn) {
+                closeBtn.parentNode?.replaceChild(newCloseBtn, closeBtn);
+                const freshCloseBtn = document.getElementById(
+                    `${dialogId}-close`
+                );
+                if (freshCloseBtn) {
+                    freshCloseBtn.addEventListener('click', closeDialog);
+                }
+            }
+
+            // Close on backdrop click
+            dialog.addEventListener('click', function (e) {
+                if (e.target === dialog) {
+                    closeDialog();
+                }
+            });
+
+            // Close on Escape key
+            const escapeHandler = function (e) {
+                if (e.key === 'Escape' && dialog.classList.contains('active')) {
+                    closeDialog();
+                }
+            };
+            document.addEventListener('keydown', escapeHandler);
+
+            // Show dialog
+            dialog.classList.add('active');
+        };
+
+        // Export close function to window
+        window[closeFunctionName] = function () {
+            const dialog = document.getElementById(dialogId);
+            if (dialog) {
+                dialog.classList.remove('active');
+            }
+        };
+
+        // Setup initial handlers
+        function setupDialogHandlers() {
+            const dialog = document.getElementById(dialogId);
+            if (!dialog) return;
+
+            // Close on backdrop click
+            dialog.addEventListener('click', function (e) {
+                if (e.target === dialog) {
+                    window[closeFunctionName]();
+                }
+            });
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupDialogHandlers);
+        } else {
+            setTimeout(setupDialogHandlers, 0);
+        }
+
+        // Fallback initialization
+        setTimeout(setupDialogHandlers, 200);
+    })();
+</script>

@@ -271,6 +271,88 @@ export async function getExploreProjects(
     }
 }
 
+/**
+ * Search projects by query string
+ * @param searchQuery - Search query string
+ * @param limit - Maximum number of projects to return (default: 20)
+ * @param offset - Offset for pagination (default: 0)
+ * @returns Array of projects with owner info
+ */
+export async function searchProjects(
+    searchQuery: string,
+    limit: number = 20,
+    offset: number = 0
+): Promise<ProjectWithOwner[]> {
+    try {
+        let query = supabase
+            .from('projects')
+            .select(
+                `
+                id,
+                title,
+                description,
+                cover_image_url,
+                project_type,
+                location,
+                start_date,
+                status,
+                created_at,
+                owner_id
+            `
+            )
+            .is('deleted_at', null)
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false })
+            .range(offset, offset + limit - 1);
+
+        // Apply search filter if provided
+        if (searchQuery.trim()) {
+            query = query.or(
+                `title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`
+            );
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+            console.error('Error searching projects:', error);
+            return [];
+        }
+
+        if (!data || data.length === 0) {
+            return [];
+        }
+
+        // Load owner info separately
+        const ownerIds = [...new Set(data.map((p) => p.owner_id))];
+        const { data: ownersData, error: ownersError } = await supabase
+            .from('user_info')
+            .select('user_id, email, full_name, username, avatar_url')
+            .in('user_id', ownerIds)
+            .is('deleted_at', null);
+
+        if (ownersError) {
+            console.error('Error loading owners:', ownersError);
+            return data.map((project) => ({
+                ...project,
+                user_info: null,
+            }));
+        }
+
+        const ownersMap = new Map(
+            (ownersData || []).map((owner) => [owner.user_id, owner])
+        );
+
+        return data.map((project) => ({
+            ...project,
+            user_info: ownersMap.get(project.owner_id) || null,
+        }));
+    } catch (error) {
+        console.error('Unexpected error searching projects:', error);
+        return [];
+    }
+}
+
 export type FeaturedProject = {
     image: string;
     tag: string;
