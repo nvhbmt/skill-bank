@@ -5,6 +5,10 @@ import { getStaticPaths, useTranslate } from '@/i18n';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
+const isLoggedIn = Astro.locals.session?.user;
+if (isLoggedIn) {
+    return Astro.redirect(l('/'));
+}
 ---
 
 <DefaultLayout>
@@ -103,7 +107,7 @@ const { lang, t, l } = useTranslate(Astro);
                             <div class="login-form-divider-line"></div>
                         </div>
                         <div class="login-btn-box">
-                            <button class="login-btn">
+                            <button class="login-btn" id="google-login-btn">
                                 <img
                                     src="/assets/images/flat-color-icons_google.png"
                                     alt="icon"
@@ -112,7 +116,7 @@ const { lang, t, l } = useTranslate(Astro);
                                     {t('sign-in.gmail')}
                                 </div>
                             </button>
-                            <button class="login-btn">
+                            <button class="login-btn" id="facebook-login-btn">
                                 <img
                                     src="/assets/images/logos_facebook.png"
                                     alt="icon"

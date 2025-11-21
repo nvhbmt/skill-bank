@@ -148,5 +148,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Handle Facebook login
+    const facebookLoginBtn = document.getElementById('facebook-login-btn');
+    if (facebookLoginBtn) {
+        facebookLoginBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const currentLang = window.location.pathname.split('/')[1] || 'vi';
+                const redirectTo = `${window.location.origin}/${currentLang}`;
+                window.location.href = `/api/auth/facebook?redirect_to=${encodeURIComponent(redirectTo)}`;
+            } catch (error) {
+                console.error('Error initiating Facebook login:', error);
+                alert(window.loginUIMessages?.errorGeneric || 'Có lỗi xảy ra khi đăng nhập với Facebook');
+            }
+        });
+    }
+
+    // Handle Google login (placeholder for future implementation)
+    const googleLoginBtn = document.getElementById('google-login-btn');
+    if (googleLoginBtn) {
+        googleLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Tính năng đăng nhập với Google đang được phát triển');
+        });
+    }
 });
 

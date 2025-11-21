@@ -1,0 +1,296 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<DefaultLayout>
+    <div class="error-404-wrapper">
+        <div class="grid-overlay"></div>
+        <Header />
+        <main class="error-404-container">
+            <div class="error-404-content">
+                <div class="error-404-number">
+                    <span class="error-digit">4</span>
+                    <span class="error-digit error-digit-zero">0</span>
+                    <span class="error-digit">4</span>
+                </div>
+                <h1 class="error-404-title">{t('error404.title')}</h1>
+                <p class="error-404-message">{t('error404.message')}</p>
+                <div class="error-404-actions">
+                    <a
+                        href={l('/')}
+                        class="error-404-btn error-404-btn-primary"
+                    >
+                        <i class="fa-solid fa-home"></i>
+                        {t('error404.backHome')}
+                    </a>
+                    <a
+                        href={l('/explore')}
+                        class="error-404-btn error-404-btn-secondary"
+                    >
+                        <i class="fa-solid fa-compass"></i>
+                        {t('error404.explore')}
+                    </a>
+                </div>
+            </div>
+            <div class="error-404-illustration">
+                <div class="floating-elements">
+                    <div class="floating-element floating-element-1"></div>
+                    <div class="floating-element floating-element-2"></div>
+                    <div class="floating-element floating-element-3"></div>
+                </div>
+            </div>
+        </main>
+        <Footer />
+    </div>
+</DefaultLayout>
+
+<style>
+    .error-404-wrapper {
+        min-height: 100vh;
+        position: relative;
+        background: linear-gradient(
+            135deg,
+            #0f0c29 0%,
+            #302b63 50%,
+            #24243e 100%
+        );
+        overflow: hidden;
+    }
+
+    .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            );
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .error-404-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 200px);
+        padding: 4rem 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .error-404-content {
+        text-align: center;
+        max-width: 700px;
+        z-index: 2;
+    }
+
+    .error-404-number {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .error-digit {
+        font-size: 12rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .error-digit-zero {
+        animation-delay: 0.5s;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .error-digit:nth-child(3) {
+        animation-delay: 1s;
+    }
+
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    .error-404-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .error-404-message {
+        font-size: 1.25rem;
+        color: #a1a1aa;
+        margin-bottom: 3rem;
+        line-height: 1.6;
+    }
+
+    .error-404-actions {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .error-404-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .error-404-btn i {
+        font-size: 1.1rem;
+    }
+
+    .error-404-btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .error-404-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .error-404-btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    .error-404-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .error-404-illustration {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .floating-elements {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .floating-element {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(
+            135deg,
+            rgba(102, 126, 234, 0.1),
+            rgba(118, 75, 162, 0.1)
+        );
+        backdrop-filter: blur(20px);
+        animation: floatAround 20s infinite ease-in-out;
+    }
+
+    .floating-element-1 {
+        width: 300px;
+        height: 300px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .floating-element-2 {
+        width: 200px;
+        height: 200px;
+        top: 60%;
+        right: 15%;
+        animation-delay: 5s;
+    }
+
+    .floating-element-3 {
+        width: 150px;
+        height: 150px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 10s;
+    }
+
+    @keyframes floatAround {
+        0%,
+        100% {
+            transform: translate(0, 0) scale(1);
+        }
+        25% {
+            transform: translate(50px, -50px) scale(1.1);
+        }
+        50% {
+            transform: translate(-30px, 30px) scale(0.9);
+        }
+        75% {
+            transform: translate(30px, 50px) scale(1.05);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .error-digit {
+            font-size: 8rem;
+        }
+
+        .error-404-title {
+            font-size: 2rem;
+        }
+
+        .error-404-message {
+            font-size: 1.1rem;
+        }
+
+        .error-404-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .error-404-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>

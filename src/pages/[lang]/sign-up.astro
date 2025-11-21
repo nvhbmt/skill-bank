@@ -5,6 +5,10 @@ import { getStaticPaths, useTranslate } from '@/i18n';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
+const isLoggedIn = Astro.locals.session?.user;
+if (isLoggedIn) {
+    return Astro.redirect(l('/'));
+}
 ---
 
 <DefaultLayout>

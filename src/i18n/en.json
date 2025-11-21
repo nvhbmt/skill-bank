@@ -484,5 +484,11 @@
             "message": "Your application for the project \"{{projectTitle}}\" has been rejected.",
             "viewProject": "View project"
         }
+    },
+    "error404": {
+        "title": "Page Not Found",
+        "message": "Sorry, the page you are looking for does not exist or has been moved.",
+        "backHome": "Back to Home",
+        "explore": "Explore Projects"
     }
 }

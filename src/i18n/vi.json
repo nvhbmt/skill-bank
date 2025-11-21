@@ -482,5 +482,11 @@
             "message": "Đơn ứng tuyển của bạn cho dự án \"{{projectTitle}}\" đã bị từ chối.",
             "viewProject": "Xem dự án"
         }
+    },
+    "error404": {
+        "title": "Trang không tồn tại",
+        "message": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.",
+        "backHome": "Về trang chủ",
+        "explore": "Khám phá dự án"
     }
 }
