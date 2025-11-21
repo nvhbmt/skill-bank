@@ -27,6 +27,18 @@ a:hover {
     border-radius: 30px;
     overflow: hidden;
     transform: scale(0.8);
+    animation: load 0.45s ease;
+}
+
+@keyframes load {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.78);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(0.8);
+    }
 }
 
 .login-page-left {
@@ -88,7 +100,21 @@ a:hover {
     gap: 8px;
     padding: 0 24px;
     align-items: center;
-    transition: outline 0.2s ease;
+    transition: outline 0.2s ease, box-shadow 0.25s ease;
+}
+
+.login-form-input-wrapper:hover {
+    outline: 1px solid var(--color-purple-base-dark);
+    box-shadow: 0 0 10px rgba(110, 77, 255, 0.15);
+}
+
+.login-form-input-wrapper img {
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.login-form-input-wrapper:focus-within img {
+    opacity: 1;
 }
 
 .login-form-input-error {
@@ -115,8 +141,9 @@ input::placeholder {
     font-size: 16px;
 }
 
-.login-form-group:focus-within {
-    outline: 3px solid var(--color-purple-base-dark);
+.login-form-input-wrapper:focus-within {
+    outline: 2px solid var(--color-purple-base-dark);
+    box-shadow: 0 0 12px rgba(110, 77, 255, 0.25);
 }
 
 .login-form-action {
@@ -145,17 +172,19 @@ input[type='checkbox'] {
     width: 100%;
     height: 52px;
     font-size: 23px;
-    transition: color 0.1s linear;
+    transition: color 0.2s ease, box-shadow 0.25s ease;
 }
 
 .login-form-btn:hover {
     background: var(--color-primary);
     color: var(--color-bg-black);
+    box-shadow: 0 4px 12px rgba(110, 77, 255, 0.35);
 }
 
 .login-form-btn:active {
     background: var(--color-secondary);
     color: var(--color-bg-black);
+    transform: scale(0.97);
 }
 
 .login-form-divider {
@@ -192,16 +221,18 @@ input[type='checkbox'] {
     align-items: center;
     gap: 8px;
     background: var(--color-bg-light);
-    transition: color 0.1s linear;
+    transition: color 0.2s ease, box-shadow 0.25s ease, transform 0.15s ease;
     cursor: pointer;
 }
 
 .login-btn:hover {
     border: 1px solid var(--color-primary-dark);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .login-btn:active {
     border: 1px solid var();
+    transform: scale(0.96);
 }
 
 .login-btn-text {
