@@ -2,6 +2,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const $ = document.querySelector.bind(document);
     const $$ = document.querySelectorAll.bind(document);
 
+    // Handle OAuth callback (check for hash fragment)
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        const hashParams = new URLSearchParams(hash);
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const error = hashParams.get('error');
+        const errorDescription = hashParams.get('error_description');
+
+        const currentLang = window.location.pathname.split('/')[1] || 'vi';
+
+        if (error) {
+            console.error('OAuth error:', error, errorDescription);
+            window.location.href = `/${currentLang}/sign-up?error=oauth_failed`;
+            return;
+        }
+
+        if (accessToken) {
+            // Send token to server to create session
+            fetch('/api/auth/oauth-callback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    access_token: accessToken,
+                    refresh_token: refreshToken,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Redirect to dashboard
+                        window.location.href = `/${currentLang}/dashboard`;
+                    } else {
+                        console.error('Error processing OAuth:', data.message);
+                        window.location.href = `/${currentLang}/sign-up?error=processing_failed`;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error sending token to server:', error);
+                    window.location.href = `/${currentLang}/sign-up?error=server_error`;
+                });
+            return; // Exit early, don't initialize form
+        }
+    }
+
     const form = $('#signup-form');
 
     if (form) {
@@ -251,5 +298,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
     }
-});
 
+    // Handle language selector
+    const langSelector = $('#lang-selector');
+    if (langSelector) {
+        langSelector.addEventListener('change', (e) => {
+            const target = e.target;
+            if (target instanceof HTMLSelectElement) {
+                const selectedLang = target.value;
+                window.location.href = `/${selectedLang}/sign-up`;
+            }
+        });
+    }
+});

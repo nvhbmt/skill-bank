@@ -1,0 +1,80 @@
+---
+interface Props {
+    googleText: string;
+    facebookText: string;
+    errorGeneric?: string;
+}
+
+const { googleText, facebookText, errorGeneric } = Astro.props;
+---
+
+<div class="login-btn-box">
+    <button class="login-btn" id="google-login-btn">
+        <img src="/assets/images/flat-color-icons_google.png" alt="icon" />
+        <div class="login-btn-text">
+            {googleText}
+        </div>
+    </button>
+    <button class="login-btn" id="facebook-login-btn">
+        <img src="/assets/images/logos_facebook.png" alt="icon" />
+        <div class="login-btn-text">
+            {facebookText}
+        </div>
+    </button>
+</div>
+
+<script
+    define:vars={{
+        errorGenericMessage: errorGeneric || '',
+    }}
+>
+    (function () {
+        // Handle Facebook login
+        const facebookLoginBtn = document.getElementById('facebook-login-btn');
+        if (facebookLoginBtn) {
+            facebookLoginBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    const currentLang =
+                        window.location.pathname.split('/')[1] || 'vi';
+                    const redirectTo = `${window.location.origin}`;
+                    window.location.href = `/api/auth/facebook?redirect_to=${encodeURIComponent(redirectTo)}&lang=${currentLang}`;
+                } catch (error) {
+                    console.error('Error initiating Facebook login:', error);
+                    const errorMsg =
+                        errorGenericMessage ||
+                        (window.loginUIMessages &&
+                            window.loginUIMessages.errorGeneric) ||
+                        (window.signupUIMessages &&
+                            window.signupUIMessages.errorGeneric) ||
+                        'Có lỗi xảy ra khi đăng nhập với Facebook';
+                    alert(errorMsg);
+                }
+            });
+        }
+
+        // Handle Google login
+        const googleLoginBtn = document.getElementById('google-login-btn');
+        if (googleLoginBtn) {
+            googleLoginBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    const currentLang =
+                        window.location.pathname.split('/')[1] || 'vi';
+                    const redirectTo = `${window.location.origin}`;
+                    window.location.href = `/api/auth/google?redirect_to=${encodeURIComponent(redirectTo)}&lang=${currentLang}`;
+                } catch (error) {
+                    console.error('Error initiating Google login:', error);
+                    const errorMsg =
+                        errorGenericMessage ||
+                        (window.loginUIMessages &&
+                            window.loginUIMessages.errorGeneric) ||
+                        (window.signupUIMessages &&
+                            window.signupUIMessages.errorGeneric) ||
+                        'Có lỗi xảy ra khi đăng nhập với Google';
+                    alert(errorMsg);
+                }
+            });
+        }
+    })();
+</script>

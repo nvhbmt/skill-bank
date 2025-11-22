@@ -89,7 +89,7 @@ if (user) {
                                     <img src={avatarUrl} alt={userName} class="dropdown-profile-avatar" />
                                     <div class="dropdown-profile-info">
                                         <p class="dropdown-profile-name">{userName}</p>
-                                        <p class="dropdown-profile-username">{userUsername}</p>
+                                        <p class="dropdown-profile-username">@{userUsername}</p>
                                     </div>
                                 </a>
 
@@ -97,8 +97,8 @@ if (user) {
 
                                 <!-- 2. Main Navigation -->
                                 <a href={l('/')} class="dropdown-item">
-                                    <div class="dropdown-icon"><ion-icon name="home-outline"></ion-icon></div>
-                                    <span>{t('header.homepage')}</span>
+                                    <div class="dropdown-icon"><ion-icon name="grid-outline"></ion-icon></div>
+                                    <span>{t('header.dashboard')}</span>
                                 </a>
 								{
 									user && user.user_metadata.role === 'admin' && (

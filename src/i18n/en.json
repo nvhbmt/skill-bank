@@ -146,7 +146,7 @@
         "chiTiet": "Detail"
     },
     "header": {
-        "homepage": "Home",
+        "dashboard": "Dashboard",
         "myProject": "My projects",
         "aboutUs": "About us",
         "help": "Help",

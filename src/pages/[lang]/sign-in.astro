@@ -1,5 +1,6 @@
 ---
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import OAuthButtons from '@/components/OAuthButtons.astro';
 import '@/assets/css/sign-in.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 export { getStaticPaths };
@@ -106,26 +107,11 @@ if (isLoggedIn) {
                             </div>
                             <div class="login-form-divider-line"></div>
                         </div>
-                        <div class="login-btn-box">
-                            <button class="login-btn" id="google-login-btn">
-                                <img
-                                    src="/assets/images/flat-color-icons_google.png"
-                                    alt="icon"
-                                />
-                                <div class="login-btn-text">
-                                    {t('sign-in.gmail')}
-                                </div>
-                            </button>
-                            <button class="login-btn" id="facebook-login-btn">
-                                <img
-                                    src="/assets/images/logos_facebook.png"
-                                    alt="icon"
-                                />
-                                <div class="login-btn-text">
-                                    {t('sign-in.facebook')}
-                                </div>
-                            </button>
-                        </div>
+                        <OAuthButtons
+                            googleText={t('sign-in.gmail')}
+                            facebookText={t('sign-in.facebook')}
+                            errorGeneric={t('sign-in.errorGeneric')}
+                        />
                     </div>
                 </form>
             </div>

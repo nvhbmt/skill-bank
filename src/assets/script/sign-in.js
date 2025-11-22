@@ -2,6 +2,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const $ = document.querySelector.bind(document);
     const $$ = document.querySelectorAll.bind(document);
 
+    // Handle OAuth callback (check for hash fragment)
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        const hashParams = new URLSearchParams(hash);
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const error = hashParams.get('error');
+        const errorDescription = hashParams.get('error_description');
+
+        const currentLang = window.location.pathname.split('/')[1] || 'vi';
+
+        if (error) {
+            console.error('OAuth error:', error, errorDescription);
+            window.location.href = `/${currentLang}/sign-in?error=oauth_failed`;
+            return;
+        }
+
+        if (accessToken) {
+            // Send token to server to create session
+            fetch('/api/auth/oauth-callback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    access_token: accessToken,
+                    refresh_token: refreshToken,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Redirect to home page
+                        window.location.href = `/${currentLang}/dashboard`;
+                    } else {
+                        console.error('Error processing OAuth:', data.message);
+                        window.location.href = `/${currentLang}/sign-in?error=processing_failed`;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error sending token to server:', error);
+                    window.location.href = `/${currentLang}/sign-in?error=server_error`;
+                });
+            return; // Exit early, don't initialize form
+        }
+    }
+
     const form = $('#login-form');
 
     if (form) {
@@ -80,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Redirect to home page after successful login
                         const currentLang =
                             window.location.pathname.split('/')[1] || 'vi';
-                        window.location.href = `/${currentLang}`;
+                        window.location.href = `/${currentLang}/dashboard`;
                     } else {
                         // Clear previous errors
                         const usernameErrorContainer = $('#username-error');
@@ -146,35 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const selectedLang = target.value;
                 window.location.href = `/${selectedLang}/sign-in`;
             }
-        });
-    }
-
-    // Handle Facebook login
-    const facebookLoginBtn = document.getElementById('facebook-login-btn');
-    if (facebookLoginBtn) {
-        facebookLoginBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            try {
-                const currentLang =
-                    window.location.pathname.split('/')[1] || 'vi';
-                const redirectTo = `${window.location.origin}`;
-                window.location.href = `/api/auth/facebook?redirect_to=${encodeURIComponent(redirectTo)}`;
-            } catch (error) {
-                console.error('Error initiating Facebook login:', error);
-                alert(
-                    window.loginUIMessages?.errorGeneric ||
-                        'Có lỗi xảy ra khi đăng nhập với Facebook'
-                );
-            }
-        });
-    }
-
-    // Handle Google login (placeholder for future implementation)
-    const googleLoginBtn = document.getElementById('google-login-btn');
-    if (googleLoginBtn) {
-        googleLoginBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Tính năng đăng nhập với Google đang được phát triển');
         });
     }
 });
