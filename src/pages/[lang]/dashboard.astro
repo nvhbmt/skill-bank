@@ -24,35 +24,36 @@ const stats = {
     invites: 3,
 };
 
+// Dữ liệu dự án gợi ý (Update theo hình)
 const recommendedProjects = [
     {
         id: 301,
         title: 'DeFi Dashboard Interface',
+        desc: 'Looking for a UI Designer to create a futuristic dashboard for a crypto platform.',
         image: 'https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=400&auto=format&fit=crop',
         tags: ['Figma', 'Web3'],
         author: 'CryptoLabs',
-        likes: 315,
-        dislikes: 5,
+        deadline: '5 days left',
         match: 98,
     },
     {
         id: 302,
         title: 'AI Content Generator App',
+        desc: 'Need a Python developer to integrate OpenAI API into a Flask backend.',
         image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=400&auto=format&fit=crop',
         tags: ['Python', 'AI'],
         author: 'StartupAI',
-        likes: 520,
-        dislikes: 12,
+        deadline: '2 weeks left',
         match: 92,
     },
     {
         id: 303,
         title: 'Travel Booking Mobile App',
+        desc: 'Building a cross-platform app using Flutter. Need help with state management.',
         image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=400&auto=format&fit=crop',
         tags: ['Flutter', 'Mobile'],
         author: 'TravelX',
-        likes: 280,
-        dislikes: 8,
+        deadline: '1 month left',
         match: 85,
     },
 ];
@@ -86,7 +87,6 @@ const trendingSkills = [
                 <!-- 1. HEADER -->
                 <div class="dashboard-header">
                     <div class="welcome-text">
-                        <!-- THÊM ICON VẪY TAY -->
                         <h1>
                             {t('dashboard.welcome')}
                             <span>{userName}</span>! <span class="wave-hand"
@@ -106,9 +106,8 @@ const trendingSkills = [
                     </div>
                 </div>
 
-                <!-- 2. STATS (GAMIFICATION) -->
+                <!-- 2. STATS -->
                 <div class="stats-grid">
-                    <!-- Card 1: Uy tín -->
                     <div class="stat-card">
                         <div class="stat-icon-box">
                             <i class="fa-solid fa-star"></i>
@@ -120,8 +119,6 @@ const trendingSkills = [
                             </p>
                         </div>
                     </div>
-
-                    <!-- Card 2: Tổng lượt thích -->
                     <div class="stat-card">
                         <div class="stat-icon-box">
                             <i class="fa-solid fa-thumbs-up"></i>
@@ -131,8 +128,6 @@ const trendingSkills = [
                             <p class="stat-label">{t('dashboard.statLikes')}</p>
                         </div>
                     </div>
-
-                    <!-- Card 3: Lượt xem -->
                     <div class="stat-card">
                         <div class="stat-icon-box">
                             <i class="fa-regular fa-eye"></i>
@@ -142,8 +137,6 @@ const trendingSkills = [
                             <p class="stat-label">{t('dashboard.statViews')}</p>
                         </div>
                     </div>
-
-                    <!-- Card 4: Lời mời -->
                     <div class="stat-card">
                         <div class="stat-icon-box">
                             <i class="fa-regular fa-envelope"></i>
@@ -161,7 +154,7 @@ const trendingSkills = [
                 <div class="dashboard-content">
                     <!-- LEFT COLUMN -->
                     <div class="main-column">
-                        <!-- Recommended Projects -->
+                        <!-- Recommended Projects-->
                         <div class="section-header">
                             <h2 class="section-title">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -172,46 +165,56 @@ const trendingSkills = [
                             >
                         </div>
 
-                        <div class="projects-grid-mini">
+                        <div class="projects-list-horizontal">
                             {
                                 recommendedProjects.map((proj) => (
                                     <a
                                         href={`/project/${proj.id}`}
-                                        class="project-card-new"
+                                        class="project-card-horizontal"
                                     >
-                                        <div class="project-thumb-wrapper">
-                                            <img
-                                                src={proj.image}
-                                                alt={proj.title}
-                                                class="project-thumb-new"
-                                            />
-                                        </div>
-                                        <div class="project-info-new">
-                                            <div class="project-header-row">
-                                                <span class="project-title-new">
-                                                    {proj.title}
-                                                </span>
-                                                <span class="project-tag-badge">
-                                                    {proj.tags[0]}
+                                        <img
+                                            src={proj.image}
+                                            alt={proj.title}
+                                            class="project-thumb-hz"
+                                        />
+
+                                        <div class="project-info-hz">
+                                            <div class="project-tags-row">
+                                                {proj.tags.map((tag) => (
+                                                    <span class="mini-tag">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                                <span class="mini-tag match-tag">
+                                                    Match {proj.match}%
                                                 </span>
                                             </div>
-                                            <div class="project-stats-row">
-                                                <div class="stat-icon">
-                                                    <i class="fa-regular fa-thumbs-up" />{' '}
-                                                    <span>{proj.likes}</span>
-                                                </div>
-                                                <div
-                                                    class="stat-icon"
-                                                    style="color:#4ade80; font-size:0.9rem; font-weight:600;"
-                                                >
-                                                    {proj.match}% Match
-                                                </div>
+
+                                            <h3 class="project-title-hz">
+                                                {proj.title}
+                                            </h3>
+                                            <p class="project-desc-hz">
+                                                {proj.desc}
+                                            </p>
+
+                                            <div class="project-meta-hz">
+                                                <span class="meta-item">
+                                                    <i class="fa-regular fa-user" />{' '}
+                                                    {proj.author}
+                                                </span>
+                                                <span class="meta-item">
+                                                    <i class="fa-regular fa-clock" />{' '}
+                                                    {proj.deadline}
+                                                </span>
                                             </div>
                                         </div>
                                     </a>
                                 ))
                             }
                         </div>
+
+                        <!-- THÊM ĐƯỜNG KẺ NGANG NGĂN CÁCH -->
+                        <div class="section-divider-horizontal"></div>
 
                         <!-- Trending Skills -->
                         <div class="section-header trending-section">
