@@ -14,12 +14,11 @@ html {
     font-size: 62.5%;
 }
 .enter-code-page {
-    width: 80%;
-    max-width: 1200px;
-    margin: 0 auto;
     height: 100vh;
     display: flex;
-    flex-direction: column;
+    background-color: #0f0f1a;
+    width: 100%;
+    position: relative;
     overflow: hidden;
 }
 .hero {
@@ -29,6 +28,15 @@ html {
     align-items: center;
     overflow-y: auto;
     padding-bottom: 2rem;
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 0;
+    pointer-events: none;
 }
 .hero-section {
     width: 100%;
