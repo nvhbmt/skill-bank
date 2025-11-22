@@ -146,7 +146,7 @@
         "chiTiet": "Detail"
     },
     "header": {
-        "homepage": "Home",
+        "dashboard": "Dashboard",
         "myProject": "My projects",
         "aboutUs": "About us",
         "help": "Help",
@@ -484,5 +484,30 @@
             "message": "Your application for the project \"{{projectTitle}}\" has been rejected.",
             "viewProject": "View project"
         }
+    },
+    "error404": {
+        "title": "Page Not Found",
+        "message": "Sorry, the page you are looking for does not exist or has been moved.",
+        "backHome": "Back to Home",
+        "explore": "Explore Projects"
+    },
+    "dashboard": {
+        "welcome": "Hello,",
+        "subtitle": "Ready to exchange skills today?",
+        "statReputation": "Reputation Score",
+        "statLikes": "Total Likes",
+        "statViews": "Profile Views",
+        "statInvites": "Collab Invites",
+        "recommended": "Recommended Projects",
+        "recentActivity": "Recent Activity",
+        "profileStrength": "Profile Completion",
+        "completeProfile": "Update Now",
+        "applyNow": "Apply",
+        "viewProject": "View Details",
+        "act_applied": "applied to",
+        "act_posted": "posted",
+        "act_joined": "joined",
+        "trendingSkills": "Trending Skills",
+        "viewAll": "View all"
     }
 }

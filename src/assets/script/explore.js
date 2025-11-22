@@ -3,6 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsContainer = document.getElementById('projects-container');
     let searchTimeout;
 
+    // Helper function to escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text || '';
+        return div.innerHTML;
+    }
+
     // Add click handlers to initial projects
     addClickHandlers();
 
@@ -58,23 +65,32 @@ document.addEventListener('DOMContentLoaded', () => {
                             ? 'Desktop App'
                             : project.project_type || '';
 
+                const title = escapeHtml(project.title || '');
+                const description = escapeHtml(project.description || '');
+                const authorName = escapeHtml(
+                    owner?.full_name || owner?.username || 'N/A'
+                );
+                const imageUrl =
+                    project.cover_image_url ||
+                    '/assets/images/project-image.svg';
+
                 return `
                     <a href="/${currentLang}/project/${project.id}" class="project-card-new">
                         <div class="project-thumb-wrapper">
                             <img
-                                src="${project.cover_image_url || '/assets/images/project-image.svg'}"
-                                alt="${project.title}"
+                                src="${imageUrl}"
+                                alt="${title}"
                                 class="project-thumb-new"
                             />
                         </div>
                         <div class="project-info-new">
                             <div class="project-header-row">
-                                <span class="project-title-new">${project.title || ''}</span>
+                                <span class="project-title-new">${title}</span>
                                 <span class="project-tag-badge">${projectTypeLabel}</span>
                             </div>
-                            <p class="project-desc">${project.description || ''}</p>
+                            <p class="project-desc">${description}</p>
                             <div class="project-stats-row">
-                                <span class="author-info">by ${owner?.full_name || owner?.username || 'N/A'}</span>
+                                <span class="author-info">by ${authorName}</span>
                                 <div class="stats-icons">
                                     <div class="stat-icon">
                                         <i class="fa-regular fa-thumbs-up"></i>

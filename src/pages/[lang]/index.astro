@@ -11,7 +11,7 @@ import { getFeaturedProfiles } from '@/services/user-profile';
 export { getStaticPaths };
 
 const { t, l } = useTranslate(Astro);
-
+const isLoggedIn = Astro.locals.session?.user;
 // Xử lý text tiêu đề an toàn
 const heroTitle = t('home.heroTitle') || 'SkillBank\nPlatform';
 const titleParts = heroTitle.includes('\n')
@@ -230,8 +230,11 @@ const featuredProfiles = await getFeaturedProfiles();
                         <div class="cta-content">
                             <h2 class="cta-title">{t('home.ctaTitle')}</h2>
                             <p class="cta-subtitle">{t('home.ctaSubtitle')}</p>
-                            <a href={l('/sign-up')} class="btn-cta-large"
-                                >{t('home.ctaBtn')}</a
+                            <a
+                                href={isLoggedIn
+                                    ? l('/create-project')
+                                    : l('/sign-up')}
+                                class="btn-cta-large">{t('home.ctaBtn')}</a
                             >
                         </div>
                     </div>

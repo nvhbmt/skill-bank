@@ -1,10 +1,15 @@
 ---
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import OAuthButtons from '@/components/OAuthButtons.astro';
 import '@/assets/css/sign-up.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
+const isLoggedIn = Astro.locals.session?.user;
+if (isLoggedIn) {
+    return Astro.redirect(l('/'));
+}
 ---
 
 <DefaultLayout>
@@ -18,7 +23,24 @@ const { lang, t, l } = useTranslate(Astro);
                     <form id="signup-form">
                         <div class="login-content">
                             <div class="login-form">
-                                <h1>{t('sign-up.title')}</h1>
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;"
+                                >
+                                    <h1>{t('sign-up.title')}</h1>
+                                    <select
+                                        id="lang-selector"
+                                        style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;"
+                                    >
+                                        <option
+                                            value="vi"
+                                            selected={lang === 'vi'}>VI</option
+                                        >
+                                        <option
+                                            value="en"
+                                            selected={lang === 'en'}>EN</option
+                                        >
+                                    </select>
+                                </div>
                                 <div>
                                     {t('sign-up.haveAccount')}
                                     <a href={l('/sign-in')} class="login-link"
@@ -149,26 +171,12 @@ const { lang, t, l } = useTranslate(Astro);
                             </div>
                             <div class="login-form-divider-line"></div>
                         </div>
-                        <div class="login-btn-box">
-                            <button type="button" class="login-btn">
-                                <img
-                                    src="/assets/images/flat-color-icons_google.png"
-                                    alt="icon"
-                                />
-                                <div class="login-btn-text">
-                                    {t('sign-up.gmail')}
-                                </div>
-                            </button>
-                            <button type="button" class="login-btn">
-                                <img
-                                    src="/assets/images/logos_facebook.png"
-                                    alt="icon"
-                                />
-                                <div class="login-btn-text">
-                                    {t('sign-up.facebook')}
-                                </div>
-                            </button>
-                        </div>
+                        <OAuthButtons
+                            googleText={t('sign-up.gmail')}
+                            facebookText={t('sign-up.facebook')}
+                            errorGeneric={t('sign-up.errorGeneric')}
+                            page="sign-up"
+                        />
                     </form>
                 </div>
             </div>

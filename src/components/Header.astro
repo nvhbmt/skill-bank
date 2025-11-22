@@ -13,21 +13,24 @@ const { lang, t, l } = useTranslate(Astro);
 const session = Astro.locals.session;
 
 const user = session?.user;
-const userName = user?.user_metadata?.full_name;
-const userUsername = user?.user_metadata?.username;
+let userName = user?.user_metadata?.full_name;
+let userUsername = user?.user_metadata?.username;
 let avatarUrl = null;
 
 if (user) {
     const { data: userData, error: userError } = await supabase
         .from('user_info')
-        .select('avatar_url')
+        .select('avatar_url, full_name, username')
         .eq('user_id', user.id)
         .is('deleted_at', null)
         .single();
     if (!userError && userData) {
         avatarUrl = userData.avatar_url ?? '/assets/images/avatar-default-icon.png';
+		userName = userData.full_name;
+		userUsername = userData.username;
     }
 }
+
 ---
 
 <header class="header">
@@ -86,7 +89,7 @@ if (user) {
                                     <img src={avatarUrl} alt={userName} class="dropdown-profile-avatar" />
                                     <div class="dropdown-profile-info">
                                         <p class="dropdown-profile-name">{userName}</p>
-                                        <p class="dropdown-profile-username">{userUsername}</p>
+                                        <p class="dropdown-profile-username">@{userUsername}</p>
                                     </div>
                                 </a>
 
@@ -94,8 +97,8 @@ if (user) {
 
                                 <!-- 2. Main Navigation -->
                                 <a href={l('/')} class="dropdown-item">
-                                    <div class="dropdown-icon"><ion-icon name="home-outline"></ion-icon></div>
-                                    <span>{t('header.homepage')}</span>
+                                    <div class="dropdown-icon"><ion-icon name="grid-outline"></ion-icon></div>
+                                    <span>{t('header.dashboard')}</span>
                                 </a>
 								{
 									user && user.user_metadata.role === 'admin' && (
@@ -153,7 +156,7 @@ if (user) {
     </div>
 </header>
 
-<style>
+<style scoped>
     .header {
         position: sticky;
         top: 0;
@@ -292,6 +295,7 @@ if (user) {
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+		text-decoration: none;
     }
 
     .header-create-btn:hover {
