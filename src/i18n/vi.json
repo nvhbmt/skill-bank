@@ -62,8 +62,12 @@
         "newbie": "Bạn chưa có tài khoản?",
         "signUp": "Đăng ký",
         "title": "Quên mật khẩu?",
+        "emailPlaceholder": "Nhập email của bạn",
         "resetPass": "Đặt lại mật khẩu",
-        "backToSignIn": "Quay lại đăng nhập"
+        "backToSignIn": "Quay lại đăng nhập",
+        "dialogTitle": "Đã gửi mã OTP!",
+        "dialogMessage": "Chúng tôi đã gửi mã OTP đến email của bạn. Vui lòng kiểm tra hộp thư.",
+        "dialogButton": "Tiếp tục"
     },
     "enter-code": {
         "title": "Nhập mã xác thực",
@@ -77,7 +81,10 @@
         "password": "Nhập mật khẩu mới",
         "confirmPass": "Nhập lại mật khẩu",
         "setNewPass": "Đặt mật khẩu mới",
-        "backToSignIn": "Quay lại đăng nhập"
+        "backToSignIn": "Quay lại đăng nhập",
+        "successTitle": "Đặt mật khẩu thành công!",
+        "successMessage": "Mật khẩu của bạn đã được cập nhật thành công. Bạn có thể đăng nhập với mật khẩu mới.",
+        "backToHome": "Trở về trang chủ"
     },
     "sign-up": {
         "title": "Đăng ký",

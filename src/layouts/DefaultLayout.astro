@@ -1,5 +1,6 @@
 ---
 import '@/assets/css/global.css';
+import ToastDialog from '@/components/ToastDialog.astro';
 ---
 
 <!doctype html>
@@ -27,6 +28,7 @@ import '@/assets/css/global.css';
     </head>
     <body>
         <slot />
+        <ToastDialog />
         <script
             type="module"
             src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"

@@ -44,7 +44,7 @@ html {
 }
 .hero-section {
     width: 100%;
-    max-width: 53rem;
+    max-width: 60rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -67,11 +67,13 @@ html {
         .input {
             display: flex;
             justify-content: space-between;
+            gap: 1.2rem;
             input {
                 text-align: center;
-                font-size: 7rem;
-                width: 10rem;
-                height: 10rem;
+                font-size: 6rem;
+                width: 8.5rem;
+                height: 8.5rem;
+                flex: 1;
                 caret-color: var(--color-bg-light);
                 color: var(--color-bg-light);
 
@@ -170,5 +172,24 @@ html {
     }
     .hero-section img {
         width: 12rem;
+    }
+    .hero-section form .input {
+        gap: 0.8rem;
+        input {
+            font-size: 4.5rem;
+            width: 7rem;
+            height: 7rem;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section form .input {
+        gap: 0.6rem;
+        input {
+            font-size: 3.5rem;
+            width: 5.5rem;
+            height: 5.5rem;
+        }
     }
 }

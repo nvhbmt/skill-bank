@@ -48,4 +48,113 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 0); // Trì hoãn 0 mili giây (để nó chạy ở "tick" tiếp theo)
         });
     });
+
+    // Xử lý form submit để set password mới
+    const form = document.querySelector('form');
+    const submitButton = document.querySelector('.reset');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+
+    if (form && submitButton) {
+        const errorContainer = document.createElement('div');
+        errorContainer.id = 'password-error';
+        errorContainer.style.cssText =
+            'color: red; font-size: 1.4rem; margin-top: 1rem; text-align: center; min-height: 2rem;';
+        form.insertBefore(errorContainer, submitButton);
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!passwordInput || !confirmPasswordInput) return;
+
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            // Clear previous error
+            errorContainer.textContent = '';
+
+            // Basic validation
+            if (!password || !confirmPassword) {
+                errorContainer.textContent = 'Vui lòng nhập đầy đủ thông tin';
+                return;
+            }
+
+            if (password.length < 8) {
+                errorContainer.textContent = 'Mật khẩu phải có ít nhất 8 ký tự';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorContainer.textContent = 'Mật khẩu xác nhận không khớp';
+                return;
+            }
+
+            // Disable button and show loading
+            if (submitButton instanceof HTMLButtonElement) {
+                submitButton.disabled = true;
+                const originalText = submitButton.textContent;
+                submitButton.textContent = 'Đang xử lý...';
+
+                try {
+                    // Set new password
+                    const response = await fetch('/api/auth/set-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            password: password,
+                            confirmPassword: confirmPassword,
+                        }),
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Show success dialog
+                        showSuccessDialog();
+                    } else {
+                        errorContainer.textContent =
+                            result.error ||
+                            result.message ||
+                            'Không thể đặt mật khẩu mới. Vui lòng thử lại.';
+                    }
+                } catch (error) {
+                    console.error('Error setting password:', error);
+                    errorContainer.textContent =
+                        'Có lỗi xảy ra. Vui lòng thử lại.';
+                } finally {
+                    // Re-enable button
+                    if (submitButton instanceof HTMLButtonElement) {
+                        submitButton.disabled = false;
+                        if (originalText) {
+                            submitButton.textContent = originalText;
+                        }
+                    }
+                }
+            }
+        });
+    }
 });
+
+// Function to show success dialog
+function showSuccessDialog() {
+    const currentLang = window.location.pathname.split('/')[1] || 'vi';
+    const dialog = document.getElementById('success-dialog');
+    if (dialog) {
+        dialog.classList.add('active');
+    }
+}
+
+// Function to close dialog and redirect to home
+function closeSuccessDialog() {
+    const dialog = document.getElementById('success-dialog');
+    if (dialog) {
+        dialog.classList.remove('active');
+        const currentLang = window.location.pathname.split('/')[1] || 'vi';
+        window.location.href = `/${currentLang}/`;
+    }
+}
+
+// Make functions available globally
+window.closeSuccessDialog = closeSuccessDialog;

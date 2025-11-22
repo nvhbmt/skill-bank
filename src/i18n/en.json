@@ -62,8 +62,12 @@
         "newbie": "New to SkillBank?",
         "signUp": "Sign up",
         "title": "Forgor password?",
+        "emailPlaceholder": "Enter your email",
         "resetPass": "Reset password",
-        "backToSignIn": "Back to sign in"
+        "backToSignIn": "Back to sign in",
+        "dialogTitle": "OTP Sent!",
+        "dialogMessage": "We have sent an OTP code to your email. Please check your inbox.",
+        "dialogButton": "Continue"
     },
     "enter-code": {
         "title": "Enter code",
@@ -77,7 +81,10 @@
         "password": "Password",
         "confirmPass": "Confirm password",
         "setNewPass": "Set new password",
-        "backToSignIn": "Back to sign in"
+        "backToSignIn": "Back to sign in",
+        "successTitle": "Password set successfully!",
+        "successMessage": "Your password has been updated successfully. You can now sign in with your new password.",
+        "backToHome": "Back to home"
     },
     "sign-up": {
         "title": "Sign up",

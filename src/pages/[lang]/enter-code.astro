@@ -24,11 +24,15 @@ const { lang, t, l } = useTranslate(Astro);
                         <input class="otp-input" type="text" maxlength="1" />
                         <input class="otp-input" type="text" maxlength="1" />
                         <input class="otp-input" type="text" maxlength="1" />
+                        <input class="otp-input" type="text" maxlength="1" />
+                        <input class="otp-input" type="text" maxlength="1" />
                     </div>
 
                     <div class="no-mail">
                         <span>{t('enter-code.noEmail')}</span>
-                        <button class="resent">{t('enter-code.resent')}</button>
+                        <button class="resent" type="button"
+                            >{t('enter-code.resent')}</button
+                        >
                     </div>
 
                     <button class="continue">{t('enter-code.continue')}</button>

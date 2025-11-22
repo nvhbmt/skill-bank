@@ -1,0 +1,200 @@
+---
+// Global Toast Dialog Component
+// Usage: Import this component in your layout and use showToast() function
+---
+
+<div id="toast-dialog" class="toast-dialog">
+    <div class="toast-dialog-content">
+        <div class="toast-dialog-icon" id="toast-dialog-icon"></div>
+        <h2 class="toast-dialog-title" id="toast-dialog-title"></h2>
+        <p class="toast-dialog-message" id="toast-dialog-message"></p>
+        <button class="toast-dialog-button" id="toast-dialog-button">
+            OK
+        </button>
+    </div>
+</div>
+
+<style>
+    .toast-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100000;
+        padding: 2rem;
+    }
+
+    .toast-dialog.active {
+        display: flex;
+    }
+
+    .toast-dialog-content {
+        background: rgba(30, 30, 35, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 3rem;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        text-align: center;
+    }
+
+    .toast-dialog-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        color: white;
+        font-size: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+    }
+
+    .toast-dialog-icon.success {
+        background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+    }
+
+    .toast-dialog-icon.error {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+    }
+
+    .toast-dialog-icon.warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+    }
+
+    .toast-dialog-icon.info {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+    }
+
+    .toast-dialog-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0 0 1rem 0;
+    }
+
+    .toast-dialog-message {
+        font-size: 1.6rem;
+        color: #d1d5db;
+        line-height: 1.6;
+        margin: 0 0 2.4rem 0;
+    }
+
+    .toast-dialog-button {
+        width: 100%;
+        padding: 1.2rem 2.4rem;
+        border-radius: 12px;
+        font-size: 1.6rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+    }
+
+    .toast-dialog-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.7);
+    }
+
+    .toast-dialog-button:active {
+        transform: translateY(0);
+    }
+</style>
+
+<script>
+    (function () {
+        const dialog = document.getElementById('toast-dialog');
+        const iconEl = document.getElementById('toast-dialog-icon');
+        const titleEl = document.getElementById('toast-dialog-title');
+        const messageEl = document.getElementById('toast-dialog-message');
+        const buttonEl = document.getElementById('toast-dialog-button');
+
+        if (!dialog || !iconEl || !titleEl || !messageEl || !buttonEl) {
+            console.error('Toast dialog elements not found');
+            return;
+        }
+
+        // Global function to show toast
+        // @ts-ignore
+        window.showToast = function (options) {
+            const opts = options || {};
+            const {
+                title = 'Thông báo',
+                message = '',
+                type = 'info', // 'success', 'error', 'warning', 'info'
+                icon = null, // Custom icon text/emoji
+                buttonText = 'OK',
+                onClose = null, // Callback function when dialog is closed
+            } = opts;
+
+            // Set icon
+            iconEl.className = 'toast-dialog-icon ' + type;
+            if (icon) {
+                iconEl.textContent = icon;
+            } else {
+                // Default icons based on type
+                switch (type) {
+                    case 'success':
+                        iconEl.textContent = '✓';
+                        break;
+                    case 'error':
+                        iconEl.textContent = '✕';
+                        break;
+                    case 'warning':
+                        iconEl.textContent = '⚠';
+                        break;
+                    case 'info':
+                    default:
+                        iconEl.textContent = 'ℹ';
+                        break;
+                }
+            }
+
+            // Set content
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            buttonEl.textContent = buttonText;
+
+            // Remove old event listeners
+            const newButton = buttonEl.cloneNode(true);
+            buttonEl.parentNode?.replaceChild(newButton, buttonEl);
+            const freshButton = document.getElementById('toast-dialog-button');
+
+            // Add close handler
+            if (freshButton) {
+                freshButton.addEventListener('click', () => {
+                    dialog.classList.remove('active');
+                    if (onClose && typeof onClose === 'function') {
+                        onClose();
+                    }
+                });
+            }
+
+            // Show dialog
+            dialog.classList.add('active');
+        };
+
+        // Global function to close toast
+        // @ts-ignore
+        window.closeToast = function () {
+            if (dialog) {
+                dialog.classList.remove('active');
+            }
+        };
+    })();
+</script>
