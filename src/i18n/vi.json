@@ -488,5 +488,24 @@
         "message": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.",
         "backHome": "Về trang chủ",
         "explore": "Khám phá dự án"
+    },
+    "dashboard": {
+        "welcome": "Chào,",
+        "subtitle": "Sẵn sàng trao đổi kỹ năng hôm nay chưa?",
+        "statReputation": "Điểm uy tín",
+        "statLikes": "Tổng lượt thích",
+        "statViews": "Lượt xem hồ sơ",
+        "statInvites": "Lời mời hợp tác",
+        "recommended": "Dự án phù hợp với bạn",
+        "recentActivity": "Hoạt động gần đây",
+        "profileStrength": "Độ hoàn thiện hồ sơ",
+        "completeProfile": "Cập nhật ngay",
+        "applyNow": "Ứng tuyển",
+        "viewProject": "Xem chi tiết",
+        "act_applied": "đã ứng tuyển vào",
+        "act_posted": "đã đăng dự án",
+        "act_joined": "đã tham gia",
+        "trendingSkills": "Kỹ năng đang 'Hot'",
+        "viewAll": "Xem tất cả"
     }
 }
