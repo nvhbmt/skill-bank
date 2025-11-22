@@ -14,7 +14,10 @@ const { lang, t, l } = useTranslate(Astro);
         <div class="footer__content">
             <div class="footer__column footer__brand">
                 <div class="footer__logo">
-                    <img src="/assets/images/logo-trang.png" alt="Skill Bank" />
+                    <img
+                        src="/assets/images/logo-full-ngang.svg"
+                        alt="Skill Bank"
+                    />
                 </div>
                 <p class="footer__desc">
                     {t('footer.description')}
@@ -86,55 +89,15 @@ const { lang, t, l } = useTranslate(Astro);
                 <h3 class="footer__heading">{t('footer.quickLinks')}</h3>
                 <nav class="footer__links">
                     <a href={l('/')} class="footer__link">
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
                         {t('footer.home')}
                     </a>
                     <a href={l('/explore')} class="footer__link">
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
                         {t('footer.exploreProjects')}
                     </a>
                     <a href={l('/submit-application')} class="footer__link">
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
                         {t('footer.submitApplication')}
                     </a>
                     <a href="#" class="footer__link">
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
                         {t('footer.about')}
                     </a>
                 </nav>
