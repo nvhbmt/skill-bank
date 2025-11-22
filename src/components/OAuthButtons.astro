@@ -3,9 +3,15 @@ interface Props {
     googleText: string;
     facebookText: string;
     errorGeneric?: string;
+    page?: 'sign-in' | 'sign-up';
 }
 
-const { googleText, facebookText, errorGeneric } = Astro.props;
+const {
+    googleText,
+    facebookText,
+    errorGeneric,
+    page = 'sign-in',
+} = Astro.props;
 ---
 
 <div class="login-btn-box">
@@ -26,6 +32,7 @@ const { googleText, facebookText, errorGeneric } = Astro.props;
 <script
     define:vars={{
         errorGenericMessage: errorGeneric || '',
+        currentPage: page || 'sign-in',
     }}
 >
     (function () {
@@ -37,8 +44,9 @@ const { googleText, facebookText, errorGeneric } = Astro.props;
                 try {
                     const currentLang =
                         window.location.pathname.split('/')[1] || 'vi';
-                    const redirectTo = `${window.location.origin}`;
-                    window.location.href = `/api/auth/facebook?redirect_to=${encodeURIComponent(redirectTo)}&lang=${currentLang}`;
+                    // Use window.location.origin to ensure correct domain in production
+                    const redirectTo = window.location.origin;
+                    window.location.href = `/api/auth/facebook?redirect_to=${encodeURIComponent(redirectTo)}&lang=${currentLang}&page=${currentPage}`;
                 } catch (error) {
                     console.error('Error initiating Facebook login:', error);
                     const errorMsg =
@@ -61,8 +69,9 @@ const { googleText, facebookText, errorGeneric } = Astro.props;
                 try {
                     const currentLang =
                         window.location.pathname.split('/')[1] || 'vi';
-                    const redirectTo = `${window.location.origin}`;
-                    window.location.href = `/api/auth/google?redirect_to=${encodeURIComponent(redirectTo)}&lang=${currentLang}`;
+                    // Use window.location.origin to ensure correct domain in production
+                    const redirectTo = window.location.origin;
+                    window.location.href = `/api/auth/google?redirect_to=${encodeURIComponent(redirectTo)}&lang=${currentLang}&page=${currentPage}`;
                 } catch (error) {
                     console.error('Error initiating Google login:', error);
                     const errorMsg =
