@@ -1,4 +1,37 @@
+/* --- ROOT CHUẨN --- */
 :root {
+    --color-bg-light: #ffffff;
+    --color-bg-soft: #efeffe;
+    --color-surface: #e0e0fc;
+    --color-primary-light: #c1c1f9;
+    --color-primary: #6363f1;
+    --color-primary-dark: #4c3df2;
+    --color-secondary: #8282f4;
+    --color-accent: #a1a1f7;
+    --color-text: #2a2a79;
+    --color-text-muted: #212165;
+    --color-text-invert: #ffffff;
+    --color-bg-dark: #171751;
+    --color-bg-darker: #0e0e3d;
+    --color-bg-black: #000000;
+    --color-purple-base-dark: #7928ff;
+    --color-purple-base-light: #a68cff;
+    --color-purple-text: #a78bfa;
+    --color-purple-text-hover: #c4b5fd;
+    --color-purple-button: #7c3aed;
+    --color-purple-button-hover: #8b5cf6;
+    --color-purple-button-active: #623ea0;
+    --font-size-5xl: 2.986rem;
+    --font-size-4xl: 2.488rem;
+    --font-size-3xl: 2.074rem;
+    --font-size-2xl: 1.728rem;
+    --font-size-xl: 1.44rem;
+    --font-size-lg: 1.2rem;
+    --font-size-base: 1rem;
+    --font-size-sm: 0.833rem;
+    --font-size-xs: 0.694rem;
+    --container-max-width: 1280px;
+
     /* BIẾN DASHBOARD */
     --dash-card-bg: rgba(30, 30, 35, 0.6);
     --dash-card-border: rgba(255, 255, 255, 0.1);
@@ -8,6 +41,16 @@
     --color-blue-glow: rgba(59, 130, 246, 0.6);
     --color-status-green: #22c55e;
     --color-status-orange: #f97316;
+    --color-tag-bg: rgba(255, 255, 255, 0.1);
+    --color-match-text: #4ade80;
+    --color-match-bg: rgba(74, 222, 128, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Inter, sans-serif;
 }
 
 .wrapper {
@@ -242,7 +285,7 @@ main {
     letter-spacing: 0.5px;
 }
 
-/* 3. DASHBOARD CONTENT */
+/* 3. DASHBOARD CONTENT (Grid 2 Cột) */
 .dashboard-content {
     display: grid;
     grid-template-columns: minmax(0, 2.5fr) 320px;
@@ -273,6 +316,17 @@ main {
         rgba(255, 255, 255, 0.15) 80%,
         transparent
     );
+}
+.section-divider-horizontal {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    margin: 3rem 0;
 }
 
 /* LEFT COLUMN */
@@ -308,90 +362,103 @@ main {
     text-decoration: underline;
 }
 
-.projects-grid-mini {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-}
-
-/* Project Card */
-.project-card-new {
-    background-color: var(--color-project-card-bg);
-    border-radius: 20px;
-    overflow: hidden;
-    transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-    text-decoration: none;
+/* --- RECOMMENDED PROJECTS (HORIZONTAL STYLE - NEW) --- */
+.projects-list-horizontal {
     display: flex;
     flex-direction: column;
-    border: 2px solid transparent;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    gap: 1.5rem;
 }
-.project-card-new:hover {
-    transform: translateY(-5px);
+
+.project-card-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--dash-card-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.project-card-horizontal:hover {
+    background: rgba(255, 255, 255, 0.06);
     border-color: var(--color-purple-button);
-    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+    transform: translateX(5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
-.project-thumb-wrapper {
-    width: 100%;
-    height: 160px;
-    position: relative;
-}
-.project-thumb-new {
-    width: 100%;
-    height: 100%;
+
+.project-thumb-hz {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
     object-fit: cover;
-    border-radius: 16px 16px 0 0;
+    flex-shrink: 0;
 }
-.project-info-new {
-    padding: 1rem 1.5rem;
-    background-color: var(--color-project-card-bg);
-    color: var(--color-project-text);
-    border-radius: 0 0 16px 16px;
+
+.project-info-hz {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
-.project-header-row {
+
+.project-tags-row {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
 }
-.project-title-new {
-    font-size: 1.2rem;
+
+.mini-tag {
+    background: var(--color-tag-bg);
+    color: #d1d5db;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: nowrap;
+}
+
+.match-tag {
+    background: var(--color-match-bg);
+    color: var(--color-match-text);
+    font-weight: 600;
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
+.project-title-hz {
+    font-size: 1.4rem;
     font-weight: 700;
-    line-height: 1.2;
-    color: #2e1065;
+    color: white;
+    line-height: 1.3;
+    margin: 0.2rem 0;
+}
+
+.project-desc-hz {
+    font-size: 0.9rem;
+    color: #9ca3af;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-.project-tag-badge {
-    background-color: #8b5cf6;
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 0.2rem 0.8rem;
-    border-radius: 12px;
-    white-space: nowrap;
-}
-.project-stats-row {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding-top: 0.5rem;
-}
-.stat-icon {
+
+.project-meta-hz {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    font-size: 1.2rem;
-    color: #1f2937;
+    gap: 1.5rem;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.meta-item i {
+    color: var(--color-purple-button);
 }
 
 /* Trending Skills */
@@ -466,7 +533,6 @@ main {
     stroke-linecap: round;
     stroke-dasharray: 85, 100;
     transition: stroke-dasharray 1s ease;
-
     animation: progressAnimation 1.5s ease-out forwards;
 }
 @keyframes progressAnimation {
@@ -477,7 +543,6 @@ main {
         stroke-dasharray: 85, 100;
     }
 }
-
 .percentage-text {
     position: absolute;
     top: 50%;
@@ -569,8 +634,12 @@ main {
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    .project-row-card {
+    .project-card-horizontal {
         flex-direction: column;
         align-items: flex-start;
+    }
+    .project-thumb-hz {
+        width: 100%;
+        height: 140px;
     }
 }
