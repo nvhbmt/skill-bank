@@ -6,12 +6,13 @@ import { supabase } from '@/lib/supabase';
 export const GET: APIRoute = async ({ url, redirect }) => {
     try {
         const redirectTo = url.searchParams.get('redirect_to') || url.origin;
-        
+        console.log('redirectTo', `${redirectTo}/api/auth/callback`);
         // Get the OAuth URL for Facebook
+        // Use callback-handler page to handle hash fragment
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'facebook',
             options: {
-                redirectTo: `${redirectTo}/api/auth/callback`,
+                redirectTo: `${redirectTo}/auth/callback-handler`,
             },
         });
 
@@ -30,4 +31,3 @@ export const GET: APIRoute = async ({ url, redirect }) => {
         return redirect(`${url.origin}/sign-in?error=oauth_failed`, 302);
     }
 };
-

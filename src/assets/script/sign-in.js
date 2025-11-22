@@ -155,12 +155,16 @@ document.addEventListener('DOMContentLoaded', () => {
         facebookLoginBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             try {
-                const currentLang = window.location.pathname.split('/')[1] || 'vi';
-                const redirectTo = `${window.location.origin}/${currentLang}`;
+                const currentLang =
+                    window.location.pathname.split('/')[1] || 'vi';
+                const redirectTo = `${window.location.origin}`;
                 window.location.href = `/api/auth/facebook?redirect_to=${encodeURIComponent(redirectTo)}`;
             } catch (error) {
                 console.error('Error initiating Facebook login:', error);
-                alert(window.loginUIMessages?.errorGeneric || 'Có lỗi xảy ra khi đăng nhập với Facebook');
+                alert(
+                    window.loginUIMessages?.errorGeneric ||
+                        'Có lỗi xảy ra khi đăng nhập với Facebook'
+                );
             }
         });
     }
@@ -174,4 +178,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
