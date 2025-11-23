@@ -6,6 +6,7 @@ const {} = Astro.props;
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import NotificationDropdown from '@/components/NotificationDropdown.astro';
+import UserDropdown from '@/components/UserDropdown.astro';
 export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
@@ -25,12 +26,12 @@ if (user) {
         .is('deleted_at', null)
         .single();
     if (!userError && userData) {
-        avatarUrl = userData.avatar_url ?? '/assets/images/avatar-default-icon.png';
-		userName = userData.full_name;
-		userUsername = userData.username;
+        avatarUrl =
+            userData.avatar_url ?? '/assets/images/avatar-default-icon.png';
+        userName = userData.full_name;
+        userUsername = userData.username;
     }
 }
-
 ---
 
 <header class="header">
@@ -40,7 +41,9 @@ if (user) {
                 <img src="/assets/images/logo-full-ngang.svg" alt="logo" />
             </a>
             <nav class="header-nav">
-                <a href={l('/explore')} class="header-nav-link">{t('header.explore')}</a>
+                <a href={l('/explore')} class="header-nav-link"
+                    >{t('header.explore')}</a
+                >
             </nav>
             <select
                 name="language"
@@ -67,79 +70,7 @@ if (user) {
                             {t('header.createProject')}
                         </a>
 
-                        <!-- === PHẦN SỬA ĐỔI: DROPDOWN MENU MỚI === -->
-                        <div class="user-avatar-dropdown">
-                            <div
-                                class="user-avatar-dropdown__trigger"
-                                id="avatar-button"
-                                aria-label="User menu"
-                            >
-                                <img
-                                    src={avatarUrl}
-                                    alt={userName}
-                                    class="user-avatar-dropdown__avatar"
-                                />
-                            </div>
-
-                            <!-- Dropdown Menu Structure -->
-                            <div class="user-avatar-dropdown__menu" id="avatar-dropdown-menu">
-                                <!-- 1. Header: Avatar + Info -->
-                                <a href={l(`/profile/${userUsername}`)}
-								class="dropdown-profile-section">
-                                    <img src={avatarUrl} alt={userName} class="dropdown-profile-avatar" />
-                                    <div class="dropdown-profile-info">
-                                        <p class="dropdown-profile-name">{userName}</p>
-                                        <p class="dropdown-profile-username">@{userUsername}</p>
-                                    </div>
-                                </a>
-
-                                <div class="dropdown-divider"></div>
-
-                                <!-- 2. Main Navigation -->
-                                <a href={l('/')} class="dropdown-item">
-                                    <div class="dropdown-icon"><ion-icon name="grid-outline"></ion-icon></div>
-                                    <span>{t('header.dashboard')}</span>
-                                </a>
-								{
-									user && user.user_metadata.role === 'admin' && (
-									<a href={l('/admin')} class="dropdown-item">
-										<div class="dropdown-icon"><ion-icon name="key-outline"></ion-icon></div>
-										<span>{t('header.adminPanel')}</span>
-									</a>
-									)
-								}
-                                <a href={l('/my-project')} class="dropdown-item">
-                                    <div class="dropdown-icon"><ion-icon name="folder-open-outline"></ion-icon></div>
-                                    <span>{t('header.myProject')}</span>
-                                </a>
-
-                                <div class="dropdown-divider"></div>
-
-                                <!-- 3. Sub Navigation -->
-                                <a href={l('/about-us')} class="dropdown-item">
-                                    <div class="dropdown-icon"><ion-icon name="information-circle-outline"></ion-icon></div>
-                                    <span>{t('header.aboutUs')}</span>
-                                </a>
-                                <a href={l('/help')} class="dropdown-item">
-                                    <div class="dropdown-icon"><ion-icon name="help-circle-outline"></ion-icon></div>
-                                    <span>{t('header.help')}</span>
-                                </a>
-                                <a href={l('/change-password')} class="dropdown-item">
-                                    <div class="dropdown-icon"><ion-icon name="lock-closed-outline"></ion-icon></div>
-                                    <span>{t('header.doiMK')}</span>
-                                </a>
-
-                                <div class="dropdown-divider"></div>
-
-                                <!-- 4. Logout -->
-                                <button class="dropdown-item dropdown-item-logout" id="logout-button">
-                                    <div class="dropdown-icon"><ion-icon name="log-out-outline"></ion-icon></div>
-                                    <span>{t('header.dangXuat')}</span>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- === KẾT THÚC PHẦN SỬA ĐỔI === -->
-
+                        <UserDropdown />
                     </div>
                 ) : (
                     <div class="header-auth">
@@ -295,7 +226,7 @@ if (user) {
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-		text-decoration: none;
+        text-decoration: none;
     }
 
     .header-create-btn:hover {
@@ -354,174 +285,6 @@ if (user) {
         transform: translateY(0);
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
     }
-
-    /* User Avatar Dropdown Styles */
-    .user-avatar-dropdown {
-        position: relative;
-    }
-
-    .user-avatar-dropdown__trigger {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 3.6rem;
-        height: 3.6rem;
-        padding: 0;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        background: none;
-        cursor: pointer;
-        outline: none;
-        overflow: hidden;
-        transition: all 0.2s ease;
-    }
-
-    .user-avatar-dropdown__trigger:hover {
-        transform: scale(1.05);
-        border-color: var(--color-purple-button);
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
-    }
-
-    .user-avatar-dropdown__avatar {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        display: block;
-    }
-
-    /* --- STYLE DROPDOWN MỚI (GIỐNG ẢNH) --- */
-    .user-avatar-dropdown__menu {
-        position: absolute;
-        top: calc(100% + 1.2rem);
-        right: 0;
-        min-width: 240px; /* Rộng hơn để chứa thông tin profile */
-        background: rgba(30, 30, 35, 0.98); /* Màu tối đậm */
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        padding: 0.8rem;
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transform: translateY(-8px);
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 10000;
-    }
-
-    .user-avatar-dropdown__menu.active {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-        transform: translateY(0);
-    }
-
-    /* 1. Profile Header Section */
-    .dropdown-profile-section {
-        display: flex;
-        align-items: center;
-        gap: 1.2rem;
-        padding: 0.8rem;
-        margin-bottom: 0.4rem;
-		text-decoration: none;
-        border-radius: 10px;
-        transition: background-color 0.2s ease;
-    }
-
-    .dropdown-profile-avatar {
-        width: 4rem;
-        height: 4rem;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid var(--color-purple-button);
-    }
-
-    .dropdown-profile-info {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-		gap: 0.2rem;
-    }
-
-    .dropdown-profile-name {
-        font-size: var(--font-size-base);
-        color: #ffffff;
-        margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .dropdown-profile-username {
-        font-size: var(--font-size-sm);
-        color: var(--color-accent);
-        margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* 2. Divider Line */
-    .dropdown-divider {
-        height: 1px;
-        background-color: rgba(255, 255, 255, 0.15);
-        margin: 0.4rem 0;
-    }
-
-    /* 3. Items Style */
-    .dropdown-item {
-        display: flex;
-        align-items: center;
-        gap: 1.2rem;
-        width: 100%;
-        padding: 1rem 1.2rem;
-        border: none;
-        background: none;
-        text-align: left;
-        text-decoration: none;
-        font-size: var(--font-size-base);
-        font-weight: 500;
-        color: #e4e4e7; /* Trắng xám */
-        cursor: pointer;
-        border-radius: 10px;
-        transition: background-color 0.2s ease;
-    }
-
-    .dropdown-item:hover, .dropdown-profile-section:hover  {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-    }
-
-    .dropdown-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2rem; /* Cố định chiều rộng icon */
-        font-size: 1.8rem;
-        color: #a1a1aa;
-    }
-
-    .dropdown-item:hover .dropdown-icon {
-        color: #ffffff;
-    }
-
-    /* 4. Logout Style */
-    .dropdown-item-logout {
-        color: #f87171; /* Đỏ nhạt */
-    }
-    .dropdown-item-logout .dropdown-icon {
-        color: #f87171;
-    }
-    .dropdown-item-logout:hover {
-        background-color: rgba(239, 68, 68, 0.15);
-        color: #fca5a5; /* Đỏ sáng hơn khi hover */
-    }
-    .dropdown-item-logout:hover .dropdown-icon {
-        color: #fca5a5;
-    }
-    /* --- KẾT THÚC STYLE DROPDOWN MỚI --- */
 </style>
 
 <script

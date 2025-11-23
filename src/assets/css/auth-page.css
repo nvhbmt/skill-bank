@@ -1,0 +1,112 @@
+/* Common styles for auth pages (forgot-password, enter-code, set-new-password) */
+.auth-page {
+    flex-direction: column;
+    height: 100vh;
+    display: flex;
+    background-color: #0f0f1a;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.head {
+    font-size: var(--font-size-sm);
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 3rem;
+    padding-top: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.head span {
+    font-family: 'Open Sans', sans-serif;
+    color: var(--color-bg-light);
+}
+
+.head a {
+    font-family: 'Open Sans', sans-serif;
+    text-decoration: none;
+    color: var(--color-purple-text);
+    margin-left: 0.5rem;
+    transition: color 0.1s linear;
+}
+
+.head a:hover {
+    color: var(--color-purple-text-hover);
+}
+
+.hero {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    padding-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-section img {
+    width: 12rem;
+    max-width: 12rem;
+    height: auto;
+}
+
+.hero-section h1 {
+    margin-top: 0;
+    margin-bottom: 2.4rem;
+    color: var(--color-bg-light);
+    font-size: var(--font-size-3xl);
+    font-weight: 600;
+}
+
+.hero-section a {
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    margin-top: 1.6rem;
+    font-weight: 400;
+    color: var(--color-purple-text);
+    transition: color 0.1s linear;
+}
+
+.hero-section a:hover {
+    color: var(--color-purple-text-hover);
+}
+
+@media (max-width: 1024px) {
+    .hero-section img {
+        width: 10rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section img {
+        width: 8rem;
+    }
+    .head {
+        padding-top: 1.5rem;
+        padding-right: 2rem;
+    }
+}
+

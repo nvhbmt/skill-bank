@@ -1,0 +1,108 @@
+---
+interface Props {
+    id: string;
+    icon: string;
+    title: string;
+    message: string;
+    buttonText: string;
+    onCloseFunction: string;
+}
+
+const { id, icon, title, message, buttonText, onCloseFunction } = Astro.props;
+---
+
+<div id={id} class="success-dialog">
+    <div class="success-dialog-content">
+        <div class="success-dialog-icon">{icon}</div>
+        <h2 class="success-dialog-title">{title}</h2>
+        <p class="success-dialog-message" set:html={message}></p>
+        <button class="success-dialog-button" onclick={onCloseFunction}>
+            {buttonText}
+        </button>
+    </div>
+</div>
+
+<style>
+    .success-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100000;
+        padding: 2rem;
+    }
+
+    .success-dialog.active {
+        display: flex;
+    }
+
+    .success-dialog-content {
+        background: rgba(30, 30, 35, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 3rem;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        text-align: center;
+    }
+
+    .success-dialog-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+        color: white;
+        font-size: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+    }
+
+    .success-dialog-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0 0 1rem 0;
+    }
+
+    .success-dialog-message {
+        font-size: 1.6rem;
+        color: #d1d5db;
+        line-height: 1.6;
+        margin: 0 0 2.4rem 0;
+    }
+
+    .success-dialog-button {
+        width: 100%;
+        padding: 1.2rem 2.4rem;
+        border-radius: 12px;
+        font-size: 1.6rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+    }
+
+    .success-dialog-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.7);
+    }
+
+    .success-dialog-button:active {
+        transform: translateY(0);
+    }
+</style>
+

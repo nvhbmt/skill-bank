@@ -1,5 +1,5 @@
 ---
-import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import AuthPageLayout from '@/layouts/AuthPageLayout.astro';
 import '@/assets/css/enter-code.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 export { getStaticPaths };
@@ -7,43 +7,30 @@ export { getStaticPaths };
 const { lang, t, l } = useTranslate(Astro);
 ---
 
-<DefaultLayout>
-    <section class="enter-code-page">
-        <div class="grid-overlay"></div>
-        <div class="hero">
-            <div class="hero-section">
-                <a href={l('/')}
-                    ><img src="/assets/images/logo.png" alt="logo" /></a
-                >
-
-                <h1>{t('enter-code.title')}</h1>
-
-                <form action="#" method="post">
-                    <div class="input">
-                        <input class="otp-input" type="text" maxlength="1" />
-                        <input class="otp-input" type="text" maxlength="1" />
-                        <input class="otp-input" type="text" maxlength="1" />
-                        <input class="otp-input" type="text" maxlength="1" />
-                        <input class="otp-input" type="text" maxlength="1" />
-                        <input class="otp-input" type="text" maxlength="1" />
-                    </div>
-
-                    <div class="no-mail">
-                        <span>{t('enter-code.noEmail')}</span>
-                        <button class="resent" type="button"
-                            >{t('enter-code.resent')}</button
-                        >
-                    </div>
-
-                    <button class="continue">{t('enter-code.continue')}</button>
-                </form>
-
-                <a href={l('/')}>
-                    <i class="fa-solid fa-arrow-rotate-left"></i>
-                    {t('enter-code.backToSignIn')}
-                </a>
-            </div>
+<AuthPageLayout
+    pageClass="enter-code-page auth-page"
+    title={t('enter-code.title')}
+    backLink={l('/')}
+    backLinkText={t('enter-code.backToSignIn')}
+>
+    <form slot="form" action="#" method="post">
+        <div class="input">
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
         </div>
-    </section>
-    <script src="@/assets/script/enter-code.js"></script>
-</DefaultLayout>
+
+        <div class="no-mail">
+            <span>{t('enter-code.noEmail')}</span>
+            <button class="resent" type="button"
+                >{t('enter-code.resent')}</button
+            >
+        </div>
+
+        <button class="continue">{t('enter-code.continue')}</button>
+    </form>
+</AuthPageLayout>
+<script src="@/assets/script/enter-code.js"></script>

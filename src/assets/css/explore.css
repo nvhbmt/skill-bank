@@ -1,15 +1,3 @@
-/* --- 1. ĐỊNH NGHĨA BIẾN CHUẨN (Dựa trên root ông cung cấp) --- */
-:root {
-    /* --- BIẾN BỔ SUNG CHO HOMEPAGE (Dark Theme) --- */
-    --color-card-glass: rgba(255, 255, 255, 0.03);
-    --color-card-border: rgba(255, 255, 255, 0.1);
-    --color-purple-glow: rgba(124, 58, 237, 0.6);
-    --color-blue-glow: rgba(59, 130, 246, 0.6);
-    --color-project-card-bg: #ede9fe;
-    --color-project-text: #2e1065;
-    --color-text-gray: #9ca3af;
-}
-
 body {
     background-color: #0f0f1a; /* Nền tối */
 }
@@ -68,8 +56,22 @@ body {
 
 .project-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 2.5rem;
+}
+
+@media (max-width: 1024px) {
+    .project-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .project-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
 }
 .project-image {
     width: 300px;

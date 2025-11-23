@@ -1,0 +1,57 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import '@/assets/css/auth-page.css';
+
+interface Props {
+    pageClass: string;
+    title: string;
+    showHead?: boolean;
+    headText?: string;
+    headLink?: string;
+    headLinkText?: string;
+    backLink: string;
+    backLinkText: string;
+}
+
+const {
+    pageClass,
+    title,
+    showHead = false,
+    headText,
+    headLink,
+    headLinkText,
+    backLink,
+    backLinkText,
+} = Astro.props;
+---
+
+<DefaultLayout>
+    <section class={pageClass}>
+        <div class="grid-overlay"></div>
+        {
+            showHead && (
+                <div class="head">
+                    <span>{headText}</span>
+                    {headLink && <a href={headLink}>{headLinkText}</a>}
+                </div>
+            )
+        }
+
+        <div class="hero">
+            <div class="hero-section">
+                <a href="/">
+                    <img src="/assets/images/logo.png" alt="logo" />
+                </a>
+
+                <h1>{title}</h1>
+
+                <slot name="form" />
+
+                <a href={backLink}>
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                    {backLinkText}
+                </a>
+            </div>
+        </div>
+    </section>
+</DefaultLayout>

@@ -9,96 +9,9 @@
     window.headerInitialized = true;
 
     function initHeader() {
-        const avatarButton = document.getElementById('avatar-button');
-        const dropdownMenu = document.getElementById(
-            'avatar-dropdown-menu'
-        );
-        const logoutButton = document.getElementById('logout-button');
         const languageSelect = document.getElementById('choose-language');
         const notificationButton = document.getElementById('notification-button');
         const notificationDropdown = document.getElementById('notification-dropdown-menu');
-
-        // Toggle dropdown menu
-        if (avatarButton && dropdownMenu) {
-            // Remove existing listeners to prevent duplicates
-            const newAvatarButton = avatarButton.cloneNode(true);
-            avatarButton.parentNode?.replaceChild(
-                newAvatarButton,
-                avatarButton
-            );
-            const newButton = document.getElementById('avatar-button');
-
-            if (newButton) {
-                newButton.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const menu = document.getElementById(
-                        'avatar-dropdown-menu'
-                    );
-                    if (menu) {
-                        const isActive = menu.classList.contains('active');
-                        if (isActive) {
-                            menu.classList.remove('active');
-                        } else {
-                            menu.classList.add('active');
-                        }
-                    }
-                });
-            }
-
-            // Close dropdown when clicking outside
-            const clickOutsideHandler = function (e) {
-                const target = e.target;
-                if (!target) return;
-                const button = document.getElementById('avatar-button');
-                const menu = document.getElementById(
-                    'avatar-dropdown-menu'
-                );
-                if (button && menu) {
-                    const isClickInside =
-                        button.contains(target) || menu.contains(target);
-
-                    if (
-                        !isClickInside &&
-                        menu.classList.contains('active')
-                    ) {
-                        menu.classList.remove('active');
-                    }
-                }
-            };
-
-            // Remove old listener if exists
-            document.removeEventListener('click', clickOutsideHandler);
-            document.addEventListener('click', clickOutsideHandler);
-
-            // Close dropdown when clicking on menu items (except logout)
-            const menuItems = dropdownMenu.querySelectorAll(
-                '.dropdown-item'
-            );
-            menuItems.forEach(function (item) {
-                if (item.id !== 'logout-button') {
-                    item.addEventListener('click', function () {
-                        dropdownMenu.classList.remove('active');
-                    });
-                }
-            });
-        }
-
-        // Logout functionality
-        if (logoutButton) {
-            const logoutHandler = async function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const response = await fetch('/api/auth/sign-out', {
-                    method: 'POST',
-                });
-                if (response.ok) {
-                    window.location.href = '/' + lang + '/';
-                }
-            };
-            logoutButton.removeEventListener('click', logoutHandler);
-            logoutButton.addEventListener('click', logoutHandler);
-        }
 
         // Language selector
         if (languageSelect) {
@@ -204,9 +117,10 @@
                             menu.classList.remove('active');
                         } else {
                             menu.classList.add('active');
-                            // Close avatar dropdown if open
-                            if (dropdownMenu) {
-                                dropdownMenu.classList.remove('active');
+                            // Close user dropdown if open
+                            const userDropdownMenu = document.getElementById('avatar-dropdown-menu');
+                            if (userDropdownMenu) {
+                                userDropdownMenu.classList.remove('active');
                             }
 
                             // Setup notification item handlers when dropdown opens
@@ -292,13 +206,9 @@
 
     // Fallback initialization after a delay
     setTimeout(function () {
-        const avatarButton = document.getElementById('avatar-button');
-        const dropdownMenu = document.getElementById(
-            'avatar-dropdown-menu'
-        );
         const notificationButton = document.getElementById('notification-button');
         const notificationDropdown = document.getElementById('notification-dropdown-menu');
-        if ((avatarButton && dropdownMenu) || (notificationButton && notificationDropdown)) {
+        if (notificationButton && notificationDropdown) {
             initHeader();
         }
     }, 200);
