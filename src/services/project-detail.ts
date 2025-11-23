@@ -7,7 +7,11 @@ export type ProjectDetailData = {
         Tables<'user_info'>,
         'user_id' | 'email' | 'full_name' | 'username' | 'avatar_url'
     > | null;
-    projectSkills: Array<Pick<Tables<'skills'>, 'id' | 'name' | 'category'>>;
+    projectSkills: Array<
+        Pick<Tables<'skills'>, 'id' | 'name' | 'category'> & {
+            description: string | null;
+        }
+    >;
     members: Array<
         Pick<
             Tables<'user_info'>,
@@ -65,18 +69,23 @@ export async function getProjectDetailById(
             owner = ownerData;
         }
 
-        // Fetch project skills
+        // Fetch project skills with descriptions
         let projectSkills: Array<
-            Pick<Tables<'skills'>, 'id' | 'name' | 'category'>
+            Pick<Tables<'skills'>, 'id' | 'name' | 'category'> & {
+                description: string | null;
+            }
         > = [];
 
         const { data: projectSkillsData, error: skillsError } = await supabase
             .from('project_skills')
-            .select('skill_id')
+            .select('skill_id, description')
             .eq('project_id', projectId);
 
         if (!skillsError && projectSkillsData && projectSkillsData.length > 0) {
             const skillIds = projectSkillsData.map((ps) => ps.skill_id);
+            const skillsDescriptionMap = new Map(
+                projectSkillsData.map((ps) => [ps.skill_id, ps.description])
+            );
 
             const { data: skillsData, error: skillsDataError } = await supabase
                 .from('skills')
@@ -84,7 +93,10 @@ export async function getProjectDetailById(
                 .in('id', skillIds);
 
             if (!skillsDataError && skillsData) {
-                projectSkills = skillsData;
+                projectSkills = skillsData.map((skill) => ({
+                    ...skill,
+                    description: skillsDescriptionMap.get(skill.id) || null,
+                }));
             }
         }
 

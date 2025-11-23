@@ -1,6 +1,7 @@
 ---
 import '@/assets/css/create-project.css';
 import Header from '@/components/Header.astro';
+import SkillDetailDialog from '@/components/SkillDetailDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import { getAllSkills } from '@/services/skills';
@@ -148,7 +149,7 @@ const skills = await getAllSkills();
                                             <div class="skill-label-wrapper">
                                                 <label for="skill-1"
                                                     >{
-                                                        t('create-project.KN1')
+                                                        t('create-project.KN')
                                                     }</label
                                                 >
                                                 <!-- Nút xóa sẽ được JS thêm vào đây -->
@@ -184,11 +185,20 @@ const skills = await getAllSkills();
                                                     }
                                                 </select>
 
+                                                <!-- Hidden input để lưu mô tả skill -->
+                                                <input
+                                                    type="hidden"
+                                                    name="skill-1-description"
+                                                    class="skill-description-input"
+                                                    value=""
+                                                />
+
                                                 <!-- Nút "Chi tiết" -->
                                                 <button
                                                     type="button"
                                                     class="btn-skill-detail"
                                                     title="Thêm chi tiết cho kỹ năng này"
+                                                    data-skill-index="1"
                                                 >
                                                     <span
                                                         >{
@@ -315,6 +325,8 @@ const skills = await getAllSkills();
             </div>
         </main>
     </div>
+
+    <SkillDetailDialog skills={skills} />
 
     <script src="@/assets/script/create-project.js"></script>
 </DefaultLayout>

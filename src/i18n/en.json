@@ -343,7 +343,8 @@
         "skill3": "Skill 3",
         "job": "Job Description",
         "text": "text",
-        "btn": "Confirm"
+        "btn": "Confirm",
+        "cancel": "Cancel"
     },
     "box-project-collab": {
         "title": "Exchange Skill",

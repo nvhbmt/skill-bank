@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import Header from '@/components/Header.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
 import ShareDialog from '@/components/ShareDialog.astro';
+import ProjectSkillDetailDialog from '@/components/ProjectSkillDetailDialog.astro';
 import '@/assets/css/project.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { getProjectDetailById } from '@/services/project-detail';
@@ -256,13 +257,21 @@ function formatDate(dateString: string | null): string {
                                                             : ''}
                                                     </div>
                                                     {!isOwner && !isMember && (
-                                                        <a
-                                                            href={l(
-                                                                `/submit-application/${project?.id}`
-                                                            )}
+                                                        <button
+                                                            type="button"
                                                             class="btn-skill-detail"
                                                             title={t(
                                                                 'project-detail-collab.viewDetails'
+                                                            )}
+                                                            data-skill-name={
+                                                                skill.name
+                                                            }
+                                                            data-skill-description={
+                                                                skill.description ||
+                                                                ''
+                                                            }
+                                                            data-application-url={l(
+                                                                `/submit-application/${project?.id}`
                                                             )}
                                                         >
                                                             <span>
@@ -270,7 +279,7 @@ function formatDate(dateString: string | null): string {
                                                                     'project-detail-collab.ungTuyen'
                                                                 )}
                                                             </span>
-                                                        </a>
+                                                        </button>
                                                     )}
                                                 </div>
                                             </div>
@@ -376,6 +385,13 @@ function formatDate(dateString: string | null): string {
         copiedButtonText={t('project-detail-creator.copiedButton')}
         closeButtonText={t('project-detail-creator.closeButton')}
     />
+
+    <!-- Project Skill Detail Dialog (will be populated dynamically) -->
+    <ProjectSkillDetailDialog
+        skillName=""
+        skillDescription=""
+        applicationUrl=""
+    />
 </DefaultLayout>
 
 <script
@@ -450,6 +466,81 @@ function formatDate(dateString: string | null): string {
                     window.openShareProjectDialog(currentUrl);
                 }
             });
+        }
+
+        // Project skill detail dialog handlers
+        const skillDetailButtons = document.querySelectorAll(
+            '.btn-skill-detail[data-skill-name]'
+        );
+        const dialog = document.getElementById('project-skill-detail-dialog');
+        const dialogSelect = document.getElementById('project-skill-select');
+        const dialogTextarea = document.getElementById(
+            'project-skill-description'
+        );
+        const dialogApplyBtn = document.getElementById('apply-project-skill');
+        const dialogCloseBtn = document.getElementById(
+            'close-project-skill-dialog'
+        );
+        const dialogCancelBtn = document.getElementById(
+            'cancel-project-skill-dialog'
+        );
+
+        function openSkillDetailDialog(
+            skillName,
+            skillDescription,
+            applicationUrl
+        ) {
+            if (!dialog || !dialogSelect || !dialogTextarea || !dialogApplyBtn)
+                return;
+
+            // Update dialog content
+            dialogSelect.innerHTML = `<option value="${skillName}" selected>${skillName}</option>`;
+            dialogTextarea.value = skillDescription || '';
+            dialogApplyBtn.href = applicationUrl;
+
+            // Show dialog
+            dialog.classList.add('active');
+        }
+
+        function closeSkillDetailDialog() {
+            if (dialog) {
+                dialog.classList.remove('active');
+            }
+        }
+
+        // Add click handlers to skill detail buttons
+        skillDetailButtons.forEach((button) => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const skillName = button.getAttribute('data-skill-name') || '';
+                const skillDescription =
+                    button.getAttribute('data-skill-description') || '';
+                const applicationUrl =
+                    button.getAttribute('data-application-url') || '';
+
+                openSkillDetailDialog(
+                    skillName,
+                    skillDescription,
+                    applicationUrl
+                );
+            });
+        });
+
+        // Close dialog handlers
+        if (dialogCloseBtn) {
+            dialogCloseBtn.addEventListener('click', closeSkillDetailDialog);
+        }
+
+        if (dialogCancelBtn) {
+            dialogCancelBtn.addEventListener('click', closeSkillDetailDialog);
+        }
+
+        // Close on overlay click
+        const overlay = dialog?.querySelector(
+            '.project-skill-detail-dialog-overlay'
+        );
+        if (overlay) {
+            overlay.addEventListener('click', closeSkillDetailDialog);
         }
     })();
 </script>

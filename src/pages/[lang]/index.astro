@@ -66,7 +66,7 @@ const featuredProfiles = await getFeaturedProfiles();
                 </section>
 
                 <!-- 2. TECH MARQUEE -->
-                <section class="tech-marquee">
+                <section class="tech-marquee fade-in">
                     <div class="marquee-content">
                         <div class="tech-item">
                             <i class="fa-brands fa-react"></i> React
@@ -106,7 +106,7 @@ const featuredProfiles = await getFeaturedProfiles();
                 </section>
 
                 <!-- 3. STATS SECTION -->
-                <section class="section-stats">
+                <section class="section-stats fade-in">
                     <div class="stats-grid">
                         <div class="stat-card">
                             <span class="stat-number">500+</span><span
@@ -134,7 +134,7 @@ const featuredProfiles = await getFeaturedProfiles();
                 </section>
 
                 <!-- 4. FEATURED PROJECTS -->
-                <section class="section-projects">
+                <section class="section-projects fade-in">
                     <div class="section-header">
                         <h2 class="section-title">
                             {t('home.sectionProjects')}
@@ -151,7 +151,7 @@ const featuredProfiles = await getFeaturedProfiles();
                 </section>
 
                 <!-- 5. FEATURED PROFILES -->
-                <section class="section-profiles">
+                <section class="section-profiles fade-in">
                     <div class="section-header">
                         <h2 class="section-title">
                             {t('home.sectionProfiles')}
@@ -201,7 +201,7 @@ const featuredProfiles = await getFeaturedProfiles();
                 </section>
 
                 <!-- 6. FAQ & CTA -->
-                <section class="section-faq">
+                <section class="section-faq fade-in">
                     <div class="section-header">
                         <h2 class="section-title">{t('home.sectionFAQ')}</h2>
                         <div class="section-divider"></div>
@@ -225,7 +225,7 @@ const featuredProfiles = await getFeaturedProfiles();
                     </div>
                 </section>
 
-                <section class="section-cta">
+                <section class="section-cta fade-in">
                     <div class="cta-section">
                         <div class="cta-content">
                             <h2 class="cta-title">{t('home.ctaTitle')}</h2>
@@ -245,3 +245,5 @@ const featuredProfiles = await getFeaturedProfiles();
         <Footer />
     </div>
 </DefaultLayout>
+
+<script src="@/assets/script/homepage-scroll.js"></script>

@@ -126,14 +126,110 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupDetailButton(button) {
-        button.addEventListener('click', () => {
-            const isFilled = button.classList.contains('filled');
-            if (!isFilled) {
-                button.classList.add('filled');
-            } else {
-                // Toggle logic...
-            }
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const skillItem = button.closest('.skill-item');
+            if (!skillItem) return;
+
+            const skillIndex = button.getAttribute('data-skill-index');
+            const skillSelect = skillItem.querySelector('.skill-select');
+            const descriptionInput = skillItem.querySelector('.skill-description-input');
+            
+            const selectedSkill = skillSelect ? skillSelect.value : '';
+            const currentDescription = descriptionInput ? descriptionInput.value : '';
+
+            // Open dialog
+            openSkillDetailDialog(selectedSkill, currentDescription, skillIndex, skillItem);
         });
+    }
+
+    function openSkillDetailDialog(selectedSkill, description, skillIndex, skillItem) {
+        const dialog = document.getElementById('skill-detail-dialog');
+        const dialogSelect = document.getElementById('skill-detail-select');
+        const dialogTextarea = document.getElementById('skill-detail-description');
+        const saveBtn = document.getElementById('save-skill-detail');
+        const closeBtn = document.getElementById('close-skill-dialog');
+        const cancelBtn = document.getElementById('cancel-skill-dialog');
+
+        if (!dialog || !dialogSelect || !dialogTextarea || !saveBtn) return;
+
+        // Set current values
+        if (dialogSelect) {
+            dialogSelect.value = selectedSkill;
+        }
+        if (dialogTextarea) {
+            dialogTextarea.value = description;
+        }
+
+        // Show dialog
+        dialog.classList.add('active');
+
+        // Save handler
+        const saveHandler = () => {
+            const newSkill = dialogSelect.value;
+            const newDescription = dialogTextarea.value.trim();
+
+            // Update skill select if changed
+            const skillSelect = skillItem.querySelector('.skill-select');
+            if (skillSelect && newSkill) {
+                skillSelect.value = newSkill;
+            }
+
+            // Update description input
+            const descriptionInput = skillItem.querySelector('.skill-description-input');
+            if (descriptionInput) {
+                descriptionInput.value = newDescription;
+            }
+
+            // Update button state
+            const detailButton = skillItem.querySelector('.btn-skill-detail');
+            if (detailButton) {
+                if (newDescription) {
+                    detailButton.classList.add('filled');
+                } else {
+                    detailButton.classList.remove('filled');
+                }
+            }
+
+            closeSkillDetailDialog();
+        };
+
+        // Close handler
+        const closeHandler = () => {
+            closeSkillDetailDialog();
+        };
+
+        // Remove old listeners
+        saveBtn.replaceWith(saveBtn.cloneNode(true));
+        closeBtn.replaceWith(closeBtn.cloneNode(true));
+        cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+
+        // Get new elements
+        const newSaveBtn = document.getElementById('save-skill-detail');
+        const newCloseBtn = document.getElementById('close-skill-dialog');
+        const newCancelBtn = document.getElementById('cancel-skill-dialog');
+
+        // Add new listeners
+        newSaveBtn.addEventListener('click', saveHandler);
+        newCloseBtn.addEventListener('click', closeHandler);
+        newCancelBtn.addEventListener('click', closeHandler);
+
+        // Close on overlay click
+        const overlay = dialog.querySelector('.skill-detail-dialog-overlay');
+        if (overlay) {
+            overlay.replaceWith(overlay.cloneNode(true));
+            const newOverlay = dialog.querySelector('.skill-detail-dialog-overlay');
+            newOverlay.addEventListener('click', closeHandler);
+        }
+    }
+
+    function closeSkillDetailDialog() {
+        const dialog = document.getElementById('skill-detail-dialog');
+        if (dialog) {
+            dialog.classList.remove('active');
+        }
     }
 
     if (addSkillButton && skillListContainer) {
@@ -149,11 +245,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const newItem = lastItem.cloneNode(true);
             const select = newItem.querySelector('select');
-            if (select) select.value = '';
+            if (select) {
+                select.value = '';
+                // Update select id and name
+                const newIndex = skillListContainer.children.length + 1;
+                select.id = `skill-${newIndex}`;
+                select.name = `skill-${newIndex}`;
+            }
+
+            // Update description input
+            const descriptionInput = newItem.querySelector('.skill-description-input');
+            if (descriptionInput) {
+                const newIndex = skillListContainer.children.length + 1;
+                descriptionInput.name = `skill-${newIndex}-description`;
+                descriptionInput.value = '';
+            }
 
             const detailBtn = newItem.querySelector('.btn-skill-detail');
             if (detailBtn) {
                 detailBtn.classList.remove('filled');
+                const newIndex = skillListContainer.children.length + 1;
+                detailBtn.setAttribute('data-skill-index', newIndex.toString());
                 setupDetailButton(detailBtn);
             }
 

@@ -6,15 +6,35 @@ import { createProjectSchema } from '@/schemas/project';
 import normalizeZodError from '@/utils/normalizeZodError';
 import httpResponse from '@/utils/response';
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const PUT: APIRoute = async ({ params, request, locals }) => {
     try {
         const session = locals.session;
         if (!session?.user) {
-            return httpResponse.fail('Bạn cần đăng nhập để tạo dự án', 401);
+            return httpResponse.fail('Bạn cần đăng nhập để cập nhật dự án', 401);
         }
 
-        // Create authenticated Supabase client
         const authenticatedSupabase = createAuthenticatedClient(session);
+
+        const projectId = parseInt(params?.projectId || '0');
+        if (isNaN(projectId) || projectId <= 0) {
+            return httpResponse.fail('ID dự án không hợp lệ', 400);
+        }
+
+        // Check if user is project owner
+        const { data: project, error: projectError } = await authenticatedSupabase
+            .from('projects')
+            .select('owner_id')
+            .eq('id', projectId)
+            .is('deleted_at', null)
+            .single();
+
+        if (projectError || !project) {
+            return httpResponse.fail('Dự án không tồn tại', 404);
+        }
+
+        if (project.owner_id !== session.user.id) {
+            return httpResponse.fail('Bạn không có quyền cập nhật dự án này', 403);
+        }
 
         const formData = await request.formData();
         const coverImage = formData.get('cover_image') as File | null;
@@ -26,7 +46,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
             category: formData.get('category'),
             start_date: formData.get('start_date'),
             description: formData.get('description'),
-            terms: formData.get('terms'),
+            terms: 'on', // Not required for update
         });
 
         if (!validated.success) {
@@ -35,38 +55,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 400,
                 normalizeZodError(validated)
             );
-        }
-
-        // Extract skills with descriptions and milestones from form data
-        const skills: Array<{ name: string; description?: string }> = [];
-        const milestones: string[] = [];
-
-        for (const [key, value] of formData.entries()) {
-            if (
-                key.startsWith('skill-') &&
-                !key.includes('-description') &&
-                value
-            ) {
-                const skillValue = value.toString().trim();
-                if (skillValue) {
-                    // Get description for this skill
-                    const skillIndex = key.replace('skill-', '');
-                    const descriptionKey = `skill-${skillIndex}-description`;
-                    const description =
-                        formData.get(descriptionKey)?.toString().trim() || null;
-
-                    skills.push({
-                        name: skillValue,
-                        description: description || undefined,
-                    });
-                }
-            }
-            if (key.startsWith('milestone-') && value) {
-                const milestoneValue = value.toString().trim();
-                if (milestoneValue) {
-                    milestones.push(milestoneValue);
-                }
-            }
         }
 
         // Upload cover image if provided
@@ -98,39 +86,68 @@ export const POST: APIRoute = async ({ request, locals }) => {
             coverImageUrl = publicUrl;
         }
 
-        // Create project
-        // Default status is 'pending' for newly created projects
-        const { data: project, error: projectError } =
-            await authenticatedSupabase
-                .from('projects')
-                .insert({
-                    title: validated.data.project_name,
-                    description: validated.data.description || null,
-                    location: validated.data.location || null,
-                    project_type: validated.data.category,
-                    start_date: validated.data.start_date,
-                    cover_image_url: coverImageUrl,
-                    owner_id: session.user.id,
-                    status: 'pending', // Default status for new projects
-                })
-                .select()
-                .single();
+        // Update project
+        const updateData: any = {
+            title: validated.data.project_name,
+            description: validated.data.description || null,
+            location: validated.data.location || null,
+            project_type: validated.data.category,
+            start_date: validated.data.start_date,
+        };
 
-        if (projectError || !project) {
+        if (coverImageUrl) {
+            updateData.cover_image_url = coverImageUrl;
+        }
+
+        const { error: updateError } = await authenticatedSupabase
+            .from('projects')
+            .update(updateData)
+            .eq('id', projectId);
+
+        if (updateError) {
             return httpResponse.fail(
-                'Lỗi khi tạo dự án: ' + projectError?.message,
+                'Lỗi khi cập nhật dự án: ' + updateError.message,
                 500
             );
         }
 
-        // Handle skills - create or find existing skills
-        if (skills.length > 0) {
-            const skillMap = new Map<
-                string,
-                { id: number; description?: string }
-            >();
+        // Extract skills with descriptions from form data
+        const skills: Array<{ name: string; description?: string }> = [];
+        const milestones: string[] = [];
 
-            // First, try to find existing skills (case-insensitive)
+        for (const [key, value] of formData.entries()) {
+            if (key.startsWith('skill-') && !key.includes('-description') && value) {
+                const skillValue = value.toString().trim();
+                if (skillValue) {
+                    const skillIndex = key.replace('skill-', '');
+                    const descriptionKey = `skill-${skillIndex}-description`;
+                    const description = formData.get(descriptionKey)?.toString().trim() || null;
+
+                    skills.push({
+                        name: skillValue,
+                        description: description || undefined,
+                    });
+                }
+            }
+            if (key.startsWith('milestone-') && value) {
+                const milestoneValue = value.toString().trim();
+                if (milestoneValue) {
+                    milestones.push(milestoneValue);
+                }
+            }
+        }
+
+        // Update project skills
+        if (skills.length > 0) {
+            // Delete existing project skills
+            await authenticatedSupabase
+                .from('project_skills')
+                .delete()
+                .eq('project_id', projectId);
+
+            const skillMap = new Map<string, { id: number; description?: string }>();
+
+            // Find or create skills
             for (const skill of skills) {
                 const { data: existingSkill } = await authenticatedSupabase
                     .from('skills')
@@ -144,7 +161,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
                         description: skill.description,
                     });
                 } else {
-                    // Create new skill if it doesn't exist
                     const { data: newSkill, error: createError } =
                         await authenticatedSupabase
                             .from('skills')
@@ -171,11 +187,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 }
             }
 
-            // Create project_skills entries with descriptions
+            // Insert new project skills
             if (skillMap.size > 0) {
                 const projectSkills = Array.from(skillMap.values()).map(
                     (skillData) => ({
-                        project_id: project.id,
+                        project_id: projectId,
                         skill_id: skillData.id,
                         description: skillData.description || null,
                     })
@@ -188,19 +204,31 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
                 if (projectSkillsError) {
                     return httpResponse.fail(
-                        'Lỗi khi thêm kỹ năng: ' + projectSkillsError.message,
+                        'Lỗi khi cập nhật kỹ năng: ' + projectSkillsError.message,
                         500
                     );
                 }
             }
+        } else {
+            // Delete all skills if none provided
+            await authenticatedSupabase
+                .from('project_skills')
+                .delete()
+                .eq('project_id', projectId);
         }
 
-        // Create project milestones
+        // Update project milestones
+        // Delete existing milestones
+        await authenticatedSupabase
+            .from('project_milestones')
+            .delete()
+            .eq('project_id', projectId);
+
         if (milestones.length > 0) {
             const projectMilestones = milestones
                 .filter((m) => m.trim().length > 0)
                 .map((milestone, index) => ({
-                    project_id: project.id,
+                    project_id: projectId,
                     title: milestone.trim(),
                     order_index: index + 1,
                 }));
@@ -212,41 +240,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
                 if (milestonesError) {
                     return httpResponse.fail(
-                        'Lỗi khi tạo mốc thời gian: ' + milestonesError.message,
+                        'Lỗi khi cập nhật mốc thời gian: ' + milestonesError.message,
                         500
                     );
                 }
             }
         }
 
-        // Add owner as project member
-        const { error: memberError } = await authenticatedSupabase
-            .from('project_members')
-            .insert({
-                project_id: project.id,
-                user_id: session.user.id,
-                role: 'owner',
-                joined_at: new Date().toISOString(),
-            });
-
-        if (memberError) {
-            return httpResponse.fail(
-                'Lỗi khi thêm thành viên: ' + memberError.message,
-                500
-            );
-        }
-
         return httpResponse.ok(
-            { project_id: project.id },
-            'Tạo dự án thành công',
+            { project_id: projectId },
+            'Cập nhật dự án thành công',
             200
         );
     } catch (error) {
-        console.error('Error creating project:', error);
+        console.error('Error updating project:', error);
         return httpResponse.fail(
-            'Lỗi khi tạo dự án: ' +
+            'Lỗi khi cập nhật dự án: ' +
                 (error instanceof Error ? error.message : 'Unknown error'),
             500
         );
     }
 };
+
