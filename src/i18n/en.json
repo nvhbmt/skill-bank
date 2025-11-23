@@ -516,5 +516,9 @@
         "act_joined": "joined",
         "trendingSkills": "Trending Skills",
         "viewAll": "View all"
+    },
+    "box-message": {
+        "message": "Message ",
+        "search": "Search..."
     }
 }
