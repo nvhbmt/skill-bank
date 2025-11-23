@@ -110,7 +110,8 @@
             "emailInvalid": "Invalid email",
             "passwordRequired": "Please enter password",
             "passwordMinLength": "Password must be at least 8 characters",
-            "agreeRequired": "Please agree to the terms"
+            "agreeRequired": "Please agree to the terms",
+            "usernamePattern": "Username must start with a letter and contain only letters and numbers and not start with a number"
         },
         "loading": "Creating account...",
         "error": "Sign up failed",
@@ -516,7 +517,10 @@
         "act_posted": "posted",
         "act_joined": "joined",
         "trendingSkills": "Trending Skills",
-        "viewAll": "View all"
+        "viewAll": "View all",
+        "profileImpressive": "Impressive profile! Add certifications to reach 100%.",
+        "profileGood": "Good profile! Complete more to increase your score.",
+        "profileIncomplete": "Complete your profile to get more opportunities."
     },
     "box-message": {
         "message": "Message ",

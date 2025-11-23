@@ -4,6 +4,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import '@/assets/css/dashboard.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
+import { getDashboardData } from '@/services/dashboard';
 export { getStaticPaths };
 
 const { t, l } = useTranslate(Astro);
@@ -16,61 +17,14 @@ if (!session?.user) {
 const user = session.user;
 const userName = user?.user_metadata?.full_name || 'User';
 
-// Mock Data
-const stats = {
-    reputation: 850,
-    likes: 120,
-    views: 412,
-    invites: 3,
-};
+// Fetch dashboard data from API
+const dashboardData = await getDashboardData(user.id);
 
-// Dữ liệu dự án gợi ý (Update theo hình)
-const recommendedProjects = [
-    {
-        id: 301,
-        title: 'DeFi Dashboard Interface',
-        desc: 'Looking for a UI Designer to create a futuristic dashboard for a crypto platform.',
-        image: 'https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=400&auto=format&fit=crop',
-        tags: ['Figma', 'Web3'],
-        author: 'CryptoLabs',
-        deadline: '5 days left',
-        match: 98,
-    },
-    {
-        id: 302,
-        title: 'AI Content Generator App',
-        desc: 'Need a Python developer to integrate OpenAI API into a Flask backend.',
-        image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=400&auto=format&fit=crop',
-        tags: ['Python', 'AI'],
-        author: 'StartupAI',
-        deadline: '2 weeks left',
-        match: 92,
-    },
-    {
-        id: 303,
-        title: 'Travel Booking Mobile App',
-        desc: 'Building a cross-platform app using Flutter. Need help with state management.',
-        image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=400&auto=format&fit=crop',
-        tags: ['Flutter', 'Mobile'],
-        author: 'TravelX',
-        deadline: '1 month left',
-        match: 85,
-    },
-];
-
-const activities = [
-    { type: 'applied', project: 'Smart Home IoT', time: '2h ago' },
-    { type: 'posted', project: 'Travel Booking UI', time: '1d ago' },
-    { type: 'joined', project: 'Fintech App', time: '3d ago' },
-];
-
-const trendingSkills = [
-    { name: 'React Native', count: '+12%' },
-    { name: 'Node.js', count: '+8%' },
-    { name: 'UX Research', count: '+15%' },
-    { name: 'Golang', count: '+5%' },
-    { name: '3D Design', count: '+20%' },
-];
+const stats = dashboardData.stats;
+const recommendedProjects = dashboardData.recommendedProjects;
+const activities = dashboardData.activities;
+const trendingSkills = dashboardData.trendingSkills;
+const profileStrength = dashboardData.profileStrength;
 ---
 
 <DefaultLayout>
@@ -169,7 +123,7 @@ const trendingSkills = [
                             {
                                 recommendedProjects.map((proj) => (
                                     <a
-                                        href={`/project/${proj.id}`}
+                                        href={l(`/project/${proj.id}`)}
                                         class="project-card-horizontal"
                                     >
                                         <img
@@ -255,17 +209,32 @@ const trendingSkills = [
                                     ></path>
                                     <path
                                         class="circle-progress"
-                                        stroke-dasharray="85, 100"
+                                        stroke-dasharray={`${profileStrength}, 100`}
                                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                                     ></path>
                                 </svg>
-                                <div class="percentage-text">85%</div>
+                                <div class="percentage-text">
+                                    {profileStrength}%
+                                </div>
                             </div>
                             <div class="strength-info">
                                 <p
                                     style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 1rem;"
                                 >
-                                    Hồ sơ ấn tượng! Thêm chứng chỉ để đạt 100%.
+                                    {
+                                        profileStrength >= 80
+                                            ? t(
+                                                  'dashboard.profileImpressive'
+                                              ) ||
+                                              'Hồ sơ ấn tượng! Thêm chứng chỉ để đạt 100%.'
+                                            : profileStrength >= 50
+                                              ? t('dashboard.profileGood') ||
+                                                'Hồ sơ tốt! Hoàn thiện thêm để tăng điểm.'
+                                              : t(
+                                                    'dashboard.profileIncomplete'
+                                                ) ||
+                                                'Hãy hoàn thiện hồ sơ để có nhiều cơ hội hơn.'
+                                    }
                                 </p>
                                 <a href={l('/edit-profile')} class="btn-outline"
                                     >{t('dashboard.completeProfile')}</a
@@ -296,7 +265,9 @@ const trendingSkills = [
                                                 )}
                                             </div>
                                             <div class="act-text">
-                                                {t(`dashboard.act_${act.type}`)}{' '}
+                                                {t(
+                                                    `dashboard.act_${act.type as 'applied' | 'posted' | 'joined'}`
+                                                )}{' '}
                                                 <span>{act.project}</span>
                                                 <span class="act-time">
                                                     {act.time}
@@ -311,6 +282,6 @@ const trendingSkills = [
                 </div>
             </div>
         </main>
+        <Footer />
     </div>
-    <Footer />
 </DefaultLayout>

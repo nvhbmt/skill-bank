@@ -110,7 +110,8 @@
             "emailInvalid": "Email không hợp lệ",
             "passwordRequired": "Vui lòng nhập mật khẩu",
             "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
-            "agreeRequired": "Vui lòng đồng ý với điều khoản"
+            "agreeRequired": "Vui lòng đồng ý với điều khoản",
+            "usernamePattern": "Username phải bắt đầu bằng chữ cái và chỉ được chứa chữ cái và số và không được bắt đầu bằng số"
         },
         "loading": "Đang tạo tài khoản...",
         "error": "Tạo tài khoản thất bại",
@@ -514,7 +515,10 @@
         "act_posted": "đã đăng dự án",
         "act_joined": "đã tham gia",
         "trendingSkills": "Kỹ năng đang 'Hot'",
-        "viewAll": "Xem tất cả"
+        "viewAll": "Xem tất cả",
+        "profileImpressive": "Hồ sơ ấn tượng! Thêm chứng chỉ để đạt 100%.",
+        "profileGood": "Hồ sơ tốt! Hoàn thiện thêm để tăng điểm.",
+        "profileIncomplete": "Hãy hoàn thiện hồ sơ để có nhiều cơ hội hơn."
     },
     "box-message": {
         "message": "Tin nhắn ",

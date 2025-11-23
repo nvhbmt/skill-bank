@@ -232,11 +232,10 @@ main {
 /* --- Description Box --- */
 .description-box {
     background-color: var(--color-purple-light-box);
-    color: var(--color-bg-dark);
+    color: var(--color-text-invert);
     border-radius: 20px;
     padding: 2rem;
     position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 .box-header {
     display: flex;

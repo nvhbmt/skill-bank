@@ -107,6 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             messages.usernameMaxLength ||
                             'Username không được vượt quá 20 ký tự',
                     },
+                    {
+                        rule: 'customRegexp',
+                        value: /^[a-zA-Z][a-zA-Z0-9]+$/,
+                        errorMessage:
+                            messages.usernamePattern ||
+                            'Username chỉ được chứa chữ cái và số và không được bắt đầu bằng số',
+                    },
                 ],
                 {
                     errorsContainer: '#username-error',

@@ -73,6 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             messages.usernameMinLength ||
                             'Username phải có ít nhất 3 ký tự',
                     },
+                    {
+                        rule: 'customRegexp',
+                        value: /^[a-zA-Z][a-zA-Z0-9]+$/,
+                        errorMessage:
+                            messages.usernamePattern ||
+                            'Username chỉ được chứa chữ cái và số và không được bắt đầu bằng số',
+                    },
                 ],
                 {
                     errorsContainer: '#username-error',
