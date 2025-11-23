@@ -21,7 +21,7 @@
         "errorGeneric": "An error occurred, please try again"
     },
     "sign-in": {
-        "title": "Login",
+        "title": "Sign in",
         "noAccount": "Don't have an account?",
         "signUp": "Sign up",
         "username": "Username",
@@ -38,7 +38,7 @@
             "passwordMinLength": "Password must be at least 8 characters"
         },
         "loading": "Logging in...",
-        "error": "Login failed",
+        "error": "Sign in failed",
         "errorGeneric": "An error occurred, please try again"
     },
     "project-search": {
