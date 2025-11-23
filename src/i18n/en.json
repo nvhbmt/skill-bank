@@ -209,7 +209,9 @@
         "shareLinkLabel": "Project link:",
         "copyButton": "Copy",
         "copiedButton": "Copied!",
-        "closeButton": "Close"
+        "closeButton": "Close",
+        "editProject": "Edit",
+        "candidateManage": "Manage Candidates"
     },
     "project-detail-collab": {
         "ngayBatDau": "Start Date:",
@@ -305,7 +307,26 @@
         "details": "View",
         "change": "Edit",
         "lock": "Lock",
-        "delete": "Delete"
+        "delete": "Delete",
+        "noProjectSelected": "No Project Selected",
+        "selectProjectMessage": "Please select a project from your project management page.",
+        "goToMyProjects": "Go to My Projects",
+        "noPermission": "No Permission",
+        "noPermissionMessage": "You are not the owner of this project.",
+        "roleApplicant": "Applicant",
+        "statusPending": "Pending",
+        "statusApproved": "Approved",
+        "statusRejected": "Rejected",
+        "allStatus": "All",
+        "noCandidates": "No candidates yet",
+        "noCoverLetter": "No cover letter",
+        "approve": "Approve",
+        "reject": "Reject",
+        "confirmApprove": "Are you sure you want to approve this candidate?",
+        "confirmReject": "Are you sure you want to reject this candidate?",
+        "approveSuccess": "Candidate approved successfully!",
+        "rejectSuccess": "Candidate rejected successfully!",
+        "errorMessage": "An error occurred"
     },
     "edit-profile": {
         "generalInfo": "General Information",

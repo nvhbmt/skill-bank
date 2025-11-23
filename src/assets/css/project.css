@@ -154,6 +154,7 @@ main {
 /* --- ACTION BUTTONS (MỚI) --- */
 .action-buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 1.2rem;
     margin-top: 1rem;
 }
@@ -198,6 +199,34 @@ main {
     color: #fff;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Nút Edit (Glassmorphism Vàng/Cam) */
+.btn-edit-project {
+    background-color: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    color: #fcd34d;
+    text-decoration: none;
+}
+.btn-edit-project:hover {
+    background-color: rgba(251, 191, 36, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+}
+
+/* Nút Quản lý ứng viên (Glassmorphism Xanh lá) */
+.btn-candidate-manage {
+    background-color: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+    color: #86efac;
+    text-decoration: none;
+}
+.btn-candidate-manage:hover {
+    background-color: rgba(34, 197, 94, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
 }
 
 /* Nút Xóa dự án (Glassmorphism Đỏ) */
@@ -437,6 +466,13 @@ main {
     .project-detail-body {
         grid-template-columns: 1fr;
         padding: 2rem;
+    }
+    .action-buttons {
+        gap: 0.8rem;
+    }
+    .action-btn {
+        padding: 0.7rem 1.2rem;
+        font-size: var(--font-size-sm);
     }
     .column-sidebar {
         border-left: none;

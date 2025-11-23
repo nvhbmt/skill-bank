@@ -120,28 +120,48 @@ export const POST: APIRoute = async ({ request, locals }) => {
         }
 
         // Get applicant info for notification
-        const { data: applicantInfo } = await authenticatedSupabase
-            .from('user_info')
-            .select('full_name, username')
-            .eq('user_id', session.user.id)
-            .is('deleted_at', null)
-            .single();
+        const { data: applicantInfo, error: applicantInfoError } =
+            await authenticatedSupabase
+                .from('user_info')
+                .select('full_name, username')
+                .eq('user_id', session.user.id)
+                .is('deleted_at', null)
+                .maybeSingle();
+
+        // Log error if exists but don't fail the request
+        if (applicantInfoError) {
+            console.error(
+                'Error fetching applicant info for notification:',
+                applicantInfoError
+            );
+        }
 
         // Get language from request headers or default to 'vi'
         const acceptLanguage = request.headers.get('accept-language') || '';
         const lang = acceptLanguage.includes('en') ? 'en' : 'vi';
 
-        // Notify project owner
-        if (applicantInfo && project.title) {
-            await notifyApplicationReceived(
-                project.owner_id,
-                applicantInfo.full_name || applicantInfo.username || 'Người dùng',
-                applicantInfo.username || 'unknown',
-                projectIdNum,
-                project.title,
-                lang,
-                authenticatedSupabase
-            );
+        // Notify project owner (always notify if project title exists)
+        if (project.title) {
+            const applicantName =
+                applicantInfo?.full_name ||
+                applicantInfo?.username ||
+                'Người dùng';
+            const applicantUsername = applicantInfo?.username || 'unknown';
+
+            try {
+                await notifyApplicationReceived(
+                    project.owner_id,
+                    applicantName,
+                    applicantUsername,
+                    projectIdNum,
+                    project.title,
+                    lang,
+                    authenticatedSupabase
+                );
+            } catch (notificationError) {
+                // Log error but don't fail the request
+                console.error('Error sending notification:', notificationError);
+            }
         }
 
         return httpResponse.ok(
@@ -160,4 +180,3 @@ export const POST: APIRoute = async ({ request, locals }) => {
         );
     }
 };
-

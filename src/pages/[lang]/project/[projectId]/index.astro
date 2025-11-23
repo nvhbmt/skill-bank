@@ -172,6 +172,36 @@ function formatDate(dateString: string | null): string {
                             }
                         </div>
                         <div class="action-buttons">
+                            <!-- Nút "Edit" - chỉ hiện cho owner -->
+                            {
+                                isOwner && (
+                                    <a
+                                        href={l(`/project/${project?.id}/edit`)}
+                                        class="action-btn btn-edit-project"
+                                    >
+                                        <i class="fa-solid fa-pencil" />
+                                        {t(
+                                            'project-detail-creator.editProject'
+                                        ) || 'Chỉnh sửa'}
+                                    </a>
+                                )
+                            }
+                            <!-- Nút "Quản lý ứng viên" - chỉ hiện cho owner -->
+                            {
+                                isOwner && (
+                                    <a
+                                        href={l(
+                                            `/project/${project?.id}/candidate-manage`
+                                        )}
+                                        class="action-btn btn-candidate-manage"
+                                    >
+                                        <i class="fa-solid fa-users" />
+                                        {t(
+                                            'project-detail-creator.candidateManage'
+                                        ) || 'Quản lý ứng viên'}
+                                    </a>
+                                )
+                            }
                             <!-- Nút "Xem bàn giao" - chỉ hiện cho owner -->
                             {
                                 isOwner && (

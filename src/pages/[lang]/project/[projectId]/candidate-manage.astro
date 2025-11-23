@@ -1,0 +1,555 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import { supabase } from '@/lib/supabase';
+import {
+    getProjectApplications,
+    type ApplicationWithApplicant,
+} from '@/services/project-handover';
+import type { Tables } from '@/types/database.types';
+export { getStaticPaths };
+import '@/assets/css/user-manage.css';
+
+const { lang, t, l } = useTranslate(Astro);
+const session = Astro.locals.session;
+
+// Redirect if not logged in
+if (!session?.user) {
+    return Astro.redirect(l('/sign-in'));
+}
+
+// Get projectId from URL params
+const projectId = (Astro.params as { projectId?: string }).projectId;
+
+// Redirect if no projectId
+if (!projectId) {
+    return Astro.redirect(l('/explore'));
+}
+
+const projectIdNum = parseInt(projectId);
+if (isNaN(projectIdNum)) {
+    return Astro.redirect(l('/explore'));
+}
+
+let project: Pick<Tables<'projects'>, 'id' | 'title' | 'owner_id'> | null =
+    null;
+let isOwner = false;
+let pendingApplications: ApplicationWithApplicant[] = [];
+let approvedApplications: ApplicationWithApplicant[] = [];
+let allApplications: ApplicationWithApplicant[] = [];
+
+// Fetch project and applications
+try {
+    const { data: projectData, error: projectError } = await supabase
+        .from('projects')
+        .select('id, title, owner_id')
+        .eq('id', projectIdNum)
+        .is('deleted_at', null)
+        .single();
+
+    if (projectError || !projectData) {
+        return Astro.redirect(l('/explore'));
+    }
+
+    project = projectData;
+    isOwner = session.user.id === project.owner_id;
+
+    // Redirect if not owner
+    if (!isOwner) {
+        return Astro.redirect(l(`/project/${projectId}`));
+    }
+
+    // Fetch applications for owner
+    const applications = await getProjectApplications(projectIdNum);
+    pendingApplications = applications.pending;
+    approvedApplications = applications.approved;
+    allApplications = [...pendingApplications, ...approvedApplications];
+} catch (error) {
+    console.error('Error loading candidate management:', error);
+    return Astro.redirect(l('/explore'));
+}
+
+// Helper function to format date
+function formatDate(dateString: string | null): string {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    } catch {
+        return dateString;
+    }
+}
+
+// Helper function to get status text
+function getStatusText(status: string | null): string {
+    if (!status || status === 'pending') {
+        return t('candidate-manage.statusPending') || 'Đang chờ';
+    }
+    if (status === 'approved') {
+        return t('candidate-manage.statusApproved') || 'Đã duyệt';
+    }
+    if (status === 'rejected') {
+        return t('candidate-manage.statusRejected') || 'Đã từ chối';
+    }
+    return status;
+}
+
+// Get roles for all candidates
+const candidateRoles = new Map<string, string>();
+if (project && allApplications.length > 0) {
+    const applicantIds = allApplications
+        .map((app) => app.applicant?.user_id)
+        .filter(Boolean) as string[];
+    if (applicantIds.length > 0) {
+        const { data: members } = await supabase
+            .from('project_members')
+            .select('user_id, role')
+            .eq('project_id', project.id)
+            .in('user_id', applicantIds)
+            .is('deleted_at', null)
+            .is('left_at', null);
+
+        if (members) {
+            members.forEach((m) => {
+                candidateRoles.set(
+                    m.user_id,
+                    m.role || t('candidate-manage.roleApplicant') || 'Ứng viên'
+                );
+            });
+        }
+    }
+}
+
+// Helper function to get role
+function getCandidateRole(applicantId: string | undefined): string {
+    if (!applicantId) return t('candidate-manage.roleApplicant') || 'Ứng viên';
+    return (
+        candidateRoles.get(applicantId) ||
+        t('candidate-manage.roleApplicant') ||
+        'Ứng viên'
+    );
+}
+---
+
+<DefaultLayout>
+    <Header />
+    <div class="user-manage-container container">
+        {
+            project && isOwner ? (
+                <>
+                    <div class="center-bypass" style="margin-bottom: 1rem;">
+                        <h1 class="page-title">
+                            {t('candidate-manage.candidateManagement')} -{' '}
+                            {project.title}
+                        </h1>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 300px;">
+                                    {t('candidate-manage.candidateName')}
+                                    <div class="center-bypass">
+                                        <div class="search">
+                                            <input
+                                                type="text"
+                                                id="search-name"
+                                                placeholder={t(
+                                                    'candidate-manage.searchCandidateName'
+                                                )}
+                                            />
+                                            <button onclick="filterTable()">
+                                                <img
+                                                    src="/assets/images/search-icon.svg"
+                                                    alt=""
+                                                />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th style="width: 400px;">
+                                    Email
+                                    <div class="center-bypass">
+                                        <div class="search">
+                                            <input
+                                                type="text"
+                                                id="search-email"
+                                                placeholder={t(
+                                                    'candidate-manage.searchEmail'
+                                                )}
+                                            />
+                                            <button onclick="filterTable()">
+                                                <img
+                                                    src="/assets/images/search-icon.svg"
+                                                    alt=""
+                                                />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th style="width: 200px;">
+                                    {t('candidate-manage.role')}
+                                    <div class="center-bypass">
+                                        <div class="search">
+                                            <input
+                                                type="text"
+                                                id="search-role"
+                                                placeholder={t(
+                                                    'candidate-manage.searchRole'
+                                                )}
+                                                style="width: 125px;"
+                                            />
+                                            <button onclick="filterTable()">
+                                                <img
+                                                    src="/assets/images/search-icon.svg"
+                                                    alt=""
+                                                />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th style="width: 200px;">
+                                    <div
+                                        class="dropdown"
+                                        style="display: flex; flex-direction: row; gap: 10px;"
+                                    >
+                                        <div>
+                                            {t('candidate-manage.status')}
+                                        </div>
+                                        <select
+                                            id="filter-status"
+                                            onchange="filterTable()"
+                                            style="
+                                            background: rgba(255, 255, 255, 0.1);
+                                            border: 2px solid rgba(255, 255, 255, 0.3);
+                                            border-radius: 32px;
+                                            color: white;
+                                            padding: 6px 12px;
+                                            cursor: pointer;
+                                        "
+                                        >
+                                            <option value="">
+                                                {t(
+                                                    'candidate-manage.allStatus'
+                                                ) || 'Tất cả'}
+                                            </option>
+                                            <option value="pending">
+                                                {t(
+                                                    'candidate-manage.statusPending'
+                                                ) || 'Đang chờ'}
+                                            </option>
+                                            <option value="approved">
+                                                {t(
+                                                    'candidate-manage.statusApproved'
+                                                ) || 'Đã duyệt'}
+                                            </option>
+                                            <option value="rejected">
+                                                {t(
+                                                    'candidate-manage.statusRejected'
+                                                ) || 'Đã từ chối'}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th style="width: 400px;">
+                                    {t('candidate-manage.userDetails')}
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="candidates-table">
+                            {allApplications.length > 0 ? (
+                                allApplications.map((application) => (
+                                    <tr
+                                        class="candidate-row"
+                                        data-name={
+                                            application.applicant?.full_name ||
+                                            application.applicant?.username ||
+                                            ''
+                                        }
+                                        data-email={
+                                            application.applicant?.email || ''
+                                        }
+                                        data-role={getCandidateRole(
+                                            application.applicant?.user_id
+                                        )}
+                                        data-status={
+                                            application.status || 'pending'
+                                        }
+                                        data-application-id={application.id}
+                                        data-applicant-username={
+                                            application.applicant?.username ||
+                                            ''
+                                        }
+                                    >
+                                        <td style="width: 300px;">
+                                            {application.applicant?.full_name ||
+                                                application.applicant
+                                                    ?.username ||
+                                                'Unknown'}
+                                        </td>
+                                        <td style="width: 400px;">
+                                            {application.applicant?.email ||
+                                                '-'}
+                                        </td>
+                                        <td style="width: 200px; text-align: center;">
+                                            {getCandidateRole(
+                                                application.applicant?.user_id
+                                            )}
+                                        </td>
+                                        <td style="width: 200px; text-align: center;">
+                                            {getStatusText(application.status)}
+                                        </td>
+                                        <td style="width: 400px;">
+                                            {application.cover_letter ||
+                                                t(
+                                                    'candidate-manage.noCoverLetter'
+                                                ) ||
+                                                'Không có thư xin việc'}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td
+                                        colspan="5"
+                                        style="text-align: center; padding: 2rem;"
+                                    >
+                                        {t('candidate-manage.noCandidates') ||
+                                            'Chưa có ứng viên nào'}
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </>
+            ) : (
+                <div class="center-bypass" style="padding: 4rem 0;">
+                    <div style="text-align: center; color: white;">
+                        <h2 style="margin-bottom: 1rem;">Đang tải...</h2>
+                    </div>
+                </div>
+            )
+        }
+    </div>
+</DefaultLayout>
+
+{
+    project && isOwner && (
+        <div class="buttons" id="action-buttons" style="display: none;">
+            <button class="action-button" onclick="viewCandidateDetails()">
+                {t('candidate-manage.details')}
+            </button>
+            <button
+                class="action-button"
+                onclick="approveCandidate()"
+                id="btn-approve"
+            >
+                {t('candidate-manage.approve') || 'Duyệt'}
+            </button>
+            <button
+                class="action-button"
+                onclick="rejectCandidate()"
+                id="btn-reject"
+            >
+                {t('candidate-manage.reject') || 'Từ chối'}
+            </button>
+        </div>
+    )
+}
+
+<script
+    define:vars={{
+        projectId: project?.id || 0,
+        lang: lang,
+        approveConfirm:
+            t('candidate-manage.confirmApprove') ||
+            'Bạn có chắc chắn muốn duyệt ứng viên này?',
+        rejectConfirm:
+            t('candidate-manage.confirmReject') ||
+            'Bạn có chắc chắn muốn từ chối ứng viên này?',
+        approveSuccess:
+            t('candidate-manage.approveSuccess') ||
+            'Duyệt ứng viên thành công!',
+        rejectSuccess:
+            t('candidate-manage.rejectSuccess') ||
+            'Từ chối ứng viên thành công!',
+        errorMessage: t('candidate-manage.errorMessage') || 'Có lỗi xảy ra',
+    }}
+>
+    let selectedApplicationId = null;
+
+    // Filter table
+    function filterTable() {
+        const nameInput = document.getElementById('search-name');
+        const emailInput = document.getElementById('search-email');
+        const roleInput = document.getElementById('search-role');
+        const statusSelect = document.getElementById('filter-status');
+
+        const nameFilter = nameInput?.value?.toLowerCase() || '';
+        const emailFilter = emailInput?.value?.toLowerCase() || '';
+        const roleFilter = roleInput?.value?.toLowerCase() || '';
+        const statusFilter = statusSelect?.value || '';
+
+        const rows = document.querySelectorAll('.candidate-row');
+        rows.forEach((row) => {
+            const name = row.dataset.name?.toLowerCase() || '';
+            const email = row.dataset.email?.toLowerCase() || '';
+            const role = row.dataset.role?.toLowerCase() || '';
+            const status = row.dataset.status || '';
+
+            const matchName = name.includes(nameFilter);
+            const matchEmail = email.includes(emailFilter);
+            const matchRole = role.includes(roleFilter);
+            const matchStatus = !statusFilter || status === statusFilter;
+
+            if (matchName && matchEmail && matchRole && matchStatus) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Hide action buttons when no row selected
+        const actionButtons = document.getElementById('action-buttons');
+        if (actionButtons) {
+            actionButtons.style.display = 'none';
+        }
+        selectedApplicationId = null;
+    }
+
+    // Row selection
+    document.addEventListener('DOMContentLoaded', () => {
+        const rows = document.querySelectorAll('.candidate-row');
+        rows.forEach((row) => {
+            row.addEventListener('click', function () {
+                // Remove previous selection
+                rows.forEach((r) => r.classList.remove('selected'));
+                // Add selection to clicked row
+                this.classList.add('selected');
+                selectedApplicationId = parseInt(
+                    this.dataset.applicationId || '0'
+                );
+
+                // Show action buttons
+                const actionButtons = document.getElementById('action-buttons');
+                if (actionButtons && selectedApplicationId > 0) {
+                    actionButtons.style.display = 'flex';
+
+                    // Show/hide approve/reject buttons based on status
+                    const status = this.dataset.status;
+                    const btnApprove = document.getElementById('btn-approve');
+                    const btnReject = document.getElementById('btn-reject');
+
+                    if (btnApprove && btnReject) {
+                        if (status === 'pending') {
+                            btnApprove.style.display = '';
+                            btnReject.style.display = '';
+                        } else if (status === 'approved') {
+                            btnApprove.style.display = 'none';
+                            btnReject.style.display = '';
+                        } else {
+                            btnApprove.style.display = '';
+                            btnReject.style.display = 'none';
+                        }
+                    }
+                }
+            });
+        });
+    });
+
+    // View candidate details
+    function viewCandidateDetails() {
+        if (!selectedApplicationId) return;
+        // Navigate to candidate profile
+        const row = document.querySelector(
+            `[data-application-id="${selectedApplicationId}"]`
+        );
+        if (row && row.dataset.applicantUsername) {
+            const username = row.dataset.applicantUsername;
+            if (username) {
+                window.location.href = `/${lang}/profile/${username}`;
+            }
+        }
+    }
+
+    // Approve candidate
+    async function approveCandidate() {
+        if (!selectedApplicationId || !projectId) return;
+
+        if (!confirm(approveConfirm)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/api/projects/${projectId}/applications/${selectedApplicationId}/approve`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const result = await response.json();
+            if (result.success) {
+                alert(approveSuccess);
+                location.reload();
+            } else {
+                alert(result.message || errorMessage);
+            }
+        } catch (error) {
+            alert(errorMessage);
+            console.error(error);
+        }
+    }
+
+    // Reject candidate
+    async function rejectCandidate() {
+        if (!selectedApplicationId || !projectId) return;
+
+        if (!confirm(rejectConfirm)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/api/projects/${projectId}/applications/${selectedApplicationId}/reject`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const result = await response.json();
+            if (result.success) {
+                alert(rejectSuccess);
+                location.reload();
+            } else {
+                alert(result.message || errorMessage);
+            }
+        } catch (error) {
+            alert(errorMessage);
+            console.error(error);
+        }
+    }
+</script>
+
+<style>
+    .candidate-row.selected {
+        background-color: #8b5cf6 !important;
+        color: white;
+    }
+
+    .candidate-row {
+        cursor: pointer;
+    }
+</style>

@@ -52,10 +52,12 @@ const projects = await getExploreProjects(20);
                                 return (
                                     <ProjectCard
                                         project={{
-                                            image: project.cover_image_url,
+                                            image:
+                                                project.cover_image_url || '',
                                             title: project.title,
                                             tag: projectTypeLabel,
-                                            description: project.description,
+                                            description:
+                                                project.description || '',
                                             author: owner?.full_name || '',
                                             likes: 0,
                                             projectId: project.id,

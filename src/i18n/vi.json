@@ -209,7 +209,9 @@
         "shareLinkLabel": "Link dự án:",
         "copyButton": "Sao chép",
         "copiedButton": "Đã sao chép!",
-        "closeButton": "Đóng"
+        "closeButton": "Đóng",
+        "editProject": "Chỉnh sửa",
+        "candidateManage": "Quản lý ứng viên"
     },
     "project-detail-collab": {
         "ngayBatDau": "Bắt đầu:",
@@ -305,7 +307,26 @@
         "details": "Xem",
         "change": "Sửa",
         "lock": "Khóa",
-        "delete": "Xóa"
+        "delete": "Xóa",
+        "noProjectSelected": "Chưa chọn dự án",
+        "selectProjectMessage": "Vui lòng chọn dự án từ trang quản lý dự án của bạn.",
+        "goToMyProjects": "Đi đến dự án của tôi",
+        "noPermission": "Không có quyền truy cập",
+        "noPermissionMessage": "Bạn không phải là chủ dự án này.",
+        "roleApplicant": "Ứng viên",
+        "statusPending": "Đang chờ",
+        "statusApproved": "Đã duyệt",
+        "statusRejected": "Đã từ chối",
+        "allStatus": "Tất cả",
+        "noCandidates": "Chưa có ứng viên nào",
+        "noCoverLetter": "Không có thư xin việc",
+        "approve": "Duyệt",
+        "reject": "Từ chối",
+        "confirmApprove": "Bạn có chắc chắn muốn duyệt ứng viên này?",
+        "confirmReject": "Bạn có chắc chắn muốn từ chối ứng viên này?",
+        "approveSuccess": "Duyệt ứng viên thành công!",
+        "rejectSuccess": "Từ chối ứng viên thành công!",
+        "errorMessage": "Có lỗi xảy ra"
     },
     "edit-profile": {
         "generalInfo": "Thông tin chung",
