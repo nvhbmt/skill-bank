@@ -34,7 +34,10 @@ export const PUT: APIRoute = async ({ params, locals }) => {
             .single();
 
         if (!project || project.owner_id !== session.user.id) {
-            return httpResponse.fail('Bạn không có quyền thực hiện thao tác này', 403);
+            return httpResponse.fail(
+                'Bạn không có quyền thực hiện thao tác này',
+                403
+            );
         }
 
         // Get applicant info before approving
@@ -52,16 +55,10 @@ export const PUT: APIRoute = async ({ params, locals }) => {
 
         // Notify applicant
         if (application && project.title) {
-            // Get language from request headers or default to 'vi'
-            const acceptLanguage = request.headers.get('accept-language') || '';
-            const lang = acceptLanguage.includes('en') ? 'en' : 'vi';
-
             await notifyApplicationApproved(
                 application.applicant_id,
                 projectId,
-                project.title,
-                lang,
-                authenticatedSupabase
+                project.title
             );
         }
 
@@ -75,4 +72,3 @@ export const PUT: APIRoute = async ({ params, locals }) => {
         );
     }
 };
-

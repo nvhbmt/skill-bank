@@ -4,6 +4,7 @@ import Header from '@/components/Header.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
 import ShareDialog from '@/components/ShareDialog.astro';
 import ProjectSkillDetailDialog from '@/components/ProjectSkillDetailDialog.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
 import '@/assets/css/project.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { getProjectDetailById } from '@/services/project-detail';
@@ -172,20 +173,6 @@ function formatDate(dateString: string | null): string {
                             }
                         </div>
                         <div class="action-buttons">
-                            <!-- Nút "Edit" - chỉ hiện cho owner -->
-                            {
-                                isOwner && (
-                                    <a
-                                        href={l(`/project/${project?.id}/edit`)}
-                                        class="action-btn btn-edit-project"
-                                    >
-                                        <i class="fa-solid fa-pencil" />
-                                        {t(
-                                            'project-detail-creator.editProject'
-                                        ) || 'Chỉnh sửa'}
-                                    </a>
-                                )
-                            }
                             <!-- Nút "Quản lý ứng viên" - chỉ hiện cho owner -->
                             {
                                 isOwner && (
@@ -422,6 +409,8 @@ function formatDate(dateString: string | null): string {
         skillDescription=""
         applicationUrl=""
     />
+
+    <ToastDialog />
 </DefaultLayout>
 
 <script
@@ -468,14 +457,25 @@ function formatDate(dateString: string | null): string {
                                     // Redirect to my projects page
                                     window.location.href = `/${lang}/my-project`;
                                 } else {
-                                    alert(
-                                        result.message ||
-                                            'Có lỗi xảy ra khi xóa dự án'
-                                    );
+                                    if (window.showToast) {
+                                        window.showToast({
+                                            type: 'error',
+                                            title: 'Lỗi',
+                                            message:
+                                                result.message ||
+                                                'Có lỗi xảy ra khi xóa dự án',
+                                        });
+                                    }
                                 }
                             } catch (error) {
                                 console.error('Error deleting project:', error);
-                                alert('Có lỗi xảy ra khi xóa dự án');
+                                if (window.showToast) {
+                                    window.showToast({
+                                        type: 'error',
+                                        title: 'Lỗi',
+                                        message: 'Có lỗi xảy ra khi xóa dự án',
+                                    });
+                                }
                             }
                         }
                     );

@@ -56,9 +56,7 @@ export const PUT: APIRoute = async ({ params, locals, request }) => {
             await notifyProjectRejected(
                 project.owner_id,
                 projectId,
-                project.title,
-                lang,
-                authenticatedSupabase
+                project.title
             );
         }
 

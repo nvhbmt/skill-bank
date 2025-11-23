@@ -1,5 +1,4 @@
-import { supabase } from '@/lib/supabase';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { createServiceRoleClient } from '@/lib/supabase';
 
 export type NotificationType =
     | 'application_received' // Có người muốn tham gia dự án
@@ -13,18 +12,20 @@ interface CreateNotificationParams {
     type: NotificationType;
     title: string | null;
     message: string;
-    supabaseClient?: SupabaseClient;
 }
 
 /**
- * Create a notification
+ * Create a notification with system privileges (bypasses RLS)
+ * This function uses service role key to ensure notifications can be created
+ * regardless of RLS policies
  */
 export async function createNotification(
     params: CreateNotificationParams
 ): Promise<boolean> {
-    const client = params.supabaseClient || supabase;
+    // Use service role client to bypass RLS
+    const supabase = createServiceRoleClient();
 
-    const { error } = await client.from('notifications').insert({
+    const { error } = await supabase.from('notifications').insert({
         user_id: params.userId,
         type: params.type,
         title: params.title,
@@ -49,9 +50,7 @@ export async function notifyApplicationReceived(
     applicantName: string,
     applicantUsername: string,
     projectId: number,
-    projectTitle: string,
-    lang: 'vi' | 'en' = 'vi',
-    supabaseClient?: SupabaseClient
+    projectTitle: string
 ): Promise<boolean> {
     // Store data as JSON for template rendering
     const messageData = {
@@ -66,7 +65,6 @@ export async function notifyApplicationReceived(
         type: 'application_received',
         title: null, // Title will be rendered from template
         message: JSON.stringify(messageData),
-        supabaseClient,
     });
 }
 
@@ -76,9 +74,7 @@ export async function notifyApplicationReceived(
 export async function notifyProjectApproved(
     projectOwnerId: string,
     projectId: number,
-    projectTitle: string,
-    lang: 'vi' | 'en' = 'vi',
-    supabaseClient?: SupabaseClient
+    projectTitle: string
 ): Promise<boolean> {
     // Store data as JSON for template rendering
     const messageData = {
@@ -91,7 +87,6 @@ export async function notifyProjectApproved(
         type: 'project_approved',
         title: null, // Title will be rendered from template
         message: JSON.stringify(messageData),
-        supabaseClient,
     });
 }
 
@@ -101,9 +96,7 @@ export async function notifyProjectApproved(
 export async function notifyApplicationApproved(
     applicantId: string,
     projectId: number,
-    projectTitle: string,
-    lang: 'vi' | 'en' = 'vi',
-    supabaseClient?: SupabaseClient
+    projectTitle: string
 ): Promise<boolean> {
     // Store data as JSON for template rendering
     const messageData = {
@@ -116,7 +109,6 @@ export async function notifyApplicationApproved(
         type: 'application_approved',
         title: null, // Title will be rendered from template
         message: JSON.stringify(messageData),
-        supabaseClient,
     });
 }
 
@@ -126,9 +118,7 @@ export async function notifyApplicationApproved(
 export async function notifyProjectRejected(
     projectOwnerId: string,
     projectId: number,
-    projectTitle: string,
-    lang: 'vi' | 'en' = 'vi',
-    supabaseClient?: SupabaseClient
+    projectTitle: string
 ): Promise<boolean> {
     // Store data as JSON for template rendering
     const messageData = {
@@ -141,7 +131,6 @@ export async function notifyProjectRejected(
         type: 'project_rejected',
         title: null, // Title will be rendered from template
         message: JSON.stringify(messageData),
-        supabaseClient,
     });
 }
 
@@ -151,9 +140,7 @@ export async function notifyProjectRejected(
 export async function notifyApplicationRejected(
     applicantId: string,
     projectId: number,
-    projectTitle: string,
-    lang: 'vi' | 'en' = 'vi',
-    supabaseClient?: SupabaseClient
+    projectTitle: string
 ): Promise<boolean> {
     // Store data as JSON for template rendering
     const messageData = {
@@ -166,6 +153,5 @@ export async function notifyApplicationRejected(
         type: 'application_rejected',
         title: null, // Title will be rendered from template
         message: JSON.stringify(messageData),
-        supabaseClient,
     });
 }

@@ -2,6 +2,7 @@
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/project-handover-manager.css';
 import Header from '@/components/Header.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import {
@@ -322,14 +323,36 @@ function formatDate(dateString: string | null): string {
 
                         const result = await response.json();
                         if (result.success) {
-                            alert('Duyệt ứng viên thành công!');
-                            location.reload();
+                            if (window.showToast) {
+                                window.showToast({
+                                    type: 'success',
+                                    title: 'Thành công',
+                                    message: 'Duyệt ứng viên thành công!',
+                                    onClose: () => {
+                                        location.reload();
+                                    },
+                                });
+                            } else {
+                                location.reload();
+                            }
                         } else {
-                            alert(result.message || 'Có lỗi xảy ra');
+                            if (window.showToast) {
+                                window.showToast({
+                                    type: 'error',
+                                    title: 'Lỗi',
+                                    message: result.message || 'Có lỗi xảy ra',
+                                });
+                            }
                         }
                     } catch (error) {
-                        alert('Có lỗi xảy ra khi duyệt ứng viên');
                         console.error(error);
+                        if (window.showToast) {
+                            window.showToast({
+                                type: 'error',
+                                title: 'Lỗi',
+                                message: 'Có lỗi xảy ra khi duyệt ứng viên',
+                            });
+                        }
                     }
                 };
 
@@ -358,17 +381,41 @@ function formatDate(dateString: string | null): string {
 
                         const result = await response.json();
                         if (result.success) {
-                            alert('Từ chối ứng viên thành công!');
-                            location.reload();
+                            if (window.showToast) {
+                                window.showToast({
+                                    type: 'success',
+                                    title: 'Thành công',
+                                    message: 'Từ chối ứng viên thành công!',
+                                    onClose: () => {
+                                        location.reload();
+                                    },
+                                });
+                            } else {
+                                location.reload();
+                            }
                         } else {
-                            alert(result.message || 'Có lỗi xảy ra');
+                            if (window.showToast) {
+                                window.showToast({
+                                    type: 'error',
+                                    title: 'Lỗi',
+                                    message: result.message || 'Có lỗi xảy ra',
+                                });
+                            }
                         }
                     } catch (error) {
-                        alert('Có lỗi xảy ra khi từ chối ứng viên');
                         console.error(error);
+                        if (window.showToast) {
+                            window.showToast({
+                                type: 'error',
+                                title: 'Lỗi',
+                                message: 'Có lỗi xảy ra khi từ chối ứng viên',
+                            });
+                        }
                     }
                 };
             </script>
         </div>
     </div>
+
+    <ToastDialog />
 </DefaultLayout>

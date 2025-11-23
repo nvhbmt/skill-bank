@@ -2,6 +2,7 @@
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/edit-profile.css';
 import Header from '@/components/Header.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { getEditProfileData } from '@/services/edit-profile';
 export { getStaticPaths };
@@ -444,4 +445,6 @@ const reviews = [
         </main>
     </div>
     <script src="@/assets/script/edit-profile.js"></script>
+
+    <ToastDialog />
 </DefaultLayout>

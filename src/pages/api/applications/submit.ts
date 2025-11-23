@@ -139,9 +139,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
         // Get language from request headers or default to 'vi'
         const acceptLanguage = request.headers.get('accept-language') || '';
         const lang = acceptLanguage.includes('en') ? 'en' : 'vi';
-
         // Notify project owner (always notify if project title exists)
         if (project.title) {
+            console.log('notifyApplicationReceived', project.title, lang);
             const applicantName =
                 applicantInfo?.full_name ||
                 applicantInfo?.username ||
@@ -154,9 +154,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                     applicantName,
                     applicantUsername,
                     projectIdNum,
-                    project.title,
-                    lang,
-                    authenticatedSupabase
+                    project.title
                 );
             } catch (notificationError) {
                 // Log error but don't fail the request

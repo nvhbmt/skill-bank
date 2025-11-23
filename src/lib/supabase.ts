@@ -12,7 +12,7 @@ export const supabase = createClient<Database>(
  * For server-side API routes, we use the access token in headers
  */
 export function createAuthenticatedClient(session: Session) {
-    const supabase = createClient(
+    const supabase = createClient<Database>(
         import.meta.env.SUPABASE_URL,
         import.meta.env.SUPABASE_ANON_KEY,
         {
@@ -28,4 +28,25 @@ export function createAuthenticatedClient(session: Session) {
     });
 
     return supabase;
+}
+
+/**
+ * Create a Supabase client with service role key (bypasses RLS)
+ * WARNING: Only use this on the server-side for admin operations
+ */
+export function createServiceRoleClient() {
+    const serviceRoleKey =
+        import.meta.env.SUPABASE_SERVICE_ROLE_KEY ||
+        import.meta.env.SUPABASE_ANON_KEY;
+
+    return createClient<Database>(
+        import.meta.env.SUPABASE_URL,
+        serviceRoleKey,
+        {
+            auth: {
+                persistSession: false,
+                autoRefreshToken: false,
+            },
+        }
+    );
 }

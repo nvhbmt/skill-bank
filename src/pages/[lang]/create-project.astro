@@ -2,6 +2,7 @@
 import '@/assets/css/create-project.css';
 import Header from '@/components/Header.astro';
 import SkillDetailDialog from '@/components/SkillDetailDialog.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import { getAllSkills } from '@/services/skills';
@@ -329,4 +330,6 @@ const skills = await getAllSkills();
     <SkillDetailDialog skills={skills} />
 
     <script src="@/assets/script/create-project.js"></script>
+
+    <ToastDialog />
 </DefaultLayout>

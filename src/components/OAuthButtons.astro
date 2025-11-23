@@ -56,7 +56,13 @@ const {
                         (window.signupUIMessages &&
                             window.signupUIMessages.errorGeneric) ||
                         'Có lỗi xảy ra khi đăng nhập với Facebook';
-                    alert(errorMsg);
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: errorMsg,
+                        });
+                    }
                 }
             });
         }
@@ -81,7 +87,13 @@ const {
                         (window.signupUIMessages &&
                             window.signupUIMessages.errorGeneric) ||
                         'Có lỗi xảy ra khi đăng nhập với Google';
-                    alert(errorMsg);
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: errorMsg,
+                        });
+                    }
                 }
             });
         }

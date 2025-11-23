@@ -118,8 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         buttonText: 'Đóng',
                     });
                 } else {
-                    // Fallback to alert if toast is not available
-                    alert(errorMessage);
+                    // Fallback to console if toast is not available
+                    console.error(errorMessage);
                 }
 
                 // Also show in error container
@@ -145,8 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         buttonText: 'Đóng',
                     });
                 } else {
-                    // Fallback to alert if toast is not available
-                    alert(errorMessage);
+                    // Fallback to console if toast is not available
+                    console.error(errorMessage);
                 }
 
                 // Also show in error container
@@ -291,7 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 buttonText: 'Đóng',
                             });
                         } else {
-                            alert(
+                            // Fallback to console if toast is not available
+                            console.log(
                                 result.message ||
                                     'Chúng tôi đã gửi lại mã OTP đến email của bạn.'
                             );

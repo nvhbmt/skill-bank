@@ -326,7 +326,8 @@
         "confirmReject": "Bạn có chắc chắn muốn từ chối ứng viên này?",
         "approveSuccess": "Duyệt ứng viên thành công!",
         "rejectSuccess": "Từ chối ứng viên thành công!",
-        "errorMessage": "Có lỗi xảy ra"
+        "errorMessage": "Có lỗi xảy ra",
+        "cancel": "Hủy"
     },
     "edit-profile": {
         "generalInfo": "Thông tin chung",

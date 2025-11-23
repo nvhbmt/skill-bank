@@ -10,11 +10,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const file = e.target.files[0];
                 if (file) {
                     if (!file.type.startsWith('image/')) {
-                        alert('Vui lòng chọn file ảnh!');
+                        if (window.showToast) {
+                            window.showToast({
+                                type: 'warning',
+                                title: 'Cảnh báo',
+                                message: 'Vui lòng chọn file ảnh!',
+                            });
+                        }
                         return;
                     }
                     if (file.size > 5 * 1024 * 1024) {
-                        alert('File ảnh quá lớn (Max 5MB)');
+                        if (window.showToast) {
+                            window.showToast({
+                                type: 'warning',
+                                title: 'Cảnh báo',
+                                message: 'File ảnh quá lớn (Max 5MB)',
+                            });
+                        }
                         return;
                     }
                     const reader = new FileReader();
@@ -78,11 +90,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const skillName = selectedOption.text.split(' (')[0];
 
             if (!skillId) {
-                alert('Vui lòng chọn kỹ năng!');
+                if (window.showToast) {
+                    window.showToast({
+                        type: 'warning',
+                        title: 'Cảnh báo',
+                        message: 'Vui lòng chọn kỹ năng!',
+                    });
+                }
                 return;
             }
             if (skillsContainer.querySelector(`[data-skill-id="${skillId}"]`)) {
-                alert('Kỹ năng này đã được thêm!');
+                if (window.showToast) {
+                    window.showToast({
+                        type: 'warning',
+                        title: 'Cảnh báo',
+                        message: 'Kỹ năng này đã được thêm!',
+                    });
+                }
                 return;
             }
 
@@ -124,11 +148,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     const lang = window.location.pathname.split('/')[1] || 'vi';
                     window.location.href = `/${lang}/profile/${result.data.username}`;
                 } else {
-                    alert(result.message || 'Lỗi cập nhật');
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: result.message || 'Lỗi cập nhật',
+                        });
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Lỗi kết nối.');
+                if (window.showToast) {
+                    window.showToast({
+                        type: 'error',
+                        title: 'Lỗi',
+                        message: 'Lỗi kết nối.',
+                    });
+                }
             } finally {
                 if (submitButton) {
                     submitButton.disabled = false;

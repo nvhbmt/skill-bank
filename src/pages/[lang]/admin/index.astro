@@ -1,6 +1,7 @@
 ---
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import Header from '@/components/Header.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
 import '@/assets/css/admin.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import {
@@ -294,14 +295,36 @@ function formatDate(dateString: string | null): string {
 
                 const result = await response.json();
                 if (result.success) {
-                    alert('Duyệt dự án thành công!');
-                    location.reload();
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'success',
+                            title: 'Thành công',
+                            message: 'Duyệt dự án thành công!',
+                            onClose: () => {
+                                location.reload();
+                            },
+                        });
+                    } else {
+                        location.reload();
+                    }
                 } else {
-                    alert(result.message || 'Có lỗi xảy ra');
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: result.message || 'Có lỗi xảy ra',
+                        });
+                    }
                 }
             } catch (error) {
-                alert('Có lỗi xảy ra khi duyệt dự án');
                 console.error(error);
+                if (window.showToast) {
+                    window.showToast({
+                        type: 'error',
+                        title: 'Lỗi',
+                        message: 'Có lỗi xảy ra khi duyệt dự án',
+                    });
+                }
             }
         };
 
@@ -325,14 +348,36 @@ function formatDate(dateString: string | null): string {
 
                 const result = await response.json();
                 if (result.success) {
-                    alert('Từ chối dự án thành công!');
-                    location.reload();
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'success',
+                            title: 'Thành công',
+                            message: 'Từ chối dự án thành công!',
+                            onClose: () => {
+                                location.reload();
+                            },
+                        });
+                    } else {
+                        location.reload();
+                    }
                 } else {
-                    alert(result.message || 'Có lỗi xảy ra');
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: result.message || 'Có lỗi xảy ra',
+                        });
+                    }
                 }
             } catch (error) {
-                alert('Có lỗi xảy ra khi từ chối dự án');
                 console.error(error);
+                if (window.showToast) {
+                    window.showToast({
+                        type: 'error',
+                        title: 'Lỗi',
+                        message: 'Có lỗi xảy ra khi từ chối dự án',
+                    });
+                }
             }
         };
 
@@ -359,15 +404,39 @@ function formatDate(dateString: string | null): string {
 
                 const result = await response.json();
                 if (result.success) {
-                    alert('Xóa người dùng thành công!');
-                    location.reload();
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'success',
+                            title: 'Thành công',
+                            message: 'Xóa người dùng thành công!',
+                            onClose: () => {
+                                location.reload();
+                            },
+                        });
+                    } else {
+                        location.reload();
+                    }
                 } else {
-                    alert(result.message || 'Có lỗi xảy ra');
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: result.message || 'Có lỗi xảy ra',
+                        });
+                    }
                 }
             } catch (error) {
-                alert('Có lỗi xảy ra khi xóa người dùng');
                 console.error(error);
+                if (window.showToast) {
+                    window.showToast({
+                        type: 'error',
+                        title: 'Lỗi',
+                        message: 'Có lỗi xảy ra khi xóa người dùng',
+                    });
+                }
             }
         };
     </script>
+
+    <ToastDialog />
 </DefaultLayout>

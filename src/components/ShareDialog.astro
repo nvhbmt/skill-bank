@@ -262,7 +262,13 @@ const {
                         // Fallback: select text
                         linkInput.select();
                         linkInput.setSelectionRange(0, 99999);
-                        alert('Không thể sao chép. Vui lòng sao chép thủ công.');
+                        if (window.showToast) {
+                            window.showToast({
+                                type: 'warning',
+                                title: 'Cảnh báo',
+                                message: 'Không thể sao chép. Vui lòng sao chép thủ công.',
+                            });
+                        }
                     }
                 });
             }

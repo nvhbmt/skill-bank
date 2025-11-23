@@ -369,10 +369,22 @@ document.addEventListener('DOMContentLoaded', () => {
                             window.location.pathname.split('/')[1] || 'vi';
                         window.location.href = `/${lang}/project/${result.data.project_id}`;
                     } else {
-                        alert(result.message || 'Lỗi');
+                        if (window.showToast) {
+                            window.showToast({
+                                type: 'error',
+                                title: 'Lỗi',
+                                message: result.message || 'Lỗi',
+                            });
+                        }
                     }
                 } catch (error) {
-                    alert('Lỗi kết nối.');
+                    if (window.showToast) {
+                        window.showToast({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: 'Lỗi kết nối.',
+                        });
+                    }
                 } finally {
                     if (submitButton) {
                         submitButton.disabled = false;

@@ -2,6 +2,7 @@
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/submit-application.css';
 import Header from '@/components/Header.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { getProjectForApplication } from '@/services/projects';
 export { getStaticPaths };
@@ -130,4 +131,6 @@ const { project, hasApplied } = applicationData;
         </div>
     </div>
     <script src="@/assets/script/submit-application.js"></script>
+
+    <ToastDialog />
 </DefaultLayout>
