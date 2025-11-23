@@ -514,5 +514,9 @@
         "act_joined": "đã tham gia",
         "trendingSkills": "Kỹ năng đang 'Hot'",
         "viewAll": "Xem tất cả"
+    },
+    "box-message": {
+        "message": "Tin nhắn ",
+        "search": "Tìm kiếm..."
     }
 }

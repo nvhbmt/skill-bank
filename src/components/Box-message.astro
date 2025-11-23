@@ -1,0 +1,314 @@
+---
+interface Props {}
+
+const {} = Astro.props;
+import '@/assets/css/footer.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+export { getStaticPaths };
+
+const { lang, t, l } = useTranslate(Astro);
+---
+
+<style>
+    :root {
+        --msg-bg: #1a1a2e; /* Nền ko đen hẳn cho box mess*/
+        --msg-border: rgba(255, 255, 255, 0.1);
+    }
+    .message-box {
+        width: 360px;
+        background-color: var(--msg-bg);
+        border: 1px solid var(--msg-border);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .mb-header {
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--msg-border);
+    }
+
+    .mb-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--color-text-invert);
+    }
+
+    .btn-close {
+        background: transparent;
+        border: none;
+        color: var(--color-surface);
+        font-size: 20px;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+    .btn-close:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .mb-search {
+        padding: 12px 16px;
+    }
+    .mb-search-input-container {
+        background-color: #0f0f1a;
+        border: 1px solid var(--msg-border);
+        border-radius: 20px;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .search-icon {
+        color: var(--color-bg-soft);
+        font-size: 14px;
+    }
+
+    .mb-search-input {
+        background: transparent;
+        border: none;
+        color: var(--color-bg-light);
+        font-size: 14px;
+        width: 100%;
+        outline: none;
+    }
+    .mb-search-input::placeholder {
+        color: var(--color-bg-soft);
+        opacity: 0.7;
+    }
+
+    .mb-list {
+        display: flex;
+        flex-direction: column;
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 8px 0;
+    }
+
+    /* Scroll */
+    .mb-list::-webkit-scrollbar {
+        width: 5px;
+    }
+    .mb-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .mb-list::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 3px;
+    }
+
+    .mb-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        text-decoration: none;
+        transition: background 0.2s;
+        cursor: pointer;
+    }
+
+    .mb-item:hover {
+        background-color: var(--color-bg-dark);
+    }
+
+    /* Avatar */
+    .mb-avatar-wrapper {
+        position: relative;
+        flex-shrink: 0;
+    }
+    .mb-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #333;
+    }
+
+    .mb-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .mb-row-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    .mb-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--color-text-invert);
+    }
+
+    .mb-time {
+        font-size: 11px;
+        color: var(--color-bg-soft);
+    }
+
+    .mb-text {
+        font-size: 13px;
+        color: var(--color-bg-soft);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mb-item.unread .mb-text {
+        color: var(--color-primary-light);
+        font-weight: 600;
+    }
+    .mb-item.unread .mb-name {
+        color: white;
+    }
+    /*Chấm tím */
+    .mb-item.unread .mb-unread-dot {
+        width: 10px;
+        height: 10px;
+        background-color: var(--color-purple-button);
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-left: 8px;
+        box-shadow: 0 0 5px var(--color-purple-button);
+    }
+</style>
+
+<div class="message-box">
+    <div class="mb-header">
+        <div class="mb-title">{t('box-message.message')} (2)</div>
+        <button class="btn-close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <div class="mb-search">
+        <div class="mb-search-input-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input
+                type="text"
+                class="mb-search-input"
+                placeholder={t('box-message.search')}
+            />
+        </div>
+    </div>
+
+    <div class="mb-list">
+        <a class="mb-item unread">
+            <div class="mb-avatar-wrapper">
+                <img
+                    src="/assets/image/vy2.png"
+                    alt="Avatar"
+                    class="mb-avatar"
+                />
+            </div>
+            <div class="mb-content">
+                <div class="mb-row-top">
+                    <span class="mb-name">Bùi Thái Vy</span>
+                    <span class="mb-time">2p</span>
+                </div>
+                <div
+                    style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+                >
+                    <p class="mb-text">Mình muốn hỏi thêm về dự án...</p>
+                    <span class="mb-unread-dot"></span>
+                </div>
+            </div>
+        </a>
+
+        <a class="mb-item unread">
+            <div class="mb-avatar-wrapper">
+                <img
+                    src="/assets/image/vy2.png"
+                    alt="Avatar"
+                    class="mb-avatar"
+                />
+            </div>
+            <div class="mb-content">
+                <div class="mb-row-top">
+                    <span class="mb-name">Nguyễn Việt Hoàng</span>
+                    <span class="mb-time">1h</span>
+                </div>
+                <div
+                    style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+                >
+                    <p class="mb-text">Đã gửi file thiết kế, bạn check nhé.</p>
+                    <span class="mb-unread-dot"></span>
+                </div>
+            </div>
+        </a>
+
+        <a class="mb-item">
+            <div class="mb-avatar-wrapper">
+                <img
+                    src="/assets/image/vy2.png"
+                    alt="Avatar"
+                    class="mb-avatar"
+                />
+            </div>
+            <div class="mb-content">
+                <div class="mb-row-top">
+                    <span class="mb-name">Lý Anh Huy</span>
+                    <span class="mb-time">Hôm qua</span>
+                </div>
+                <p class="mb-text">Bạn: Ok chốt lịch họp nhé.</p>
+            </div>
+        </a>
+
+        <a class="mb-item">
+            <div class="mb-avatar-wrapper">
+                <img
+                    src="/assets/image/vy2.png"
+                    alt="Avatar"
+                    class="mb-avatar"
+                />
+            </div>
+            <div class="mb-content">
+                <div class="mb-row-top">
+                    <span class="mb-name">Quỳnh Chi</span>
+                    <span class="mb-time">T2</span>
+                </div>
+                <p class="mb-text">API login đang bị lỗi CORS.</p>
+            </div>
+        </a>
+
+        <a class="mb-item">
+            <div class="mb-avatar-wrapper">
+                <img
+                    src="/assets/image/vy2.png"
+                    alt="Avatar"
+                    class="mb-avatar"
+                />
+            </div>
+            <div class="mb-content">
+                <div class="mb-row-top">
+                    <span class="mb-name">Trọng Nhân</span>
+                    <span class="mb-time">T2</span>
+                </div>
+                <p class="mb-text">Dự án này còn tuyển không bạn?</p>
+            </div>
+        </a>
+    </div>
+</div>
