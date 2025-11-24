@@ -1,0 +1,55 @@
+---
+interface Props {}
+// Import CSS bằng đường dẫn tương đối để chắc chắn hoạt động
+import '@/assets/css/homepage.css';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import { getFeaturedProfiles } from '@/services/user-profile';
+export { getStaticPaths };
+
+const { t, l } = useTranslate(Astro);
+
+const heroTitle = t('home.heroTitle') || 'SkillBank\nPlatform';
+
+const featuredProfiles = await getFeaturedProfiles();
+---
+
+<section class="section-profiles fade-in">
+    <div class="section-header">
+        <h2 class="section-title">
+            {t('home.sectionProfiles')}
+        </h2>
+        <div class="section-divider"></div>
+    </div>
+    <div class="profiles-grid">
+        {
+            featuredProfiles.length > 0 ? (
+                featuredProfiles.map((profile) => (
+                    <a
+                        href={l(`/profile/${profile.username}`)}
+                        class="profile-card"
+                    >
+                        <img
+                            src={profile.avatar}
+                            alt={profile.name}
+                            class="profile-avatar"
+                        />
+                        <h3 class="profile-name">{profile.name}</h3>
+                        <p class="profile-role">{profile.role}</p>
+                        <div class="profile-skills">
+                            {profile.skills.map((skill) => (
+                                <span class="skill-pill">{skill}</span>
+                            ))}
+                        </div>
+                        <div class="profile-rating">
+                            {Array(profile.rating).fill('★').join('')}
+                        </div>
+                    </a>
+                ))
+            ) : (
+                <p style="color: #9ca3af; text-align: center; grid-column: 1 / -1;">
+                    Chưa có profile nổi bật.
+                </p>
+            )
+        }
+    </div>
+</section>

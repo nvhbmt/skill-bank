@@ -65,7 +65,6 @@ export async function getUserProfileByUsername(
         const isOwner = currentUserId
             ? currentUserId === userInfo.user_id
             : false;
-
         // Fetch user_profiles
         const { data: profileData, error: profileError } = await supabase
             .from('user_profiles')
@@ -75,7 +74,7 @@ export async function getUserProfileByUsername(
             .eq('user_id', userInfo.user_id)
             .is('deleted_at', null)
             .maybeSingle();
-
+        console.log(profileData);
         const userProfile = !profileError && profileData ? profileData : null;
 
         // Fetch user_skills

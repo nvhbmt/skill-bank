@@ -1,0 +1,26 @@
+---
+interface Props {}
+// Import CSS bằng đường dẫn tương đối để chắc chắn hoạt động
+import '@/assets/css/homepage.css';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { getStaticPaths, useTranslate } from '@/i18n';
+import { getFeaturedProjects } from '@/services/projects';
+export { getStaticPaths };
+
+const { t, l } = useTranslate(Astro);
+
+// Load featured projects and profiles from database
+const featuredProjects = await getFeaturedProjects();
+---
+
+<section class="section-projects fade-in">
+    <div class="section-header">
+        <h2 class="section-title">
+            {t('home.sectionProjects')}
+        </h2>
+        <div class="section-divider"></div>
+    </div>
+    <div class="projects-grid">
+        {featuredProjects.map((project) => <ProjectCard project={project} />)}
+    </div>
+</section>

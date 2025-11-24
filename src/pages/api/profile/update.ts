@@ -52,6 +52,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
         const skillIds = formData.getAll('skill_ids') as string[];
         const avatarFile = formData.get('avatar') as File | null;
         const coverImageFile = formData.get('cover_image') as File | null;
+        const deleteAvatar = formData.get('delete_avatar') === 'true';
+        const deleteCover = formData.get('delete_cover') === 'true';
 
         // Parse textarea inputs to JSON arrays (split by newline, filter empty lines)
         const interests = interestsText
@@ -87,9 +89,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
               )
             : null;
 
-        // Upload avatar if provided
+        // Handle avatar: delete, upload new, or keep existing
         let avatarUrl: string | null = userInfo.avatar_url || null;
-        if (avatarFile && avatarFile.size > 0) {
+        if (deleteAvatar) {
+            // User wants to delete avatar
+            avatarUrl = null;
+        } else if (avatarFile && avatarFile.size > 0) {
+            // User wants to upload new avatar
             const fileExt = avatarFile.name.split('.').pop();
             const filePath = `${session.user.id}/${Date.now()}.${fileExt}`;
 
@@ -131,7 +137,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
         if (fullName !== null && fullName !== userInfo.full_name) {
             updateData.full_name = fullName;
         }
-        if (avatarUrl !== null && avatarUrl !== userInfo.avatar_url) {
+        // Update avatar_url if it changed (including setting to null for deletion)
+        if (deleteAvatar || (avatarFile && avatarFile.size > 0) || avatarUrl !== userInfo.avatar_url) {
             updateData.avatar_url = avatarUrl;
         }
 
@@ -149,10 +156,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
             }
         }
 
-        // Upload cover image if provided
+        // Handle cover image: delete, upload new, or keep existing
         let coverImageUrl: string | null = userProfile?.portfolio_url || null;
-
-        if (coverImageFile && coverImageFile.size > 0) {
+        if (deleteCover) {
+            // User wants to delete cover image
+            coverImageUrl = null;
+        } else if (coverImageFile && coverImageFile.size > 0) {
+            // User wants to upload new cover image
             const fileExt = coverImageFile.name.split('.').pop();
             const filePath = `${session.user.id}/${Date.now()}.${fileExt}`;
 
@@ -197,10 +207,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
             const { error: profileError } = await authenticatedSupabase
                 .from('user_profiles')
                 .update({
-                    phone: phone || null,
-                    bio: bio || null,
-                    address: address || null,
-                    portfolio_url: coverImageUrl || null,
+                    phone: phone !== null ? phone : null,
+                    bio: bio !== null ? bio : null,
+                    address: address !== null ? address : null,
+                    portfolio_url: coverImageUrl,
                     interests: interests || null,
                     experiences: experiences || null,
                     projects: projects || null,
@@ -219,10 +229,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 .from('user_profiles')
                 .insert({
                     user_id: session.user.id,
-                    phone: phone || null,
-                    bio: bio || null,
-                    address: address || null,
-                    portfolio_url: coverImageUrl || null,
+                    phone: phone !== null ? phone : null,
+                    bio: bio !== null ? bio : null,
+                    address: address !== null ? address : null,
+                    portfolio_url: coverImageUrl,
                     interests: interests || null,
                     experiences: experiences || null,
                     projects: projects || null,

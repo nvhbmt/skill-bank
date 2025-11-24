@@ -52,6 +52,37 @@ async function calculateProgress(projectId: number): Promise<number> {
     return Math.min(milestones.length * 20, 100);
 }
 
+// Batch calculate progress for multiple projects
+async function calculateProgressBatch(
+    projectIds: number[]
+): Promise<Map<number, number>> {
+    if (projectIds.length === 0) return new Map();
+
+    const { data: milestones } = await supabase
+        .from('project_milestones')
+        .select('project_id')
+        .in('project_id', projectIds);
+
+    const progressMap = new Map<number, number>();
+
+    if (milestones) {
+        const milestoneCounts = new Map<number, number>();
+        milestones.forEach((m) => {
+            const count = milestoneCounts.get(m.project_id) || 0;
+            milestoneCounts.set(m.project_id, count + 1);
+        });
+
+        projectIds.forEach((id) => {
+            const count = milestoneCounts.get(id) || 0;
+            progressMap.set(id, Math.min(count * 20, 100));
+        });
+    } else {
+        projectIds.forEach((id) => progressMap.set(id, 0));
+    }
+
+    return progressMap;
+}
+
 /**
  * Get user's projects (owned and joined) categorized by status
  * @param userId - The user ID
@@ -74,35 +105,110 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
 
     if (ownedError) {
         console.error('Error fetching owned projects:', ownedError);
-    } else if (ownedProjects) {
-        // Fetch members for each owned project
-        for (const project of ownedProjects) {
-            const { data: membersData } = await supabase
-                .from('project_members')
-                .select('user_id')
-                .eq('project_id', project.id)
-                .is('deleted_at', null)
-                .is('left_at', null)
-                .limit(5);
+    }
 
-            let members: Array<{
-                user_id: string;
-                avatar_url: string | null;
-            }> = [];
-            if (membersData && membersData.length > 0) {
-                const memberIds = membersData.map((m) => m.user_id);
-                const { data: membersInfo } = await supabase
-                    .from('user_info')
-                    .select('user_id, avatar_url')
-                    .in('user_id', memberIds)
-                    .is('deleted_at', null);
+    // 2. Fetch projects where user is member but NOT owner
+    const { data: memberProjects, error: memberError } = await supabase
+        .from('project_members')
+        .select('project_id')
+        .eq('user_id', userId)
+        .is('deleted_at', null)
+        .is('left_at', null);
 
-                if (membersInfo) {
-                    members = membersInfo;
-                }
+    if (memberError) {
+        console.error('Error fetching member projects:', memberError);
+    }
+
+    let joinedProjectsData: typeof ownedProjects = [];
+    if (memberProjects && memberProjects.length > 0) {
+        const projectIds = memberProjects.map((m) => m.project_id);
+        const { data: projectsData, error: projectsError } = await supabase
+            .from('projects')
+            .select('id, title, status, created_at, owner_id')
+            .in('id', projectIds)
+            .neq('owner_id', userId)
+            .is('deleted_at', null)
+            .order('created_at', { ascending: false });
+
+        if (projectsError) {
+            console.error('Error fetching joined projects:', projectsError);
+        } else if (projectsData) {
+            joinedProjectsData = projectsData;
+        }
+    }
+
+    // Combine all project IDs for batch queries
+    const allProjectIds: number[] = [];
+    if (ownedProjects) {
+        allProjectIds.push(...ownedProjects.map((p) => p.id));
+    }
+    if (joinedProjectsData) {
+        allProjectIds.push(...joinedProjectsData.map((p) => p.id));
+    }
+
+    if (allProjectIds.length === 0) {
+        return {
+            pending: [],
+            approved: [],
+            joined: [],
+            completed: [],
+        };
+    }
+
+    // Batch fetch all members for all projects at once
+    const { data: allMembersData } = await supabase
+        .from('project_members')
+        .select('project_id, user_id')
+        .in('project_id', allProjectIds)
+        .is('deleted_at', null)
+        .is('left_at', null);
+
+    // Get unique member IDs and batch fetch user info
+    const memberIdsSet = new Set<string>();
+    const membersByProject = new Map<number, string[]>();
+
+    if (allMembersData) {
+        allMembersData.forEach((m) => {
+            if (!membersByProject.has(m.project_id)) {
+                membersByProject.set(m.project_id, []);
             }
+            const projectMembers = membersByProject.get(m.project_id)!;
+            if (projectMembers.length < 5) {
+                projectMembers.push(m.user_id);
+                memberIdsSet.add(m.user_id);
+            }
+        });
+    }
 
-            const progress = await calculateProgress(project.id);
+    // Batch fetch all user info
+    const memberIds = Array.from(memberIdsSet);
+    const { data: membersInfo } = await supabase
+        .from('user_info')
+        .select('user_id, avatar_url')
+        .in('user_id', memberIds)
+        .is('deleted_at', null);
+
+    const membersInfoMap = new Map(
+        (membersInfo || []).map((m) => [m.user_id, m.avatar_url])
+    );
+
+    // Batch calculate progress for all projects
+    // const progressMap = await calculateProgressBatch(allProjectIds);
+
+    // Helper function to get members for a project
+    const getProjectMembers = (projectId: number) => {
+        const userIds = membersByProject.get(projectId) || [];
+        return userIds.map((uid) => ({
+            user_id: uid,
+            avatar_url: membersInfoMap.get(uid) || null,
+        }));
+    };
+
+    // Process owned projects
+    if (ownedProjects) {
+        for (const project of ownedProjects) {
+            const members = getProjectMembers(project.id);
+            const progress = project.status === 'completed' ? 100 : 0;
 
             const projectWithMembers: ProjectWithMembers = {
                 ...project,
@@ -116,81 +222,27 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
             } else if (project.status === 'approved') {
                 approvedProjects.push(projectWithMembers);
             } else if (project.status === 'completed') {
-                // Completed projects always have 100% progress
-                completedProjects.push({
-                    ...projectWithMembers,
-                    progress: 100,
-                });
+                completedProjects.push(projectWithMembers);
             }
         }
     }
 
-    // 2. Fetch projects where user is member but NOT owner
-    // joinedProjects will contain projects the user joined but doesn't own
-    const { data: memberProjects, error: memberError } = await supabase
-        .from('project_members')
-        .select('project_id')
-        .eq('user_id', userId)
-        .is('deleted_at', null)
-        .is('left_at', null);
+    // Process joined projects
+    if (joinedProjectsData) {
+        for (const project of joinedProjectsData) {
+            const members = getProjectMembers(project.id);
+            const progress = 0;
 
-    if (memberError) {
-        console.error('Error fetching member projects:', memberError);
-    } else if (memberProjects && memberProjects.length > 0) {
-        const projectIds = memberProjects.map((m) => m.project_id);
+            const projectWithMembers: ProjectWithMembers = {
+                id: project.id,
+                title: project.title,
+                status: project.status,
+                created_at: project.created_at,
+                members,
+                progress,
+            };
 
-        const { data: projectsData, error: projectsError } = await supabase
-            .from('projects')
-            .select('id, title, status, created_at, owner_id')
-            .in('id', projectIds)
-            .neq('owner_id', userId) // Exclude projects where user is owner - only get projects user joined
-            .is('deleted_at', null)
-            .order('created_at', { ascending: false });
-
-        if (projectsError) {
-            console.error('Error fetching joined projects:', projectsError);
-        } else if (projectsData) {
-            // Fetch members for each joined project
-            for (const project of projectsData) {
-                const { data: membersData } = await supabase
-                    .from('project_members')
-                    .select('user_id')
-                    .eq('project_id', project.id)
-                    .is('deleted_at', null)
-                    .is('left_at', null)
-                    .limit(5);
-
-                let members: Array<{
-                    user_id: string;
-                    avatar_url: string | null;
-                }> = [];
-                if (membersData && membersData.length > 0) {
-                    const memberIds = membersData.map((m) => m.user_id);
-                    const { data: membersInfo } = await supabase
-                        .from('user_info')
-                        .select('user_id, avatar_url')
-                        .in('user_id', memberIds)
-                        .is('deleted_at', null);
-
-                    if (membersInfo) {
-                        members = membersInfo;
-                    }
-                }
-
-                const progress = await calculateProgress(project.id);
-
-                const projectWithMembers: ProjectWithMembers = {
-                    id: project.id,
-                    title: project.title,
-                    status: project.status,
-                    created_at: project.created_at,
-                    members,
-                    progress,
-                };
-
-                // Add to joinedProjects - these are projects user joined but doesn't own
-                joinedProjects.push(projectWithMembers);
-            }
+            joinedProjects.push(projectWithMembers);
         }
     }
 

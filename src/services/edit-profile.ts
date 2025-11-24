@@ -70,7 +70,7 @@ export async function getEditProfileData(
             .eq('user_id', userInfo.user_id)
             .is('deleted_at', null)
             .maybeSingle();
-
+        console.log(profileData);
         if (!profileError && profileData) {
             userProfile = profileData;
         }
@@ -149,4 +149,3 @@ export async function getEditProfileData(
         return null;
     }
 }
-

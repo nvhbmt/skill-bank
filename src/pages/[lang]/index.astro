@@ -1,13 +1,12 @@
 ---
-import DefaultLayout from '@/layouts/DefaultLayout.astro';
-import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import Header from '@/components/Header.astro';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
 // Import CSS bằng đường dẫn tương đối để chắc chắn hoạt động
 import '@/assets/css/homepage.css';
+import FeaturedProfile from '@/components/FeaturedProfile.astro';
+import FeaturedProjects from '@/components/FeaturedProjects.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
-import ProjectCard from '@/components/ProjectCard.astro';
-import { getFeaturedProjects } from '@/services/projects';
-import { getFeaturedProfiles } from '@/services/user-profile';
 export { getStaticPaths };
 
 const { t, l } = useTranslate(Astro);
@@ -17,10 +16,6 @@ const heroTitle = t('home.heroTitle') || 'SkillBank\nPlatform';
 const titleParts = heroTitle.includes('\n')
     ? heroTitle.split('\n')
     : [heroTitle, ''];
-
-// Load featured projects and profiles from database
-const featuredProjects = await getFeaturedProjects();
-const featuredProfiles = await getFeaturedProfiles();
 ---
 
 <DefaultLayout>
@@ -32,7 +27,7 @@ const featuredProfiles = await getFeaturedProfiles();
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
 
-        <Header />
+        <Header client:load />
 
         <main>
             <div class="home-container">
@@ -134,71 +129,10 @@ const featuredProfiles = await getFeaturedProfiles();
                 </section>
 
                 <!-- 4. FEATURED PROJECTS -->
-                <section class="section-projects fade-in">
-                    <div class="section-header">
-                        <h2 class="section-title">
-                            {t('home.sectionProjects')}
-                        </h2>
-                        <div class="section-divider"></div>
-                    </div>
-                    <div class="projects-grid">
-                        {
-                            featuredProjects.map((project) => (
-                                <ProjectCard project={project} />
-                            ))
-                        }
-                    </div>
-                </section>
+                <FeaturedProjects client:visible />
 
                 <!-- 5. FEATURED PROFILES -->
-                <section class="section-profiles fade-in">
-                    <div class="section-header">
-                        <h2 class="section-title">
-                            {t('home.sectionProfiles')}
-                        </h2>
-                        <div class="section-divider"></div>
-                    </div>
-                    <div class="profiles-grid">
-                        {
-                            featuredProfiles.length > 0 ? (
-                                featuredProfiles.map((profile) => (
-                                    <a
-                                        href={l(`/profile/${profile.username}`)}
-                                        class="profile-card"
-                                    >
-                                        <img
-                                            src={profile.avatar}
-                                            alt={profile.name}
-                                            class="profile-avatar"
-                                        />
-                                        <h3 class="profile-name">
-                                            {profile.name}
-                                        </h3>
-                                        <p class="profile-role">
-                                            {profile.role}
-                                        </p>
-                                        <div class="profile-skills">
-                                            {profile.skills.map((skill) => (
-                                                <span class="skill-pill">
-                                                    {skill}
-                                                </span>
-                                            ))}
-                                        </div>
-                                        <div class="profile-rating">
-                                            {Array(profile.rating)
-                                                .fill('★')
-                                                .join('')}
-                                        </div>
-                                    </a>
-                                ))
-                            ) : (
-                                <p style="color: #9ca3af; text-align: center; grid-column: 1 / -1;">
-                                    Chưa có profile nổi bật.
-                                </p>
-                            )
-                        }
-                    </div>
-                </section>
+                <FeaturedProfile client:visible />
 
                 <!-- 6. FAQ & CTA -->
                 <section class="section-faq fade-in">
