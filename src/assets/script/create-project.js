@@ -441,7 +441,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .addField('[name="project_name"]', [{ rule: 'required' }])
             .addField('[name="category"]', [{ rule: 'required' }])
             .addField('[name="start_date"]', [{ rule: 'required' }])
-            .addField('[name="terms"]', [{ rule: 'required' }])
             .onSuccess(async (event) => {
                 if (event && event.preventDefault) event.preventDefault();
                 const formData = new FormData(form);

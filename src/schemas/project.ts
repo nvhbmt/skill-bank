@@ -9,19 +9,11 @@ export const createProjectSchema = z.object({
         .string()
         .max(200, 'Địa điểm không được vượt quá 200 ký tự')
         .optional(),
-    category: z.enum(['website', 'mobile-app', 'desktop-app'], {
-        message: 'Vui lòng chọn phân loại dự án',
-    }),
+    category: z.string().min(1, 'Vui lòng chọn phân loại dự án'),
     start_date: z.string().min(1, 'Vui lòng chọn thời gian bắt đầu'),
     description: z
         .string()
         .max(5000, 'Mô tả không được vượt quá 5000 ký tự')
-        .optional(),
-    terms: z
-        .string()
-        .refine((val) => val === 'on', {
-            message: 'Bạn phải đồng ý với chính sách',
-        })
         .optional(),
 });
 

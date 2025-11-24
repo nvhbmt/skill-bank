@@ -28,22 +28,13 @@ const { t } = useTranslate(Astro);
             </div>
             <label class="label">{t('box-project-creator.title')}</label>
             <div class="select-wrapper">
-                <select id="skill-detail-select" class="skill-detail-select">
-                    <option value="" disabled selected hidden>
-                        {t('create-project.chonKN')}
-                    </option>
-                    {
-                        skills.map((skill) => (
-                            <option
-                                value={skill.name.toLowerCase()}
-                                selected={
-                                    selectedSkill === skill.name.toLowerCase()
-                                }
-                            >
-                                {skill.name}
-                            </option>
-                        ))
-                    }
+                <select
+                    id="skill-detail-select"
+                    class="skill-detail-select"
+                    value={selectedSkill}
+                    disabled
+                >
+                    <option value="" hidden> </option>
                 </select>
             </div>
 
@@ -249,3 +240,30 @@ const { t } = useTranslate(Astro);
         }
     }
 </style>
+<script>
+    async function loadSkills() {
+        try {
+            const response = await fetch('/api/skills');
+            const result = await response.json();
+            if (result.success && result.data) {
+                return result.data;
+            }
+        } catch (error) {
+            console.error('Error loading skills:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadSkills().then((skills) => {
+            const skillSelect = document.getElementById('skill-detail-select');
+            if (skillSelect) {
+                skillSelect.innerHTML = skills
+                    .map(
+                        (skill: { name: string }) =>
+                            `<option value="${skill.name.toLowerCase()}">${skill.name}</option>`
+                    )
+                    .join('');
+            }
+        });
+    });
+</script>

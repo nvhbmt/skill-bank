@@ -5,7 +5,13 @@ import SkillDetailDialog from '@/components/SkillDetailDialog.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import provinceData from '@/data/province.json';
 export { getStaticPaths };
+
+// Convert province data to array and sort by name
+const provinces = Object.values(provinceData).sort((a, b) =>
+    a.name.localeCompare(b.name, 'vi')
+);
 
 const { t, l } = useTranslate(Astro);
 const session = Astro.locals.session;
@@ -48,12 +54,34 @@ if (!session?.user) {
                                                     t('create-project.điaDiem')
                                                 }</label
                                             >
-                                            <input
-                                                type="text"
+                                            <select
                                                 id="location"
                                                 name="location"
                                                 class="form-input"
-                                            />
+                                                required
+                                            >
+                                                <option
+                                                    value=""
+                                                    disabled
+                                                    selected
+                                                    hidden>Chọn địa điểm</option
+                                                >
+                                                {
+                                                    provinces.map(
+                                                        (province) => (
+                                                            <option
+                                                                value={
+                                                                    province.name_with_type
+                                                                }
+                                                            >
+                                                                {
+                                                                    province.name_with_type
+                                                                }
+                                                            </option>
+                                                        )
+                                                    )
+                                                }
+                                            </select>
                                         </div>
                                     </div>
 
@@ -81,14 +109,52 @@ if (!session?.user) {
                                                         )
                                                     }</option
                                                 >
-                                                <option value="website"
-                                                    >Website</option
+                                                <option value="Phát triển Web"
+                                                    >Phát triển Web</option
                                                 >
-                                                <option value="mobile-app"
-                                                    >Mobile App</option
+                                                <option
+                                                    value="Phát triển Di động"
+                                                    >Phát triển Di động</option
                                                 >
-                                                <option value="desktop-app"
-                                                    >Desktop App</option
+                                                <option
+                                                    value="Phát triển ứng dụng"
+                                                    >Phát triển ứng dụng</option
+                                                >
+                                                <option value="Phát triển Game"
+                                                    >Phát triển Game</option
+                                                >
+                                                <option value="UI/UX"
+                                                    >UI/UX</option
+                                                >
+                                                <option value="Thiết kế Đồ hoạ"
+                                                    >Thiết kế Đồ hoạ</option
+                                                >
+                                                <option
+                                                    value="Phân tích Dữ liệu"
+                                                    >Phân tích Dữ liệu</option
+                                                >
+                                                <option
+                                                    value="Khoa học Dữ liệu & AI"
+                                                    >Khoa học Dữ liệu & AI</option
+                                                >
+                                                <option value="IoT">IoT</option>
+                                                <option value="Hệ thống nhúng"
+                                                    >Hệ thống nhúng</option
+                                                >
+                                                <option
+                                                    value="Quản trị Hệ thống"
+                                                    >Quản trị Hệ thống</option
+                                                >
+                                                <option
+                                                    value="An toàn thông tin"
+                                                    >An toàn thông tin</option
+                                                >
+                                                <option
+                                                    value="Kiểm thử phần mềm"
+                                                    >Kiểm thử phần mềm</option
+                                                >
+                                                <option value="DevOps"
+                                                    >DevOps</option
                                                 >
                                             </select>
                                         </div>
@@ -171,7 +237,9 @@ if (!session?.user) {
                                                             )
                                                         }</option
                                                     >
-                                                    <option value="" disabled>Đang tải kỹ năng...</option>
+                                                    <option value="" disabled
+                                                        >Đang tải kỹ năng...</option
+                                                    >
                                                 </select>
 
                                                 <!-- Hidden input để lưu mô tả skill -->
@@ -289,7 +357,7 @@ if (!session?.user) {
 
                     <div class="form-footer">
                         <div class="checkbox-area">
-                            <input
+                            <!-- <input
                                 type="checkbox"
                                 id="terms"
                                 name="terms"
@@ -299,7 +367,7 @@ if (!session?.user) {
                                 >{t('create-project.toiDongTinh')}<a href="#"
                                     >{t('create-project.chinhSach')}</a
                                 ></label
-                            >
+                            > -->
                         </div>
                         <div class="buttons-area">
                             <button type="button" class="btn btn-secondary"

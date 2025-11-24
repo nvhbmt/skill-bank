@@ -54,13 +54,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="card-title">${escapeHtml(project.title)}</h3>
                     <div class="card-info-row">
                         <div class="member-avatars">
-                            ${visibleMembers.map(member => `
+                            ${visibleMembers
+                                .map(
+                                    (member) => `
                                 <img
                                     src="${member.avatar_url || '/assets/images/avatar-default-icon.png'}"
                                     alt="Member"
                                     class="avatar-img"
                                 />
-                            `).join('')}
+                            `
+                                )
+                                .join('')}
                             ${remainingCount > 0 ? `<div class="avatar-more">+${remainingCount}</div>` : ''}
                         </div>
                         <span class="project-date">${formattedDate}</span>
@@ -88,10 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
             pending: 'status-orange',
             approved: 'status-green',
             joined: 'status-green',
-            completed: 'status-blue'
+            completed: 'status-blue',
         };
 
-        ['pending', 'approved', 'joined', 'completed'].forEach(tabId => {
+        ['pending', 'approved', 'joined', 'completed'].forEach((tabId) => {
             const container = document.getElementById(tabId);
             const loading = document.getElementById(`${tabId}-loading`);
             const projects = projectsData[tabId] || [];
@@ -107,7 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 } else {
                     container.innerHTML = projects
-                        .map(project => renderProjectCard(project, statusColors[tabId]))
+                        .map((project) =>
+                            renderProjectCard(project, statusColors[tabId])
+                        )
                         .join('');
                 }
             }
@@ -115,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showError(message) {
-        ['pending', 'approved', 'joined', 'completed'].forEach(tabId => {
+        ['pending', 'approved', 'joined', 'completed'].forEach((tabId) => {
             const container = document.getElementById(tabId);
             const loading = document.getElementById(`${tabId}-loading`);
             if (loading) loading.style.display = 'none';

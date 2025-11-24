@@ -26,7 +26,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
             category: formData.get('category'),
             start_date: formData.get('start_date'),
             description: formData.get('description'),
-            terms: formData.get('terms'),
         });
 
         if (!validated.success) {
