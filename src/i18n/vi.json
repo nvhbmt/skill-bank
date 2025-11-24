@@ -2,7 +2,7 @@
     "login": {
         "title": "Đăng nhập",
         "noAccount": "Bạn không có tài khoản?",
-        "signUp": "Đăng kí",
+        "signUp": "Đăng ký",
         "username": "Tên người dùng",
         "password": "Mật khẩu",
         "rememberMe": "Nhớ tôi",
@@ -23,7 +23,7 @@
     "sign-in": {
         "title": "Đăng nhập",
         "noAccount": "Bạn không có tài khoản?",
-        "signUp": "Đăng kí",
+        "signUp": "Đăng ký",
         "username": "Tên người dùng",
         "password": "Mật khẩu",
         "rememberMe": "Nhớ tôi",
