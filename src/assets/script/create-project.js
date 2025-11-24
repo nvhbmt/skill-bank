@@ -5,6 +5,64 @@ function autoResizeTextarea(textarea) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Load skills from API
+    let skillsData = [];
+    async function loadSkills() {
+        try {
+            const response = await fetch('/api/skills');
+            const result = await response.json();
+            if (result.success && result.data) {
+                skillsData = result.data;
+                populateSkillSelects();
+                // Update SkillDetailDialog if it exists
+                if (window.updateSkillDetailDialog) {
+                    window.updateSkillDetailDialog(skillsData);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading skills:', error);
+        }
+    }
+
+    function populateSkillSelects() {
+        const allSelects = document.querySelectorAll('.skill-select');
+        allSelects.forEach((select) => {
+            // Clear existing options except placeholder
+            const placeholder = select.querySelector('option[disabled]');
+            const currentValue = select.value;
+            select.innerHTML = '';
+
+            // Add placeholder
+            if (placeholder) {
+                select.appendChild(placeholder.cloneNode(true));
+            } else {
+                const placeholderOption = document.createElement('option');
+                placeholderOption.value = '';
+                placeholderOption.disabled = true;
+                placeholderOption.selected = true;
+                placeholderOption.hidden = true;
+                placeholderOption.textContent = 'Chọn kỹ năng...';
+                select.appendChild(placeholderOption);
+            }
+
+            // Add skills
+            skillsData.forEach((skill) => {
+                const option = document.createElement('option');
+                option.value = skill.name.toLowerCase();
+                option.textContent = skill.name;
+                select.appendChild(option);
+            });
+
+            // Restore previous value if it exists
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        });
+    }
+
+    // Load skills on page load
+    loadSkills();
+
     // === HÀM TẠO NÚT XÓA CHUNG ===
     function createDeleteButton(onClick) {
         const deleteBtn = document.createElement('button');
@@ -129,26 +187,42 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            
+
             const skillItem = button.closest('.skill-item');
             if (!skillItem) return;
 
             const skillIndex = button.getAttribute('data-skill-index');
             const skillSelect = skillItem.querySelector('.skill-select');
-            const descriptionInput = skillItem.querySelector('.skill-description-input');
-            
+            const descriptionInput = skillItem.querySelector(
+                '.skill-description-input'
+            );
+
             const selectedSkill = skillSelect ? skillSelect.value : '';
-            const currentDescription = descriptionInput ? descriptionInput.value : '';
+            const currentDescription = descriptionInput
+                ? descriptionInput.value
+                : '';
 
             // Open dialog
-            openSkillDetailDialog(selectedSkill, currentDescription, skillIndex, skillItem);
+            openSkillDetailDialog(
+                selectedSkill,
+                currentDescription,
+                skillIndex,
+                skillItem
+            );
         });
     }
 
-    function openSkillDetailDialog(selectedSkill, description, skillIndex, skillItem) {
+    function openSkillDetailDialog(
+        selectedSkill,
+        description,
+        skillIndex,
+        skillItem
+    ) {
         const dialog = document.getElementById('skill-detail-dialog');
         const dialogSelect = document.getElementById('skill-detail-select');
-        const dialogTextarea = document.getElementById('skill-detail-description');
+        const dialogTextarea = document.getElementById(
+            'skill-detail-description'
+        );
         const saveBtn = document.getElementById('save-skill-detail');
         const closeBtn = document.getElementById('close-skill-dialog');
         const cancelBtn = document.getElementById('cancel-skill-dialog');
@@ -178,7 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Update description input
-            const descriptionInput = skillItem.querySelector('.skill-description-input');
+            const descriptionInput = skillItem.querySelector(
+                '.skill-description-input'
+            );
             if (descriptionInput) {
                 descriptionInput.value = newDescription;
             }
@@ -220,7 +296,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const overlay = dialog.querySelector('.skill-detail-dialog-overlay');
         if (overlay) {
             overlay.replaceWith(overlay.cloneNode(true));
-            const newOverlay = dialog.querySelector('.skill-detail-dialog-overlay');
+            const newOverlay = dialog.querySelector(
+                '.skill-detail-dialog-overlay'
+            );
             newOverlay.addEventListener('click', closeHandler);
         }
     }
@@ -247,6 +325,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const select = newItem.querySelector('select');
             if (select) {
                 select.value = '';
+                // Populate skills if not already populated
+                if (select.options.length <= 1 && skillsData.length > 0) {
+                    const placeholder =
+                        select.querySelector('option[disabled]');
+                    select.innerHTML = '';
+                    if (placeholder) {
+                        select.appendChild(placeholder.cloneNode(true));
+                    }
+                    skillsData.forEach((skill) => {
+                        const option = document.createElement('option');
+                        option.value = skill.name.toLowerCase();
+                        option.textContent = skill.name;
+                        select.appendChild(option);
+                    });
+                }
                 // Update select id and name
                 const newIndex = skillListContainer.children.length + 1;
                 select.id = `skill-${newIndex}`;
@@ -254,7 +347,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Update description input
-            const descriptionInput = newItem.querySelector('.skill-description-input');
+            const descriptionInput = newItem.querySelector(
+                '.skill-description-input'
+            );
             if (descriptionInput) {
                 const newIndex = skillListContainer.children.length + 1;
                 descriptionInput.name = `skill-${newIndex}-description`;

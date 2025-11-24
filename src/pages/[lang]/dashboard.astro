@@ -4,7 +4,6 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import '@/assets/css/dashboard.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
-import { getDashboardData } from '@/services/dashboard';
 export { getStaticPaths };
 
 const { t, l } = useTranslate(Astro);
@@ -16,15 +15,6 @@ if (!session?.user) {
 
 const user = session.user;
 const userName = user?.user_metadata?.full_name || 'User';
-
-// Fetch dashboard data from API
-const dashboardData = await getDashboardData(user.id);
-
-const stats = dashboardData.stats;
-const recommendedProjects = dashboardData.recommendedProjects;
-const activities = dashboardData.activities;
-const trendingSkills = dashboardData.trendingSkills;
-const profileStrength = dashboardData.profileStrength;
 ---
 
 <DefaultLayout>
@@ -119,52 +109,19 @@ const profileStrength = dashboardData.profileStrength;
                             >
                         </div>
 
-                        <div class="projects-list-horizontal">
-                            {
-                                recommendedProjects.map((proj) => (
-                                    <a
-                                        href={l(`/project/${proj.id}`)}
-                                        class="project-card-horizontal"
-                                    >
-                                        <img
-                                            src={proj.image}
-                                            alt={proj.title}
-                                            class="project-thumb-hz"
-                                        />
-
-                                        <div class="project-info-hz">
-                                            <div class="project-tags-row">
-                                                {proj.tags.map((tag) => (
-                                                    <span class="mini-tag">
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                                <span class="mini-tag match-tag">
-                                                    Match {proj.match}%
-                                                </span>
-                                            </div>
-
-                                            <h3 class="project-title-hz">
-                                                {proj.title}
-                                            </h3>
-                                            <p class="project-desc-hz">
-                                                {proj.desc}
-                                            </p>
-
-                                            <div class="project-meta-hz">
-                                                <span class="meta-item">
-                                                    <i class="fa-regular fa-user" />{' '}
-                                                    {proj.author}
-                                                </span>
-                                                <span class="meta-item">
-                                                    <i class="fa-regular fa-clock" />{' '}
-                                                    {proj.deadline}
-                                                </span>
-                                            </div>
+                        <div class="projects-list-horizontal" id="recommended-projects">
+                            <div class="projects-loading">
+                                {Array(3).fill(0).map(() => (
+                                    <div class="project-card-horizontal skeleton">
+                                        <div class="skeleton-image"></div>
+                                        <div class="skeleton-content">
+                                            <div class="skeleton-tags"></div>
+                                            <div class="skeleton-title"></div>
+                                            <div class="skeleton-text"></div>
                                         </div>
-                                    </a>
-                                ))
-                            }
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         <!-- THÊM ĐƯỜNG KẺ NGANG NGĂN CÁCH -->
@@ -177,18 +134,14 @@ const profileStrength = dashboardData.profileStrength;
                                 {t('dashboard.trendingSkills')}
                             </h2>
                         </div>
-                        <div class="trending-grid">
-                            {
-                                trendingSkills.map((skill) => (
-                                    <div class="trend-tag">
-                                        <i class="fa-solid fa-fire" />{' '}
-                                        {skill.name}
-                                        <span class="trend-count">
-                                            {skill.count}
-                                        </span>
+                        <div class="trending-grid" id="trending-skills">
+                            <div class="skills-loading">
+                                {Array(5).fill(0).map(() => (
+                                    <div class="trend-tag skeleton">
+                                        <div class="skeleton-text"></div>
                                     </div>
-                                ))
-                            }
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -201,44 +154,13 @@ const profileStrength = dashboardData.profileStrength;
                             >
                                 {t('dashboard.profileStrength')}
                             </h3>
-                            <div class="circle-chart">
-                                <svg viewBox="0 0 36 36">
-                                    <path
-                                        class="circle-bg"
-                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    ></path>
-                                    <path
-                                        class="circle-progress"
-                                        stroke-dasharray={`${profileStrength}, 100`}
-                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    ></path>
-                                </svg>
-                                <div class="percentage-text">
-                                    {profileStrength}%
-                                </div>
+                            <div class="circle-chart" id="profile-strength-chart">
+                                <div class="loading-spinner"></div>
                             </div>
-                            <div class="strength-info">
-                                <p
-                                    style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 1rem;"
-                                >
-                                    {
-                                        profileStrength >= 80
-                                            ? t(
-                                                  'dashboard.profileImpressive'
-                                              ) ||
-                                              'Hồ sơ ấn tượng! Thêm chứng chỉ để đạt 100%.'
-                                            : profileStrength >= 50
-                                              ? t('dashboard.profileGood') ||
-                                                'Hồ sơ tốt! Hoàn thiện thêm để tăng điểm.'
-                                              : t(
-                                                    'dashboard.profileIncomplete'
-                                                ) ||
-                                                'Hãy hoàn thiện hồ sơ để có nhiều cơ hội hơn.'
-                                    }
+                            <div class="strength-info" id="strength-info">
+                                <p style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 1rem;">
+                                    Đang tải...
                                 </p>
-                                <a href={l('/edit-profile')} class="btn-outline"
-                                    >{t('dashboard.completeProfile')}</a
-                                >
                             </div>
                         </div>
 
@@ -249,33 +171,15 @@ const profileStrength = dashboardData.profileStrength;
                             >
                                 {t('dashboard.recentActivity')}
                             </h3>
-                            <div class="activity-list">
-                                {
-                                    activities.map((act) => (
-                                        <div class="activity-item">
-                                            <div class="act-icon">
-                                                {act.type === 'applied' && (
-                                                    <i class="fa-solid fa-paper-plane" />
-                                                )}
-                                                {act.type === 'posted' && (
-                                                    <i class="fa-solid fa-plus" />
-                                                )}
-                                                {act.type === 'joined' && (
-                                                    <i class="fa-solid fa-handshake" />
-                                                )}
-                                            </div>
-                                            <div class="act-text">
-                                                {t(
-                                                    `dashboard.act_${act.type as 'applied' | 'posted' | 'joined'}`
-                                                )}{' '}
-                                                <span>{act.project}</span>
-                                                <span class="act-time">
-                                                    {act.time}
-                                                </span>
-                                            </div>
+                            <div class="activity-list" id="activity-list">
+                                <div class="activities-loading">
+                                    {Array(3).fill(0).map(() => (
+                                        <div class="activity-item skeleton">
+                                            <div class="skeleton-icon"></div>
+                                            <div class="skeleton-text"></div>
                                         </div>
-                                    ))
-                                }
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </aside>
@@ -284,4 +188,5 @@ const profileStrength = dashboardData.profileStrength;
         </main>
         <Footer />
     </div>
+    <script src="@/assets/script/dashboard.js"></script>
 </DefaultLayout>

@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const projectsContainer = document.getElementById('projects-container');
+    const loadingEl = document.getElementById('projects-loading');
     let searchTimeout;
+    let initialLoadDone = false;
 
     // Helper function to escape HTML to prevent XSS
     function escapeHtml(text) {
@@ -10,8 +12,46 @@ document.addEventListener('DOMContentLoaded', () => {
         return div.innerHTML;
     }
 
-    // Add click handlers to initial projects
-    addClickHandlers();
+    let cachedInitialProjects = null;
+
+    // Load initial projects
+    async function loadInitialProjects(useCache = true) {
+        // Use cache if available and requested
+        if (useCache && cachedInitialProjects) {
+            displayProjects(cachedInitialProjects);
+            return;
+        }
+
+        if (initialLoadDone && useCache) return;
+        initialLoadDone = true;
+
+        try {
+            const response = await fetch('/api/explore/projects?limit=20');
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                cachedInitialProjects = result.data;
+                displayProjects(result.data);
+            } else {
+                showError('Không thể tải dự án');
+            }
+        } catch (error) {
+            console.error('Error loading initial projects:', error);
+            showError('Lỗi khi tải dự án');
+        }
+    }
+
+    // Show error message
+    function showError(message) {
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (projectsContainer) {
+            projectsContainer.innerHTML = `
+                <div class="no-projects">
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+    }
 
     // Debounced search function
     function performSearch(query) {
@@ -40,6 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Display projects
     function displayProjects(projects) {
         if (!projectsContainer) return;
+
+        // Hide loading
+        if (loadingEl) loadingEl.style.display = 'none';
 
         if (projects.length === 0) {
             projectsContainer.innerHTML = `
@@ -125,8 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 performSearch(query);
             } else {
                 // Reset to initial projects if search is cleared
-                // Reload page to show initial projects
-                window.location.reload();
+                loadInitialProjects(true); // Use cache
             }
         });
 
@@ -141,4 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Load initial projects on page load
+    loadInitialProjects();
 });

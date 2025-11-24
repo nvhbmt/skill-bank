@@ -3,7 +3,6 @@ import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import Header from '@/components/Header.astro';
 import '@/assets/css/my-project.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
-import { getMyProjects, type ProjectWithMembers } from '@/services/projects';
 export { getStaticPaths };
 
 const session = Astro.locals.session;
@@ -12,38 +11,6 @@ const { lang, t, l } = useTranslate(Astro);
 // Redirect if not logged in
 if (!session?.user) {
     return Astro.redirect(l(`/sign-in`));
-}
-
-// Initialize project arrays
-let pendingProjects: ProjectWithMembers[] = [];
-let approvedProjects: ProjectWithMembers[] = [];
-let joinedProjects: ProjectWithMembers[] = [];
-let completedProjects: ProjectWithMembers[] = [];
-
-// Helper function to format date
-function formatDate(dateString: string | null): string {
-    if (!dateString) return '';
-    try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        });
-    } catch {
-        return dateString;
-    }
-}
-
-// Fetch projects using service
-try {
-    const result = await getMyProjects(session.user.id);
-    pendingProjects = result.pending;
-    approvedProjects = result.approved;
-    joinedProjects = result.joined;
-    completedProjects = result.completed;
-} catch (error) {
-    console.error('Error loading projects:', error);
 }
 ---
 
@@ -77,326 +44,50 @@ try {
 
                 <!-- CONTENT TAB 1: DỰ ÁN CHỜ DUYỆT -->
                 <div id="pending" class="projects-grid tab-content">
-                    {
-                        pendingProjects.length > 0 ? (
-                            pendingProjects.map((project) => {
-                                const visibleMembers = project.members.slice(
-                                    0,
-                                    3
-                                );
-                                const remainingCount =
-                                    project.members.length - 3;
-                                return (
-                                    <a
-                                        href={l(`/project/${project.id}`)}
-                                        class="project-card"
-                                    >
-                                        <div class="card-header">
-                                            <h3 class="card-title">
-                                                {project.title}
-                                            </h3>
-                                            <div class="card-info-row">
-                                                <div class="member-avatars">
-                                                    {visibleMembers.map(
-                                                        (member) => (
-                                                            <img
-                                                                src={
-                                                                    member.avatar_url ||
-                                                                    '/assets/images/avatar-default-icon.png'
-                                                                }
-                                                                alt="Member"
-                                                                class="avatar-img"
-                                                            />
-                                                        )
-                                                    )}
-                                                    {remainingCount > 0 && (
-                                                        <div class="avatar-more">
-                                                            +{remainingCount}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <span class="project-date">
-                                                    {formatDate(
-                                                        project.created_at
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="card-status-row">
-                                            <span class="status-label">
-                                                {t('my-project.trangThai')}
-                                            </span>
-                                            <span class="status-indicator status-orange" />
-                                        </div>
-                                        {/* <div class="card-progress-row">
-                                            <span class="progress-label">
-                                                {t('my-project.tienTrinh')}
-                                            </span>
-                                            <div class="progress-track">
-                                                <div
-                                                    class="progress-fill"
-                                                    style={`width: ${project.progress}%`}
-                                                />
-                                            </div>
-                                            <span class="progress-text">
-                                                {project.progress}%
-                                            </span>
-                                        </div> */}
-                                    </a>
-                                );
-                            })
-                        ) : (
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--color-text-gray);">
-                                Không có dự án nào
+                    <div id="pending-loading" class="projects-loading">
+                        {Array(3).fill(0).map(() => (
+                            <div class="project-skeleton">
+                                <div class="skeleton-header"></div>
+                                <div class="skeleton-status"></div>
                             </div>
-                        )
-                    }
+                        ))}
+                    </div>
                 </div>
 
                 <!-- CONTENT TAB 2: DỰ ÁN ĐÃ DUYỆT -->
-                <div
-                    id="approved"
-                    class="projects-grid tab-content"
-                    style="display: none;"
-                >
-                    {
-                        approvedProjects.length > 0 ? (
-                            approvedProjects.map((project) => {
-                                const visibleMembers = project.members.slice(
-                                    0,
-                                    3
-                                );
-                                const remainingCount =
-                                    project.members.length - 3;
-                                return (
-                                    <a
-                                        href={l(`/project/${project.id}`)}
-                                        class="project-card"
-                                    >
-                                        <div class="card-header">
-                                            <h3 class="card-title">
-                                                {project.title}
-                                            </h3>
-                                            <div class="card-info-row">
-                                                <div class="member-avatars">
-                                                    {visibleMembers.map(
-                                                        (member) => (
-                                                            <img
-                                                                src={
-                                                                    member.avatar_url ||
-                                                                    '/assets/images/avatar-default-icon.png'
-                                                                }
-                                                                alt="Member"
-                                                                class="avatar-img"
-                                                            />
-                                                        )
-                                                    )}
-                                                    {remainingCount > 0 && (
-                                                        <div class="avatar-more">
-                                                            +{remainingCount}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <span class="project-date">
-                                                    {formatDate(
-                                                        project.created_at
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="card-status-row">
-                                            <span class="status-label">
-                                                {t('my-project.trangThai')}
-                                            </span>
-                                            <span class="status-indicator status-green" />
-                                        </div>
-                                        {/* <div class="card-progress-row">
-                                            <span class="progress-label">
-                                                {t('my-project.tienTrinh')}
-                                            </span>
-                                            <div class="progress-track">
-                                                <div
-                                                    class="progress-fill"
-                                                    style={`width: ${project.progress}%`}
-                                                />
-                                            </div>
-                                            <span class="progress-text">
-                                                {project.progress}%
-                                            </span>
-                                        </div> */}
-                                    </a>
-                                );
-                            })
-                        ) : (
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--color-text-gray);">
-                                Không có dự án nào
+                <div id="approved" class="projects-grid tab-content" style="display: none;">
+                    <div id="approved-loading" class="projects-loading">
+                        {Array(3).fill(0).map(() => (
+                            <div class="project-skeleton">
+                                <div class="skeleton-header"></div>
+                                <div class="skeleton-status"></div>
                             </div>
-                        )
-                    }
+                        ))}
+                    </div>
                 </div>
 
                 <!-- CONTENT TAB 3: DỰ ÁN ĐÃ THAM GIA -->
-                <div
-                    id="joined"
-                    class="projects-grid tab-content"
-                    style="display: none;"
-                >
-                    {
-                        joinedProjects.length > 0 ? (
-                            joinedProjects.map((project) => {
-                                const visibleMembers = project.members.slice(
-                                    0,
-                                    3
-                                );
-                                const remainingCount =
-                                    project.members.length - 3;
-                                return (
-                                    <a
-                                        href={l(`/project/${project.id}`)}
-                                        class="project-card"
-                                    >
-                                        <div class="card-header">
-                                            <h3 class="card-title">
-                                                {project.title}
-                                            </h3>
-                                            <div class="card-info-row">
-                                                <div class="member-avatars">
-                                                    {visibleMembers.map(
-                                                        (member) => (
-                                                            <img
-                                                                src={
-                                                                    member.avatar_url ||
-                                                                    '/assets/images/avatar-default-icon.png'
-                                                                }
-                                                                alt="Member"
-                                                                class="avatar-img"
-                                                            />
-                                                        )
-                                                    )}
-                                                    {remainingCount > 0 && (
-                                                        <div class="avatar-more">
-                                                            +{remainingCount}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <span class="project-date">
-                                                    {formatDate(
-                                                        project.created_at
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="card-status-row">
-                                            <span class="status-label">
-                                                {t('my-project.trangThai')}
-                                            </span>
-                                            <span class="status-indicator status-green" />
-                                        </div>
-                                        {/* <div class="card-progress-row">
-                                            <span class="progress-label">
-                                                {t('my-project.tienTrinh')}
-                                            </span>
-                                            <div class="progress-track">
-                                                <div
-                                                    class="progress-fill"
-                                                    style={`width: ${project.progress}%`}
-                                                />
-                                            </div>
-                                            <span class="progress-text">
-                                                {project.progress}%
-                                            </span>
-                                        </div> */}
-                                    </a>
-                                );
-                            })
-                        ) : (
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--color-text-gray);">
-                                Không có dự án nào
+                <div id="joined" class="projects-grid tab-content" style="display: none;">
+                    <div id="joined-loading" class="projects-loading">
+                        {Array(3).fill(0).map(() => (
+                            <div class="project-skeleton">
+                                <div class="skeleton-header"></div>
+                                <div class="skeleton-status"></div>
                             </div>
-                        )
-                    }
+                        ))}
+                    </div>
                 </div>
 
                 <!-- CONTENT TAB 4: DỰ ÁN HOÀN THÀNH -->
-                <div
-                    id="completed"
-                    class="projects-grid tab-content"
-                    style="display: none;"
-                >
-                    {
-                        completedProjects.length > 0 ? (
-                            completedProjects.map((project) => {
-                                const visibleMembers = project.members.slice(
-                                    0,
-                                    3
-                                );
-                                const remainingCount =
-                                    project.members.length - 3;
-                                return (
-                                    <a
-                                        href={l(`/project/${project.id}`)}
-                                        class="project-card"
-                                    >
-                                        <div class="card-header">
-                                            <h3 class="card-title">
-                                                {project.title}
-                                            </h3>
-                                            <div class="card-info-row">
-                                                <div class="member-avatars">
-                                                    {visibleMembers.map(
-                                                        (member) => (
-                                                            <img
-                                                                src={
-                                                                    member.avatar_url ||
-                                                                    '/assets/images/avatar-default-icon.png'
-                                                                }
-                                                                alt="Member"
-                                                                class="avatar-img"
-                                                            />
-                                                        )
-                                                    )}
-                                                    {remainingCount > 0 && (
-                                                        <div class="avatar-more">
-                                                            +{remainingCount}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <span class="project-date">
-                                                    {formatDate(
-                                                        project.created_at
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="card-status-row">
-                                            <span class="status-label">
-                                                {t('my-project.trangThai')}
-                                            </span>
-                                            <span class="status-indicator status-blue" />
-                                        </div>
-                                        {/* <div class="card-progress-row">
-                                            <span class="progress-label">
-                                                {t('my-project.tienTrinh')}
-                                            </span>
-                                            <div class="progress-track">
-                                                <div
-                                                    class="progress-fill"
-                                                    style="width: 100%"
-                                                />
-                                            </div>
-                                            <span class="progress-text">
-                                                100%
-                                            </span>
-                                        </div> */}
-                                    </a>
-                                );
-                            })
-                        ) : (
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--color-text-gray);">
-                                Không có dự án nào
+                <div id="completed" class="projects-grid tab-content" style="display: none;">
+                    <div id="completed-loading" class="projects-loading">
+                        {Array(3).fill(0).map(() => (
+                            <div class="project-skeleton">
+                                <div class="skeleton-header"></div>
+                                <div class="skeleton-status"></div>
                             </div>
-                        )
-                    }
+                        ))}
+                    </div>
                 </div>
             </div>
         </main>

@@ -5,7 +5,6 @@ import SkillDetailDialog from '@/components/SkillDetailDialog.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
-import { getAllSkills } from '@/services/skills';
 export { getStaticPaths };
 
 const { t, l } = useTranslate(Astro);
@@ -13,9 +12,6 @@ const session = Astro.locals.session;
 if (!session?.user) {
     return Astro.redirect(l(`/sign-in`));
 }
-
-// Load skills from database
-const skills = await getAllSkills();
 ---
 
 <DefaultLayout>
@@ -175,15 +171,7 @@ const skills = await getAllSkills();
                                                             )
                                                         }</option
                                                     >
-                                                    {
-                                                        skills.map((skill) => (
-                                                            <option
-                                                                value={skill.name.toLowerCase()}
-                                                            >
-                                                                {skill.name}
-                                                            </option>
-                                                        ))
-                                                    }
+                                                    <option value="" disabled>Đang tải kỹ năng...</option>
                                                 </select>
 
                                                 <!-- Hidden input để lưu mô tả skill -->
@@ -327,7 +315,7 @@ const skills = await getAllSkills();
         </main>
     </div>
 
-    <SkillDetailDialog skills={skills} />
+    <SkillDetailDialog skills={[]} />
 
     <script src="@/assets/script/create-project.js"></script>
 

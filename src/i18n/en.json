@@ -166,7 +166,8 @@
         "adminPanel": "Admin panel",
         "notifications": "Notifications",
         "unread": "unread",
-        "noNotifications": "No notifications"
+        "noNotifications": "No notifications",
+        "loadingNotifications": "Loading notifications..."
     },
 
     "project-handover-manager": {

@@ -166,7 +166,8 @@
         "adminPanel": "Quản lý",
         "notifications": "Thông báo",
         "unread": "chưa đọc",
-        "noNotifications": "Không có thông báo nào"
+        "noNotifications": "Không có thông báo nào",
+        "loadingNotifications": "Đang tải thông báo..."
     },
 
     "project-handover-manager": {
