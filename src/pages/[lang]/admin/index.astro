@@ -2,6 +2,7 @@
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
+import ConfirmDialog from '@/components/ConfirmDialog.astro';
 import '@/assets/css/admin.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import {
@@ -250,7 +251,29 @@ function formatDate(dateString: string | null): string {
         </div>
     </div>
 
-    <script>
+    <script
+        define:vars={{
+            approveTitle: t('admin.approve') || 'Duyệt dự án',
+            approveConfirm: 'Bạn có chắc chắn muốn duyệt dự án này?',
+            approveSuccessTitle: 'Thành công',
+            approveSuccess: 'Duyệt dự án thành công!',
+            approveErrorTitle: 'Lỗi',
+            approveError: 'Có lỗi xảy ra khi duyệt dự án',
+            rejectTitle: t('admin.reject') || 'Từ chối dự án',
+            rejectConfirm: 'Bạn có chắc chắn muốn từ chối dự án này?',
+            rejectSuccessTitle: 'Thành công',
+            rejectSuccess: 'Từ chối dự án thành công!',
+            rejectErrorTitle: 'Lỗi',
+            rejectError: 'Có lỗi xảy ra khi từ chối dự án',
+            deleteTitle: t('admin.delete') || 'Xóa người dùng',
+            deleteConfirm: 'Bạn có chắc chắn muốn xóa người dùng này?',
+            deleteSuccessTitle: 'Thành công',
+            deleteSuccess: 'Xóa người dùng thành công!',
+            deleteErrorTitle: 'Lỗi',
+            deleteError: 'Có lỗi xảy ra khi xóa người dùng',
+            errorMessage: 'Có lỗi xảy ra',
+        }}
+    >
         // Tab switching
         document.querySelectorAll('.admin-tab-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
@@ -266,177 +289,207 @@ function formatDate(dateString: string | null): string {
                 document
                     .querySelectorAll('.admin-tab-content')
                     .forEach((content) => {
-                        // @ts-ignore
                         content.style.display = 'none';
                     });
-                // @ts-ignore
-                document.getElementById(`${tabName}-tab`).style.display =
-                    'block';
+                const tabContent = document.getElementById(`${tabName}-tab`);
+                if (tabContent) {
+                    tabContent.style.display = 'block';
+                }
             });
         });
 
         // Approve project
-        // @ts-ignore
-        window.approveProject = async function (projectId: number) {
-            if (!confirm('Bạn có chắc chắn muốn duyệt dự án này?')) {
-                return;
-            }
+        window.approveProject = async function (projectId) {
+            // Use ConfirmDialog instead of confirm()
+            if (window.openApproveProjectDialog) {
+                window.openApproveProjectDialog(
+                    approveTitle,
+                    approveConfirm,
+                    async () => {
+                        try {
+                            const response = await fetch(
+                                `/api/admin/projects/${projectId}/approve`,
+                                {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                }
+                            );
 
-            try {
-                const response = await fetch(
-                    `/api/admin/projects/${projectId}/approve`,
-                    {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                            const result = await response.json();
+                            if (result.success) {
+                                if (window.showToast) {
+                                    window.showToast({
+                                        type: 'success',
+                                        title: approveSuccessTitle,
+                                        message: approveSuccess,
+                                        onClose: () => {
+                                            location.reload();
+                                        },
+                                    });
+                                } else {
+                                    location.reload();
+                                }
+                            } else {
+                                if (window.showToast) {
+                                    window.showToast({
+                                        type: 'error',
+                                        title: approveErrorTitle,
+                                        message: result.message || errorMessage,
+                                    });
+                                }
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            if (window.showToast) {
+                                window.showToast({
+                                    type: 'error',
+                                    title: approveErrorTitle,
+                                    message: approveError,
+                                });
+                            }
+                        }
                     }
                 );
-
-                const result = await response.json();
-                if (result.success) {
-                    if (window.showToast) {
-                        window.showToast({
-                            type: 'success',
-                            title: 'Thành công',
-                            message: 'Duyệt dự án thành công!',
-                            onClose: () => {
-                                location.reload();
-                            },
-                        });
-                    } else {
-                        location.reload();
-                    }
-                } else {
-                    if (window.showToast) {
-                        window.showToast({
-                            type: 'error',
-                            title: 'Lỗi',
-                            message: result.message || 'Có lỗi xảy ra',
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error(error);
-                if (window.showToast) {
-                    window.showToast({
-                        type: 'error',
-                        title: 'Lỗi',
-                        message: 'Có lỗi xảy ra khi duyệt dự án',
-                    });
-                }
             }
         };
 
         // Reject project
-        // @ts-ignore
         window.rejectProject = async function (projectId) {
-            if (!confirm('Bạn có chắc chắn muốn từ chối dự án này?')) {
-                return;
-            }
+            // Use ConfirmDialog instead of confirm()
+            if (window.openRejectProjectDialog) {
+                window.openRejectProjectDialog(
+                    rejectTitle,
+                    rejectConfirm,
+                    async () => {
+                        try {
+                            const response = await fetch(
+                                `/api/admin/projects/${projectId}/reject`,
+                                {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                }
+                            );
 
-            try {
-                const response = await fetch(
-                    `/api/admin/projects/${projectId}/reject`,
-                    {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                            const result = await response.json();
+                            if (result.success) {
+                                if (window.showToast) {
+                                    window.showToast({
+                                        type: 'success',
+                                        title: rejectSuccessTitle,
+                                        message: rejectSuccess,
+                                        onClose: () => {
+                                            location.reload();
+                                        },
+                                    });
+                                } else {
+                                    location.reload();
+                                }
+                            } else {
+                                if (window.showToast) {
+                                    window.showToast({
+                                        type: 'error',
+                                        title: rejectErrorTitle,
+                                        message: result.message || errorMessage,
+                                    });
+                                }
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            if (window.showToast) {
+                                window.showToast({
+                                    type: 'error',
+                                    title: rejectErrorTitle,
+                                    message: rejectError,
+                                });
+                            }
+                        }
                     }
                 );
-
-                const result = await response.json();
-                if (result.success) {
-                    if (window.showToast) {
-                        window.showToast({
-                            type: 'success',
-                            title: 'Thành công',
-                            message: 'Từ chối dự án thành công!',
-                            onClose: () => {
-                                location.reload();
-                            },
-                        });
-                    } else {
-                        location.reload();
-                    }
-                } else {
-                    if (window.showToast) {
-                        window.showToast({
-                            type: 'error',
-                            title: 'Lỗi',
-                            message: result.message || 'Có lỗi xảy ra',
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error(error);
-                if (window.showToast) {
-                    window.showToast({
-                        type: 'error',
-                        title: 'Lỗi',
-                        message: 'Có lỗi xảy ra khi từ chối dự án',
-                    });
-                }
             }
         };
 
         // Delete user
-        // @ts-ignore
         window.deleteUser = async function (userId) {
-            if (!confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
-                return;
-            }
+            // Use ConfirmDialog instead of confirm()
+            if (window.openDeleteUserDialog) {
+                window.openDeleteUserDialog(
+                    deleteTitle,
+                    deleteConfirm,
+                    async () => {
+                        try {
+                            const response = await fetch('/api/admin/users', {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    userId,
+                                    updates: {
+                                        deleted_at: new Date().toISOString(),
+                                    },
+                                }),
+                            });
 
-            try {
-                const response = await fetch('/api/admin/users', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userId,
-                        updates: {
-                            deleted_at: new Date().toISOString(),
-                        },
-                    }),
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    if (window.showToast) {
-                        window.showToast({
-                            type: 'success',
-                            title: 'Thành công',
-                            message: 'Xóa người dùng thành công!',
-                            onClose: () => {
-                                location.reload();
-                            },
-                        });
-                    } else {
-                        location.reload();
+                            const result = await response.json();
+                            if (result.success) {
+                                if (window.showToast) {
+                                    window.showToast({
+                                        type: 'success',
+                                        title: deleteSuccessTitle,
+                                        message: deleteSuccess,
+                                        onClose: () => {
+                                            location.reload();
+                                        },
+                                    });
+                                } else {
+                                    location.reload();
+                                }
+                            } else {
+                                if (window.showToast) {
+                                    window.showToast({
+                                        type: 'error',
+                                        title: deleteErrorTitle,
+                                        message: result.message || errorMessage,
+                                    });
+                                }
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            if (window.showToast) {
+                                window.showToast({
+                                    type: 'error',
+                                    title: deleteErrorTitle,
+                                    message: deleteError,
+                                });
+                            }
+                        }
                     }
-                } else {
-                    if (window.showToast) {
-                        window.showToast({
-                            type: 'error',
-                            title: 'Lỗi',
-                            message: result.message || 'Có lỗi xảy ra',
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error(error);
-                if (window.showToast) {
-                    window.showToast({
-                        type: 'error',
-                        title: 'Lỗi',
-                        message: 'Có lỗi xảy ra khi xóa người dùng',
-                    });
-                }
+                );
             }
         };
     </script>
 
     <ToastDialog />
+
+    <ConfirmDialog
+        id="approve-project-dialog"
+        confirmText={t('admin.approve') || 'Duyệt'}
+        cancelText={t('candidate-manage.cancel') || 'Hủy'}
+    />
+
+    <ConfirmDialog
+        id="reject-project-dialog"
+        confirmText={t('admin.reject') || 'Từ chối'}
+        cancelText={t('candidate-manage.cancel') || 'Hủy'}
+    />
+
+    <ConfirmDialog
+        id="delete-user-dialog"
+        confirmText={t('admin.delete') || 'Xóa'}
+        cancelText={t('candidate-manage.cancel') || 'Hủy'}
+    />
 </DefaultLayout>

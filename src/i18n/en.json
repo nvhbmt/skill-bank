@@ -347,7 +347,11 @@
         "cancel": "Cancel",
         "submit": "Submit",
         "editCoverImage": "Edit Cover Image",
-        "portfolioUrl": "Portfolio URL"
+        "portfolioUrl": "Portfolio URL",
+        "removeAvatarTitle": "Remove Avatar",
+        "removeAvatarConfirm": "Are you sure you want to remove this avatar?",
+        "removeCoverTitle": "Remove Cover Image",
+        "removeCoverConfirm": "Are you sure you want to remove this cover image?"
     },
     "my-project": {
         "title": "My Projects",

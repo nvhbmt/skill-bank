@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/project-handover-manager.css';
 import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
+import ConfirmDialog from '@/components/ConfirmDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import {
@@ -300,117 +301,151 @@ function formatDate(dateString: string | null): string {
                 </a>
             </div>
 
-            <script>
-                // @ts-ignore
+            <script
+                define:vars={{
+                    approveTitle:
+                        t('project-handover-manager.approve') ||
+                        'Duyệt ứng viên',
+                    approveConfirm: 'Bạn có chắc chắn muốn duyệt ứng viên này?',
+                    approveSuccessTitle: 'Thành công',
+                    approveSuccess: 'Duyệt ứng viên thành công!',
+                    approveErrorTitle: 'Lỗi',
+                    approveError: 'Có lỗi xảy ra khi duyệt ứng viên',
+                    rejectTitle:
+                        t('project-handover-manager.reject') ||
+                        'Từ chối ứng viên',
+                    rejectConfirm:
+                        'Bạn có chắc chắn muốn từ chối ứng viên này?',
+                    rejectSuccessTitle: 'Thành công',
+                    rejectSuccess: 'Từ chối ứng viên thành công!',
+                    rejectErrorTitle: 'Lỗi',
+                    rejectError: 'Có lỗi xảy ra khi từ chối ứng viên',
+                    errorMessage: 'Có lỗi xảy ra',
+                }}
+            >
+                // Approve application
                 window.approveApplication = async function (
-                    applicationId: number,
-                    projectId: number
+                    applicationId,
+                    projectId
                 ) {
-                    if (!confirm('Bạn có chắc chắn muốn duyệt ứng viên này?')) {
-                        return;
-                    }
+                    // Use ConfirmDialog instead of confirm()
+                    if (window.openApproveApplicationDialog) {
+                        window.openApproveApplicationDialog(
+                            approveTitle,
+                            approveConfirm,
+                            async () => {
+                                try {
+                                    const response = await fetch(
+                                        `/api/projects/${projectId}/applications/${applicationId}/approve`,
+                                        {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type':
+                                                    'application/json',
+                                            },
+                                        }
+                                    );
 
-                    try {
-                        const response = await fetch(
-                            `/api/projects/${projectId}/applications/${applicationId}/approve`,
-                            {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        if (window.showToast) {
+                                            window.showToast({
+                                                type: 'success',
+                                                title: approveSuccessTitle,
+                                                message: approveSuccess,
+                                                onClose: () => {
+                                                    location.reload();
+                                                },
+                                            });
+                                        } else {
+                                            location.reload();
+                                        }
+                                    } else {
+                                        if (window.showToast) {
+                                            window.showToast({
+                                                type: 'error',
+                                                title: approveErrorTitle,
+                                                message:
+                                                    result.message ||
+                                                    errorMessage,
+                                            });
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error(error);
+                                    if (window.showToast) {
+                                        window.showToast({
+                                            type: 'error',
+                                            title: approveErrorTitle,
+                                            message: approveError,
+                                        });
+                                    }
+                                }
                             }
                         );
-
-                        const result = await response.json();
-                        if (result.success) {
-                            if (window.showToast) {
-                                window.showToast({
-                                    type: 'success',
-                                    title: 'Thành công',
-                                    message: 'Duyệt ứng viên thành công!',
-                                    onClose: () => {
-                                        location.reload();
-                                    },
-                                });
-                            } else {
-                                location.reload();
-                            }
-                        } else {
-                            if (window.showToast) {
-                                window.showToast({
-                                    type: 'error',
-                                    title: 'Lỗi',
-                                    message: result.message || 'Có lỗi xảy ra',
-                                });
-                            }
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        if (window.showToast) {
-                            window.showToast({
-                                type: 'error',
-                                title: 'Lỗi',
-                                message: 'Có lỗi xảy ra khi duyệt ứng viên',
-                            });
-                        }
                     }
                 };
 
                 // Reject application
-                // @ts-ignore
                 window.rejectApplication = async function (
-                    applicationId: number,
-                    projectId: number
+                    applicationId,
+                    projectId
                 ) {
-                    if (
-                        !confirm('Bạn có chắc chắn muốn từ chối ứng viên này?')
-                    ) {
-                        return;
-                    }
+                    // Use ConfirmDialog instead of confirm()
+                    if (window.openRejectApplicationDialog) {
+                        window.openRejectApplicationDialog(
+                            rejectTitle,
+                            rejectConfirm,
+                            async () => {
+                                try {
+                                    const response = await fetch(
+                                        `/api/projects/${projectId}/applications/${applicationId}/reject`,
+                                        {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type':
+                                                    'application/json',
+                                            },
+                                        }
+                                    );
 
-                    try {
-                        const response = await fetch(
-                            `/api/projects/${projectId}/applications/${applicationId}/reject`,
-                            {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        if (window.showToast) {
+                                            window.showToast({
+                                                type: 'success',
+                                                title: rejectSuccessTitle,
+                                                message: rejectSuccess,
+                                                onClose: () => {
+                                                    location.reload();
+                                                },
+                                            });
+                                        } else {
+                                            location.reload();
+                                        }
+                                    } else {
+                                        if (window.showToast) {
+                                            window.showToast({
+                                                type: 'error',
+                                                title: rejectErrorTitle,
+                                                message:
+                                                    result.message ||
+                                                    errorMessage,
+                                            });
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error(error);
+                                    if (window.showToast) {
+                                        window.showToast({
+                                            type: 'error',
+                                            title: rejectErrorTitle,
+                                            message: rejectError,
+                                        });
+                                    }
+                                }
                             }
                         );
-
-                        const result = await response.json();
-                        if (result.success) {
-                            if (window.showToast) {
-                                window.showToast({
-                                    type: 'success',
-                                    title: 'Thành công',
-                                    message: 'Từ chối ứng viên thành công!',
-                                    onClose: () => {
-                                        location.reload();
-                                    },
-                                });
-                            } else {
-                                location.reload();
-                            }
-                        } else {
-                            if (window.showToast) {
-                                window.showToast({
-                                    type: 'error',
-                                    title: 'Lỗi',
-                                    message: result.message || 'Có lỗi xảy ra',
-                                });
-                            }
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        if (window.showToast) {
-                            window.showToast({
-                                type: 'error',
-                                title: 'Lỗi',
-                                message: 'Có lỗi xảy ra khi từ chối ứng viên',
-                            });
-                        }
                     }
                 };
             </script>
@@ -418,4 +453,16 @@ function formatDate(dateString: string | null): string {
     </div>
 
     <ToastDialog />
+
+    <ConfirmDialog
+        id="approve-application-dialog"
+        confirmText={t('project-handover-manager.approve') || 'Duyệt'}
+        cancelText={t('candidate-manage.cancel') || 'Hủy'}
+    />
+
+    <ConfirmDialog
+        id="reject-application-dialog"
+        confirmText={t('project-handover-manager.reject') || 'Từ chối'}
+        cancelText={t('candidate-manage.cancel') || 'Hủy'}
+    />
 </DefaultLayout>

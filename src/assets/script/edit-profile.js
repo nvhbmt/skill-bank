@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     // === 1. XỬ LÝ PREVIEW & XÓA ẢNH ===
-    function setupImagePreview(inputId, imgId, removeBtnId, defaultSrc) {
+    function setupImagePreview(
+        inputId,
+        imgId,
+        removeBtnId,
+        defaultSrc,
+        removeTitle,
+        removeConfirm
+    ) {
         const input = document.getElementById(inputId);
         const img = document.getElementById(imgId);
         const removeBtn = document.getElementById(removeBtnId);
@@ -40,30 +47,49 @@ document.addEventListener('DOMContentLoaded', () => {
             if (removeBtn) {
                 removeBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    if (confirm('Bạn có chắc muốn gỡ ảnh này?')) {
-                        input.value = '';
-                        img.src = defaultSrc;
-                        const hiddenInput = document.getElementById(
-                            'delete-' + inputId
+                    // Determine which dialog to use based on inputId
+                    const isAvatar = inputId === 'avatar-upload';
+                    const dialogFunction = isAvatar
+                        ? window.openRemoveAvatarDialog
+                        : window.openRemoveCoverDialog;
+
+                    if (dialogFunction) {
+                        dialogFunction(
+                            removeTitle || 'Gỡ ảnh',
+                            removeConfirm || 'Bạn có chắc muốn gỡ ảnh này?',
+                            () => {
+                                input.value = '';
+                                img.src = defaultSrc;
+                                const hiddenInput = document.getElementById(
+                                    'delete-' + inputId
+                                );
+                                if (hiddenInput) hiddenInput.value = 'true';
+                            }
                         );
-                        if (hiddenInput) hiddenInput.value = 'true';
                     }
                 });
             }
         }
     }
 
+    // Get i18n messages from window (set by Astro define:vars)
+    const messages = window.editProfileMessages || {};
+
     setupImagePreview(
         'avatar-upload',
         'avatar-preview',
         'remove-avatar-btn',
-        '/assets/images/default-avatar.png'
+        '/assets/images/default-avatar.png',
+        messages.removeAvatarTitle,
+        messages.removeAvatarConfirm
     );
     setupImagePreview(
         'cover-image-upload',
         'cover-image-preview',
         'remove-cover-btn',
-        '/assets/images/background.png'
+        '/assets/images/background.png',
+        messages.removeCoverTitle,
+        messages.removeCoverConfirm
     );
 
     // === 2. XỬ LÝ KỸ NĂNG ===

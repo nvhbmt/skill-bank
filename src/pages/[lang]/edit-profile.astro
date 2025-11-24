@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/edit-profile.css';
 import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
+import ConfirmDialog from '@/components/ConfirmDialog.astro';
 import { getStaticPaths, useTranslate } from '@/i18n';
 import { getEditProfileData } from '@/services/edit-profile';
 export { getStaticPaths };
@@ -444,7 +445,41 @@ const reviews = [
             </form>
         </main>
     </div>
+    <script
+        define:vars={{
+            removeAvatarTitle:
+                t('edit-profile.removeAvatarTitle') || 'Gỡ ảnh đại diện',
+            removeAvatarConfirm:
+                t('edit-profile.removeAvatarConfirm') ||
+                'Bạn có chắc muốn gỡ ảnh này?',
+            removeCoverTitle:
+                t('edit-profile.removeCoverTitle') || 'Gỡ ảnh bìa',
+            removeCoverConfirm:
+                t('edit-profile.removeCoverConfirm') ||
+                'Bạn có chắc muốn gỡ ảnh bìa này?',
+        }}
+    >
+        // Expose i18n strings to window for use in edit-profile.js
+        window.editProfileMessages = {
+            removeAvatarTitle: removeAvatarTitle,
+            removeAvatarConfirm: removeAvatarConfirm,
+            removeCoverTitle: removeCoverTitle,
+            removeCoverConfirm: removeCoverConfirm,
+        };
+    </script>
     <script src="@/assets/script/edit-profile.js"></script>
 
     <ToastDialog />
+
+    <ConfirmDialog
+        id="remove-avatar-dialog"
+        confirmText={t('edit-profile.removeAvatarTitle') || 'Gỡ'}
+        cancelText={t('edit-profile.cancel') || 'Hủy'}
+    />
+
+    <ConfirmDialog
+        id="remove-cover-dialog"
+        confirmText={t('edit-profile.removeCoverTitle') || 'Gỡ'}
+        cancelText={t('edit-profile.cancel') || 'Hủy'}
+    />
 </DefaultLayout>

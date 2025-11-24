@@ -72,7 +72,7 @@ if (!notificationsError && notificationsData) {
                 )
             }
         </div>
-        <div class="notification-list">
+        <div class="notification-list" id="notification-list">
             {
                 notifications.length > 0 ? (
                     notifications.map((notification) => {
@@ -362,3 +362,391 @@ if (!notificationsError && notificationsData) {
         color: #71717a;
     }
 </style>
+
+<script
+    define:vars={{
+        userId: userId,
+        lang: lang,
+        translations: JSON.stringify(translations),
+    }}
+>
+    (function () {
+        // Helper function to get createClient from Supabase UMD
+        function getCreateClient() {
+            // Try window.createClient first (exposed in layout)
+            if (window.createClient) {
+                return window.createClient;
+            }
+            // Try window.supabase.createClient (from UMD)
+            if (window.supabase && window.supabase.createClient) {
+                return window.supabase.createClient;
+            }
+            return null;
+        }
+
+        // Initialize Supabase client on client-side
+        async function initRealtimeNotifications() {
+            // Get Supabase URL and key from window (set by layout or injected)
+            const supabaseUrl = window.SUPABASE_URL || '';
+            const supabaseKey = window.SUPABASE_ANON_KEY || '';
+
+            if (!supabaseUrl || !supabaseKey) {
+                console.warn(
+                    'Supabase credentials not found. Realtime notifications disabled.'
+                );
+                return;
+            }
+
+            // Check if Supabase is loaded
+            const createClient = getCreateClient();
+            if (!createClient) {
+                console.warn('Supabase client not loaded. Loading from CDN...');
+                // Load Supabase from CDN
+                const script = document.createElement('script');
+                script.src =
+                    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                script.onload = () => {
+                    // Retry initialization after script loads
+                    setTimeout(() => {
+                        initRealtimeNotifications();
+                    }, 100);
+                };
+                document.head.appendChild(script);
+                return;
+            }
+
+            // Create Supabase client
+            let supabaseClient = null;
+            try {
+                // Get tokens from cookies
+                function getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2)
+                        return parts.pop()?.split(';').shift() || null;
+                    return null;
+                }
+
+                const accessToken = getCookie('sb-access-token');
+                const refreshToken = getCookie('sb-refresh-token');
+
+                // Create client instance
+                supabaseClient = createClient(supabaseUrl, supabaseKey, {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                    },
+                });
+
+                // Verify client is valid
+                if (
+                    !supabaseClient ||
+                    typeof supabaseClient.channel !== 'function'
+                ) {
+                    console.error('Invalid Supabase client created');
+                    return;
+                }
+
+                // Set session if tokens exist
+                if (accessToken && refreshToken) {
+                    await supabaseClient.auth.setSession({
+                        access_token: accessToken,
+                        refresh_token: refreshToken,
+                    });
+                }
+
+                // Subscribe to notifications changes
+                const channel = supabaseClient
+                    .channel('notifications-changes')
+                    .on(
+                        'postgres_changes',
+                        {
+                            event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+                            schema: 'public',
+                            table: 'notifications',
+                            filter: `user_id=eq.${userId}`,
+                        },
+                        (payload) => {
+                            console.log('Notification change:', payload);
+
+                            // Refresh notifications when there's a change
+                            refreshNotifications();
+                        }
+                    )
+                    .subscribe();
+
+                // Cleanup on page unload
+                window.addEventListener('beforeunload', () => {
+                    supabaseClient.removeChannel(channel);
+                });
+            } catch (error) {
+                console.error(
+                    'Error initializing realtime notifications:',
+                    error
+                );
+            }
+        }
+
+        // Function to refresh notifications
+        async function refreshNotifications() {
+            try {
+                const response = await fetch(
+                    `/api/notifications?user_id=${userId}&limit=10`
+                );
+                if (!response.ok) return;
+
+                const result = await response.json();
+                if (result.success && result.data) {
+                    updateNotificationUI(result.data);
+                }
+            } catch (error) {
+                console.error('Error refreshing notifications:', error);
+            }
+        }
+
+        // Function to update notification UI
+        function updateNotificationUI(notifications) {
+            const notificationList =
+                document.getElementById('notification-list');
+            const notificationBadge = document.querySelector(
+                '.notification-badge'
+            );
+            const unreadCountEl = document.querySelector(
+                '.notification-unread-count'
+            );
+
+            if (!notificationList) return;
+
+            // Calculate unread count
+            const unreadCount = notifications.filter((n) => !n.is_read).length;
+
+            // Update badge
+            if (unreadCount > 0) {
+                if (notificationBadge) {
+                    notificationBadge.textContent = unreadCount.toString();
+                    notificationBadge.style.display = '';
+                } else {
+                    // Create badge if it doesn't exist
+                    const button = document.getElementById(
+                        'notification-button'
+                    );
+                    if (button) {
+                        const badge = document.createElement('span');
+                        badge.className = 'notification-badge';
+                        badge.textContent = unreadCount.toString();
+                        button.appendChild(badge);
+                    }
+                }
+            } else {
+                if (notificationBadge) {
+                    notificationBadge.style.display = 'none';
+                }
+            }
+
+            // Update unread count text
+            if (unreadCountEl) {
+                unreadCountEl.textContent = `${unreadCount} ${
+                    lang === 'en' ? 'unread' : 'chưa đọc'
+                }`;
+                if (unreadCount === 0) {
+                    unreadCountEl.style.display = 'none';
+                } else {
+                    unreadCountEl.style.display = '';
+                }
+            }
+
+            // Update notification list
+            if (notifications.length === 0) {
+                notificationList.innerHTML = `
+                    <div class="notification-empty">
+                        <p>${lang === 'en' ? 'No notifications' : 'Chưa có thông báo'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render notifications
+            const parsedTranslations = JSON.parse(translations);
+            notificationList.innerHTML = notifications
+                .map((notification) => {
+                    // Parse and render message
+                    let messageText = notification.message || '';
+                    let linkHtml = '';
+                    let projectId = null;
+
+                    try {
+                        if (notification.type && notification.message) {
+                            const data = JSON.parse(notification.message);
+                            projectId = data.projectId;
+                            const template =
+                                parsedTranslations[notification.type];
+
+                            if (template) {
+                                messageText = template.message || '';
+                                // Replace template variables
+                                messageText = messageText.replace(
+                                    /\{\{(\w+)\}\}/g,
+                                    (match, key) => {
+                                        return data[key] || match;
+                                    }
+                                );
+
+                                // Add link if projectId exists
+                                if (data.projectId) {
+                                    const url =
+                                        notification.type ===
+                                        'application_received'
+                                            ? `/${lang}/project/${data.projectId}/candidate-manage`
+                                            : `/${lang}/project/${data.projectId}`;
+                                    linkHtml = `<a href="${url}" class="notification-link" onclick="event.stopPropagation(); window.location.href='${url}'">${template.viewProject || 'Xem dự án'}</a>`;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        // Use raw message if parsing fails
+                        console.error('Error parsing notification:', e);
+                    }
+
+                    const title =
+                        parsedTranslations[notification.type]?.title ||
+                        notification.title ||
+                        'Thông báo';
+
+                    const formattedDate = notification.created_at
+                        ? new Date(notification.created_at).toLocaleString(
+                              'vi-VN',
+                              {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                              }
+                          )
+                        : '';
+
+                    const linkUrl = projectId
+                        ? notification.type === 'application_received'
+                            ? `/${lang}/project/${projectId}/candidate-manage`
+                            : `/${lang}/project/${projectId}`
+                        : '';
+
+                    return `
+                        <button
+                            class="notification-item ${!notification.is_read ? 'unread' : ''}"
+                            data-notification-id="${notification.id}"
+                            data-notification-title="${title}"
+                            data-notification-message="${notification.message || ''}"
+                            data-notification-type="${notification.type || ''}"
+                            data-notification-link="${linkUrl}"
+                        >
+                            <div class="notification-item-content">
+                                <h4 class="notification-item-title">${title}</h4>
+                                <p class="notification-item-message">
+                                    ${messageText}${linkHtml}
+                                </p>
+                                <span class="notification-item-time">${formattedDate}</span>
+                            </div>
+                            ${!notification.is_read ? '<div class="notification-dot"></div>' : ''}
+                        </button>
+                    `;
+                })
+                .join('');
+
+            // Re-attach click handlers
+            attachNotificationHandlers();
+        }
+
+        // Function to attach notification click handlers
+        function attachNotificationHandlers() {
+            const notificationItems =
+                document.querySelectorAll('.notification-item');
+            notificationItems.forEach((item) => {
+                item.addEventListener('click', async function (e) {
+                    const target = e.target;
+                    // Don't trigger if clicking on link
+                    if (target.closest('.notification-link')) {
+                        return;
+                    }
+
+                    const notificationId = this.dataset.notificationId;
+                    const title = this.dataset.notificationTitle;
+                    const message = this.dataset.notificationMessage;
+                    const type = this.dataset.notificationType;
+                    const link = this.dataset.notificationLink;
+
+                    if (!notificationId) return;
+
+                    // Mark as read
+                    try {
+                        await fetch('/api/notifications/read', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                notification_id: parseInt(notificationId),
+                            }),
+                        });
+
+                        // Update UI
+                        this.classList.remove('unread');
+                        const dot = this.querySelector('.notification-dot');
+                        if (dot) dot.remove();
+
+                        // Update badge count
+                        refreshNotifications();
+                    } catch (error) {
+                        console.error(
+                            'Error marking notification as read:',
+                            error
+                        );
+                    }
+
+                    // Open notification dialog
+                    if (window.openNotificationDialog) {
+                        window.openNotificationDialog(
+                            title || 'Thông báo',
+                            message || '',
+                            type || '',
+                            new Date().toISOString()
+                        );
+                    }
+                });
+            });
+        }
+
+        // Wait for Supabase to be available before initializing
+        function waitForSupabase(callback, maxAttempts = 50) {
+            let attempts = 0;
+            const checkSupabase = () => {
+                const createClientFn = getCreateClient();
+                if (createClientFn || attempts >= maxAttempts) {
+                    if (createClientFn) {
+                        callback();
+                    } else {
+                        console.warn('Supabase not available after waiting');
+                    }
+                    return;
+                }
+                attempts++;
+                setTimeout(checkSupabase, 100);
+            };
+            checkSupabase();
+        }
+
+        // Initialize when DOM is ready and Supabase is available
+        const initialize = () => {
+            waitForSupabase(() => {
+                initRealtimeNotifications();
+                attachNotificationHandlers();
+            });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+    })();
+</script>

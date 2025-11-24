@@ -34,8 +34,13 @@ export function renderNotificationMessage(
         // Extract project link if projectId exists
         let link: { url: string; text: string } | undefined;
         if (data.projectId) {
+            // For application_received, link to candidate management page
+            const url =
+                type === 'application_received'
+                    ? `/project/${data.projectId}/candidate-manage`
+                    : `/project/${data.projectId}`;
             link = {
-                url: `/project/${data.projectId}`,
+                url,
                 text: template.viewProject,
             };
         }
@@ -68,4 +73,3 @@ export function getNotificationTitle(
     const template = translations[type as keyof typeof translations];
     return template?.title || fallbackTitle || 'Thông báo';
 }
-

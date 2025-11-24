@@ -347,7 +347,11 @@
         "cancel": "Hủy",
         "submit": "Hoàn tất",
         "editCoverImage": "Chỉnh sửa ảnh bìa",
-        "portfolioUrl": "URL Portfolio"
+        "portfolioUrl": "URL Portfolio",
+        "removeAvatarTitle": "Gỡ ảnh đại diện",
+        "removeAvatarConfirm": "Bạn có chắc muốn gỡ ảnh này?",
+        "removeCoverTitle": "Gỡ ảnh bìa",
+        "removeCoverConfirm": "Bạn có chắc muốn gỡ ảnh bìa này?"
     },
     "my-project": {
         "title": "Dự án của tôi",
