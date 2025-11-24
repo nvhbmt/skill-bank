@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 .map(
                                     (member) => `
                                 <img
-                                    src="${member.avatar_url || '/assets/images/avatar-default-icon.png'}"
+                                    src="${member.avatar_url || '/assets/images/defaul-project-background.jpg'}"
                                     alt="Member"
                                     class="avatar-img"
                                 />
