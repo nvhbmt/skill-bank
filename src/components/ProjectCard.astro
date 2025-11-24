@@ -26,11 +26,11 @@ const { t, l } = useTranslate(Astro);
     </div>
     <div class="project-info-new">
         <div class="project-header-row">
-            <span class="project-title-new">
-                {project.title}
-            </span>
             <span class="project-tag-badge">
                 {project.tag}
+            </span>
+            <span class="project-title-new">
+                {project.title}
             </span>
         </div>
         <p class="project-desc">
@@ -97,6 +97,7 @@ const { t, l } = useTranslate(Astro);
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
+        flex-direction: column;
     }
     .project-title-new {
         font-size: var(--font-size-xl);
@@ -112,6 +113,9 @@ const { t, l } = useTranslate(Astro);
         padding: 0.4rem 1rem;
         border-radius: 15px;
         white-space: nowrap;
+        display: block;
+        margin-left: auto;
+        margin-bottom: 12px;
     }
     .project-desc {
         font-size: var(--font-size-sm);
