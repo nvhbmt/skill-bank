@@ -122,7 +122,9 @@ a:hover {
     gap: 8px;
     padding: 0 24px;
     align-items: center;
-    transition: outline 0.2s ease, box-shadow 0.25s ease;
+    transition:
+        outline 0.2s ease,
+        box-shadow 0.25s ease;
 }
 
 .login-form-input-error {
@@ -166,8 +168,16 @@ a:hover {
     background-color: var(--color-surface);
     border: none;
     width: 100%;
+    font-size: var(--font-size-lg);
 }
-
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-bg-black) !important;
+    box-shadow: 0 0 0 1000px var(--color-surface) inset !important;
+    transition: background-color 9999s ease-in-out 0s !important;
+}
 input:focus {
     outline: none;
 }
@@ -213,13 +223,15 @@ input[type='checkbox'] {
     width: 100%;
     height: 52px;
     font-size: 23px;
-    transition: color 0.2s ease, box-shadow 0.25s ease;
+    transition:
+        color 0.2s ease,
+        box-shadow 0.25s ease;
 }
 
 .login-form-btn:hover {
     background: var(--color-primary);
     color: var(--color-bg-black);
-    box-shadow: 0 4px 12px rgba(110, 77, 255, 0.35)
+    box-shadow: 0 4px 12px rgba(110, 77, 255, 0.35);
 }
 
 .login-form-btn:active {
@@ -262,7 +274,10 @@ input[type='checkbox'] {
     align-items: center;
     gap: 8px;
     background: var(--color-bg-light);
-    transition: color 0.2s ease, box-shadow 0.25s ease, transform 0.15s ease;
+    transition:
+        color 0.2s ease,
+        box-shadow 0.25s ease,
+        transform 0.15s ease;
     cursor: pointer;
 }
 
