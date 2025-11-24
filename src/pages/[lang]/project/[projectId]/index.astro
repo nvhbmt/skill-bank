@@ -4,6 +4,7 @@ import Header from '@/components/Header.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
 import ShareDialog from '@/components/ShareDialog.astro';
 import ProjectSkillDetailDialog from '@/components/ProjectSkillDetailDialog.astro';
+import ProjectHandoverDialog from '@/components/ProjectHandoverDialog.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import '@/assets/css/project.css';
 import { getStaticPaths, useTranslate } from '@/i18n';
@@ -410,6 +411,22 @@ function formatDate(dateString: string | null): string {
         applicationUrl=""
     />
 
+    <!-- Project Handover Dialog -->
+    <ProjectHandoverDialog
+        id="project-handover-dialog"
+        titleId="project-handover-dialog-title"
+        notesId="project-handover-dialog-notes"
+        backButtonId="project-handover-dialog-back"
+        sendButtonId="project-handover-dialog-send"
+        closeButtonId="project-handover-dialog-close"
+        title={t('projectHandover-collaborator.title')}
+        notesLabel={t('projectHandover-collaborator.notes')}
+        note1={t('projectHandover-collaborator.project1')}
+        note2={t('projectHandover-collaborator.project2')}
+        backText={t('projectHandover-collaborator.back')}
+        sendText={t('projectHandover-collaborator.send')}
+    />
+
     <ToastDialog />
 </DefaultLayout>
 
@@ -572,5 +589,16 @@ function formatDate(dateString: string | null): string {
         if (overlay) {
             overlay.addEventListener('click', closeSkillDetailDialog);
         }
+
+        // Handover button handlers (for both owner and member)
+        const handoverButtons = document.querySelectorAll('.btn-view-handover');
+        handoverButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+                // Open project handover dialog
+                if (window.openProjectHandoverDialog) {
+                    window.openProjectHandoverDialog();
+                }
+            });
+        });
     })();
 </script>

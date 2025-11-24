@@ -1,0 +1,317 @@
+---
+interface Props {
+    id: string;
+    titleId?: string;
+    notesId?: string;
+    backButtonId?: string;
+    sendButtonId?: string;
+    closeButtonId?: string;
+    title?: string;
+    notesLabel?: string;
+    note1?: string;
+    note2?: string;
+    backText?: string;
+    sendText?: string;
+}
+
+const {
+    id,
+    titleId = `${id}-title`,
+    notesId = `${id}-notes`,
+    backButtonId = `${id}-back`,
+    sendButtonId = `${id}-send`,
+    closeButtonId = `${id}-close`,
+    title = 'Bàn giao dự án',
+    notesLabel = 'Ghi chú:',
+    note1 = 'Ghi chú 1',
+    note2 = 'Ghi chú 2',
+    backText = 'Quay lại',
+    sendText = 'Gửi',
+} = Astro.props;
+---
+
+<div id={id} class="project-handover-dialog">
+    <div class="project-handover-dialog-content">
+        <div class="project-handover-dialog-header">
+            <h2 class="project-handover-dialog-title" id={titleId}>{title}</h2>
+            <button class="project-handover-dialog-close" id={closeButtonId}>
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </div>
+        <div class="project-handover-dialog-body">
+            <div class="project-handover-section">
+                <label class="project-handover-label">{notesLabel}</label>
+                <textarea class="project-handover-note" id={notesId}></textarea>
+            </div>
+        </div>
+        <div class="project-handover-dialog-footer">
+            <button
+                class="project-handover-btn project-handover-btn-back"
+                id={backButtonId}
+            >
+                {backText}
+            </button>
+            <button
+                class="project-handover-btn project-handover-btn-send"
+                id={sendButtonId}
+            >
+                {sendText}
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .project-handover-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100000;
+        padding: 2rem;
+    }
+
+    .project-handover-dialog.active {
+        display: flex;
+    }
+
+    .project-handover-dialog-content {
+        background: rgba(30, 30, 35, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .project-handover-dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.6rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .project-handover-dialog-title {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .project-handover-dialog-close {
+        background: none;
+        border: none;
+        color: #a1a1aa;
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .project-handover-dialog-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+
+    .project-handover-dialog-body {
+        color: #e4e4e7;
+        margin-bottom: 2rem;
+    }
+
+    .project-handover-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .project-handover-label {
+        display: block;
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 0.8rem;
+    }
+
+    .project-handover-note {
+        width: 100%;
+        min-height: 120px;
+        font-size: var(--font-size-base);
+        font-family: inherit;
+        color: #ffffff;
+        line-height: 1.6;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        resize: vertical;
+        outline: none;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .project-handover-note::placeholder {
+        color: #a1a1aa;
+    }
+
+    .project-handover-note:focus {
+        border-color: var(--color-purple-button);
+        background: rgba(255, 255, 255, 0.08);
+        outline: 2px solid rgba(168, 85, 247, 0.2);
+    }
+
+    .project-handover-note:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .project-handover-dialog-footer {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    .project-handover-btn {
+        padding: 0.75rem 1.6rem;
+        border-radius: 10px;
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+    }
+
+    .project-handover-btn-back {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e4e4e7;
+    }
+
+    .project-handover-btn-back:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+    }
+
+    .project-handover-btn-send {
+        background: var(--color-purple-button);
+        color: #ffffff;
+    }
+
+    .project-handover-btn-send:hover {
+        background: var(--color-purple-button-hover);
+    }
+</style>
+
+<script
+    define:vars={{
+        dialogId: id,
+        titleId,
+        notesId,
+        backButtonId,
+        sendButtonId,
+        closeButtonId,
+    }}
+>
+    (function () {
+        // Create a unique function name based on dialog ID
+        const functionName = dialogId
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join('');
+        const openFunctionName = `open${functionName}`;
+        const closeFunctionName = `close${functionName}`;
+
+        // Export open function to window for global access
+        window[openFunctionName] = function () {
+            const dialog = document.getElementById(dialogId);
+
+            if (!dialog) {
+                console.error(
+                    `Dialog element with id "${dialogId}" not found!`
+                );
+                return;
+            }
+
+            // Show dialog
+            dialog.classList.add('active');
+        };
+
+        // Export close function to window
+        window[closeFunctionName] = function () {
+            const dialog = document.getElementById(dialogId);
+            if (dialog) {
+                dialog.classList.remove('active');
+            }
+        };
+
+        // Setup handlers
+        function setupDialogHandlers() {
+            const dialog = document.getElementById(dialogId);
+            if (!dialog) return;
+
+            const closeButton = document.getElementById(closeButtonId);
+            const backButton = document.getElementById(backButtonId);
+            const sendButton = document.getElementById(sendButtonId);
+
+            // Close button handler
+            if (closeButton) {
+                closeButton.addEventListener('click', function () {
+                    window[closeFunctionName]();
+                });
+            }
+
+            // Back button handler
+            if (backButton) {
+                backButton.addEventListener('click', function () {
+                    window[closeFunctionName]();
+                });
+            }
+
+            // Send button handler (can be customized)
+            if (sendButton) {
+                sendButton.addEventListener('click', function () {
+                    // Add your send logic here
+                    console.log('Send handover clicked');
+                    // window[closeFunctionName]();
+                });
+            }
+
+            // Close on backdrop click
+            dialog.addEventListener('click', function (e) {
+                if (e.target === dialog) {
+                    window[closeFunctionName]();
+                }
+            });
+
+            // Close on Escape key
+            const escapeHandler = function (e) {
+                if (e.key === 'Escape' && dialog.classList.contains('active')) {
+                    window[closeFunctionName]();
+                }
+            };
+            document.addEventListener('keydown', escapeHandler);
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupDialogHandlers);
+        } else {
+            setTimeout(setupDialogHandlers, 0);
+        }
+
+        // Fallback initialization
+        setTimeout(setupDialogHandlers, 200);
+    })();
+</script>
