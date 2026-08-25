@@ -7,9 +7,9 @@ import ProjectSkillDetailDialog from '@/components/ProjectSkillDetailDialog.astr
 import ProjectHandoverDialog from '@/components/ProjectHandoverDialog.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import '@/assets/css/project.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { getProjectDetailById } from '@/services/project-detail';
-export { getStaticPaths };
+import { getHandoverForMember } from '@/services/project-handover';
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
@@ -40,6 +40,12 @@ const {
     isOwner,
     isMember,
 } = projectData;
+
+// Bản bàn giao thành viên đã gửi trước đó (nếu có) để điền sẵn vào dialog
+const myHandover =
+    session?.user && isMember && !isOwner
+        ? await getHandoverForMember(projectIdNum, session.user.id)
+        : null;
 
 // Format date helper
 function formatDate(dateString: string | null): string {
@@ -193,16 +199,26 @@ function formatDate(dateString: string | null): string {
                             <!-- Nút "Xem bàn giao" - chỉ hiện cho owner -->
                             {
                                 isOwner && (
-                                    <button class="action-btn btn-view-handover">
+                                    <a
+                                        class="action-btn"
+                                        href={l(
+                                            `/project-handover-manager/${project?.id}`
+                                        )}
+                                    >
                                         <i class="fa-solid fa-file-import" />
                                         {t('project-detail-creator.xemBanGiao')}
-                                    </button>
+                                    </a>
                                 )
                             }
                             <!-- Nút "Bàn giao" - chỉ hiện cho member (không phải owner) -->
                             {
                                 isMember && !isOwner && (
-                                    <button class="action-btn btn-view-handover">
+                                    <button
+                                        class="action-btn btn-submit-handover"
+                                        data-handover-status={
+                                            myHandover?.status ?? ''
+                                        }
+                                    >
                                         <i class="fa-solid fa-file-import" />
                                         {t('project-detail-collab.banGiao')}
                                     </button>
@@ -437,6 +453,7 @@ function formatDate(dateString: string | null): string {
         lang: lang,
         confirmDeleteTitle: t('project-detail-creator.confirmDeleteTitle'),
         confirmDeleteMessage: t('project-detail-creator.confirmDeleteMessage'),
+        myHandoverNotes: myHandover?.notes || '',
     }}
 >
     (function () {
@@ -590,15 +607,79 @@ function formatDate(dateString: string | null): string {
             overlay.addEventListener('click', closeSkillDetailDialog);
         }
 
-        // Handover button handlers (for both owner and member)
-        const handoverButtons = document.querySelectorAll('.btn-view-handover');
-        handoverButtons.forEach((button) => {
-            button.addEventListener('click', function () {
-                // Open project handover dialog
+        // Thành viên bấm "Bàn giao" -> mở dialog, điền sẵn ghi chú lần trước
+        const handoverButton = document.querySelector('.btn-submit-handover');
+        if (handoverButton) {
+            handoverButton.addEventListener('click', function () {
                 if (window.openProjectHandoverDialog) {
-                    window.openProjectHandoverDialog();
+                    window.openProjectHandoverDialog({
+                        notes: myHandoverNotes,
+                    });
                 }
             });
-        });
+        }
+
+        // Gửi bàn giao lên server
+        const handoverDialog = document.getElementById(
+            'project-handover-dialog'
+        );
+        if (handoverDialog) {
+            handoverDialog.addEventListener(
+                'handover-send',
+                async function (e) {
+                    const { notes, setBusy, close } = e.detail;
+
+                    if (!notes) {
+                        window.showToast?.({
+                            type: 'warning',
+                            title: 'Thiếu nội dung',
+                            message: 'Vui lòng nhập ghi chú bàn giao.',
+                        });
+                        return;
+                    }
+
+                    setBusy(true);
+                    try {
+                        const response = await fetch(
+                            `/api/projects/${projectId}/handover`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ notes }),
+                            }
+                        );
+                        const result = await response.json();
+
+                        if (result.success) {
+                            close();
+                            window.showToast?.({
+                                type: 'success',
+                                title: 'Đã gửi bàn giao',
+                                message: result.message,
+                                onClose: () => window.location.reload(),
+                            });
+                        } else {
+                            window.showToast?.({
+                                type: 'error',
+                                title: 'Gửi bàn giao thất bại',
+                                message: result.message || 'Vui lòng thử lại.',
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error submitting handover:', error);
+                        window.showToast?.({
+                            type: 'error',
+                            title: 'Lỗi kết nối',
+                            message:
+                                'Không gửi được bàn giao. Vui lòng thử lại.',
+                        });
+                    } finally {
+                        setBusy(false);
+                    }
+                }
+            );
+        }
     })();
 </script>

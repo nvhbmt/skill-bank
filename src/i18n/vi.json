@@ -118,6 +118,13 @@
         "errorGeneric": "Có lỗi xảy ra, vui lòng thử lại"
     },
     "projectHandover-collaborator": {
+        "notSubmitted": "Chưa gửi",
+        "manager": "Người quản lý",
+        "notePlaceholder": "Ghi lại những gì bạn đã hoàn thành và lưu ý cho người quản lý...",
+        "noProjects": "Bạn chưa tham gia dự án nào. ",
+        "findProjects": "Tìm dự án",
+        "emptyNote": "Vui lòng nhập ghi chú bàn giao",
+        "sending": "Đang gửi...",
         "title": "Bàn giao dự án",
         "description": "Mô tả",
         "notes": "Đã xong dự án? Bạn có một số lưu ý gì cho người quản lý không?",
@@ -154,6 +161,7 @@
         "chiTiet": "Chi tiết"
     },
     "header": {
+        "myHandovers": "Bàn giao của tôi",
         "dashboard": "Bảng điều khiển",
         "myProject": "Dự án của tôi",
         "aboutUs": "Vể chúng tôi",
@@ -171,6 +179,17 @@
     },
 
     "project-handover-manager": {
+        "handoverSectionTitle": "Bàn giao từ thành viên",
+        "noHandovers": "Chưa có thành viên nào gửi bàn giao",
+        "handoverPending": "Chờ nghiệm thu",
+        "handoverApproved": "Đã nghiệm thu",
+        "handoverRejected": "Đã trả lại",
+        "handoverSubmittedAt": "Gửi lúc",
+        "handoverReviewNote": "Nhận xét",
+        "handoverApprove": "Nghiệm thu",
+        "handoverReject": "Trả lại",
+        "handoverApproveConfirm": "Xác nhận nghiệm thu bàn giao của thành viên này?",
+        "handoverRejectConfirm": "Trả lại bàn giao này để thành viên chỉnh sửa?",
         "skillbank-dropdown": "SkillBank",
         "user-name": "Tên người dùng",
         "email": "Email",
@@ -297,6 +316,7 @@
         "delete": "Xóa"
     },
     "candidate-manage": {
+        "viewCv": "Xem CV",
         "candidateManagement": "Quản lý ứng viên",
         "candidateName": "Tên ứng viên",
         "searchCandidateName": "Tìm kiếm tên ứng viên...",
@@ -331,6 +351,7 @@
         "cancel": "Hủy"
     },
     "edit-profile": {
+        "noReviews": "Chưa có đánh giá nào.",
         "generalInfo": "Thông tin chung",
         "fullName": "Họ và tên",
         "username": "Tên người dùng",
@@ -485,6 +506,11 @@
         "faq3_a": "Không hẳn. Đây là nơi các bạn sinh viên cùng nhau xây dựng các sản phẩm thực tế (Pet Project, Startup MVP...) để học hỏi và làm đẹp Portfolio."
     },
     "change-password": {
+        "successTitle": "Thành công",
+        "success": "Đổi mật khẩu thành công",
+        "errorTitle": "Lỗi",
+        "genericError": "Có lỗi xảy ra, vui lòng thử lại",
+        "submitting": "Đang xử lý...",
         "title": "Đổi mật khẩu",
         "currentPass": "Nhập mật khẩu hiện tại",
         "password": "Nhập mật khẩu mới",
@@ -493,6 +519,21 @@
         "backToSignIn": "Quay lại đăng nhập"
     },
     "notifications": {
+        "handover_submitted": {
+            "title": "Có bàn giao mới cần duyệt",
+            "message": "{{memberName}} đã gửi bàn giao cho dự án \"{{projectTitle}}\".",
+            "viewProject": "Xem bàn giao"
+        },
+        "handover_approved": {
+            "title": "Bàn giao đã được nghiệm thu",
+            "message": "Bàn giao của bạn ở dự án \"{{projectTitle}}\" đã được nghiệm thu.",
+            "viewProject": "Xem dự án"
+        },
+        "handover_rejected": {
+            "title": "Bàn giao bị trả lại",
+            "message": "Bàn giao của bạn ở dự án \"{{projectTitle}}\" bị trả lại. Vui lòng chỉnh sửa và gửi lại.",
+            "viewProject": "Xem dự án"
+        },
         "application_received": {
             "title": "Có người muốn tham gia dự án của bạn",
             "message": "{{applicantName}} (@{{applicantUsername}}) muốn tham gia dự án \"{{projectTitle}}\".",

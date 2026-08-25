@@ -75,13 +75,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
             const fileExt = cvFile.name.split('.').pop();
             const filePath = `${session.user.id}/${Date.now()}.${fileExt}`;
 
-            const { data: uploadData, error: uploadError } =
-                await authenticatedSupabase.storage
-                    .from('cv-files')
-                    .upload(filePath, cvFile, {
-                        cacheControl: '3600',
-                        upsert: false,
-                    });
+            const { error: uploadError } = await authenticatedSupabase.storage
+                .from('cv-files')
+                .upload(filePath, cvFile, {
+                    cacheControl: '3600',
+                    upsert: false,
+                });
 
             if (uploadError) {
                 return httpResponse.fail(
@@ -106,6 +105,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                     project_id: projectIdNum,
                     applicant_id: session.user.id,
                     cover_letter: coverLetter || null,
+                    cv_url: cvUrl,
                     applied_at: new Date().toISOString(),
                     status: 'pending',
                 })

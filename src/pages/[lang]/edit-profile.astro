@@ -4,9 +4,8 @@ import '@/assets/css/edit-profile.css';
 import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { getEditProfileData } from '@/services/edit-profile';
-export { getStaticPaths };
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
@@ -20,7 +19,7 @@ if (!profileData) {
     return Astro.redirect(l(`/explore`));
 }
 
-const { userInfo, userProfile, userSkills, allSkills, userProjects } =
+const { userInfo, userProfile, userSkills, allSkills, userProjects, reviews } =
     profileData;
 
 const safeJoin = (jsonVal: string | null | undefined) => {
@@ -37,33 +36,6 @@ const educationText = safeJoin(userProfile?.interests);
 const experienceText = safeJoin(userProfile?.experiences);
 const achievementsText = safeJoin(userProfile?.projects);
 const certificationsText = safeJoin(userProfile?.certifications);
-
-const reviews = [
-    {
-        id: 1,
-        name: 'Ly Huy',
-        username: '@lyhuy2201',
-        avatar: '/assets/images/avatar-default-icon.png',
-        rating: 5,
-        text: 'Rất uy tín và linh hoạt.',
-    },
-    {
-        id: 2,
-        name: 'Nguyễn Văn A',
-        username: '@nguyenvana',
-        avatar: '/assets/images/avatar-default-icon.png',
-        rating: 5,
-        text: 'Giao diện đẹp.',
-    },
-    {
-        id: 3,
-        name: 'Trần Thị B',
-        username: '@tranthib',
-        avatar: '/assets/images/avatar-default-icon.png',
-        rating: 4,
-        text: 'Hoàn thành đúng hạn.',
-    },
-];
 ---
 
 <DefaultLayout>
@@ -330,7 +302,7 @@ const reviews = [
                                     <div class="projects-row">
                                         {userProjects.map((proj) => (
                                             <a
-                                                href={`/project/${proj.id}`}
+                                                href={l(`/project/${proj.id}`)}
                                                 class="project-card-new"
                                                 target="_blank"
                                             >
@@ -368,9 +340,19 @@ const reviews = [
                         <!-- REVIEWS (READ ONLY) -->
                         <div class="content-block">
                             <h3 class="content-title">Đánh giá :</h3>
+                            {
+                                reviews.length === 0 && (
+                                    <p class="no-reviews">
+                                        {t('edit-profile.noReviews')}
+                                    </p>
+                                )
+                            }
                             <div
                                 class="reviews-container"
                                 id="reviews-container"
+                                style={reviews.length === 0
+                                    ? 'display: none;'
+                                    : undefined}
                             >
                                 <div class="reviews-viewport">
                                     <div
@@ -384,30 +366,45 @@ const reviews = [
                                                 >
                                                     <div class="review-card-featured">
                                                         <img
-                                                            src={review.avatar}
-                                                            alt={review.name}
+                                                            src={
+                                                                review.reviewer
+                                                                    ?.avatar_url ||
+                                                                '/assets/images/avatar-default-icon.png'
+                                                            }
+                                                            alt={
+                                                                review.reviewer
+                                                                    ?.full_name ||
+                                                                ''
+                                                            }
                                                             class="reviewer-avatar"
                                                         />
                                                         <div class="review-stars">
                                                             {Array(
-                                                                review.rating
+                                                                review.rating ??
+                                                                    0
                                                             )
                                                                 .fill('★')
                                                                 .join('')}
                                                         </div>
                                                         <p class="review-text">
-                                                            "{review.text}"
+                                                            "{review.comment}"
                                                         </p>
                                                         <div class="reviewer-info">
                                                             <>
                                                                 <h5>
-                                                                    {
-                                                                        review.name
-                                                                    }
+                                                                    {review
+                                                                        .reviewer
+                                                                        ?.full_name ||
+                                                                        review
+                                                                            .reviewer
+                                                                            ?.username}
                                                                 </h5>
                                                                 <span>
+                                                                    @
                                                                     {
-                                                                        review.username
+                                                                        review
+                                                                            .reviewer
+                                                                            ?.username
                                                                     }
                                                                 </span>
                                                             </>

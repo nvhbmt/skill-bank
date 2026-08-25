@@ -4,7 +4,7 @@ import '@/assets/css/project-handover-manager.css';
 import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import {
     getProjectApplications,
@@ -13,7 +13,6 @@ import {
     type ProjectMember,
 } from '@/services/project-handover';
 import type { Tables } from '@/types/database.types';
-export { getStaticPaths };
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
@@ -289,11 +288,116 @@ function formatDate(dateString: string | null): string {
                     </div>
                 </div>
             </div>
+            <div class="handover-submissions">
+                <h4 class="section-title">
+                    {t('project-handover-manager.handoverSectionTitle')}
+                </h4>
+                {
+                    (() => {
+                        const submitted = projectMembers.filter(
+                            (m) => m.handover_id
+                        );
+                        return submitted.length > 0 ? (
+                            <div class="handover-list">
+                                {submitted.map((member) => (
+                                    <div
+                                        class="handover-item"
+                                        data-status={member.handover_status}
+                                    >
+                                        <div class="handover-item-head">
+                                            <img
+                                                src={
+                                                    member.avatar_url ||
+                                                    '/assets/images/avt-nhỏ.svg'
+                                                }
+                                                alt={member.username}
+                                            />
+                                            <div class="handover-item-who">
+                                                <div class="user-name">
+                                                    {member.full_name ||
+                                                        member.username}
+                                                </div>
+                                                <div class="handover-date">
+                                                    {t(
+                                                        'project-handover-manager.handoverSubmittedAt'
+                                                    )}
+                                                    :{' '}
+                                                    {formatDate(
+                                                        member.handover_submitted_at ??
+                                                            null
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <span
+                                                class={`handover-badge handover-badge-${member.handover_status}`}
+                                            >
+                                                {member.handover_status ===
+                                                'approved'
+                                                    ? t(
+                                                          'project-handover-manager.handoverApproved'
+                                                      )
+                                                    : member.handover_status ===
+                                                        'rejected'
+                                                      ? t(
+                                                            'project-handover-manager.handoverRejected'
+                                                        )
+                                                      : t(
+                                                            'project-handover-manager.handoverPending'
+                                                        )}
+                                            </span>
+                                        </div>
+                                        <p class="handover-notes">
+                                            {member.handover_note}
+                                        </p>
+                                        {member.handover_review_note && (
+                                            <p class="handover-review-note">
+                                                {t(
+                                                    'project-handover-manager.handoverReviewNote'
+                                                )}
+                                                : {member.handover_review_note}
+                                            </p>
+                                        )}
+                                        {member.handover_status ===
+                                            'pending' && (
+                                            <div class="handover-actions">
+                                                <button
+                                                    class="action-btn-small approve-btn btn-handover-review"
+                                                    data-handover-id={
+                                                        member.handover_id
+                                                    }
+                                                    data-action="approve"
+                                                >
+                                                    {t(
+                                                        'project-handover-manager.handoverApprove'
+                                                    )}
+                                                </button>
+                                                <button
+                                                    class="action-btn-small reject-btn btn-handover-review"
+                                                    data-handover-id={
+                                                        member.handover_id
+                                                    }
+                                                    data-action="reject"
+                                                >
+                                                    {t(
+                                                        'project-handover-manager.handoverReject'
+                                                    )}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div class="no-requests">
+                                {t('project-handover-manager.noHandovers')}
+                            </div>
+                        );
+                    })()
+                }
+            </div>
+
             <div class="action-buttons">
-                <a
-                    href={l(`/project-setting/${project.id}`)}
-                    class="status-btn"
-                >
+                <a href={l(`/project/${project.id}`)} class="status-btn">
                     {t('project-handover-manager.status-btn')}
                 </a>
                 <a href={l(`/project/${project.id}`)} class="details-btn">
@@ -321,6 +425,19 @@ function formatDate(dateString: string | null): string {
                     rejectErrorTitle: 'Lỗi',
                     rejectError: 'Có lỗi xảy ra khi từ chối ứng viên',
                     errorMessage: 'Có lỗi xảy ra',
+                    handoverProjectId: project.id,
+                    handoverApproveTitle: t(
+                        'project-handover-manager.handoverApprove'
+                    ),
+                    handoverRejectTitle: t(
+                        'project-handover-manager.handoverReject'
+                    ),
+                    handoverApproveConfirm: t(
+                        'project-handover-manager.handoverApproveConfirm'
+                    ),
+                    handoverRejectConfirm: t(
+                        'project-handover-manager.handoverRejectConfirm'
+                    ),
                 }}
             >
                 // Approve application
@@ -448,6 +565,82 @@ function formatDate(dateString: string | null): string {
                         );
                     }
                 };
+
+                // Nghiệm thu / trả lại bàn giao của thành viên
+                document
+                    .querySelectorAll('.btn-handover-review')
+                    .forEach((button) => {
+                        button.addEventListener('click', function () {
+                            const handoverId = Number(
+                                button.dataset.handoverId
+                            );
+                            const action = button.dataset.action;
+                            const isApprove = action === 'approve';
+
+                            const run = async () => {
+                                button.disabled = true;
+                                try {
+                                    const response = await fetch(
+                                        `/api/projects/${handoverProjectId}/handover/review`,
+                                        {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type':
+                                                    'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                handover_id: handoverId,
+                                                action,
+                                            }),
+                                        }
+                                    );
+                                    const result = await response.json();
+
+                                    if (result.success) {
+                                        window.showToast?.({
+                                            type: 'success',
+                                            title: approveSuccessTitle,
+                                            message: result.message,
+                                            onClose: () => location.reload(),
+                                        });
+                                    } else {
+                                        button.disabled = false;
+                                        window.showToast?.({
+                                            type: 'error',
+                                            title: approveErrorTitle,
+                                            message:
+                                                result.message || errorMessage,
+                                        });
+                                    }
+                                } catch (error) {
+                                    button.disabled = false;
+                                    console.error(
+                                        'Error reviewing handover:',
+                                        error
+                                    );
+                                    window.showToast?.({
+                                        type: 'error',
+                                        title: approveErrorTitle,
+                                        message: errorMessage,
+                                    });
+                                }
+                            };
+
+                            if (window.openApproveApplicationDialog) {
+                                window.openApproveApplicationDialog(
+                                    isApprove
+                                        ? handoverApproveTitle
+                                        : handoverRejectTitle,
+                                    isApprove
+                                        ? handoverApproveConfirm
+                                        : handoverRejectConfirm,
+                                    run
+                                );
+                            } else {
+                                run();
+                            }
+                        });
+                    });
             </script>
         </div>
     </div>

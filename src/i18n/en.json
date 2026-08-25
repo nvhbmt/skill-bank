@@ -118,6 +118,13 @@
         "errorGeneric": "An error occurred, please try again"
     },
     "projectHandover-collaborator": {
+        "notSubmitted": "Not submitted",
+        "manager": "Manager",
+        "notePlaceholder": "Describe what you finished and any notes for the manager...",
+        "noProjects": "You have not joined any project yet. ",
+        "findProjects": "Find projects",
+        "emptyNote": "Please enter handover notes",
+        "sending": "Sending...",
         "title": "Project Handover",
         "description": "Description",
         "notes": "Is the project completed? Do you have any notes or recommendations for the manager?",
@@ -154,6 +161,7 @@
         "chiTiet": "Detail"
     },
     "header": {
+        "myHandovers": "My handovers",
         "dashboard": "Dashboard",
         "myProject": "My projects",
         "aboutUs": "About us",
@@ -171,6 +179,17 @@
     },
 
     "project-handover-manager": {
+        "handoverSectionTitle": "Member handovers",
+        "noHandovers": "No member has submitted a handover yet",
+        "handoverPending": "Awaiting review",
+        "handoverApproved": "Accepted",
+        "handoverRejected": "Sent back",
+        "handoverSubmittedAt": "Submitted",
+        "handoverReviewNote": "Review note",
+        "handoverApprove": "Accept",
+        "handoverReject": "Send back",
+        "handoverApproveConfirm": "Accept this member's handover?",
+        "handoverRejectConfirm": "Send this handover back for revision?",
         "skillbank-dropdown": "SkillBank",
         "user-name": "User name",
         "email": "Email",
@@ -297,6 +316,7 @@
         "delete": "Delete"
     },
     "candidate-manage": {
+        "viewCv": "View CV",
         "candidateManagement": "Candidate Management",
         "candidateName": "Candidate Name",
         "searchCandidateName": "Search candidate name...",
@@ -331,6 +351,7 @@
         "cancel": "Cancel"
     },
     "edit-profile": {
+        "noReviews": "No reviews yet.",
         "generalInfo": "General Information",
         "fullName": "Full Name",
         "username": "Username",
@@ -487,6 +508,11 @@
         "faq3_a": "Not exactly. This is a place for students to build real products (Pet Projects, MVPs) together to learn and enhance their Portfolios."
     },
     "change-password": {
+        "successTitle": "Success",
+        "success": "Password changed successfully",
+        "errorTitle": "Error",
+        "genericError": "Something went wrong, please try again",
+        "submitting": "Processing...",
         "title": "Change password",
         "currentPass": "Enter current password",
         "password": "Set new password",
@@ -495,6 +521,21 @@
         "backToSignIn": "Back to sign in"
     },
     "notifications": {
+        "handover_submitted": {
+            "title": "New handover to review",
+            "message": "{{memberName}} submitted a handover for \"{{projectTitle}}\".",
+            "viewProject": "View handover"
+        },
+        "handover_approved": {
+            "title": "Handover accepted",
+            "message": "Your handover for \"{{projectTitle}}\" has been accepted.",
+            "viewProject": "View project"
+        },
+        "handover_rejected": {
+            "title": "Handover sent back",
+            "message": "Your handover for \"{{projectTitle}}\" was sent back. Please revise and resubmit.",
+            "viewProject": "View project"
+        },
         "application_received": {
             "title": "Someone wants to join your project",
             "message": "{{applicantName}} (@{{applicantUsername}}) wants to join your project \"{{projectTitle}}\".",
