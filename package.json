@@ -9,7 +9,12 @@
         "astro": "astro",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "format:staged": "prettier --write --ignore-unknown"
+        "format:staged": "prettier --write --ignore-unknown",
+        "db:start": "supabase start",
+        "db:stop": "supabase stop",
+        "db:reset": "supabase db reset",
+        "db:status": "supabase status",
+        "db:types": "supabase gen types typescript --local > src/types/database.types.ts"
     },
     "dependencies": {
         "@astrojs/vercel": "^9.0.1",
