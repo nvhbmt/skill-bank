@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database.types';
+import { sanitizeSearchQuery } from '@/utils/sanitizeSearchQuery';
 
 export type ProjectWithOwner = Pick<
     Tables<'projects'>,
@@ -38,19 +39,6 @@ export type MyProjectsResult = {
     joined: ProjectWithMembers[];
     completed: ProjectWithMembers[];
 };
-
-// Helper function to calculate progress based on milestones
-async function calculateProgress(projectId: number): Promise<number> {
-    const { data: milestones } = await supabase
-        .from('project_milestones')
-        .select('id')
-        .eq('project_id', projectId);
-
-    if (!milestones || milestones.length === 0) return 0;
-
-    // Simple progress: assume 20% per milestone, max 100%
-    return Math.min(milestones.length * 20, 100);
-}
 
 // Batch calculate progress for multiple projects
 async function calculateProgressBatch(
@@ -193,7 +181,7 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     );
 
     // Batch calculate progress for all projects
-    // const progressMap = await calculateProgressBatch(allProjectIds);
+    const progressMap = await calculateProgressBatch(allProjectIds);
 
     // Helper function to get members for a project
     const getProjectMembers = (projectId: number) => {
@@ -208,7 +196,10 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     if (ownedProjects) {
         for (const project of ownedProjects) {
             const members = getProjectMembers(project.id);
-            const progress = project.status === 'completed' ? 100 : 0;
+            const progress =
+                project.status === 'completed'
+                    ? 100
+                    : (progressMap.get(project.id) ?? 0);
 
             const projectWithMembers: ProjectWithMembers = {
                 ...project,
@@ -231,7 +222,10 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     if (joinedProjectsData) {
         for (const project of joinedProjectsData) {
             const members = getProjectMembers(project.id);
-            const progress = 0;
+            const progress =
+                project.status === 'completed'
+                    ? 100
+                    : (progressMap.get(project.id) ?? 0);
 
             const projectWithMembers: ProjectWithMembers = {
                 id: project.id,
@@ -336,6 +330,8 @@ export async function searchProjects(
     offset: number = 0
 ): Promise<ProjectWithOwner[]> {
     try {
+        const safeQuery = sanitizeSearchQuery(searchQuery);
+
         let query = supabase
             .from('projects')
             .select(
@@ -358,9 +354,9 @@ export async function searchProjects(
             .range(offset, offset + limit - 1);
 
         // Apply search filter if provided
-        if (searchQuery.trim()) {
+        if (safeQuery) {
             query = query.or(
-                `title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`
+                `title.ilike.%${safeQuery}%,description.ilike.%${safeQuery}%,location.ilike.%${safeQuery}%`
             );
         }
 

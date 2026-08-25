@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
             return httpResponse.fail(
                 'Thông tin không hợp lệ',
                 400,
-                validated.error.errors[0]?.message
+                validated.error.issues[0]?.message
             );
         }
 
@@ -59,11 +59,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
             );
         }
 
-        return httpResponse.ok(
-            null,
-            'Đặt mật khẩu mới thành công',
-            200
-        );
+        return httpResponse.ok(null, 'Đặt mật khẩu mới thành công', 200);
     } catch (error) {
         console.error('Error in set password:', error);
         return httpResponse.fail(
@@ -73,4 +69,3 @@ export const POST: APIRoute = async ({ request, locals }) => {
         );
     }
 };
-

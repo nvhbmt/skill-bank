@@ -6,7 +6,7 @@ import { z } from 'zod';
 import httpResponse from '@/utils/response';
 
 const verifyOtpSchema = z.object({
-    email: z.string().email('Email không hợp lệ'),
+    email: z.email('Email không hợp lệ'),
     token: z.string().length(6, 'Mã OTP phải có 6 chữ số'),
 });
 
@@ -22,7 +22,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             return httpResponse.fail(
                 'Thông tin không hợp lệ',
                 400,
-                validated.error.errors[0]?.message
+                validated.error.issues[0]?.message
             );
         }
 

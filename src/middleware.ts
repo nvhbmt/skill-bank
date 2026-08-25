@@ -38,26 +38,45 @@ export const onRequest = defineMiddleware(async (context, next) => {
         }
     }
 
-    // List of protected routes
-    const protectedRoutes = ['/admin', '/user'];
+    locals.session = session;
 
-    // Get the current route
+    // Danh sách route cần đăng nhập (đã bỏ tiền tố ngôn ngữ)
+    const protectedRoutes = [
+        '/admin',
+        '/dashboard',
+        '/create-project',
+        '/my-project',
+        '/edit-profile',
+        '/change-password',
+        '/project-handover-manager',
+    ];
+
+    // Route thực tế luôn có tiền tố ngôn ngữ (/vi/..., /en/...) nên phải tách
+    // ra trước khi so khớp, nếu không điều kiện này không bao giờ đúng.
     const currentPath = context.url.pathname;
+    const segments = currentPath.split('/').filter(Boolean);
+    const lang = segments[0] === 'en' ? 'en' : 'vi';
+    const pathWithoutLang =
+        segments[0] === 'vi' || segments[0] === 'en'
+            ? `/${segments.slice(1).join('/')}`
+            : currentPath;
 
     if (
-        protectedRoutes.some((route) => currentPath.startsWith(route)) &&
+        protectedRoutes.some(
+            (route) =>
+                pathWithoutLang === route ||
+                pathWithoutLang.startsWith(`${route}/`)
+        ) &&
         !user
     ) {
-        // Redirect to login if not authenticated
+        // Chưa đăng nhập thì đưa về trang đăng nhập đúng ngôn ngữ
         return new Response(null, {
             status: 302,
             headers: {
-                Location: '/login',
+                Location: `/${lang}/sign-in`,
             },
         });
     }
-
-    locals.session = session;
 
     // Otherwise, continue to the next middleware or page
     return next();

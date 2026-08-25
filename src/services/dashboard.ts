@@ -22,7 +22,10 @@ export type RecommendedProject = {
 export type Activity = {
     type: 'applied' | 'posted' | 'joined';
     project: string;
+    /** Chuỗi hiển thị đã format, ví dụ "3h ago" */
     time: string;
+    /** Mốc thời gian gốc, chỉ dùng để sắp xếp */
+    timestamp?: string | null;
 };
 
 export type TrendingSkill = {
@@ -347,6 +350,7 @@ async function getRecentActivities(
                     project:
                         projectsMap.get(app.project_id) || 'Unknown Project',
                     time: getTimeAgo(app.applied_at),
+                    timestamp: app.applied_at,
                 });
             });
         }
@@ -366,6 +370,7 @@ async function getRecentActivities(
                     type: 'posted',
                     project: project.title || 'Unknown Project',
                     time: getTimeAgo(project.created_at),
+                    timestamp: project.created_at,
                 });
             });
         }
@@ -398,15 +403,17 @@ async function getRecentActivities(
                     project:
                         projectsMap.get(member.project_id) || 'Unknown Project',
                     time: getTimeAgo(member.joined_at),
+                    timestamp: member.joined_at,
                 });
             });
         }
 
-        // Sort by time and take most recent
+        // Sort by real timestamp (newest first) and take most recent
         return activities
             .sort((a, b) => {
-                // Simple sort by time string (this is approximate)
-                return 0; // Keep original order
+                const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+                const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+                return timeB - timeA;
             })
             .slice(0, limit);
     } catch (error) {

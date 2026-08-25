@@ -1,9 +1,8 @@
 ---
 import '@/assets/css/explore.css';
 import Header from '@/components/Header.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
-export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
 ---

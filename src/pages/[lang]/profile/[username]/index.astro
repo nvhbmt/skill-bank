@@ -1,10 +1,9 @@
 ---
 import '@/assets/css/personal-profile.css';
 import Header from '@/components/Header.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import { getUserProfileByUsername } from '@/services/user-profile';
-export { getStaticPaths };
 
 const session = Astro.locals.session;
 const {  t, l } = useTranslate(Astro);

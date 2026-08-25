@@ -3,10 +3,9 @@ import '@/assets/css/create-project.css';
 import Header from '@/components/Header.astro';
 import SkillDetailDialog from '@/components/SkillDetailDialog.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import provinceData from '@/data/province.json';
-export { getStaticPaths };
 
 // Convert province data to array and sort by name
 const provinces = Object.values(provinceData).sort((a, b) =>

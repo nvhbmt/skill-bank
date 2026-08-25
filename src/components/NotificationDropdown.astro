@@ -1,16 +1,7 @@
 ---
 import NotificationDialog from '@/components/NotificationDialog.astro';
-import {
-    renderNotificationMessage,
-    getNotificationTitle,
-} from '@/utils/notification-renderer';
-import {
-    getStaticPaths,
-    getNotificationTranslations,
-    getTranslation,
-} from '@/i18n';
+import { getNotificationTranslations, getTranslation } from '@/i18n';
 import '@/assets/css/notification-dropdown.css';
-export { getStaticPaths };
 
 interface Props {
     userId: string;

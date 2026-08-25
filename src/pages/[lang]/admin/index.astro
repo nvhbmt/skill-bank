@@ -4,7 +4,7 @@ import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
 import '@/assets/css/admin.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import {
     getAllUsers,
     getPendingProjects,
@@ -12,7 +12,6 @@ import {
     type ProjectInfo,
 } from '@/services/admin';
 import { supabase } from '@/lib/supabase';
-export { getStaticPaths };
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);

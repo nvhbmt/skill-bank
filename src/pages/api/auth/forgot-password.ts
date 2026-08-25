@@ -6,10 +6,10 @@ import { z } from 'zod';
 import httpResponse from '@/utils/response';
 
 const forgotPasswordSchema = z.object({
-    email: z.string().email('Email không hợp lệ'),
+    email: z.email('Email không hợp lệ'),
 });
 
-export const POST: APIRoute = async ({ request, url }) => {
+export const POST: APIRoute = async ({ request }) => {
     try {
         const formData = await request.formData();
         const email = formData.get('email') as string;
@@ -24,17 +24,6 @@ export const POST: APIRoute = async ({ request, url }) => {
                 validated.error.message
             );
         }
-
-        // Get redirect URL for password reset
-        const host = request.headers.get('host');
-        const protocol =
-            request.headers.get('x-forwarded-proto') ||
-            url.protocol.slice(0, -1) ||
-            'https';
-        const origin = host ? `${protocol}://${host}` : url.origin;
-
-        // Get language from query params or default to 'vi'
-        const lang = url.searchParams.get('lang') || 'vi';
 
         // Check if email exists in user_info table
         const { data: userInfo, error: userError } = await supabase
@@ -51,6 +40,9 @@ export const POST: APIRoute = async ({ request, url }) => {
         // Send password reset email via Supabase
         const { error } = await supabase.auth.signInWithOtp({
             email: validated.data.email,
+            options: {
+                shouldCreateUser: false,
+            },
         });
 
         if (error) {

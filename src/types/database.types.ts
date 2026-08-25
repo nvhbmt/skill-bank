@@ -19,6 +19,7 @@ export type Database = {
           applicant_id: string
           applied_at: string | null
           cover_letter: string | null
+          cv_url: string | null
           deleted_at: string | null
           id: number
           project_id: number
@@ -28,6 +29,7 @@ export type Database = {
           applicant_id: string
           applied_at?: string | null
           cover_letter?: string | null
+          cv_url?: string | null
           deleted_at?: string | null
           id?: number
           project_id: number
@@ -37,6 +39,7 @@ export type Database = {
           applicant_id?: string
           applied_at?: string | null
           cover_letter?: string | null
+          cv_url?: string | null
           deleted_at?: string | null
           id?: number
           project_id?: number
@@ -259,6 +262,53 @@ export type Database = {
         }
         Relationships: []
       }
+      project_handovers: {
+        Row: {
+          deleted_at: string | null
+          id: number
+          member_id: string
+          notes: string | null
+          project_id: number
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_at: string | null
+        }
+        Insert: {
+          deleted_at?: string | null
+          id?: number
+          member_id: string
+          notes?: string | null
+          project_id: number
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string | null
+        }
+        Update: {
+          deleted_at?: string | null
+          id?: number
+          member_id?: string
+          notes?: string | null
+          project_id?: number
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_handovers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_members: {
         Row: {
           deleted_at: string | null
@@ -340,16 +390,19 @@ export type Database = {
       }
       project_skills: {
         Row: {
+          description: string | null
           id: number
           project_id: number
           skill_id: number
         }
         Insert: {
+          description?: string | null
           id?: number
           project_id: number
           skill_id: number
         }
         Update: {
+          description?: string | null
           id?: number
           project_id?: number
           skill_id?: number

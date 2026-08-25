@@ -3,9 +3,8 @@ import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/submit-application.css';
 import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { getProjectForApplication } from '@/services/projects';
-export { getStaticPaths };
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);

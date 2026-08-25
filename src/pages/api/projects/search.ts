@@ -3,12 +3,22 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { supabase } from '@/lib/supabase';
 import httpResponse from '@/utils/response';
+import { sanitizeSearchQuery } from '@/utils/sanitizeSearchQuery';
+import { parseIntParam } from '@/utils/parseIntParam';
 
 export const GET: APIRoute = async ({ url }) => {
     try {
-        const searchQuery = url.searchParams.get('q') || '';
-        const limit = parseInt(url.searchParams.get('limit') || '20');
-        const offset = parseInt(url.searchParams.get('offset') || '0');
+        const searchQuery = sanitizeSearchQuery(
+            url.searchParams.get('q') || ''
+        );
+        const limit = parseIntParam(url.searchParams.get('limit'), 20, {
+            min: 1,
+            max: 100,
+        });
+        const offset = parseIntParam(url.searchParams.get('offset'), 0, {
+            min: 0,
+            max: 100000,
+        });
 
         // Build query
         let query = supabase

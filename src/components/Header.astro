@@ -3,12 +3,11 @@ interface Props {}
 
 const {} = Astro.props;
 
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import NotificationDropdown from '@/components/NotificationDropdown.astro';
 import UserDropdown from '@/components/UserDropdown.astro';
 import BoxMessage from './BoxMessage.astro';
-export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
 
