@@ -100,9 +100,11 @@
                             messageText = messageText.replace(
                                 /\{\{(\w+)\}\}/g,
                                 (match, key) => {
+                                    // Biến thiếu -> chuỗi rỗng, KHÔNG để nguyên
+                                    // "{{key}}" lộ ra cho người dùng.
                                     return data[key] != null
                                         ? escapeHtml(data[key])
-                                        : match;
+                                        : '';
                                 }
                             );
 

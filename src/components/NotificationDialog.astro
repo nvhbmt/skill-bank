@@ -187,7 +187,8 @@ const {
                 // Replace template variables
                 let message = template.message;
                 message = message.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-                    return data[key] || match;
+                    // Biến thiếu -> rỗng, không để nguyên "{{key}}"
+                    return data[key] != null ? data[key] : '';
                 });
 
                 // Extract project link if projectId exists
@@ -279,9 +280,26 @@ const {
                 }
             }
 
-            if (timeEl)
+            if (timeEl) {
+                // createdAt có thể là chuỗi ISO thô (từ created_at của DB) hoặc
+                // đã format sẵn từ dropdown. Nếu parse được thành ngày thì format
+                // lại cho dễ đọc, ngược lại giữ nguyên chuỗi đã format.
+                let timeText = createdAt || '';
+                if (timeText && /\d{4}-\d{2}-\d{2}T/.test(timeText)) {
+                    const d = new Date(timeText);
+                    if (!Number.isNaN(d.getTime())) {
+                        timeText = d.toLocaleString('vi-VN', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        });
+                    }
+                }
                 timeEl.textContent =
-                    createdAt || new Date().toLocaleString('vi-VN');
+                    timeText || new Date().toLocaleString('vi-VN');
+            }
             if (typeEl) typeEl.textContent = type || 'Thông thường';
 
             // Show dialog

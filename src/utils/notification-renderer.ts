@@ -25,7 +25,8 @@ export function renderNotificationMessage(
         // Replace template variables
         let message = template.message;
         message = message.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-            return data[key] || match;
+            // Biến thiếu -> rỗng, không để lộ "{{key}}" cho người dùng
+            return data[key] != null ? String(data[key]) : '';
         });
 
         // Extract project link if projectId exists

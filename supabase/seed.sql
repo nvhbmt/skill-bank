@@ -119,9 +119,9 @@ insert into public.applications (project_id, applicant_id, cover_letter, status,
     (1, '44444444-4444-4444-4444-444444444444', 'Em muốn tham gia phần backend chấm điểm.',                       'approved', now() - interval '4 days');
 
 insert into public.notifications (user_id, title, message, type, is_read, created_at) values
-    ('22222222-2222-2222-2222-222222222222', 'Đơn ứng tuyển mới', '{"applicantName":"Phạm Ngọc Lan","projectTitle":"Nền tảng luyện thi trực tuyến","projectId":1}', 'application_received', false, now() - interval '2 days'),
+    ('22222222-2222-2222-2222-222222222222', 'Đơn ứng tuyển mới', '{"applicantName":"Phạm Ngọc Lan","applicantUsername":"ngoclan","projectTitle":"Nền tảng luyện thi trực tuyến","projectId":1}', 'application_received', false, now() - interval '2 days'),
     ('22222222-2222-2222-2222-222222222222', 'Dự án được duyệt',  '{"projectTitle":"Nền tảng luyện thi trực tuyến","projectId":1}',                                'project_approved',     true,  now() - interval '9 days'),
-    ('33333333-3333-3333-3333-333333333333', 'Đơn ứng tuyển mới', '{"applicantName":"Lê Minh Đức","projectTitle":"Ứng dụng quản lý chi tiêu","projectId":2}',       'application_received', false, now() - interval '1 day'),
+    ('33333333-3333-3333-3333-333333333333', 'Đơn ứng tuyển mới', '{"applicantName":"Lê Minh Đức","applicantUsername":"minhduc","projectTitle":"Ứng dụng quản lý chi tiêu","projectId":2}',       'application_received', false, now() - interval '1 day'),
     ('44444444-4444-4444-4444-444444444444', 'Đơn được chấp nhận','{"projectTitle":"Nền tảng luyện thi trực tuyến","projectId":1}',                                'application_approved', false, now() - interval '3 days');
 
 insert into public.reviews (project_id, reviewer_id, reviewee_id, rating, comment) values
