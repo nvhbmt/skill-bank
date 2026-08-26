@@ -310,25 +310,6 @@ body {
     width: 60%;
 }
 
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-@keyframes pulse {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.8;
-    }
-}
-
 @media (max-width: 1024px) {
     .projects-loading {
         grid-template-columns: repeat(2, 1fr);

@@ -217,9 +217,32 @@ page imports it.
 
 Styling is plain CSS, **one file per page** in `src/assets/css/`, imported from the page frontmatter
 (`import '@/assets/css/explore.css';`). Components use Astro scoped `<style>` blocks. `404.astro` is the
-one page with inline styles instead of a CSS file. Shared bits live in `global.css` and
-`shared-utilities.css`; the dark purple theme (`#0f0f1a`, `#7c3aed`) plus the `.grid-overlay` /
-`.blob` decorations are repeated per page rather than centralised.
+one page with inline styles instead of a CSS file.
+
+`global.css` is the single source for design tokens, the `*`/`body` reset, and shared keyframes
+(`loading`, `pulse`, `load`) — **do not redeclare them in a page file**. `edit-profile.css` and
+`personal-profile.css` used to copy all 31 `:root` variables verbatim; those copies are gone. Page
+files still define their own `body`/`main`/`.wrapper`/`.grid-overlay` because each page styles them
+differently — that is not duplication, so leave it alone.
+
+The dark purple theme (`#0f0f1a`, `#7c3aed`) lives in the tokens; use `var(--color-*)` rather than
+hex literals in new rules.
+
+### Loading budget
+
+`DefaultLayout` is the only place external assets are declared, and the rules there are deliberate:
+
+- **Only Inter is loaded.** `global.css` sets `font-family: Inter, sans-serif` and Inter is the sole
+  family any rule references. The layout used to pull Be Vietnam Pro, Montserrat and Sansita too,
+  across the full 100–900 range in both slants — 62 `@font-face` declarations for three families
+  nothing used. It is 7 now. Adding a family means adding it to the CSS first.
+- **Font Awesome loads async** (`media="print"` + `onload`, with a `<noscript>` fallback). It is
+  100.6KB and icons are not needed for first paint; do not turn it back into a blocking link.
+- **JustValidate is per-page**, not global. Only `sign-in`, `sign-up`, `forgot-password`,
+  `create-project` and `project/[id]/edit` use it, so only those five load its 29.1KB. It is also
+  pinned to `4.3.0` — the old global tag used `@latest`.
+
+Together those took render-blocking external bytes from ~143KB to ~2KB.
 
 Dialogs (`ConfirmDialog`, `NotificationDialog`, `ProjectHandoverDialog`, `SkillDetailDialog`, …) each
 expose `window.open<Id>Dialog(...)` functions derived from their element id — `header.js` calls

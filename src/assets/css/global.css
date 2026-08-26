@@ -39,6 +39,12 @@
 
     /* Container */
     --container-max-width: 1280px;
+    /* Ba biến dưới đây được project.css dùng nhưng chưa từng được định nghĩa
+       ở đâu, nên nhãn thông tin, viền nút xoá và nền khối mô tả đều rơi về
+       giá trị mặc định của trình duyệt. Giá trị lấy theo bảng màu sẵn có. */
+    --color-text-gray-light: #a1a1aa;
+    --color-red-danger: #ef4444;
+    --color-purple-light-box: rgba(124, 58, 237, 0.12);
 }
 
 * {
@@ -60,5 +66,38 @@ html {
 @media (max-width: var(--container-max-width)) {
     .container {
         padding: 0 40px;
+    }
+}
+
+/* ===== Keyframes dùng chung =====
+   Trước đây mỗi file trang tự khai báo lại y hệt. */
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes load {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.78);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(0.8);
     }
 }

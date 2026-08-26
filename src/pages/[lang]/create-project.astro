@@ -32,7 +32,12 @@ const allSkills = await getAllSkills();
     </div>
 
     <SkillDetailDialog skills={[]} />
-
+    <!-- JustValidate chỉ cần ở các trang có form kiểm tra dữ liệu.
+        Trước đây nạp trong DefaultLayout nên 29KB này tải trên mọi trang. -->
+    <script
+        is:inline
+        src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"
+    ></script>
     <script src="@/assets/script/create-project.js"></script>
 
     <ToastDialog />
