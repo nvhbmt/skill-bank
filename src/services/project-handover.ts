@@ -67,12 +67,32 @@ export async function getProjectApplications(projectId: number): Promise<{
         (applicantsData || []).map((app) => [app.user_id, app])
     );
 
+    // cv_url lưu dạng đường dẫn trong bucket riêng tư; đổi thành signed URL
+    // (hạn 1 giờ) để trang duyệt ứng viên tải được mà không mở công khai file.
+    // LƯU Ý: ký bằng client anon chạy được ở local nhờ policy storage nới lỏng.
+    // Trên production nếu policy chặt hơn, chuyển sang createServiceRoleClient()
+    // để ký, hoặc thêm policy cho chủ dự án đọc CV ứng viên vào dự án của họ.
+    const cvPaths = applications
+        .map((app) => app.cv_url)
+        .filter((p): p is string => Boolean(p));
+    const signedMap = new Map<string, string>();
+    if (cvPaths.length > 0) {
+        const { data: signed } = await supabase.storage
+            .from('cv-files')
+            .createSignedUrls(cvPaths, 60 * 60);
+        (signed || []).forEach((entry) => {
+            if (entry.path && entry.signedUrl) {
+                signedMap.set(entry.path, entry.signedUrl);
+            }
+        });
+    }
+
     const applicationsWithApplicants = applications.map((app) => ({
         id: app.id,
         status: app.status,
         applied_at: app.applied_at,
         cover_letter: app.cover_letter,
-        cv_url: app.cv_url,
+        cv_url: app.cv_url ? (signedMap.get(app.cv_url) ?? null) : null,
         applicant: applicantsMap.get(app.applicant_id) || null,
     }));
 
@@ -174,13 +194,18 @@ export async function approveApplication(
     // Người từng rời dự án vẫn còn dòng project_members cũ với `left_at` đã
     // được ghi. Nếu chỉ kiểm tra `deleted_at` thì câu này tìm thấy dòng cũ và
     // bỏ qua bước thêm thành viên, khiến duyệt đơn xong họ vẫn ở ngoài dự án.
-    const { data: existingMember } = await client
+    // Dùng order+limit thay cho maybeSingle: nếu vì lý do nào đó có nhiều dòng
+    // cho cùng một cặp, maybeSingle sẽ trả lỗi và existingMember thành
+    // undefined, khiến code chèn thêm một dòng trùng nữa.
+    const { data: existingMembers } = await client
         .from('project_members')
         .select('id, left_at')
         .eq('project_id', projectId)
         .eq('user_id', application.applicant_id)
         .is('deleted_at', null)
-        .maybeSingle();
+        .order('id', { ascending: true })
+        .limit(1);
+    const existingMember = existingMembers?.[0];
 
     if (existingMember?.left_at) {
         // Từng rời dự án rồi quay lại: mở lại dòng cũ

@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createAuthenticatedClient } from '@/lib/supabase';
 import { getThread, markThreadRead } from '@/services/messages';
+import { isUuid } from '@/utils/isUuid';
 import httpResponse from '@/utils/response';
 
 /** Toàn bộ tin nhắn giữa người đang đăng nhập và một người khác */
@@ -14,8 +15,8 @@ export const GET: APIRoute = async ({ params, locals }) => {
         }
 
         const partnerId = String(params.partnerId ?? '').trim();
-        if (!partnerId) {
-            return httpResponse.fail('Thiếu người đối thoại', 400);
+        if (!isUuid(partnerId)) {
+            return httpResponse.fail('Người đối thoại không hợp lệ', 400);
         }
 
         const messages = await getThread(session.user.id, partnerId);
@@ -35,8 +36,8 @@ export const POST: APIRoute = async ({ params, locals }) => {
         }
 
         const partnerId = String(params.partnerId ?? '').trim();
-        if (!partnerId) {
-            return httpResponse.fail('Thiếu người đối thoại', 400);
+        if (!isUuid(partnerId)) {
+            return httpResponse.fail('Người đối thoại không hợp lệ', 400);
         }
 
         const supabase = createAuthenticatedClient(session);

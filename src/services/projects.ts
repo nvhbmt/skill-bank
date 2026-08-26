@@ -287,7 +287,7 @@ export async function getExploreProjects(
             `
             )
             .is('deleted_at', null)
-            .neq('status', 'pending')
+            .eq('status', 'approved')
             .order('created_at', { ascending: false })
             .limit(limit);
 
@@ -454,12 +454,16 @@ export async function getProjectForApplication(
 
         // Check if user already applied
         let hasApplied = false;
+        // Chỉ đơn còn hiệu lực (pending/approved) mới coi là "đã ứng tuyển".
+        // Đơn bị từ chối không tính, để khớp với submit.ts cho nộp lại được —
+        // nếu không, nút ứng tuyển lại vĩnh viễn không hiện.
         const { data: existingApplication, error: applicationError } =
             await supabase
                 .from('applications')
                 .select('id')
                 .eq('project_id', projectId)
                 .eq('applicant_id', userId)
+                .in('status', ['pending', 'approved'])
                 .is('deleted_at', null)
                 .maybeSingle();
 

@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database, Tables } from '@/types/database.types';
+import { isUuid } from '@/utils/isUuid';
 
 type WriteClient = SupabaseClient<Database>;
 
@@ -33,6 +34,8 @@ const MESSAGE_FIELDS = 'id, content, sent_at, sender_id, receiver_id, is_read';
 export async function getConversations(
     userId: string
 ): Promise<Conversation[]> {
+    if (!isUuid(userId)) return [];
+
     const { data: rows, error } = await supabase
         .from('messages')
         .select(MESSAGE_FIELDS)
@@ -101,6 +104,13 @@ export async function getThread(
     partnerId: string,
     limit = 200
 ): Promise<ChatMessage[]> {
+    // partnerId được ghép vào chuỗi .or() nên phải là UUID hợp lệ; nếu không
+    // một giá trị chứa dấu ngoặc/phẩy có thể chèn nhánh lọc và làm lộ tin nhắn
+    // của người khác. Route đã kiểm tra nhưng chặn thêm ở đây cho chắc.
+    if (!isUuid(partnerId) || !isUuid(userId)) {
+        return [];
+    }
+
     const { data, error } = await supabase
         .from('messages')
         .select(MESSAGE_FIELDS)

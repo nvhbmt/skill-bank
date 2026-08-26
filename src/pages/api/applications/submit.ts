@@ -98,12 +98,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 );
             }
 
-            const {
-                data: { publicUrl },
-            } = authenticatedSupabase.storage
-                .from('cv-files')
-                .getPublicUrl(filePath);
-            cvUrl = publicUrl;
+            // Lưu đường dẫn trong bucket, không lưu public URL: bucket cv-files
+            // là riêng tư, người xem sẽ được cấp signed URL có hạn khi cần.
+            cvUrl = filePath;
         }
 
         // Create application

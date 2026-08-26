@@ -358,7 +358,47 @@ checkc "POST /notifications/read-all" "$r" '"success":true'
 check  "  → không còn tin chưa đọc" "$(db "select count(*) from notifications where user_id='22222222-2222-2222-2222-222222222222' and is_read=false")" "0"
 
 echo ""
-echo "════ 17. XOÁ DỰ ÁN ════"
+echo "════ 17. LỖ HỔNG TỪ CODE REVIEW ════"
+# --- #1 chèn bộ lọc vào nhắn tin ---
+r=$(body -b $S/c_own.txt "$BASE/api/messages/x),id.gte.0,and(y")
+checkc "GET  /messages/:id  chặn payload injection" "$r" 'không hợp lệ'
+r=$(body -b $S/c_own.txt "$BASE/api/messages/not-a-uuid")
+checkc "GET  /messages/:id  chặn id không phải UUID" "$r" 'không hợp lệ'
+
+# --- #2 dự án bị từ chối không lọt trang khám phá ---
+r=$(body -b $S/c_own.txt -X POST -F "project_name=Dự án sẽ bị từ chối" -F "category=DevOps" -F "start_date=2026-12-01" -F "description=x" $BASE/api/projects/create)
+XPID=$(echo "$r" | jq_ "d['data']['project_id']")
+body -b $S/c_adm.txt -X PUT $BASE/api/admin/projects/$XPID/reject > /dev/null
+check  "Dự án bị từ chối KHÔNG lọt /explore" "$(body "$BASE/api/explore/projects?limit=80" | jq_ "len([p for p in d['data'] if p['id']==$XPID])")" "0"
+
+# --- #4 sửa dự án giữ nguyên mốc đã hoàn thành ---
+body -b $S/c_adm.txt -X PUT $BASE/api/admin/projects/$XPID/approve > /dev/null
+body -b $S/c_own.txt -X PUT -F "project_name=$XPID" -F "category=DevOps" -F "start_date=2026-12-01" -F "milestone-1=Mốc một" -F "milestone-2=Mốc hai" $BASE/api/projects/$XPID/update > /dev/null
+XM=$(db "select id from project_milestones where project_id=$XPID order by order_index limit 1")
+body -b $S/c_own.txt -X POST -H 'Content-Type: application/json' -d "{\"milestone_id\":$XM}" $BASE/api/projects/$XPID/milestones/toggle > /dev/null
+check  "Mốc đã đánh dấu xong trước khi sửa" "$(db "select count(*) from project_milestones where project_id=$XPID and completed_at is not null")" "1"
+body -b $S/c_own.txt -X PUT -F "project_name=Đổi tên khác" -F "category=DevOps" -F "start_date=2026-12-01" -F "milestone-1=Mốc một" -F "milestone-2=Mốc hai" $BASE/api/projects/$XPID/update > /dev/null
+check  "  → sửa dự án vẫn giữ mốc đã xong" "$(db "select count(*) from project_milestones where project_id=$XPID and completed_at is not null")" "1"
+
+# --- #6 duyệt bàn giao hai lần không nhân bản delivery ---
+body -b $S/c_out.txt -X POST -F "project_id=$XPID" -F "cover_letter=xin vào" $BASE/api/applications/submit > /dev/null
+XAID=$(db "select id from applications where project_id=$XPID and status='pending' order by id desc limit 1")
+body -b $S/c_own.txt -X PUT $BASE/api/projects/$XPID/applications/$XAID/approve > /dev/null
+body -b $S/c_own.txt -X POST -H 'Content-Type: application/json' -d '{"member_id":"55555555-5555-5555-5555-555555555555","terms":"HĐ"}' $BASE/api/projects/$XPID/contracts > /dev/null
+body -b $S/c_out.txt -X POST -H 'Content-Type: application/json' -d '{"notes":"bàn giao"}' $BASE/api/projects/$XPID/handover > /dev/null
+XHID=$(db "select id from project_handovers where project_id=$XPID and member_id='55555555-5555-5555-5555-555555555555'")
+body -b $S/c_own.txt -X POST -H 'Content-Type: application/json' -d "{\"handover_id\":$XHID,\"action\":\"approve\"}" $BASE/api/projects/$XPID/handover/review > /dev/null
+XD1=$(db "select count(*) from deliveries")
+r=$(body -b $S/c_own.txt -X POST -H 'Content-Type: application/json' -d "{\"handover_id\":$XHID,\"action\":\"approve\"}" $BASE/api/projects/$XPID/handover/review)
+checkc "Duyệt bàn giao lần hai bị chặn" "$r" 'đã được xử lý'
+check  "  → deliveries không nhân bản" "$(db "select count(*) from deliveries")" "$XD1"
+
+# --- #7 không tạo được thành viên trùng ---
+DUP=$(PGPASSWORD=postgres psql -h 127.0.0.1 -p 54322 -U postgres -d postgres -tAc "insert into project_members(project_id,user_id,role,joined_at) values ($XPID,'55555555-5555-5555-5555-555555555555','collaborator',now())" 2>&1 | grep -c "duplicate key")
+check  "Ràng buộc chặn thành viên trùng" "$DUP" "1"
+
+echo ""
+echo "════ 18. XOÁ DỰ ÁN ════"
 r=$(body -b $S/c_out.txt -X DELETE $BASE/api/projects/$PID/delete)
 checkc "DELETE /projects/:id/delete  không phải chủ" "$r" 'không có quyền'
 r=$(body -b $S/c_own.txt -X DELETE $BASE/api/projects/$PID/delete)

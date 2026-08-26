@@ -70,6 +70,12 @@ export const POST: APIRoute = async ({ request, params, locals }) => {
             return httpResponse.fail('Không tìm thấy bản bàn giao', 404);
         }
 
+        // Chỉ xử lý bàn giao đang chờ. Không có chốt này, gọi duyệt lại một bản
+        // đã approved sẽ chạy lại recordDelivery và tạo dòng deliveries trùng.
+        if (handover.status !== 'pending') {
+            return httpResponse.fail('Bàn giao này đã được xử lý', 400);
+        }
+
         const newStatus = action === 'approve' ? 'approved' : 'rejected';
 
         const { error } = await supabase

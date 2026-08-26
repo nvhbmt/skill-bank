@@ -238,35 +238,53 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
                 .eq('project_id', projectId);
         }
 
-        // Update project milestones
-        // Delete existing milestones
-        await authenticatedSupabase
+        // Cập nhật mốc theo vị trí, KHÔNG xoá rồi tạo lại: cột completed_at
+        // (đánh dấu mốc đã hoàn thành, dùng để tính tiến độ) sẽ mất sạch nếu
+        // xoá — chủ dự án chỉ sửa cái tên cũng làm tiến độ tụt về 0%.
+        const cleanMilestones = milestones
+            .map((m) => m.trim())
+            .filter((m) => m.length > 0);
+
+        const { data: existingMilestones } = await authenticatedSupabase
             .from('project_milestones')
-            .delete()
-            .eq('project_id', projectId);
+            .select('id, order_index')
+            .eq('project_id', projectId)
+            .order('order_index', { ascending: true });
 
-        if (milestones.length > 0) {
-            const projectMilestones = milestones
-                .filter((m) => m.trim().length > 0)
-                .map((milestone, index) => ({
-                    project_id: projectId,
-                    title: milestone.trim(),
-                    order_index: index + 1,
-                }));
+        const existingByOrder = new Map(
+            (existingMilestones || []).map((m) => [m.order_index, m.id])
+        );
 
-            if (projectMilestones.length > 0) {
-                const { error: milestonesError } = await authenticatedSupabase
+        // Cập nhật hoặc chèn từng vị trí; giữ nguyên completed_at của dòng cũ
+        for (let index = 0; index < cleanMilestones.length; index++) {
+            const orderIndex = index + 1;
+            const title = cleanMilestones[index];
+            const existingId = existingByOrder.get(orderIndex);
+
+            if (existingId) {
+                await authenticatedSupabase
                     .from('project_milestones')
-                    .insert(projectMilestones);
-
-                if (milestonesError) {
-                    return httpResponse.fail(
-                        'Lỗi khi cập nhật mốc thời gian: ' +
-                            milestonesError.message,
-                        500
-                    );
-                }
+                    .update({ title })
+                    .eq('id', existingId);
+                existingByOrder.delete(orderIndex);
+            } else {
+                await authenticatedSupabase
+                    .from('project_milestones')
+                    .insert({
+                        project_id: projectId,
+                        title,
+                        order_index: orderIndex,
+                    });
             }
+        }
+
+        // Xoá các mốc dư ra so với danh sách mới
+        const leftoverIds = [...existingByOrder.values()];
+        if (leftoverIds.length > 0) {
+            await authenticatedSupabase
+                .from('project_milestones')
+                .delete()
+                .in('id', leftoverIds);
         }
 
         // Dự án bị từ chối, sau khi sửa thì tự đưa lại vào hàng chờ duyệt
