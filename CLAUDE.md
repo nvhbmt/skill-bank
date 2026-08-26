@@ -284,15 +284,25 @@ could never fill and nobody could review anyone.
   the FAQ promises in a7 and feeds both `getDashboardStats().reputation` (avg rating × 100) and the
   homepage "Hồ sơ nổi bật" ranking, which filters `reviewCount > 0` and was therefore always empty.
 
+## Messaging, contracts and disputes
+
+The last three unused tables were wired in one pass:
+
+- **`messages`** — `services/messages.ts` groups rows into conversations by sender/receiver pair
+  (the table has no conversation concept). `/[lang]/messages` lists them, `/[lang]/messages/[username]`
+  is the thread, and `BoxMessage.astro` — previously 571 lines of hardcoded fake chats that Header
+  rendered inside a JSX comment — now shows real conversations with an unread badge.
+- **`contracts` + `deliveries`** — the owner sets terms and dates per member on the handover manager
+  page. `deliveries` is the formal record: approving a handover writes one row against that member's
+  contract (`recordDelivery`), so the two flows compose instead of duplicating. Contracts are
+  optional — no contract simply means no delivery row.
+- **`disputes`** — any project member reports an issue from the project page (one open report per
+  person per project); admins resolve or reject it in a new tab on `/[lang]/admin`.
+
 ## Known gaps
 
-- **Tables with no feature behind them**: `contracts`, `deliveries`, `disputes`, `messages` and
-  `password_resets` are referenced by zero queries. `messages` has a `BoxMessage.astro` component
-  that Header renders inside a JSX comment — an unstarted chat feature. `password_resets` is
-  redundant because Supabase issues the OTP.
-- **The dashboard stats block is commented out** (`dashboard.astro:53-94`: reputation, likes, views,
-  invites). `getDashboardData` still runs every query to compute them, on both the page render and
-  `/api/dashboard`, and nothing consumes the result.
+- **`password_resets` is the only table left with no feature behind it** — Supabase issues the OTP,
+  so nothing needs it. Every other table is now wired.
 - **Production needs migrations 2, 3 and 4 applied.** `project_skills.description` already existed in
   production, but `applications.cv_url`, the `project_handovers` table, and the `completed_at`
   columns on `projects` / `project_milestones` were added here and exist only in the local stack.

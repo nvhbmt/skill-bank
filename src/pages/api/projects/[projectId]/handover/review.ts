@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createAuthenticatedClient } from '@/lib/supabase';
+import { recordDelivery } from '@/services/contracts';
 import {
     notifyHandoverApproved,
     notifyHandoverRejected,
@@ -59,7 +60,7 @@ export const POST: APIRoute = async ({ request, params, locals }) => {
 
         const { data: handover } = await supabase
             .from('project_handovers')
-            .select('id, member_id, status')
+            .select('id, member_id, status, notes')
             .eq('id', handoverId)
             .eq('project_id', projectId)
             .is('deleted_at', null)
@@ -89,6 +90,13 @@ export const POST: APIRoute = async ({ request, params, locals }) => {
         }
 
         if (action === 'approve') {
+            // Ghi nhận chính thức vào hợp đồng của thành viên (nếu có hợp đồng)
+            await recordDelivery(supabase, {
+                projectId,
+                memberId: handover.member_id,
+                description: handover.notes,
+            });
+
             await notifyHandoverApproved(
                 handover.member_id,
                 projectId,

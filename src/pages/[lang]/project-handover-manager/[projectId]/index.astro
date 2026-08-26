@@ -12,6 +12,7 @@ import {
     type ApplicationWithApplicant,
     type ProjectMember,
 } from '@/services/project-handover';
+import { getProjectContracts } from '@/services/contracts';
 import type { Tables } from '@/types/database.types';
 
 const session = Astro.locals.session;
@@ -30,6 +31,7 @@ let isOwner = false;
 let pendingApplications: ApplicationWithApplicant[] = [];
 let approvedApplications: ApplicationWithApplicant[] = [];
 let projectMembers: ProjectMember[] = [];
+let contracts: Awaited<ReturnType<typeof getProjectContracts>> = [];
 
 // Fetch project and check ownership
 if (projectId) {
@@ -55,6 +57,7 @@ if (projectId) {
                     approvedApplications = applications.approved;
 
                     projectMembers = await getProjectMembers(projectIdNum);
+                    contracts = await getProjectContracts(projectIdNum);
                 }
             }
         }
@@ -288,6 +291,126 @@ function formatDate(dateString: string | null): string {
                     </div>
                 </div>
             </div>
+            <div class="contracts-section">
+                <h4 class="section-title">{t('contracts.sectionTitle')}</h4>
+                {
+                    projectMembers.filter((m) => m.role !== 'owner').length >
+                    0 ? (
+                        <div class="contract-list">
+                            {projectMembers
+                                .filter((m) => m.role !== 'owner')
+                                .map((member) => {
+                                    const contract = contracts.find(
+                                        (c) => c.member_id === member.user_id
+                                    );
+                                    return (
+                                        <div
+                                            class="contract-card"
+                                            data-member-id={member.user_id}
+                                        >
+                                            <div class="contract-head">
+                                                <img
+                                                    src={
+                                                        member.avatar_url ||
+                                                        '/assets/images/avt-nhỏ.svg'
+                                                    }
+                                                    alt={member.username}
+                                                />
+                                                <span class="user-name">
+                                                    {member.full_name ||
+                                                        member.username}
+                                                </span>
+                                                {!contract && (
+                                                    <span class="contract-none">
+                                                        {t(
+                                                            'contracts.noContract'
+                                                        )}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <label class="contract-label">
+                                                {t('contracts.terms')}
+                                            </label>
+                                            <textarea
+                                                class="contract-terms"
+                                                rows="2"
+                                                placeholder={t(
+                                                    'contracts.termsPlaceholder'
+                                                )}
+                                                set:text={contract?.terms ?? ''}
+                                            />
+
+                                            <div class="contract-dates">
+                                                <label>
+                                                    {t('contracts.startDate')}
+                                                    <input
+                                                        type="date"
+                                                        class="contract-start"
+                                                        value={
+                                                            contract?.start_date ??
+                                                            ''
+                                                        }
+                                                    />
+                                                </label>
+                                                <label>
+                                                    {t('contracts.endDate')}
+                                                    <input
+                                                        type="date"
+                                                        class="contract-end"
+                                                        value={
+                                                            contract?.end_date ??
+                                                            ''
+                                                        }
+                                                    />
+                                                </label>
+                                            </div>
+
+                                            {contract &&
+                                                contract.deliveries.length >
+                                                    0 && (
+                                                    <div class="contract-deliveries">
+                                                        <strong>
+                                                            {t(
+                                                                'contracts.deliveries'
+                                                            )}
+                                                            :
+                                                        </strong>
+                                                        <ul>
+                                                            {contract.deliveries.map(
+                                                                (delivery) => (
+                                                                    <li>
+                                                                        {
+                                                                            delivery.delivery_date
+                                                                        }
+                                                                        {delivery.description
+                                                                            ? ` — ${delivery.description}`
+                                                                            : ''}
+                                                                    </li>
+                                                                )
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                            <button
+                                                type="button"
+                                                class="action-btn-small approve-btn btn-save-contract"
+                                            >
+                                                {t('contracts.save')}
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    ) : (
+                        <div class="no-requests">
+                            {t('contracts.noMembers')}
+                        </div>
+                    )
+                }
+            </div>
+
             <div class="handover-submissions">
                 <h4 class="section-title">
                     {t('project-handover-manager.handoverSectionTitle')}
@@ -438,6 +561,10 @@ function formatDate(dateString: string | null): string {
                     handoverRejectConfirm: t(
                         'project-handover-manager.handoverRejectConfirm'
                     ),
+                    contractMessages: JSON.stringify({
+                        save: t('contracts.save'),
+                        saving: t('contracts.saving'),
+                    }),
                 }}
             >
                 // Approve application
@@ -565,6 +692,67 @@ function formatDate(dateString: string | null): string {
                         );
                     }
                 };
+
+                // Lưu hợp đồng với từng thành viên
+                const contractMsg = JSON.parse(contractMessages);
+                document
+                    .querySelectorAll('.btn-save-contract')
+                    .forEach((button) => {
+                        button.addEventListener('click', async function () {
+                            const card = button.closest('.contract-card');
+                            if (!card) return;
+
+                            const terms =
+                                card.querySelector('.contract-terms')?.value ??
+                                '';
+                            const startDate =
+                                card.querySelector('.contract-start')?.value ??
+                                '';
+                            const endDate =
+                                card.querySelector('.contract-end')?.value ??
+                                '';
+
+                            button.disabled = true;
+                            button.textContent = contractMsg.saving;
+
+                            try {
+                                const response = await fetch(
+                                    `/api/projects/${handoverProjectId}/contracts`,
+                                    {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            member_id: card.dataset.memberId,
+                                            terms,
+                                            start_date: startDate,
+                                            end_date: endDate,
+                                        }),
+                                    }
+                                );
+                                const result = await response.json();
+
+                                window.showToast?.({
+                                    type: result.success ? 'success' : 'error',
+                                    title: result.success
+                                        ? approveSuccessTitle
+                                        : approveErrorTitle,
+                                    message: result.message,
+                                });
+                            } catch (error) {
+                                console.error('Error saving contract:', error);
+                                window.showToast?.({
+                                    type: 'error',
+                                    title: approveErrorTitle,
+                                    message: errorMessage,
+                                });
+                            } finally {
+                                button.disabled = false;
+                                button.textContent = contractMsg.save;
+                            }
+                        });
+                    });
 
                 // Nghiệm thu / trả lại bàn giao của thành viên
                 document

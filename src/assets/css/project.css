@@ -639,3 +639,52 @@ main {
 .project-review-empty {
     color: #a1a1aa;
 }
+
+/* ===== Hộp thoại báo cáo vấn đề ===== */
+.report-dialog {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 2rem;
+}
+
+.report-dialog.active {
+    display: flex;
+}
+
+.report-dialog-content {
+    background: rgba(30, 30, 35, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 28px;
+    width: 100%;
+    max-width: 520px;
+}
+
+.report-dialog-content h3 {
+    margin: 0 0 16px;
+    color: #fff;
+}
+
+.report-dialog-content textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.25);
+    color: #e4e4e7;
+    font: inherit;
+    resize: vertical;
+}
+
+.report-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}

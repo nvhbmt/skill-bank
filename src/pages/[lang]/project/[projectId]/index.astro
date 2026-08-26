@@ -239,6 +239,18 @@ function formatDate(dateString: string | null): string {
                                     </button>
                                 )
                             }
+                            <!-- Nút "Báo cáo vấn đề" - thành viên và chủ dự án -->
+                            {
+                                isMember && (
+                                    <button
+                                        class="action-btn btn-report-issue"
+                                        id="report-issue-btn"
+                                    >
+                                        <i class="fa-solid fa-triangle-exclamation" />
+                                        {t('disputes.report')}
+                                    </button>
+                                )
+                            }
                             <!-- Nút "Share" - hiện cho tất cả -->
                             <button
                                 class="action-btn btn-share-project"
@@ -519,6 +531,33 @@ function formatDate(dateString: string | null): string {
 
     <!-- Project Handover Dialog -->
     {
+        isMember && (
+            <div class="report-dialog" id="report-dialog">
+                <div class="report-dialog-content">
+                    <h3>{t('disputes.reportTitle')}</h3>
+                    <textarea
+                        id="report-description"
+                        rows="5"
+                        placeholder={t('disputes.placeholder')}
+                    />
+                    <div class="report-dialog-actions">
+                        <button type="button" class="btn" id="report-cancel">
+                            {t('candidate-manage.cancel')}
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="report-submit"
+                        >
+                            {t('disputes.submit')}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    {
         isCompleted && isMember && (
             <section class="project-review-section container">
                 <h3>{t('project-review.sectionTitle')}</h3>
@@ -632,6 +671,11 @@ function formatDate(dateString: string | null): string {
         completeConfirmMessage: t(
             'project-detail-creator.completeConfirmMessage'
         ),
+        disputeMessages: JSON.stringify({
+            needDescription: t('disputes.needDescription'),
+            sending: t('disputes.sending'),
+            submit: t('disputes.submit'),
+        }),
         reviewMessages: JSON.stringify({
             needRating: t('project-review.needRating'),
             sending: t('project-review.sending'),
@@ -790,6 +834,74 @@ function formatDate(dateString: string | null): string {
         );
         if (overlay) {
             overlay.addEventListener('click', closeSkillDetailDialog);
+        }
+
+        // Báo cáo vấn đề của dự án tới quản trị viên
+        const reportBtn = document.getElementById('report-issue-btn');
+        const reportDialog = document.getElementById('report-dialog');
+        if (reportBtn && reportDialog) {
+            const disputeMsg = JSON.parse(disputeMessages);
+            const descriptionEl = document.getElementById('report-description');
+            const submitEl = document.getElementById('report-submit');
+            const cancelEl = document.getElementById('report-cancel');
+
+            const close = () => reportDialog.classList.remove('active');
+
+            reportBtn.addEventListener('click', () => {
+                reportDialog.classList.add('active');
+                descriptionEl?.focus();
+            });
+            cancelEl?.addEventListener('click', close);
+            reportDialog.addEventListener('click', (e) => {
+                if (e.target === reportDialog) close();
+            });
+
+            submitEl?.addEventListener('click', async function () {
+                const description = descriptionEl?.value.trim() ?? '';
+                if (!description) {
+                    window.showToast?.({
+                        type: 'warning',
+                        title: 'Thiếu thông tin',
+                        message: disputeMsg.needDescription,
+                    });
+                    return;
+                }
+
+                submitEl.disabled = true;
+                submitEl.textContent = disputeMsg.sending;
+
+                try {
+                    const response = await fetch(
+                        `/api/projects/${projectId}/disputes`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ description }),
+                        }
+                    );
+                    const result = await response.json();
+
+                    if (result.success) {
+                        close();
+                        if (descriptionEl) descriptionEl.value = '';
+                    }
+                    window.showToast?.({
+                        type: result.success ? 'success' : 'error',
+                        title: result.success ? 'Đã gửi' : 'Lỗi',
+                        message: result.message,
+                    });
+                } catch (error) {
+                    console.error('Error reporting issue:', error);
+                    window.showToast?.({
+                        type: 'error',
+                        title: 'Lỗi',
+                        message: 'Không gửi được báo cáo',
+                    });
+                } finally {
+                    submitEl.disabled = false;
+                    submitEl.textContent = disputeMsg.submit;
+                }
+            });
         }
 
         // Chủ dự án tick / bỏ tick mốc hoàn thành

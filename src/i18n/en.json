@@ -539,6 +539,35 @@
         "resetPass": "Reset password",
         "backToSignIn": "Back to sign in"
     },
+    "contracts": {
+        "sectionTitle": "Member contracts",
+        "terms": "Terms",
+        "termsPlaceholder": "Scope of work, commitments from both sides...",
+        "startDate": "Start",
+        "endDate": "End",
+        "save": "Save contract",
+        "saving": "Saving...",
+        "noContract": "No contract yet",
+        "deliveries": "Accepted deliveries",
+        "noMembers": "No members to contract with yet."
+    },
+    "disputes": {
+        "report": "Report an issue",
+        "reportTitle": "Report a project issue",
+        "placeholder": "Describe the problem you ran into on this project...",
+        "submit": "Send report",
+        "sending": "Sending...",
+        "needDescription": "Please describe the issue",
+        "adminTab": "Disputes",
+        "noDisputes": "No disputes",
+        "statusOpen": "Open",
+        "statusResolved": "Resolved",
+        "statusRejected": "Rejected",
+        "resolve": "Resolve",
+        "reject": "Reject",
+        "project": "Project",
+        "raisedBy": "Reported by"
+    },
     "messages": {
         "title": "Messages",
         "empty": "You have no conversations yet.",

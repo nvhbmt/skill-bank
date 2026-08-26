@@ -537,6 +537,35 @@
         "resetPass": "Đặt lại mật khẩu",
         "backToSignIn": "Quay lại đăng nhập"
     },
+    "contracts": {
+        "sectionTitle": "Hợp đồng với thành viên",
+        "terms": "Điều khoản",
+        "termsPlaceholder": "Phạm vi công việc, cam kết của hai bên...",
+        "startDate": "Bắt đầu",
+        "endDate": "Kết thúc",
+        "save": "Lưu hợp đồng",
+        "saving": "Đang lưu...",
+        "noContract": "Chưa có hợp đồng",
+        "deliveries": "Đã nghiệm thu",
+        "noMembers": "Chưa có thành viên nào để lập hợp đồng."
+    },
+    "disputes": {
+        "report": "Báo cáo vấn đề",
+        "reportTitle": "Báo cáo vấn đề của dự án",
+        "placeholder": "Mô tả vấn đề bạn gặp phải trong dự án này...",
+        "submit": "Gửi báo cáo",
+        "sending": "Đang gửi...",
+        "needDescription": "Vui lòng mô tả vấn đề",
+        "adminTab": "Khiếu nại",
+        "noDisputes": "Không có khiếu nại nào",
+        "statusOpen": "Chờ xử lý",
+        "statusResolved": "Đã xử lý",
+        "statusRejected": "Đã từ chối",
+        "resolve": "Xử lý",
+        "reject": "Từ chối",
+        "project": "Dự án",
+        "raisedBy": "Người báo cáo"
+    },
     "messages": {
         "title": "Tin nhắn",
         "empty": "Bạn chưa có cuộc trò chuyện nào.",
