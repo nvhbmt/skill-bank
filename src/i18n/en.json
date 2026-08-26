@@ -137,6 +137,8 @@
         "send": "Send"
     },
     "create-project": {
+        "editTitle": "Edit project",
+        "luuThayDoi": "Save changes",
         "title": "Post a project",
         "thongTinChung": "General information",
         "tenDuAn": "Project name:",

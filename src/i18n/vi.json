@@ -137,6 +137,8 @@
         "send": "Gửi"
     },
     "create-project": {
+        "editTitle": "Chỉnh sửa dự án",
+        "luuThayDoi": "Lưu thay đổi",
         "title": "Đăng tải dự án",
         "thongTinChung": "Thông tin chung",
         "tenDuAn": "Tên dự án:",

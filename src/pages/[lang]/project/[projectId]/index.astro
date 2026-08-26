@@ -233,6 +233,18 @@ function formatDate(dateString: string | null): string {
                                 <i class="fa-solid fa-share"></i>
                                 {t('project-detail-collab.share')}
                             </button>
+                            <!-- Nút "Chỉnh sửa" - chỉ hiện cho owner -->
+                            {
+                                isOwner && (
+                                    <a
+                                        class="action-btn"
+                                        href={l(`/project/${project?.id}/edit`)}
+                                    >
+                                        <i class="fa-solid fa-pen" />
+                                        {t('create-project.editTitle')}
+                                    </a>
+                                )
+                            }
                             <!-- Nút "Xóa dự án" - chỉ hiện cho owner -->
                             {
                                 isOwner && (

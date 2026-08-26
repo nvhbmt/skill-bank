@@ -452,16 +452,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitButton.disabled = true;
                     submitButton.textContent = 'Đang xử lý...';
                 }
+                // Cùng form dùng cho cả tạo mới và chỉnh sửa
+                const isEdit = form.dataset.mode === 'edit';
+                const editingId = form.dataset.projectId;
+
                 try {
-                    const response = await fetch('/api/projects/create', {
-                        method: 'POST',
-                        body: formData,
-                    });
+                    const response = await fetch(
+                        isEdit
+                            ? `/api/projects/${editingId}/update`
+                            : '/api/projects/create',
+                        {
+                            method: isEdit ? 'PUT' : 'POST',
+                            body: formData,
+                        }
+                    );
                     const result = await response.json();
                     if (result.success) {
                         const lang =
                             window.location.pathname.split('/')[1] || 'vi';
-                        window.location.href = `/${lang}/project/${result.data.project_id}`;
+                        const targetId = isEdit
+                            ? editingId
+                            : result.data.project_id;
+                        window.location.href = `/${lang}/project/${targetId}`;
                     } else {
                         if (window.showToast) {
                             window.showToast({
