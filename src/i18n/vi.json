@@ -118,6 +118,13 @@
         "errorGeneric": "Có lỗi xảy ra, vui lòng thử lại"
     },
     "projectHandover-collaborator": {
+        "notSubmitted": "Chưa gửi",
+        "manager": "Người quản lý",
+        "notePlaceholder": "Ghi lại những gì bạn đã hoàn thành và lưu ý cho người quản lý...",
+        "noProjects": "Bạn chưa tham gia dự án nào. ",
+        "findProjects": "Tìm dự án",
+        "emptyNote": "Vui lòng nhập ghi chú bàn giao",
+        "sending": "Đang gửi...",
         "title": "Bàn giao dự án",
         "description": "Mô tả",
         "notes": "Đã xong dự án? Bạn có một số lưu ý gì cho người quản lý không?",
@@ -130,6 +137,8 @@
         "send": "Gửi"
     },
     "create-project": {
+        "editTitle": "Chỉnh sửa dự án",
+        "luuThayDoi": "Lưu thay đổi",
         "title": "Đăng tải dự án",
         "thongTinChung": "Thông tin chung",
         "tenDuAn": "Tên dự án:",
@@ -154,6 +163,7 @@
         "chiTiet": "Chi tiết"
     },
     "header": {
+        "myHandovers": "Bàn giao của tôi",
         "dashboard": "Bảng điều khiển",
         "myProject": "Dự án của tôi",
         "aboutUs": "Vể chúng tôi",
@@ -171,6 +181,17 @@
     },
 
     "project-handover-manager": {
+        "handoverSectionTitle": "Bàn giao từ thành viên",
+        "noHandovers": "Chưa có thành viên nào gửi bàn giao",
+        "handoverPending": "Chờ nghiệm thu",
+        "handoverApproved": "Đã nghiệm thu",
+        "handoverRejected": "Đã trả lại",
+        "handoverSubmittedAt": "Gửi lúc",
+        "handoverReviewNote": "Nhận xét",
+        "handoverApprove": "Nghiệm thu",
+        "handoverReject": "Trả lại",
+        "handoverApproveConfirm": "Xác nhận nghiệm thu bàn giao của thành viên này?",
+        "handoverRejectConfirm": "Trả lại bàn giao này để thành viên chỉnh sửa?",
         "skillbank-dropdown": "SkillBank",
         "user-name": "Tên người dùng",
         "email": "Email",
@@ -189,7 +210,24 @@
         "noCoverLetters": "Chưa có mô tả từ ứng viên",
         "noCoverLetter": "Không có mô tả"
     },
+    "project-review": {
+        "sectionTitle": "Đánh giá thành viên",
+        "intro": "Dự án đã kết thúc. Hãy đánh giá những người bạn đã làm cùng.",
+        "ratingLabel": "Số sao",
+        "commentPlaceholder": "Nhận xét về sự hợp tác (không bắt buộc)...",
+        "submit": "Gửi đánh giá",
+        "update": "Cập nhật đánh giá",
+        "sending": "Đang gửi...",
+        "sent": "Đã gửi đánh giá",
+        "needRating": "Vui lòng chọn số sao",
+        "noTargets": "Không có thành viên nào để đánh giá.",
+        "yourReview": "Đánh giá của bạn"
+    },
     "project-detail-creator": {
+        "toggleMilestone": "Đánh dấu hoàn thành",
+        "completeProject": "Kết thúc dự án",
+        "completeConfirmTitle": "Kết thúc dự án",
+        "completeConfirmMessage": "Kết thúc dự án sẽ mở phần đánh giá cho các thành viên và không thể hoàn tác. Tiếp tục?",
         "ngayBatDau": "Bắt đầu:",
         "phanLoai": "Phân loại:",
         "điaDiem": "Địa điểm:",
@@ -297,6 +335,7 @@
         "delete": "Xóa"
     },
     "candidate-manage": {
+        "viewCv": "Xem CV",
         "candidateManagement": "Quản lý ứng viên",
         "candidateName": "Tên ứng viên",
         "searchCandidateName": "Tìm kiếm tên ứng viên...",
@@ -331,6 +370,7 @@
         "cancel": "Hủy"
     },
     "edit-profile": {
+        "noReviews": "Chưa có đánh giá nào.",
         "generalInfo": "Thông tin chung",
         "fullName": "Họ và tên",
         "username": "Tên người dùng",
@@ -485,6 +525,11 @@
         "faq3_a": "Không hẳn. Đây là nơi các bạn sinh viên cùng nhau xây dựng các sản phẩm thực tế (Pet Project, Startup MVP...) để học hỏi và làm đẹp Portfolio."
     },
     "change-password": {
+        "successTitle": "Thành công",
+        "success": "Đổi mật khẩu thành công",
+        "errorTitle": "Lỗi",
+        "genericError": "Có lỗi xảy ra, vui lòng thử lại",
+        "submitting": "Đang xử lý...",
         "title": "Đổi mật khẩu",
         "currentPass": "Nhập mật khẩu hiện tại",
         "password": "Nhập mật khẩu mới",
@@ -492,7 +537,89 @@
         "resetPass": "Đặt lại mật khẩu",
         "backToSignIn": "Quay lại đăng nhập"
     },
+    "flows": {
+        "rejectedTab": "Bị từ chối",
+        "noRejected": "Không có dự án nào bị từ chối",
+        "resubmitHint": "Dự án bị từ chối. Sửa lại rồi lưu để gửi duyệt lần nữa.",
+        "leaveProject": "Rời dự án",
+        "leaveConfirmTitle": "Rời dự án",
+        "leaveConfirmMessage": "Bạn sẽ không còn là thành viên của dự án này. Tiếp tục?",
+        "removeMember": "Gỡ khỏi dự án",
+        "removeConfirmTitle": "Gỡ thành viên",
+        "removeConfirmMessage": "Gỡ thành viên này khỏi dự án?",
+        "withdraw": "Rút đơn",
+        "withdrawConfirmTitle": "Rút đơn ứng tuyển",
+        "withdrawConfirmMessage": "Rút lại đơn ứng tuyển của bạn?",
+        "markAllRead": "Đánh dấu tất cả đã đọc",
+        "processing": "Đang xử lý..."
+    },
+    "contracts": {
+        "sectionTitle": "Hợp đồng với thành viên",
+        "terms": "Điều khoản",
+        "termsPlaceholder": "Phạm vi công việc, cam kết của hai bên...",
+        "startDate": "Bắt đầu",
+        "endDate": "Kết thúc",
+        "save": "Lưu hợp đồng",
+        "saving": "Đang lưu...",
+        "noContract": "Chưa có hợp đồng",
+        "deliveries": "Đã nghiệm thu",
+        "noMembers": "Chưa có thành viên nào để lập hợp đồng."
+    },
+    "disputes": {
+        "report": "Báo cáo vấn đề",
+        "reportTitle": "Báo cáo vấn đề của dự án",
+        "placeholder": "Mô tả vấn đề bạn gặp phải trong dự án này...",
+        "submit": "Gửi báo cáo",
+        "sending": "Đang gửi...",
+        "needDescription": "Vui lòng mô tả vấn đề",
+        "adminTab": "Khiếu nại",
+        "noDisputes": "Không có khiếu nại nào",
+        "statusOpen": "Chờ xử lý",
+        "statusResolved": "Đã xử lý",
+        "statusRejected": "Đã từ chối",
+        "resolve": "Xử lý",
+        "reject": "Từ chối",
+        "project": "Dự án",
+        "raisedBy": "Người báo cáo"
+    },
+    "messages": {
+        "title": "Tin nhắn",
+        "empty": "Bạn chưa có cuộc trò chuyện nào.",
+        "findPeople": "Khám phá dự án",
+        "threadEmpty": "Chưa có tin nhắn nào. Hãy gửi lời chào!",
+        "inputPlaceholder": "Nhập tin nhắn...",
+        "send": "Gửi",
+        "sendFailed": "Không gửi được tin nhắn",
+        "sendMessage": "Nhắn tin",
+        "loading": "Đang tải tin nhắn...",
+        "viewAll": "Xem tất cả"
+    },
     "notifications": {
+        "project_completed": {
+            "title": "Dự án đã kết thúc",
+            "message": "Dự án \"{{projectTitle}}\" đã kết thúc. Bạn có thể đánh giá các thành viên.",
+            "viewProject": "Đánh giá ngay"
+        },
+        "review_received": {
+            "title": "Bạn nhận được đánh giá mới",
+            "message": "{{reviewerName}} đã đánh giá bạn trong dự án \"{{projectTitle}}\".",
+            "viewProject": "Xem dự án"
+        },
+        "handover_submitted": {
+            "title": "Có bàn giao mới cần duyệt",
+            "message": "{{memberName}} đã gửi bàn giao cho dự án \"{{projectTitle}}\".",
+            "viewProject": "Xem bàn giao"
+        },
+        "handover_approved": {
+            "title": "Bàn giao đã được nghiệm thu",
+            "message": "Bàn giao của bạn ở dự án \"{{projectTitle}}\" đã được nghiệm thu.",
+            "viewProject": "Xem dự án"
+        },
+        "handover_rejected": {
+            "title": "Bàn giao bị trả lại",
+            "message": "Bàn giao của bạn ở dự án \"{{projectTitle}}\" bị trả lại. Vui lòng chỉnh sửa và gửi lại.",
+            "viewProject": "Xem dự án"
+        },
         "application_received": {
             "title": "Có người muốn tham gia dự án của bạn",
             "message": "{{applicantName}} (@{{applicantUsername}}) muốn tham gia dự án \"{{projectTitle}}\".",

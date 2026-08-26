@@ -233,8 +233,9 @@ const {
         const openFunctionName = `open${functionName}`;
         const closeFunctionName = `close${functionName}`;
 
-        // Export open function to window for global access
-        window[openFunctionName] = function () {
+        // Export open function to window for global access.
+        // Nhận tuỳ chọn { notes } để điền sẵn ghi chú của bản bàn giao trước đó.
+        window[openFunctionName] = function (options) {
             const dialog = document.getElementById(dialogId);
 
             if (!dialog) {
@@ -244,8 +245,14 @@ const {
                 return;
             }
 
+            const textarea = document.getElementById(notesId);
+            if (textarea && options && typeof options.notes === 'string') {
+                textarea.value = options.notes;
+            }
+
             // Show dialog
             dialog.classList.add('active');
+            if (textarea) textarea.focus();
         };
 
         // Export close function to window
@@ -260,6 +267,12 @@ const {
         function setupDialogHandlers() {
             const dialog = document.getElementById(dialogId);
             if (!dialog) return;
+
+            // Hàm này được gọi nhiều lần (DOMContentLoaded + 2 lần setTimeout dự
+            // phòng), nếu không chặn thì mỗi nút bị gắn trùng listener và một cú
+            // bấm Gửi sẽ tạo ra nhiều request.
+            if (dialog.dataset.handlersReady === 'true') return;
+            dialog.dataset.handlersReady = 'true';
 
             const closeButton = document.getElementById(closeButtonId);
             const backButton = document.getElementById(backButtonId);
@@ -279,12 +292,35 @@ const {
                 });
             }
 
-            // Send button handler (can be customized)
+            // Nút Gửi phát ra sự kiện `handover-send` kèm nội dung ghi chú.
+            // Trang chứa dialog tự quyết định gửi đi đâu, nhờ vậy component vẫn
+            // dùng lại được ở nhiều chỗ.
             if (sendButton) {
                 sendButton.addEventListener('click', function () {
-                    // Add your send logic here
-                    console.log('Send handover clicked');
-                    // window[closeFunctionName]();
+                    const textarea = document.getElementById(notesId);
+                    const notes = textarea ? textarea.value.trim() : '';
+
+                    const setBusy = function (busy) {
+                        sendButton.disabled = busy;
+                        sendButton.textContent = busy
+                            ? 'Đang gửi...'
+                            : sendButton.dataset.label || 'Gửi';
+                    };
+                    sendButton.dataset.label =
+                        sendButton.dataset.label ||
+                        sendButton.textContent.trim();
+
+                    dialog.dispatchEvent(
+                        new CustomEvent('handover-send', {
+                            bubbles: true,
+                            detail: {
+                                notes,
+                                dialogId,
+                                setBusy,
+                                close: window[closeFunctionName],
+                            },
+                        })
+                    );
                 });
             }
 

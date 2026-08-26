@@ -7,9 +7,11 @@ import ProjectSkillDetailDialog from '@/components/ProjectSkillDetailDialog.astr
 import ProjectHandoverDialog from '@/components/ProjectHandoverDialog.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import '@/assets/css/project.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { getProjectDetailById } from '@/services/project-detail';
-export { getStaticPaths };
+import { getHandoverForMember } from '@/services/project-handover';
+import { getReviewTargets } from '@/services/reviews';
+import { supabase } from '@/lib/supabase';
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
@@ -40,6 +42,39 @@ const {
     isOwner,
     isMember,
 } = projectData;
+
+// Đơn ứng tuyển đang chờ của người xem, để hiện nút rút đơn
+const { data: myPendingApplication } =
+    session?.user && !isMember
+        ? await supabase
+              .from('applications')
+              .select('id')
+              .eq('project_id', projectIdNum)
+              .eq('applicant_id', session.user.id)
+              .eq('status', 'pending')
+              .is('deleted_at', null)
+              .maybeSingle()
+        : { data: null };
+
+// Tiến độ tính theo số mốc đã hoàn thành
+const doneMilestones = milestones.filter((m) => m.completed_at).length;
+const milestoneProgress =
+    milestones.length > 0
+        ? Math.round((doneMilestones / milestones.length) * 100)
+        : 0;
+
+// Sau khi dự án kết thúc, thành viên đánh giá lẫn nhau
+const isCompleted = project?.status === 'completed';
+const reviewTargets =
+    isCompleted && session?.user && isMember
+        ? await getReviewTargets(projectIdNum, session.user.id)
+        : [];
+
+// Bản bàn giao thành viên đã gửi trước đó (nếu có) để điền sẵn vào dialog
+const myHandover =
+    session?.user && isMember && !isOwner
+        ? await getHandoverForMember(projectIdNum, session.user.id)
+        : null;
 
 // Format date helper
 function formatDate(dateString: string | null): string {
@@ -193,18 +228,67 @@ function formatDate(dateString: string | null): string {
                             <!-- Nút "Xem bàn giao" - chỉ hiện cho owner -->
                             {
                                 isOwner && (
-                                    <button class="action-btn btn-view-handover">
+                                    <a
+                                        class="action-btn"
+                                        href={l(
+                                            `/project-handover-manager/${project?.id}`
+                                        )}
+                                    >
                                         <i class="fa-solid fa-file-import" />
                                         {t('project-detail-creator.xemBanGiao')}
-                                    </button>
+                                    </a>
                                 )
                             }
                             <!-- Nút "Bàn giao" - chỉ hiện cho member (không phải owner) -->
                             {
                                 isMember && !isOwner && (
-                                    <button class="action-btn btn-view-handover">
+                                    <button
+                                        class="action-btn btn-submit-handover"
+                                        data-handover-status={
+                                            myHandover?.status ?? ''
+                                        }
+                                    >
                                         <i class="fa-solid fa-file-import" />
                                         {t('project-detail-collab.banGiao')}
+                                    </button>
+                                )
+                            }
+                            <!-- Nút "Rút đơn" - đã nộp và đang chờ duyệt -->
+                            {
+                                myPendingApplication && (
+                                    <button
+                                        class="action-btn btn-withdraw-application"
+                                        id="withdraw-application-btn"
+                                        data-application-id={
+                                            myPendingApplication.id
+                                        }
+                                    >
+                                        <i class="fa-solid fa-rotate-left" />
+                                        {t('flows.withdraw')}
+                                    </button>
+                                )
+                            }
+                            <!-- Nút "Rời dự án" - thành viên, không phải chủ -->
+                            {
+                                isMember && !isOwner && !isCompleted && (
+                                    <button
+                                        class="action-btn btn-leave-project"
+                                        id="leave-project-btn"
+                                    >
+                                        <i class="fa-solid fa-right-from-bracket" />
+                                        {t('flows.leaveProject')}
+                                    </button>
+                                )
+                            }
+                            <!-- Nút "Báo cáo vấn đề" - thành viên và chủ dự án -->
+                            {
+                                isMember && (
+                                    <button
+                                        class="action-btn btn-report-issue"
+                                        id="report-issue-btn"
+                                    >
+                                        <i class="fa-solid fa-triangle-exclamation" />
+                                        {t('disputes.report')}
                                     </button>
                                 )
                             }
@@ -217,6 +301,32 @@ function formatDate(dateString: string | null): string {
                                 <i class="fa-solid fa-share"></i>
                                 {t('project-detail-collab.share')}
                             </button>
+                            <!-- Nút "Kết thúc dự án" - chủ dự án, khi đã duyệt -->
+                            {
+                                isOwner && project?.status === 'approved' && (
+                                    <button
+                                        class="action-btn btn-complete-project"
+                                        id="complete-project-btn"
+                                    >
+                                        <i class="fa-solid fa-flag-checkered" />
+                                        {t(
+                                            'project-detail-creator.completeProject'
+                                        )}
+                                    </button>
+                                )
+                            }
+                            <!-- Nút "Chỉnh sửa" - chỉ hiện cho owner -->
+                            {
+                                isOwner && (
+                                    <a
+                                        class="action-btn"
+                                        href={l(`/project/${project?.id}/edit`)}
+                                    >
+                                        <i class="fa-solid fa-pen" />
+                                        {t('create-project.editTitle')}
+                                    </a>
+                                )
+                            }
                             <!-- Nút "Xóa dự án" - chỉ hiện cho owner -->
                             {
                                 isOwner && (
@@ -319,13 +429,62 @@ function formatDate(dateString: string | null): string {
                                             'project-detail-collab.activityChart'
                                         )}
                                     </h3>
+                                    <div class="timeline-progress">
+                                        <div class="timeline-progress-bar">
+                                            <span
+                                                style={`width: ${milestoneProgress}%`}
+                                            />
+                                        </div>
+                                        <span class="timeline-progress-text">
+                                            {doneMilestones}/{milestones.length}{' '}
+                                            · {milestoneProgress}%
+                                        </span>
+                                    </div>
                                     <div class="timeline-cards">
                                         {milestones.map((milestone) => (
-                                            <div class="timeline-card">
-                                                {milestone.title}
-                                                {milestone.description
-                                                    ? `: ${milestone.description}`
-                                                    : ''}
+                                            <div
+                                                class="timeline-card"
+                                                data-done={Boolean(
+                                                    milestone.completed_at
+                                                )}
+                                            >
+                                                {isOwner ? (
+                                                    <button
+                                                        type="button"
+                                                        class="milestone-toggle"
+                                                        data-milestone-id={
+                                                            milestone.id
+                                                        }
+                                                        aria-pressed={Boolean(
+                                                            milestone.completed_at
+                                                        )}
+                                                        title={t(
+                                                            'project-detail-creator.toggleMilestone'
+                                                        )}
+                                                    >
+                                                        <i
+                                                            class={
+                                                                milestone.completed_at
+                                                                    ? 'fa-solid fa-circle-check'
+                                                                    : 'fa-regular fa-circle'
+                                                            }
+                                                        />
+                                                    </button>
+                                                ) : (
+                                                    <i
+                                                        class={
+                                                            milestone.completed_at
+                                                                ? 'fa-solid fa-circle-check'
+                                                                : 'fa-regular fa-circle'
+                                                        }
+                                                    />
+                                                )}
+                                                <span>
+                                                    {milestone.title}
+                                                    {milestone.description
+                                                        ? `: ${milestone.description}`
+                                                        : ''}
+                                                </span>
                                             </div>
                                         ))}
                                     </div>
@@ -412,6 +571,117 @@ function formatDate(dateString: string | null): string {
     />
 
     <!-- Project Handover Dialog -->
+    {
+        isMember && (
+            <div class="report-dialog" id="report-dialog">
+                <div class="report-dialog-content">
+                    <h3>{t('disputes.reportTitle')}</h3>
+                    <textarea
+                        id="report-description"
+                        rows="5"
+                        placeholder={t('disputes.placeholder')}
+                    />
+                    <div class="report-dialog-actions">
+                        <button type="button" class="btn" id="report-cancel">
+                            {t('candidate-manage.cancel')}
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="report-submit"
+                        >
+                            {t('disputes.submit')}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    {
+        isCompleted && isMember && (
+            <section class="project-review-section container">
+                <h3>{t('project-review.sectionTitle')}</h3>
+                <p class="project-review-intro">{t('project-review.intro')}</p>
+
+                {reviewTargets.length > 0 ? (
+                    <div class="project-review-list">
+                        {reviewTargets.map((target) => (
+                            <div
+                                class="project-review-card"
+                                data-reviewee-id={target.user_id}
+                            >
+                                <div class="project-review-who">
+                                    <img
+                                        src={
+                                            target.avatar_url ||
+                                            '/assets/images/avatar-default-icon.png'
+                                        }
+                                        alt={target.username}
+                                    />
+                                    <div>
+                                        <div class="project-review-name">
+                                            {target.full_name ||
+                                                target.username}
+                                        </div>
+                                        <div class="project-review-role">
+                                            {target.role}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="project-review-stars"
+                                    data-rating={target.myReview?.rating ?? 0}
+                                >
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            type="button"
+                                            class="star-btn"
+                                            data-star={star}
+                                            aria-label={`${star}/5`}
+                                        >
+                                            <i
+                                                class={
+                                                    (target.myReview?.rating ??
+                                                        0) >= star
+                                                        ? 'fa-solid fa-star'
+                                                        : 'fa-regular fa-star'
+                                                }
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <textarea
+                                    class="project-review-comment"
+                                    rows="2"
+                                    placeholder={t(
+                                        'project-review.commentPlaceholder'
+                                    )}
+                                    set:text={target.myReview?.comment ?? ''}
+                                />
+
+                                <button
+                                    type="button"
+                                    class="btn btn-primary btn-send-review"
+                                >
+                                    {target.myReview
+                                        ? t('project-review.update')
+                                        : t('project-review.submit')}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p class="project-review-empty">
+                        {t('project-review.noTargets')}
+                    </p>
+                )}
+            </section>
+        )
+    }
+
     <ProjectHandoverDialog
         id="project-handover-dialog"
         titleId="project-handover-dialog-title"
@@ -437,6 +707,27 @@ function formatDate(dateString: string | null): string {
         lang: lang,
         confirmDeleteTitle: t('project-detail-creator.confirmDeleteTitle'),
         confirmDeleteMessage: t('project-detail-creator.confirmDeleteMessage'),
+        myHandoverNotes: myHandover?.notes || '',
+        completeConfirmTitle: t('project-detail-creator.completeConfirmTitle'),
+        completeConfirmMessage: t(
+            'project-detail-creator.completeConfirmMessage'
+        ),
+        withdrawConfirmTitle: t('flows.withdrawConfirmTitle'),
+        withdrawConfirmMessage: t('flows.withdrawConfirmMessage'),
+        leaveConfirmTitle: t('flows.leaveConfirmTitle'),
+        leaveConfirmMessage: t('flows.leaveConfirmMessage'),
+        disputeMessages: JSON.stringify({
+            needDescription: t('disputes.needDescription'),
+            sending: t('disputes.sending'),
+            submit: t('disputes.submit'),
+        }),
+        reviewMessages: JSON.stringify({
+            needRating: t('project-review.needRating'),
+            sending: t('project-review.sending'),
+            sent: t('project-review.sent'),
+            submit: t('project-review.submit'),
+            update: t('project-review.update'),
+        }),
     }}
 >
     (function () {
@@ -590,15 +881,387 @@ function formatDate(dateString: string | null): string {
             overlay.addEventListener('click', closeSkillDetailDialog);
         }
 
-        // Handover button handlers (for both owner and member)
-        const handoverButtons = document.querySelectorAll('.btn-view-handover');
-        handoverButtons.forEach((button) => {
-            button.addEventListener('click', function () {
-                // Open project handover dialog
-                if (window.openProjectHandoverDialog) {
-                    window.openProjectHandoverDialog();
+        // Ứng viên rút đơn đang chờ duyệt
+        const withdrawBtn = document.getElementById('withdraw-application-btn');
+        if (withdrawBtn) {
+            withdrawBtn.addEventListener('click', function () {
+                const run = async () => {
+                    withdrawBtn.disabled = true;
+                    try {
+                        const response = await fetch(
+                            `/api/applications/${withdrawBtn.dataset.applicationId}/withdraw`,
+                            { method: 'POST' }
+                        );
+                        const result = await response.json();
+                        window.showToast?.({
+                            type: result.success ? 'success' : 'error',
+                            title: result.success ? 'Thành công' : 'Lỗi',
+                            message: result.message,
+                            onClose: () => location.reload(),
+                        });
+                        if (!result.success) withdrawBtn.disabled = false;
+                    } catch (error) {
+                        withdrawBtn.disabled = false;
+                        console.error('Error withdrawing application:', error);
+                    }
+                };
+
+                if (window.openDeleteProjectDialog) {
+                    window.openDeleteProjectDialog(
+                        withdrawConfirmTitle,
+                        withdrawConfirmMessage,
+                        run
+                    );
+                } else {
+                    run();
+                }
+            });
+        }
+
+        // Thành viên rời dự án
+        const leaveBtn = document.getElementById('leave-project-btn');
+        if (leaveBtn) {
+            leaveBtn.addEventListener('click', function () {
+                const run = async () => {
+                    leaveBtn.disabled = true;
+                    try {
+                        const response = await fetch(
+                            `/api/projects/${projectId}/members`,
+                            {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: '{}',
+                            }
+                        );
+                        const result = await response.json();
+                        window.showToast?.({
+                            type: result.success ? 'success' : 'error',
+                            title: result.success ? 'Thành công' : 'Lỗi',
+                            message: result.message,
+                            onClose: () => location.reload(),
+                        });
+                        if (!result.success) leaveBtn.disabled = false;
+                    } catch (error) {
+                        leaveBtn.disabled = false;
+                        console.error('Error leaving project:', error);
+                    }
+                };
+
+                if (window.openDeleteProjectDialog) {
+                    window.openDeleteProjectDialog(
+                        leaveConfirmTitle,
+                        leaveConfirmMessage,
+                        run
+                    );
+                } else {
+                    run();
+                }
+            });
+        }
+
+        // Báo cáo vấn đề của dự án tới quản trị viên
+        const reportBtn = document.getElementById('report-issue-btn');
+        const reportDialog = document.getElementById('report-dialog');
+        if (reportBtn && reportDialog) {
+            const disputeMsg = JSON.parse(disputeMessages);
+            const descriptionEl = document.getElementById('report-description');
+            const submitEl = document.getElementById('report-submit');
+            const cancelEl = document.getElementById('report-cancel');
+
+            const close = () => reportDialog.classList.remove('active');
+
+            reportBtn.addEventListener('click', () => {
+                reportDialog.classList.add('active');
+                descriptionEl?.focus();
+            });
+            cancelEl?.addEventListener('click', close);
+            reportDialog.addEventListener('click', (e) => {
+                if (e.target === reportDialog) close();
+            });
+
+            submitEl?.addEventListener('click', async function () {
+                const description = descriptionEl?.value.trim() ?? '';
+                if (!description) {
+                    window.showToast?.({
+                        type: 'warning',
+                        title: 'Thiếu thông tin',
+                        message: disputeMsg.needDescription,
+                    });
+                    return;
+                }
+
+                submitEl.disabled = true;
+                submitEl.textContent = disputeMsg.sending;
+
+                try {
+                    const response = await fetch(
+                        `/api/projects/${projectId}/disputes`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ description }),
+                        }
+                    );
+                    const result = await response.json();
+
+                    if (result.success) {
+                        close();
+                        if (descriptionEl) descriptionEl.value = '';
+                    }
+                    window.showToast?.({
+                        type: result.success ? 'success' : 'error',
+                        title: result.success ? 'Đã gửi' : 'Lỗi',
+                        message: result.message,
+                    });
+                } catch (error) {
+                    console.error('Error reporting issue:', error);
+                    window.showToast?.({
+                        type: 'error',
+                        title: 'Lỗi',
+                        message: 'Không gửi được báo cáo',
+                    });
+                } finally {
+                    submitEl.disabled = false;
+                    submitEl.textContent = disputeMsg.submit;
+                }
+            });
+        }
+
+        // Chủ dự án tick / bỏ tick mốc hoàn thành
+        document.querySelectorAll('.milestone-toggle').forEach((button) => {
+            button.addEventListener('click', async function () {
+                button.disabled = true;
+                try {
+                    const response = await fetch(
+                        `/api/projects/${projectId}/milestones/toggle`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                milestone_id: Number(
+                                    button.dataset.milestoneId
+                                ),
+                            }),
+                        }
+                    );
+                    const result = await response.json();
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        button.disabled = false;
+                        window.showToast?.({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: result.message,
+                        });
+                    }
+                } catch (error) {
+                    button.disabled = false;
+                    console.error('Error toggling milestone:', error);
                 }
             });
         });
+
+        // Chủ dự án kết thúc dự án -> mở phần đánh giá cho thành viên
+        const completeBtn = document.getElementById('complete-project-btn');
+        if (completeBtn) {
+            completeBtn.addEventListener('click', function () {
+                const run = async () => {
+                    completeBtn.disabled = true;
+                    try {
+                        const response = await fetch(
+                            `/api/projects/${projectId}/complete`,
+                            { method: 'POST' }
+                        );
+                        const result = await response.json();
+                        if (result.success) {
+                            window.showToast?.({
+                                type: 'success',
+                                title: 'Thành công',
+                                message: result.message,
+                                onClose: () => location.reload(),
+                            });
+                        } else {
+                            completeBtn.disabled = false;
+                            window.showToast?.({
+                                type: 'error',
+                                title: 'Lỗi',
+                                message: result.message,
+                            });
+                        }
+                    } catch (error) {
+                        completeBtn.disabled = false;
+                        console.error('Error completing project:', error);
+                    }
+                };
+
+                if (window.openDeleteProjectDialog) {
+                    window.openDeleteProjectDialog(
+                        completeConfirmTitle,
+                        completeConfirmMessage,
+                        run
+                    );
+                } else {
+                    run();
+                }
+            });
+        }
+
+        // Đánh giá thành viên sau khi dự án kết thúc
+        const reviewMsg = JSON.parse(reviewMessages);
+        document.querySelectorAll('.project-review-card').forEach((card) => {
+            const starsBox = card.querySelector('.project-review-stars');
+            const sendBtn = card.querySelector('.btn-send-review');
+            if (!starsBox || !sendBtn) return;
+
+            const paint = (rating) => {
+                starsBox.dataset.rating = String(rating);
+                starsBox.querySelectorAll('.star-btn').forEach((starBtn) => {
+                    const icon = starBtn.querySelector('i');
+                    const value = Number(starBtn.dataset.star);
+                    icon.className =
+                        value <= rating
+                            ? 'fa-solid fa-star'
+                            : 'fa-regular fa-star';
+                });
+            };
+
+            starsBox.querySelectorAll('.star-btn').forEach((starBtn) => {
+                starBtn.addEventListener('click', () =>
+                    paint(Number(starBtn.dataset.star))
+                );
+            });
+
+            sendBtn.addEventListener('click', async function () {
+                const rating = Number(starsBox.dataset.rating || 0);
+                if (!rating) {
+                    window.showToast?.({
+                        type: 'warning',
+                        title: 'Thiếu thông tin',
+                        message: reviewMsg.needRating,
+                    });
+                    return;
+                }
+
+                const comment =
+                    card.querySelector('.project-review-comment')?.value ?? '';
+                const originalLabel = sendBtn.textContent;
+                sendBtn.disabled = true;
+                sendBtn.textContent = reviewMsg.sending;
+
+                try {
+                    const response = await fetch(
+                        `/api/projects/${projectId}/reviews`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                reviewee_id: card.dataset.revieweeId,
+                                rating,
+                                comment,
+                            }),
+                        }
+                    );
+                    const result = await response.json();
+                    if (result.success) {
+                        sendBtn.textContent = reviewMsg.update;
+                        window.showToast?.({
+                            type: 'success',
+                            title: 'Thành công',
+                            message: reviewMsg.sent,
+                        });
+                    } else {
+                        sendBtn.textContent = originalLabel;
+                        window.showToast?.({
+                            type: 'error',
+                            title: 'Lỗi',
+                            message: result.message,
+                        });
+                    }
+                } catch (error) {
+                    sendBtn.textContent = originalLabel;
+                    console.error('Error sending review:', error);
+                } finally {
+                    sendBtn.disabled = false;
+                }
+            });
+        });
+
+        // Thành viên bấm "Bàn giao" -> mở dialog, điền sẵn ghi chú lần trước
+        const handoverButton = document.querySelector('.btn-submit-handover');
+        if (handoverButton) {
+            handoverButton.addEventListener('click', function () {
+                if (window.openProjectHandoverDialog) {
+                    window.openProjectHandoverDialog({
+                        notes: myHandoverNotes,
+                    });
+                }
+            });
+        }
+
+        // Gửi bàn giao lên server
+        const handoverDialog = document.getElementById(
+            'project-handover-dialog'
+        );
+        if (handoverDialog) {
+            handoverDialog.addEventListener(
+                'handover-send',
+                async function (e) {
+                    const { notes, setBusy, close } = e.detail;
+
+                    if (!notes) {
+                        window.showToast?.({
+                            type: 'warning',
+                            title: 'Thiếu nội dung',
+                            message: 'Vui lòng nhập ghi chú bàn giao.',
+                        });
+                        return;
+                    }
+
+                    setBusy(true);
+                    try {
+                        const response = await fetch(
+                            `/api/projects/${projectId}/handover`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ notes }),
+                            }
+                        );
+                        const result = await response.json();
+
+                        if (result.success) {
+                            close();
+                            window.showToast?.({
+                                type: 'success',
+                                title: 'Đã gửi bàn giao',
+                                message: result.message,
+                                onClose: () => window.location.reload(),
+                            });
+                        } else {
+                            window.showToast?.({
+                                type: 'error',
+                                title: 'Gửi bàn giao thất bại',
+                                message: result.message || 'Vui lòng thử lại.',
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error submitting handover:', error);
+                        window.showToast?.({
+                            type: 'error',
+                            title: 'Lỗi kết nối',
+                            message:
+                                'Không gửi được bàn giao. Vui lòng thử lại.',
+                        });
+                    } finally {
+                        setBusy(false);
+                    }
+                }
+            );
+        }
     })();
 </script>

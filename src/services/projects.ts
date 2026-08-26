@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database.types';
+import { sanitizeSearchQuery } from '@/utils/sanitizeSearchQuery';
 
 export type ProjectWithOwner = Pick<
     Tables<'projects'>,
@@ -35,24 +36,15 @@ export type ProjectWithMembers = {
 export type MyProjectsResult = {
     pending: ProjectWithMembers[];
     approved: ProjectWithMembers[];
+    /** Bị admin từ chối — chủ dự án sửa lại rồi nộp lại được */
+    rejected: ProjectWithMembers[];
     joined: ProjectWithMembers[];
     completed: ProjectWithMembers[];
 };
 
-// Helper function to calculate progress based on milestones
-async function calculateProgress(projectId: number): Promise<number> {
-    const { data: milestones } = await supabase
-        .from('project_milestones')
-        .select('id')
-        .eq('project_id', projectId);
-
-    if (!milestones || milestones.length === 0) return 0;
-
-    // Simple progress: assume 20% per milestone, max 100%
-    return Math.min(milestones.length * 20, 100);
-}
-
-// Batch calculate progress for multiple projects
+// Tiến độ = số mốc đã hoàn thành / tổng số mốc.
+// Trước đây công thức là `min(số_mốc * 20, 100)`, tức là đếm số mốc TỒN TẠI
+// chứ không phải số mốc ĐÃ XONG — dự án vừa tạo với 5 mốc hiện ngay 100%.
 async function calculateProgressBatch(
     projectIds: number[]
 ): Promise<Map<number, number>> {
@@ -60,25 +52,29 @@ async function calculateProgressBatch(
 
     const { data: milestones } = await supabase
         .from('project_milestones')
-        .select('project_id')
+        .select('project_id, completed_at')
         .in('project_id', projectIds);
 
     const progressMap = new Map<number, number>();
+    const total = new Map<number, number>();
+    const done = new Map<number, number>();
 
-    if (milestones) {
-        const milestoneCounts = new Map<number, number>();
-        milestones.forEach((m) => {
-            const count = milestoneCounts.get(m.project_id) || 0;
-            milestoneCounts.set(m.project_id, count + 1);
-        });
+    (milestones || []).forEach((m) => {
+        total.set(m.project_id, (total.get(m.project_id) || 0) + 1);
+        if (m.completed_at) {
+            done.set(m.project_id, (done.get(m.project_id) || 0) + 1);
+        }
+    });
 
-        projectIds.forEach((id) => {
-            const count = milestoneCounts.get(id) || 0;
-            progressMap.set(id, Math.min(count * 20, 100));
-        });
-    } else {
-        projectIds.forEach((id) => progressMap.set(id, 0));
-    }
+    projectIds.forEach((id) => {
+        const totalCount = total.get(id) || 0;
+        if (totalCount === 0) {
+            progressMap.set(id, 0);
+            return;
+        }
+        const doneCount = done.get(id) || 0;
+        progressMap.set(id, Math.round((doneCount / totalCount) * 100));
+    });
 
     return progressMap;
 }
@@ -92,6 +88,7 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     // Initialize project arrays
     const pendingProjects: ProjectWithMembers[] = [];
     const approvedProjects: ProjectWithMembers[] = [];
+    const rejectedProjects: ProjectWithMembers[] = [];
     const joinedProjects: ProjectWithMembers[] = [];
     const completedProjects: ProjectWithMembers[] = [];
 
@@ -150,6 +147,7 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
         return {
             pending: [],
             approved: [],
+            rejected: [],
             joined: [],
             completed: [],
         };
@@ -193,7 +191,7 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     );
 
     // Batch calculate progress for all projects
-    // const progressMap = await calculateProgressBatch(allProjectIds);
+    const progressMap = await calculateProgressBatch(allProjectIds);
 
     // Helper function to get members for a project
     const getProjectMembers = (projectId: number) => {
@@ -208,7 +206,10 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     if (ownedProjects) {
         for (const project of ownedProjects) {
             const members = getProjectMembers(project.id);
-            const progress = project.status === 'completed' ? 100 : 0;
+            const progress =
+                project.status === 'completed'
+                    ? 100
+                    : (progressMap.get(project.id) ?? 0);
 
             const projectWithMembers: ProjectWithMembers = {
                 ...project,
@@ -223,6 +224,8 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
                 approvedProjects.push(projectWithMembers);
             } else if (project.status === 'completed') {
                 completedProjects.push(projectWithMembers);
+            } else if (project.status === 'rejected') {
+                rejectedProjects.push(projectWithMembers);
             }
         }
     }
@@ -231,7 +234,10 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     if (joinedProjectsData) {
         for (const project of joinedProjectsData) {
             const members = getProjectMembers(project.id);
-            const progress = 0;
+            const progress =
+                project.status === 'completed'
+                    ? 100
+                    : (progressMap.get(project.id) ?? 0);
 
             const projectWithMembers: ProjectWithMembers = {
                 id: project.id,
@@ -247,6 +253,7 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     }
 
     return {
+        rejected: rejectedProjects,
         pending: pendingProjects,
         approved: approvedProjects,
         joined: joinedProjects,
@@ -280,7 +287,7 @@ export async function getExploreProjects(
             `
             )
             .is('deleted_at', null)
-            .neq('status', 'pending')
+            .eq('status', 'approved')
             .order('created_at', { ascending: false })
             .limit(limit);
 
@@ -336,6 +343,8 @@ export async function searchProjects(
     offset: number = 0
 ): Promise<ProjectWithOwner[]> {
     try {
+        const safeQuery = sanitizeSearchQuery(searchQuery);
+
         let query = supabase
             .from('projects')
             .select(
@@ -358,9 +367,9 @@ export async function searchProjects(
             .range(offset, offset + limit - 1);
 
         // Apply search filter if provided
-        if (searchQuery.trim()) {
+        if (safeQuery) {
             query = query.or(
-                `title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,location.ilike.%${searchQuery}%`
+                `title.ilike.%${safeQuery}%,description.ilike.%${safeQuery}%,location.ilike.%${safeQuery}%`
             );
         }
 
@@ -445,12 +454,16 @@ export async function getProjectForApplication(
 
         // Check if user already applied
         let hasApplied = false;
+        // Chỉ đơn còn hiệu lực (pending/approved) mới coi là "đã ứng tuyển".
+        // Đơn bị từ chối không tính, để khớp với submit.ts cho nộp lại được —
+        // nếu không, nút ứng tuyển lại vĩnh viễn không hiện.
         const { data: existingApplication, error: applicationError } =
             await supabase
                 .from('applications')
                 .select('id')
                 .eq('project_id', projectId)
                 .eq('applicant_id', userId)
+                .in('status', ['pending', 'approved'])
                 .is('deleted_at', null)
                 .maybeSingle();
 

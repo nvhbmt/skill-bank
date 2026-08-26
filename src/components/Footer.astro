@@ -3,8 +3,7 @@ interface Props {}
 
 const {} = Astro.props;
 import '@/assets/css/footer.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
-export { getStaticPaths };
+import { useTranslate } from '@/i18n';
 
 const { lang, t, l } = useTranslate(Astro);
 ---
@@ -94,7 +93,7 @@ const { lang, t, l } = useTranslate(Astro);
                     <a href={l('/explore')} class="footer__link">
                         {t('footer.exploreProjects')}
                     </a>
-                    <a href={l('/submit-application')} class="footer__link">
+                    <a href={l('/explore')} class="footer__link">
                         {t('footer.submitApplication')}
                     </a>
                     <a href="#" class="footer__link">

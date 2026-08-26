@@ -4,7 +4,7 @@ import '@/assets/css/project-handover-manager.css';
 import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import {
     getProjectApplications,
@@ -12,8 +12,8 @@ import {
     type ApplicationWithApplicant,
     type ProjectMember,
 } from '@/services/project-handover';
+import { getProjectContracts } from '@/services/contracts';
 import type { Tables } from '@/types/database.types';
-export { getStaticPaths };
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
@@ -31,6 +31,7 @@ let isOwner = false;
 let pendingApplications: ApplicationWithApplicant[] = [];
 let approvedApplications: ApplicationWithApplicant[] = [];
 let projectMembers: ProjectMember[] = [];
+let contracts: Awaited<ReturnType<typeof getProjectContracts>> = [];
 
 // Fetch project and check ownership
 if (projectId) {
@@ -56,6 +57,7 @@ if (projectId) {
                     approvedApplications = applications.approved;
 
                     projectMembers = await getProjectMembers(projectIdNum);
+                    contracts = await getProjectContracts(projectIdNum);
                 }
             }
         }
@@ -289,11 +291,248 @@ function formatDate(dateString: string | null): string {
                     </div>
                 </div>
             </div>
+            <div class="contracts-section">
+                <h4 class="section-title">{t('contracts.sectionTitle')}</h4>
+                {
+                    projectMembers.filter((m) => m.role !== 'owner').length >
+                    0 ? (
+                        <div class="contract-list">
+                            {projectMembers
+                                .filter((m) => m.role !== 'owner')
+                                .map((member) => {
+                                    const contract = contracts.find(
+                                        (c) => c.member_id === member.user_id
+                                    );
+                                    return (
+                                        <div
+                                            class="contract-card"
+                                            data-member-id={member.user_id}
+                                        >
+                                            <div class="contract-head">
+                                                <img
+                                                    src={
+                                                        member.avatar_url ||
+                                                        '/assets/images/avt-nhỏ.svg'
+                                                    }
+                                                    alt={member.username}
+                                                />
+                                                <span class="user-name">
+                                                    {member.full_name ||
+                                                        member.username}
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    class="btn-remove-member"
+                                                    data-member-id={
+                                                        member.user_id
+                                                    }
+                                                    title={t(
+                                                        'flows.removeMember'
+                                                    )}
+                                                >
+                                                    <i class="fa-solid fa-user-minus" />
+                                                </button>
+                                                {!contract && (
+                                                    <span class="contract-none">
+                                                        {t(
+                                                            'contracts.noContract'
+                                                        )}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <label class="contract-label">
+                                                {t('contracts.terms')}
+                                            </label>
+                                            <textarea
+                                                class="contract-terms"
+                                                rows="2"
+                                                placeholder={t(
+                                                    'contracts.termsPlaceholder'
+                                                )}
+                                                set:text={contract?.terms ?? ''}
+                                            />
+
+                                            <div class="contract-dates">
+                                                <label>
+                                                    {t('contracts.startDate')}
+                                                    <input
+                                                        type="date"
+                                                        class="contract-start"
+                                                        value={
+                                                            contract?.start_date ??
+                                                            ''
+                                                        }
+                                                    />
+                                                </label>
+                                                <label>
+                                                    {t('contracts.endDate')}
+                                                    <input
+                                                        type="date"
+                                                        class="contract-end"
+                                                        value={
+                                                            contract?.end_date ??
+                                                            ''
+                                                        }
+                                                    />
+                                                </label>
+                                            </div>
+
+                                            {contract &&
+                                                contract.deliveries.length >
+                                                    0 && (
+                                                    <div class="contract-deliveries">
+                                                        <strong>
+                                                            {t(
+                                                                'contracts.deliveries'
+                                                            )}
+                                                            :
+                                                        </strong>
+                                                        <ul>
+                                                            {contract.deliveries.map(
+                                                                (delivery) => (
+                                                                    <li>
+                                                                        {
+                                                                            delivery.delivery_date
+                                                                        }
+                                                                        {delivery.description
+                                                                            ? ` — ${delivery.description}`
+                                                                            : ''}
+                                                                    </li>
+                                                                )
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                            <button
+                                                type="button"
+                                                class="action-btn-small approve-btn btn-save-contract"
+                                            >
+                                                {t('contracts.save')}
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    ) : (
+                        <div class="no-requests">
+                            {t('contracts.noMembers')}
+                        </div>
+                    )
+                }
+            </div>
+
+            <div class="handover-submissions">
+                <h4 class="section-title">
+                    {t('project-handover-manager.handoverSectionTitle')}
+                </h4>
+                {
+                    (() => {
+                        const submitted = projectMembers.filter(
+                            (m) => m.handover_id
+                        );
+                        return submitted.length > 0 ? (
+                            <div class="handover-list">
+                                {submitted.map((member) => (
+                                    <div
+                                        class="handover-item"
+                                        data-status={member.handover_status}
+                                    >
+                                        <div class="handover-item-head">
+                                            <img
+                                                src={
+                                                    member.avatar_url ||
+                                                    '/assets/images/avt-nhỏ.svg'
+                                                }
+                                                alt={member.username}
+                                            />
+                                            <div class="handover-item-who">
+                                                <div class="user-name">
+                                                    {member.full_name ||
+                                                        member.username}
+                                                </div>
+                                                <div class="handover-date">
+                                                    {t(
+                                                        'project-handover-manager.handoverSubmittedAt'
+                                                    )}
+                                                    :{' '}
+                                                    {formatDate(
+                                                        member.handover_submitted_at ??
+                                                            null
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <span
+                                                class={`handover-badge handover-badge-${member.handover_status}`}
+                                            >
+                                                {member.handover_status ===
+                                                'approved'
+                                                    ? t(
+                                                          'project-handover-manager.handoverApproved'
+                                                      )
+                                                    : member.handover_status ===
+                                                        'rejected'
+                                                      ? t(
+                                                            'project-handover-manager.handoverRejected'
+                                                        )
+                                                      : t(
+                                                            'project-handover-manager.handoverPending'
+                                                        )}
+                                            </span>
+                                        </div>
+                                        <p class="handover-notes">
+                                            {member.handover_note}
+                                        </p>
+                                        {member.handover_review_note && (
+                                            <p class="handover-review-note">
+                                                {t(
+                                                    'project-handover-manager.handoverReviewNote'
+                                                )}
+                                                : {member.handover_review_note}
+                                            </p>
+                                        )}
+                                        {member.handover_status ===
+                                            'pending' && (
+                                            <div class="handover-actions">
+                                                <button
+                                                    class="action-btn-small approve-btn btn-handover-review"
+                                                    data-handover-id={
+                                                        member.handover_id
+                                                    }
+                                                    data-action="approve"
+                                                >
+                                                    {t(
+                                                        'project-handover-manager.handoverApprove'
+                                                    )}
+                                                </button>
+                                                <button
+                                                    class="action-btn-small reject-btn btn-handover-review"
+                                                    data-handover-id={
+                                                        member.handover_id
+                                                    }
+                                                    data-action="reject"
+                                                >
+                                                    {t(
+                                                        'project-handover-manager.handoverReject'
+                                                    )}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div class="no-requests">
+                                {t('project-handover-manager.noHandovers')}
+                            </div>
+                        );
+                    })()
+                }
+            </div>
+
             <div class="action-buttons">
-                <a
-                    href={l(`/project-setting/${project.id}`)}
-                    class="status-btn"
-                >
+                <a href={l(`/project/${project.id}`)} class="status-btn">
                     {t('project-handover-manager.status-btn')}
                 </a>
                 <a href={l(`/project/${project.id}`)} class="details-btn">
@@ -321,6 +560,25 @@ function formatDate(dateString: string | null): string {
                     rejectErrorTitle: 'Lỗi',
                     rejectError: 'Có lỗi xảy ra khi từ chối ứng viên',
                     errorMessage: 'Có lỗi xảy ra',
+                    handoverProjectId: project.id,
+                    handoverApproveTitle: t(
+                        'project-handover-manager.handoverApprove'
+                    ),
+                    handoverRejectTitle: t(
+                        'project-handover-manager.handoverReject'
+                    ),
+                    handoverApproveConfirm: t(
+                        'project-handover-manager.handoverApproveConfirm'
+                    ),
+                    handoverRejectConfirm: t(
+                        'project-handover-manager.handoverRejectConfirm'
+                    ),
+                    removeConfirmTitle: t('flows.removeConfirmTitle'),
+                    removeConfirmMessage: t('flows.removeConfirmMessage'),
+                    contractMessages: JSON.stringify({
+                        save: t('contracts.save'),
+                        saving: t('contracts.saving'),
+                    }),
                 }}
             >
                 // Approve application
@@ -448,6 +706,199 @@ function formatDate(dateString: string | null): string {
                         );
                     }
                 };
+
+                // Chủ dự án gỡ thành viên khỏi dự án
+                document
+                    .querySelectorAll('.btn-remove-member')
+                    .forEach((button) => {
+                        button.addEventListener('click', function () {
+                            const run = async () => {
+                                button.disabled = true;
+                                try {
+                                    const response = await fetch(
+                                        `/api/projects/${handoverProjectId}/members`,
+                                        {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type':
+                                                    'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                member_id:
+                                                    button.dataset.memberId,
+                                            }),
+                                        }
+                                    );
+                                    const result = await response.json();
+                                    window.showToast?.({
+                                        type: result.success
+                                            ? 'success'
+                                            : 'error',
+                                        title: result.success
+                                            ? approveSuccessTitle
+                                            : approveErrorTitle,
+                                        message: result.message,
+                                        onClose: () => location.reload(),
+                                    });
+                                    if (!result.success)
+                                        button.disabled = false;
+                                } catch (error) {
+                                    button.disabled = false;
+                                    console.error(
+                                        'Error removing member:',
+                                        error
+                                    );
+                                }
+                            };
+
+                            if (window.openApproveApplicationDialog) {
+                                window.openApproveApplicationDialog(
+                                    removeConfirmTitle,
+                                    removeConfirmMessage,
+                                    run
+                                );
+                            } else {
+                                run();
+                            }
+                        });
+                    });
+
+                // Lưu hợp đồng với từng thành viên
+                const contractMsg = JSON.parse(contractMessages);
+                document
+                    .querySelectorAll('.btn-save-contract')
+                    .forEach((button) => {
+                        button.addEventListener('click', async function () {
+                            const card = button.closest('.contract-card');
+                            if (!card) return;
+
+                            const terms =
+                                card.querySelector('.contract-terms')?.value ??
+                                '';
+                            const startDate =
+                                card.querySelector('.contract-start')?.value ??
+                                '';
+                            const endDate =
+                                card.querySelector('.contract-end')?.value ??
+                                '';
+
+                            button.disabled = true;
+                            button.textContent = contractMsg.saving;
+
+                            try {
+                                const response = await fetch(
+                                    `/api/projects/${handoverProjectId}/contracts`,
+                                    {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            member_id: card.dataset.memberId,
+                                            terms,
+                                            start_date: startDate,
+                                            end_date: endDate,
+                                        }),
+                                    }
+                                );
+                                const result = await response.json();
+
+                                window.showToast?.({
+                                    type: result.success ? 'success' : 'error',
+                                    title: result.success
+                                        ? approveSuccessTitle
+                                        : approveErrorTitle,
+                                    message: result.message,
+                                });
+                            } catch (error) {
+                                console.error('Error saving contract:', error);
+                                window.showToast?.({
+                                    type: 'error',
+                                    title: approveErrorTitle,
+                                    message: errorMessage,
+                                });
+                            } finally {
+                                button.disabled = false;
+                                button.textContent = contractMsg.save;
+                            }
+                        });
+                    });
+
+                // Nghiệm thu / trả lại bàn giao của thành viên
+                document
+                    .querySelectorAll('.btn-handover-review')
+                    .forEach((button) => {
+                        button.addEventListener('click', function () {
+                            const handoverId = Number(
+                                button.dataset.handoverId
+                            );
+                            const action = button.dataset.action;
+                            const isApprove = action === 'approve';
+
+                            const run = async () => {
+                                button.disabled = true;
+                                try {
+                                    const response = await fetch(
+                                        `/api/projects/${handoverProjectId}/handover/review`,
+                                        {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type':
+                                                    'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                handover_id: handoverId,
+                                                action,
+                                            }),
+                                        }
+                                    );
+                                    const result = await response.json();
+
+                                    if (result.success) {
+                                        window.showToast?.({
+                                            type: 'success',
+                                            title: approveSuccessTitle,
+                                            message: result.message,
+                                            onClose: () => location.reload(),
+                                        });
+                                    } else {
+                                        button.disabled = false;
+                                        window.showToast?.({
+                                            type: 'error',
+                                            title: approveErrorTitle,
+                                            message:
+                                                result.message || errorMessage,
+                                        });
+                                    }
+                                } catch (error) {
+                                    button.disabled = false;
+                                    console.error(
+                                        'Error reviewing handover:',
+                                        error
+                                    );
+                                    window.showToast?.({
+                                        type: 'error',
+                                        title: approveErrorTitle,
+                                        message: errorMessage,
+                                    });
+                                }
+                            };
+
+                            if (window.openApproveApplicationDialog) {
+                                window.openApproveApplicationDialog(
+                                    isApprove
+                                        ? handoverApproveTitle
+                                        : handoverRejectTitle,
+                                    isApprove
+                                        ? handoverApproveConfirm
+                                        : handoverRejectConfirm,
+                                    run
+                                );
+                            } else {
+                                run();
+                            }
+                        });
+                    });
             </script>
         </div>
     </div>

@@ -1,14 +1,31 @@
 ---
-interface Props {
-    unreadCount?: number;
+import { useTranslate } from '@/i18n';
+import { getConversations, getUnreadCount } from '@/services/messages';
+
+const { t, l } = useTranslate(Astro);
+const session = Astro.locals.session;
+const userId = session?.user?.id ?? null;
+
+// Trước đây component này render danh sách hội thoại hardcode ("Bùi Thái Vy",
+// "Mình muốn hỏi thêm về dự án...") và Header cũng không hiển thị nó.
+const conversations = userId
+    ? (await getConversations(userId)).slice(0, 6)
+    : [];
+const unreadCount = userId ? await getUnreadCount(userId) : 0;
+
+function formatTime(value: string | null): string {
+    if (!value) return '';
+    try {
+        const diffMs = Date.now() - new Date(value).getTime();
+        const mins = Math.floor(diffMs / 60000);
+        if (mins < 60) return `${Math.max(mins, 1)}p`;
+        const hours = Math.floor(diffMs / 3600000);
+        if (hours < 24) return `${hours}h`;
+        return `${Math.floor(diffMs / 86400000)}n`;
+    } catch {
+        return '';
+    }
 }
-
-const { unreadCount = 2 } = Astro.props;
-import '@/assets/css/footer.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
-export { getStaticPaths };
-
-const { lang, t, l } = useTranslate(Astro);
 ---
 
 <style>
@@ -268,305 +285,92 @@ const { lang, t, l } = useTranslate(Astro);
         {unreadCount > 0 && <span class="message-badge">{unreadCount}</span>}
     </button>
 
-    <!-- Message Dropdown Menu -->
     <div class="message-box" id="message-dropdown-menu">
         <div class="mb-header">
             <div class="mb-title">
-                {t('box-message.message')} ({unreadCount})
+                {t('box-message.message')}
+                {unreadCount > 0 ? `(${unreadCount})` : ''}
             </div>
-        </div>
-
-        <div class="mb-search">
-            <div class="mb-search-input-container">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input
-                    type="text"
-                    class="mb-search-input"
-                    placeholder={t('box-message.search')}
-                />
-            </div>
+            <a class="mb-view-all" href={l('/messages')}>
+                {t('messages.viewAll')}
+            </a>
         </div>
 
         <div class="mb-list">
-            <a
-                class="mb-item unread"
-                data-chat-id="user-1"
-                data-user-name="Bùi Thái Vy"
-                data-user-avatar="/assets/images/avatar-default-icon.png"
-            >
-                <div class="mb-avatar-wrapper">
-                    <img
-                        src="/assets/images/avatar-default-icon.png"
-                        alt="Avatar"
-                        class="mb-avatar"
-                    />
-                </div>
-                <div class="mb-content">
-                    <div class="mb-row-top">
-                        <span class="mb-name">Bùi Thái Vy</span>
-                        <span class="mb-time">2p</span>
-                    </div>
-                    <div
-                        style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-              "
-                    >
-                        <p class="mb-text">Mình muốn hỏi thêm về dự án...</p>
-                        <span class="mb-unread-dot"></span>
-                    </div>
-                </div>
-            </a>
-
-            <a
-                class="mb-item unread"
-                data-chat-id="user-2"
-                data-user-name="Nguyễn Việt Hoàng"
-                data-user-avatar="/assets/images/avatar-default-icon.png"
-            >
-                <div class="mb-avatar-wrapper">
-                    <img
-                        src="/assets/images/avatar-default-icon.png"
-                        alt="Avatar"
-                        class="mb-avatar"
-                    />
-                </div>
-                <div class="mb-content">
-                    <div class="mb-row-top">
-                        <span class="mb-name">Nguyễn Việt Hoàng</span>
-                        <span class="mb-time">1h</span>
-                    </div>
-                    <div
-                        style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-              "
-                    >
-                        <p class="mb-text">
-                            Đã gửi file thiết kế, bạn check nhé.
-                        </p>
-                        <span class="mb-unread-dot"></span>
-                    </div>
-                </div>
-            </a>
-
-            <a
-                class="mb-item"
-                data-chat-id="user-3"
-                data-user-name="Lý Anh Huy"
-                data-user-avatar="/assets/images/avatar-default-icon.png"
-            >
-                <div class="mb-avatar-wrapper">
-                    <img
-                        src="/assets/images/avatar-default-icon.png"
-                        alt="Avatar"
-                        class="mb-avatar"
-                    />
-                </div>
-                <div class="mb-content">
-                    <div class="mb-row-top">
-                        <span class="mb-name">Lý Anh Huy</span>
-                        <span class="mb-time">Hôm qua</span>
-                    </div>
-                    <p class="mb-text">Bạn: Ok chốt lịch họp nhé.</p>
-                </div>
-            </a>
-
-            <a
-                class="mb-item"
-                data-chat-id="user-4"
-                data-user-name="Quỳnh Chi"
-                data-user-avatar="/assets/images/avatar-default-icon.png"
-            >
-                <div class="mb-avatar-wrapper">
-                    <img
-                        src="/assets/images/avatar-default-icon.png"
-                        alt="Avatar"
-                        class="mb-avatar"
-                    />
-                </div>
-                <div class="mb-content">
-                    <div class="mb-row-top">
-                        <span class="mb-name">Quỳnh Chi</span>
-                        <span class="mb-time">T2</span>
-                    </div>
-                    <p class="mb-text">API login đang bị lỗi CORS.</p>
-                </div>
-            </a>
-
-            <a
-                class="mb-item"
-                data-chat-id="user-5"
-                data-user-name="Trọng Nhân"
-                data-user-avatar="/assets/images/avatar-default-icon.png"
-            >
-                <div class="mb-avatar-wrapper">
-                    <img
-                        src="/assets/images/avatar-default-icon.png"
-                        alt="Avatar"
-                        class="mb-avatar"
-                    />
-                </div>
-                <div class="mb-content">
-                    <div class="mb-row-top">
-                        <span class="mb-name">Trọng Nhân</span>
-                        <span class="mb-time">T2</span>
-                    </div>
-                    <p class="mb-text">Dự án này còn tuyển không bạn?</p>
-                </div>
-            </a>
+            {
+                conversations.length > 0 ? (
+                    conversations.map((conversation) => (
+                        <a
+                            class:list={[
+                                'mb-item',
+                                { unread: conversation.unread > 0 },
+                            ]}
+                            href={l(
+                                `/messages/${conversation.partner.username}`
+                            )}
+                        >
+                            <div class="mb-avatar-wrapper">
+                                <img
+                                    src={
+                                        conversation.partner.avatar_url ||
+                                        '/assets/images/avatar-default-icon.png'
+                                    }
+                                    alt={conversation.partner.username}
+                                    class="mb-avatar"
+                                />
+                            </div>
+                            <div class="mb-content">
+                                <div class="mb-row-top">
+                                    <span class="mb-name">
+                                        {conversation.partner.full_name ||
+                                            conversation.partner.username}
+                                    </span>
+                                    <span class="mb-time">
+                                        {formatTime(conversation.lastAt)}
+                                    </span>
+                                </div>
+                                <div class="mb-row-bottom">
+                                    <p class="mb-text">
+                                        {conversation.lastMessage}
+                                    </p>
+                                    {conversation.unread > 0 && (
+                                        <span class="mb-unread-dot" />
+                                    )}
+                                </div>
+                            </div>
+                        </a>
+                    ))
+                ) : (
+                    <p class="mb-empty">{t('messages.empty')}</p>
+                )
+            }
         </div>
     </div>
 </div>
 
 <script>
     (function () {
-        // Prevent multiple initializations
-        if ((window as any).messageDropdownInitialized) {
-            return;
-        }
-        (window as any).messageDropdownInitialized = true;
+        const button = document.getElementById('message-button');
+        const menu = document.getElementById('message-dropdown-menu');
+        if (!button || !menu || button.dataset.ready === 'true') return;
+        button.dataset.ready = 'true';
 
-        function initMessageDropdown() {
-            const messageButton = document.getElementById('message-button');
-            const dropdownMenu = document.getElementById(
-                'message-dropdown-menu'
-            );
-            const closeButton = document.getElementById('message-close-button');
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            menu.classList.toggle('active');
+            // Đóng dropdown thông báo nếu đang mở
+            document
+                .getElementById('notification-dropdown-menu')
+                ?.classList.remove('active');
+        });
 
-            // Toggle dropdown menu
-            if (messageButton && dropdownMenu) {
-                // Remove existing listeners to prevent duplicates
-                const newMessageButton = messageButton.cloneNode(true);
-                messageButton.parentNode?.replaceChild(
-                    newMessageButton,
-                    messageButton
-                );
-                const newButton = document.getElementById('message-button');
-
-                if (newButton) {
-                    newButton.addEventListener('click', function (e: Event) {
-                        e.stopPropagation();
-                        dropdownMenu.classList.toggle('active');
-                    });
-                }
-
-                // Close button
-                if (closeButton) {
-                    closeButton.addEventListener('click', function (e: Event) {
-                        e.stopPropagation();
-                        dropdownMenu.classList.remove('active');
-                    });
-                }
-
-                // Close dropdown when clicking outside
-                const clickOutsideHandler = function (e: Event) {
-                    const target = e.target as HTMLElement;
-                    if (!target) return;
-                    const button = document.getElementById('message-button');
-                    const menu = document.getElementById(
-                        'message-dropdown-menu'
-                    );
-                    if (button && menu) {
-                        const isClickInside =
-                            button.contains(target) || menu.contains(target);
-
-                        if (
-                            !isClickInside &&
-                            menu.classList.contains('active')
-                        ) {
-                            menu.classList.remove('active');
-                        }
-                    }
-                };
-
-                // Remove old listener if exists
-                document.removeEventListener('click', clickOutsideHandler);
-                document.addEventListener('click', clickOutsideHandler);
-
-                // Open chat window when clicking on message items
-                const messageItems = dropdownMenu.querySelectorAll('.mb-item');
-                messageItems.forEach(function (item) {
-                    item.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        const chatId = item.getAttribute('data-chat-id');
-                        const userName = item.getAttribute('data-user-name');
-                        const userAvatar =
-                            item.getAttribute('data-user-avatar');
-
-                        console.log('Message item clicked:', {
-                            chatId,
-                            userName,
-                            userAvatar,
-                        });
-
-                        if (chatId && userName && userAvatar) {
-                            // Check if chat window already exists
-                            const existingChat = document.getElementById(
-                                `chat-window-${chatId}`
-                            );
-                            if (existingChat) {
-                                // Bring to front
-                                existingChat.style.zIndex = String(
-                                    9999 + (Date.now() % 1000)
-                                );
-                                existingChat.classList.remove('minimized');
-                                existingChat.classList.add('active');
-                            } else {
-                                // Open new chat window
-                                const openChatFn = (window as any)
-                                    .openChatWindow;
-                                if (
-                                    openChatFn &&
-                                    typeof openChatFn === 'function'
-                                ) {
-                                    console.log('Calling openChatWindow');
-                                    openChatFn(chatId, userName, userAvatar);
-                                } else {
-                                    console.error(
-                                        'openChatWindow function not found. Retrying...'
-                                    );
-                                    // Retry after a short delay
-                                    setTimeout(() => {
-                                        const retryFn = (window as any)
-                                            .openChatWindow;
-                                        if (
-                                            retryFn &&
-                                            typeof retryFn === 'function'
-                                        ) {
-                                            retryFn(
-                                                chatId,
-                                                userName,
-                                                userAvatar
-                                            );
-                                        } else {
-                                            console.error(
-                                                'Failed to open chat window: function not available'
-                                            );
-                                        }
-                                    }, 200);
-                                }
-                            }
-                        }
-
-                        // Close dropdown
-                        setTimeout(() => {
-                            dropdownMenu.classList.remove('active');
-                        }, 100);
-                    });
-                });
+        document.addEventListener('click', function (e) {
+            const target = e.target;
+            if (!(target instanceof Node)) return;
+            if (!button.contains(target) && !menu.contains(target)) {
+                menu.classList.remove('active');
             }
-        }
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initMessageDropdown);
-        } else {
-            initMessageDropdown();
-        }
+        });
     })();
 </script>

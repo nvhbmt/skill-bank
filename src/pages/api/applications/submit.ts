@@ -57,16 +57,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
         }
 
         // Check if user already applied
+        // Chỉ đơn đang chờ hoặc đã được duyệt mới chặn nộp lại. Trước đây câu
+        // này không xét status nên một lần bị từ chối là chặn vĩnh viễn, kể cả
+        // khi dự án mở tuyển đợt mới.
         const { data: existingApplication } = await authenticatedSupabase
             .from('applications')
-            .select('id')
+            .select('id, status')
             .eq('project_id', projectIdNum)
             .eq('applicant_id', session.user.id)
+            .in('status', ['pending', 'approved'])
             .is('deleted_at', null)
             .maybeSingle();
 
         if (existingApplication) {
-            return httpResponse.fail('Bạn đã ứng tuyển cho dự án này rồi', 400);
+            return httpResponse.fail(
+                existingApplication.status === 'approved'
+                    ? 'Bạn đã là thành viên của dự án này'
+                    : 'Bạn đã ứng tuyển cho dự án này rồi',
+                400
+            );
         }
 
         // Upload CV file if provided
@@ -75,13 +84,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
             const fileExt = cvFile.name.split('.').pop();
             const filePath = `${session.user.id}/${Date.now()}.${fileExt}`;
 
-            const { data: uploadData, error: uploadError } =
-                await authenticatedSupabase.storage
-                    .from('cv-files')
-                    .upload(filePath, cvFile, {
-                        cacheControl: '3600',
-                        upsert: false,
-                    });
+            const { error: uploadError } = await authenticatedSupabase.storage
+                .from('cv-files')
+                .upload(filePath, cvFile, {
+                    cacheControl: '3600',
+                    upsert: false,
+                });
 
             if (uploadError) {
                 return httpResponse.fail(
@@ -90,12 +98,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 );
             }
 
-            const {
-                data: { publicUrl },
-            } = authenticatedSupabase.storage
-                .from('cv-files')
-                .getPublicUrl(filePath);
-            cvUrl = publicUrl;
+            // Lưu đường dẫn trong bucket, không lưu public URL: bucket cv-files
+            // là riêng tư, người xem sẽ được cấp signed URL có hạn khi cần.
+            cvUrl = filePath;
         }
 
         // Create application
@@ -106,6 +111,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                     project_id: projectIdNum,
                     applicant_id: session.user.id,
                     cover_letter: coverLetter || null,
+                    cv_url: cvUrl,
                     applied_at: new Date().toISOString(),
                     status: 'pending',
                 })

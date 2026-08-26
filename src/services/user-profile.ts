@@ -121,7 +121,7 @@ export async function getUserProfileByUsername(
             .select('id, title, cover_image_url, project_type, status')
             .eq('owner_id', userInfo.user_id)
             .is('deleted_at', null)
-            .neq('status', 'pending')
+            .in('status', ['approved', 'completed'])
             .order('created_at', { ascending: false })
             .limit(10);
 

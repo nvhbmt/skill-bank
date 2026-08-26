@@ -2,9 +2,8 @@
 interface Props {}
 // Import CSS bằng đường dẫn tương đối để chắc chắn hoạt động
 import '@/assets/css/homepage.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { getFeaturedProfiles } from '@/services/user-profile';
-export { getStaticPaths };
 
 const { t, l } = useTranslate(Astro);
 

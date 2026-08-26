@@ -32,6 +32,18 @@ function getNestedValue(obj: any, path: string): string {
     return typeof value === 'string' ? value : path;
 }
 
+/**
+ * Khi không tìm thấy khoá, `t()` trả về chính chuỗi khoá — nghĩa là người dùng
+ * nhìn thấy thứ như "header.loading" trên giao diện, và mẫu
+ * `t('a.b') || 'dự phòng'` không bao giờ chạy nhánh dự phòng vì chuỗi khoá
+ * luôn truthy. Ghi cảnh báo lúc dev để phát hiện sớm.
+ */
+function warnMissingKey(key: string, lang: string) {
+    if (import.meta.env.DEV) {
+        console.warn(`[i18n] Thiếu khoá dịch "${key}" (ngôn ngữ: ${lang})`);
+    }
+}
+
 export function getTranslations(Astro: any) {
     const lang = getLang(Astro);
     const t = (key: TranslationKey): string => {
@@ -39,7 +51,11 @@ export function getTranslations(Astro: any) {
         const value = getNestedValue(langTranslations, key);
         // If not found in current lang, try vi as fallback
         if (value === key) {
-            return getNestedValue(translations.vi, key);
+            const fallback = getNestedValue(translations.vi, key);
+            if (fallback === key) {
+                warnMissingKey(key, lang);
+            }
+            return fallback;
         }
         return value;
     };

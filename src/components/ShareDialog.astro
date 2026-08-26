@@ -212,7 +212,9 @@ const {
             const dialog = document.getElementById(dialogId);
 
             if (!dialog) {
-                console.error(`Dialog element with id "${dialogId}" not found!`);
+                console.error(
+                    `Dialog element with id "${dialogId}" not found!`
+                );
                 return;
             }
 
@@ -239,6 +241,11 @@ const {
             const dialog = document.getElementById(dialogId);
             if (!dialog) return;
 
+            // Hàm này được gọi nhiều lần (DOMContentLoaded + các setTimeout
+            // dự phòng), chặn để không gắn trùng listener.
+            if (dialog.dataset.handlersReady === 'true') return;
+            dialog.dataset.handlersReady = 'true';
+
             const copyButton = document.getElementById(copyButtonId);
             const closeButton = document.getElementById(closeButtonId);
             const linkInput = document.getElementById(linkInputId);
@@ -250,7 +257,8 @@ const {
                         await navigator.clipboard.writeText(linkInput.value);
                         // Visual feedback
                         const originalText = copyButton.textContent;
-                        copyButton.textContent = copiedButtonText || 'Đã sao chép!';
+                        copyButton.textContent =
+                            copiedButtonText || 'Đã sao chép!';
                         copyButton.classList.add('copied');
 
                         setTimeout(() => {
@@ -266,7 +274,8 @@ const {
                             window.showToast({
                                 type: 'warning',
                                 title: 'Cảnh báo',
-                                message: 'Không thể sao chép. Vui lòng sao chép thủ công.',
+                                message:
+                                    'Không thể sao chép. Vui lòng sao chép thủ công.',
                             });
                         }
                     }
@@ -280,20 +289,27 @@ const {
                 });
             }
 
-            // Close on backdrop click
-            dialog.addEventListener('click', function (e) {
-                if (e.target === dialog) {
-                    window[closeFunctionName]();
-                }
-            });
+            // Backdrop và phím Escape chỉ gắn một lần cho mỗi dialog. Trước
+            // đây chúng nằm trong hàm mở nên mỗi lần mở lại thêm một listener
+            // keydown vào document mà không bao giờ gỡ ra.
+            if (!dialog.dataset.globalHandlersReady) {
+                dialog.dataset.globalHandlersReady = 'true';
 
-            // Close on Escape key
-            const escapeHandler = function (e) {
-                if (e.key === 'Escape' && dialog.classList.contains('active')) {
-                    window[closeFunctionName]();
-                }
-            };
-            document.addEventListener('keydown', escapeHandler);
+                dialog.addEventListener('click', function (e) {
+                    if (e.target === dialog) {
+                        window[closeFunctionName]();
+                    }
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (
+                        e.key === 'Escape' &&
+                        dialog.classList.contains('active')
+                    ) {
+                        window[closeFunctionName]();
+                    }
+                });
+            }
         }
 
         // Initialize when DOM is ready
@@ -307,4 +323,3 @@ const {
         setTimeout(setupDialogHandlers, 200);
     })();
 </script>
-

@@ -1,6 +1,8 @@
 (function () {
     // Get configuration from data attributes
-    const notificationDropdown = document.querySelector('.notification-dropdown');
+    const notificationDropdown = document.querySelector(
+        '.notification-dropdown'
+    );
     if (!notificationDropdown) return;
 
     const lang = notificationDropdown.dataset.lang || 'vi';
@@ -8,13 +10,23 @@
         notificationDropdown.dataset.translations || '{}'
     );
 
+    // Nội dung thông báo chứa dữ liệu người dùng nhập (tên dự án, tên người
+    // ứng tuyển) và được ghép vào innerHTML, nên bắt buộc phải escape.
+    function escapeHtml(value) {
+        const div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
+    }
+
+    // Dùng cho giá trị nằm trong thuộc tính HTML (data-*)
+    function escapeAttr(value) {
+        return escapeHtml(value).replace(/"/g, '&quot;');
+    }
+
     // Function to update notification UI
     function updateNotificationUI(notifications) {
-        const notificationList =
-            document.getElementById('notification-list');
-        const notificationBadge = document.querySelector(
-            '.notification-badge'
-        );
+        const notificationList = document.getElementById('notification-list');
+        const notificationBadge = document.querySelector('.notification-badge');
         const unreadCountEl = document.querySelector(
             '.notification-unread-count'
         );
@@ -31,9 +43,7 @@
                 notificationBadge.style.display = '';
             } else {
                 // Create badge if it doesn't exist
-                const button = document.getElementById(
-                    'notification-button'
-                );
+                const button = document.getElementById('notification-button');
                 if (button) {
                     const badge = document.createElement('span');
                     badge.className = 'notification-badge';
@@ -82,8 +92,7 @@
                     if (notification.type && notification.message) {
                         const data = JSON.parse(notification.message);
                         projectId = data.projectId;
-                        const template =
-                            parsedTranslations[notification.type];
+                        const template = parsedTranslations[notification.type];
 
                         if (template) {
                             messageText = template.message || '';
@@ -91,18 +100,29 @@
                             messageText = messageText.replace(
                                 /\{\{(\w+)\}\}/g,
                                 (match, key) => {
-                                    return data[key] || match;
+                                    return data[key] != null
+                                        ? escapeHtml(data[key])
+                                        : match;
                                 }
                             );
 
                             // Add link if projectId exists
-                            if (data.projectId) {
+                            const safeProjectId = Number.parseInt(
+                                data.projectId,
+                                10
+                            );
+                            if (Number.isFinite(safeProjectId)) {
+                                projectId = safeProjectId;
                                 const url =
-                                    notification.type ===
-                                    'application_received'
-                                        ? `/${lang}/project/${data.projectId}/candidate-manage`
-                                        : `/${lang}/project/${data.projectId}`;
-                                linkHtml = `<a href="${url}" class="notification-link" onclick="event.stopPropagation(); window.location.href='${url}'">${template.viewProject || 'Xem dự án'}</a>`;
+                                    notification.type === 'application_received'
+                                        ? `/${lang}/project/${safeProjectId}/candidate-manage`
+                                        : notification.type ===
+                                            'handover_submitted'
+                                          ? `/${lang}/project-handover-manager/${safeProjectId}`
+                                          : `/${lang}/project/${safeProjectId}`;
+                                linkHtml = `<a href="${url}" class="notification-link">${escapeHtml(template.viewProject || 'Xem dự án')}</a>`;
+                            } else {
+                                projectId = null;
                             }
                         }
                     }
@@ -132,20 +152,22 @@
                 const linkUrl = projectId
                     ? notification.type === 'application_received'
                         ? `/${lang}/project/${projectId}/candidate-manage`
-                        : `/${lang}/project/${projectId}`
+                        : notification.type === 'handover_submitted'
+                          ? `/${lang}/project-handover-manager/${projectId}`
+                          : `/${lang}/project/${projectId}`
                     : '';
 
                 return `
                     <button
                         class="notification-item ${!notification.is_read ? 'unread' : ''}"
-                        data-notification-id="${notification.id}"
-                        data-notification-title="${title}"
-                        data-notification-message="${notification.message || ''}"
-                        data-notification-type="${notification.type || ''}"
-                        data-notification-link="${linkUrl}"
+                        data-notification-id="${escapeAttr(notification.id)}"
+                        data-notification-title="${escapeAttr(title)}"
+                        data-notification-message="${escapeAttr(notification.message || '')}"
+                        data-notification-type="${escapeAttr(notification.type || '')}"
+                        data-notification-link="${escapeAttr(linkUrl)}"
                     >
                         <div class="notification-item-content">
-                            <h4 class="notification-item-title">${title}</h4>
+                            <h4 class="notification-item-title">${escapeHtml(title)}</h4>
                             <p class="notification-item-message">
                                 ${messageText}${linkHtml}
                             </p>
@@ -156,6 +178,13 @@
                 `;
             })
             .join('');
+
+        // Nút "đánh dấu tất cả đã đọc" chỉ hiện khi còn tin chưa đọc
+        const markAllBtn = document.getElementById('notification-mark-all');
+        if (markAllBtn) {
+            const unread = notifications.filter((n) => !n.is_read).length;
+            markAllBtn.style.display = unread > 0 ? 'inline-block' : 'none';
+        }
 
         // Re-attach click handlers
         attachNotificationHandlers();
@@ -199,9 +228,7 @@
                     if (dot) dot.remove();
 
                     // Update badge count
-                    const badge = document.querySelector(
-                        '.notification-badge'
-                    );
+                    const badge = document.querySelector('.notification-badge');
                     if (badge) {
                         const unreadItems = document.querySelectorAll(
                             '.notification-item.unread'
@@ -214,10 +241,7 @@
                         }
                     }
                 } catch (error) {
-                    console.error(
-                        'Error marking notification as read:',
-                        error
-                    );
+                    console.error('Error marking notification as read:', error);
                 }
 
                 // Open notification dialog
@@ -235,8 +259,7 @@
 
     // Function to fetch notifications from API
     async function fetchNotifications() {
-        const notificationList =
-            document.getElementById('notification-list');
+        const notificationList = document.getElementById('notification-list');
         if (!notificationList) return;
 
         // Show loading state
@@ -271,6 +294,30 @@
         }
     }
 
+    // Đánh dấu toàn bộ thông báo là đã đọc
+    const markAllButton = document.getElementById('notification-mark-all');
+    if (markAllButton && markAllButton.dataset.ready !== 'true') {
+        markAllButton.dataset.ready = 'true';
+        markAllButton.addEventListener('click', async function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            markAllButton.disabled = true;
+            try {
+                const response = await fetch('/api/notifications/read-all', {
+                    method: 'POST',
+                });
+                const result = await response.json();
+                if (result.success) {
+                    await fetchNotifications();
+                }
+            } catch (error) {
+                console.error('Error marking all as read:', error);
+            } finally {
+                markAllButton.disabled = false;
+            }
+        });
+    }
+
     // Initialize when DOM is ready
     const initialize = () => {
         attachNotificationHandlers();
@@ -284,4 +331,3 @@
         initialize();
     }
 })();
-

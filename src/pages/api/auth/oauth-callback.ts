@@ -1,11 +1,15 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient, createAuthenticatedClient } from '@/lib/supabase';
+import { ensureUserInfo } from '@/services/user-account';
 import httpResponse from '@/utils/response';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
     try {
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
         const body = await request.json();
         const { access_token, refresh_token } = body;
 
@@ -14,7 +18,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         }
 
         // Set session using the tokens
-        const { data, error } = await supabase.auth.setSession({
+        const { data, error } = await anonClient.auth.setSession({
             access_token: access_token,
             refresh_token: refresh_token || '',
         });
@@ -25,7 +29,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         }
 
         // Set cookies
-        const { access_token: sessionAccessToken, refresh_token: sessionRefreshToken } = data.session;
+        const {
+            access_token: sessionAccessToken,
+            refresh_token: sessionRefreshToken,
+        } = data.session;
         cookies.set('sb-access-token', sessionAccessToken, {
             path: '/',
             httpOnly: true,
@@ -41,37 +48,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             maxAge: 60 * 60 * 24 * 30, // 30 days
         });
 
-        // Check if user exists in user_info table, if not create it
-        const user = data.user;
-        if (user && user.email) {
-            const { data: existingUser } = await supabase
-                .from('user_info')
-                .select('user_id')
-                .eq('user_id', user.id)
-                .maybeSingle();
-
-            if (!existingUser) {
-                // Create user_info entry for OAuth user
-                const username =
-                    user.user_metadata?.username ||
-                    user.user_metadata?.full_name
-                        ?.toLowerCase()
-                        .replace(/\s+/g, '') ||
-                    `user_${user.id.slice(0, 8)}`;
-
-                const fullName =
-                    user.user_metadata?.full_name ||
-                    user.user_metadata?.name ||
-                    'User';
-
-                await supabase.from('user_info').insert({
-                    user_id: user.id,
-                    email: user.email,
-                    username: username,
-                    full_name: fullName,
-                    avatar_url: user.user_metadata?.avatar_url || null,
-                    role: 'user',
-                });
+        // Tạo user_info nếu chưa có. Trước đây insert bằng client ẩn danh nên
+        // RLS chặn im lặng, và username suy ra từ tên đầy đủ không chống trùng
+        // trong khi cột này là UNIQUE.
+        const authenticatedSupabase = createAuthenticatedClient(data.session);
+        if (data.user) {
+            const profile = await ensureUserInfo(
+                authenticatedSupabase,
+                data.user
+            );
+            if (!profile.ok) {
+                console.error('Cannot create user_info:', profile.error);
             }
         }
 
@@ -85,4 +72,3 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         );
     }
 };
-

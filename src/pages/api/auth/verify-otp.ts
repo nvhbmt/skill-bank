@@ -1,17 +1,20 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient } from '@/lib/supabase';
 import { z } from 'zod';
 import httpResponse from '@/utils/response';
 
 const verifyOtpSchema = z.object({
-    email: z.string().email('Email không hợp lệ'),
+    email: z.email('Email không hợp lệ'),
     token: z.string().length(6, 'Mã OTP phải có 6 chữ số'),
 });
 
 export const POST: APIRoute = async ({ request, cookies }) => {
     try {
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
         const body = await request.json();
         const { email, token } = body;
 
@@ -22,12 +25,12 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             return httpResponse.fail(
                 'Thông tin không hợp lệ',
                 400,
-                validated.error.errors[0]?.message
+                validated.error.issues[0]?.message
             );
         }
 
         // Verify OTP with Supabase
-        const { data, error } = await supabase.auth.verifyOtp({
+        const { data, error } = await anonClient.auth.verifyOtp({
             email: validated.data.email,
             token: validated.data.token,
             type: 'email',

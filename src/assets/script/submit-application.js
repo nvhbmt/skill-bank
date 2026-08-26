@@ -10,15 +10,31 @@ document.addEventListener('DOMContentLoaded', () => {
         cvUpload.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                uploadList.innerHTML = `
-                    <div class="upload-item">
-                        <div class="upload-item-info">
-                            <img src="/assets/images/solar_file-outline.svg" alt="icon" />
-                            <span class="upload-item-name">${file.name}</span>
-                        </div>
-                        <span class="upload-item-success"></span>
-                    </div>
-                `;
+                // Tên file do người dùng đặt, không ghép thẳng vào innerHTML
+                uploadList.innerHTML = '';
+
+                const item = document.createElement('div');
+                item.className = 'upload-item';
+
+                const info = document.createElement('div');
+                info.className = 'upload-item-info';
+
+                const icon = document.createElement('img');
+                icon.src = '/assets/images/solar_file-outline.svg';
+                icon.alt = 'icon';
+                info.appendChild(icon);
+
+                const name = document.createElement('span');
+                name.className = 'upload-item-name';
+                name.textContent = file.name;
+                info.appendChild(name);
+
+                const success = document.createElement('span');
+                success.className = 'upload-item-success';
+
+                item.appendChild(info);
+                item.appendChild(success);
+                uploadList.appendChild(item);
             }
         });
     }
@@ -51,7 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.showToast({
                         type: 'success',
                         title: 'Thành công',
-                        message: result.message || 'Gửi đơn ứng tuyển thành công!',
+                        message:
+                            result.message || 'Gửi đơn ứng tuyển thành công!',
                         onClose: () => {
                             // Redirect to project detail page
                             const projectId = formData.get('project_id');
@@ -71,7 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.showToast({
                         type: 'error',
                         title: 'Lỗi',
-                        message: result.message || 'Có lỗi xảy ra khi gửi đơn ứng tuyển',
+                        message:
+                            result.message ||
+                            'Có lỗi xảy ra khi gửi đơn ứng tuyển',
                     });
                 }
 
@@ -87,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.showToast({
                     type: 'error',
                     title: 'Lỗi',
-                    message: 'Có lỗi xảy ra khi gửi đơn ứng tuyển. Vui lòng thử lại.',
+                    message:
+                        'Có lỗi xảy ra khi gửi đơn ứng tuyển. Vui lòng thử lại.',
                 });
             }
 

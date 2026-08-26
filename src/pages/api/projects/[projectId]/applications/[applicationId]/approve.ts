@@ -47,7 +47,11 @@ export const PUT: APIRoute = async ({ params, locals }) => {
             .eq('id', applicationId)
             .single();
 
-        const success = await approveApplication(applicationId, projectId);
+        const success = await approveApplication(
+            authenticatedSupabase,
+            applicationId,
+            projectId
+        );
 
         if (!success) {
             return httpResponse.fail('Duyệt ứng viên thất bại', 500);

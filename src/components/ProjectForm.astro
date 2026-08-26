@@ -1,0 +1,426 @@
+---
+import { useTranslate } from '@/i18n';
+import provinceData from '@/data/province.json';
+import type { Tables } from '@/types/database.types';
+
+export type ProjectFormSkill = {
+    name: string;
+    description?: string | null;
+};
+
+interface Props {
+    /** 'create' để tạo mới, 'edit' để sửa dự án đã có */
+    mode?: 'create' | 'edit';
+    project?: Pick<
+        Tables<'projects'>,
+        | 'id'
+        | 'title'
+        | 'description'
+        | 'location'
+        | 'project_type'
+        | 'start_date'
+        | 'cover_image_url'
+    > | null;
+    /** Kỹ năng đã gắn với dự án; rỗng thì hiện một dòng trống */
+    skills?: ProjectFormSkill[];
+    /** Mốc thời gian đã có; rỗng thì hiện một dòng trống */
+    milestones?: string[];
+    /** Toàn bộ kỹ năng để đổ vào select */
+    allSkills?: Array<Pick<Tables<'skills'>, 'id' | 'name'>>;
+}
+
+const {
+    mode = 'create',
+    project = null,
+    skills = [],
+    milestones = [],
+    allSkills = [],
+} = Astro.props;
+
+const { t } = useTranslate(Astro);
+
+// Danh sách tỉnh thành, sắp theo tên tiếng Việt
+const provinces = Object.values(provinceData).sort((a, b) =>
+    a.name.localeCompare(b.name, 'vi')
+);
+
+const PROJECT_CATEGORIES = [
+    'Phát triển Web',
+    'Phát triển Di động',
+    'Phát triển ứng dụng',
+    'Phát triển Game',
+    'UI/UX',
+    'Thiết kế Đồ hoạ',
+    'Phân tích Dữ liệu',
+    'Khoa học Dữ liệu & AI',
+    'IoT',
+    'Hệ thống nhúng',
+    'Quản trị Hệ thống',
+    'An toàn thông tin',
+    'Kiểm thử phần mềm',
+    'DevOps',
+];
+
+// Dự án cũ có thể lưu địa điểm/phân loại không nằm trong danh sách hiện tại
+// (dữ liệu nhập tay, danh sách thay đổi về sau). Nếu không bổ sung vào select
+// thì form âm thầm làm mất giá trị đó khi người dùng bấm lưu.
+const locationOptions = provinces.map((province) => province.name_with_type);
+if (project?.location && !locationOptions.includes(project.location)) {
+    locationOptions.unshift(project.location);
+}
+
+const categoryOptions = [...PROJECT_CATEGORIES];
+if (project?.project_type && !categoryOptions.includes(project.project_type)) {
+    categoryOptions.unshift(project.project_type);
+}
+
+// Luôn hiện ít nhất một dòng trống để người dùng nhập
+const initialSkills: ProjectFormSkill[] =
+    skills.length > 0 ? skills : [{ name: '', description: '' }];
+const initialMilestones: string[] =
+    milestones.length > 0 ? milestones : [''];
+---
+
+<form
+    class="project-form"
+    id="project-form"
+    data-mode={mode}
+    data-project-id={project?.id ?? ''}
+>
+    <div class="form-body">
+        <div class="column-left">
+            <section class="form-section" id="thong-tin-chung">
+                <h3>{t('create-project.thongTinChung')}</h3>
+                <div class="form-group-wrapper-1 group-left">
+                    <div class="sub-grid-1">
+                        <div class="form-group">
+                            <label for="project-name"
+                                >{
+                                    t('create-project.tenDuAn')
+                                }</label
+                            >
+                            <input
+                                type="text"
+                                id="project-name"
+                                name="project_name"
+                        value={project?.title ?? ''}
+                                class="form-input"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="location"
+                                >{
+                                    t('create-project.điaDiem')
+                                }</label
+                            >
+                            <select
+                                id="location"
+                                name="location"
+                                class="form-input"
+                                required
+                            >
+                                <option
+                                    value=""
+                                    disabled
+                                    selected={!project?.location}
+                                    hidden>Chọn địa điểm</option
+                                >
+                                {
+                                    locationOptions.map((option) => (
+                                        <option
+                                            value={option}
+                                            selected={
+                                                project?.location === option
+                                            }
+                                        >
+                                            {option}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sub-grid-2">
+                        <div class="form-group">
+                            <label for="category"
+                                >{
+                                    t('create-project.phanLoai')
+                                }</label
+                            >
+                            <select
+                                id="category"
+                                name="category"
+                                class="form-input"
+                                required
+                            >
+                                <option
+                                    value=""
+                                    disabled
+                                    selected={!project?.project_type}
+                                    hidden
+                                    >{
+                                        t(
+                                            'create-project.chonPhanLoai'
+                                        )
+                                    }</option
+                                >
+                                {
+                                    categoryOptions.map((category) => (
+                                        <option
+                                            value={category}
+                                            selected={
+                                                project?.project_type ===
+                                                category
+                                            }
+                                        >
+                                            {category}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="start-date"
+                                >{
+                                    t('create-project.tgianBD')
+                                }</label
+                            >
+                            <input
+                                type="date"
+                                id="start-date"
+                                name="start_date"
+                        value={project?.start_date ?? ''}
+                                class="form-input"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section" id="mo-ta-du-an">
+                <h3>{t('create-project.moTa')}</h3>
+                <div class="form-group group-left">
+                    <textarea
+                        id="description"
+                        name="description"
+                        class="form-input auto-resize-textarea"
+                        rows="4"
+                        placeholder={t(
+                            'create-project.moTaChiTiet'
+                        )}
+                        set:text={project?.description ?? ''}
+                    />
+                </div>
+            </section>
+
+            <section class="form-section" id="ky-nang">
+                <h3
+                    class="section-title-with-button section-title-with-button-kn"
+                >
+                    <span>{t('create-project.danhMucKN')}</span>
+                    <button
+                        type="button"
+                        class="btn-add"
+                        id="add-skill-btn">+</button
+                    >
+                </h3>
+                <div
+                    class="form-group-wrapper-2 group-left"
+                    id="skill-list-container"
+                >
+                    <!-- Item kỹ năng mẫu -->
+                    {
+                        initialSkills.map((skill, idx) => (
+                        <div class="skill-item">
+                            <div class="form-group">
+                                <!-- CẬP NHẬT: Wrapper mới cho Label để chứa nút xóa -->
+                                <div class="skill-label-wrapper">
+                                    <label for={`skill-${idx + 1}`}
+                                        >{
+                                            t('create-project.KN')
+                                        }</label
+                                    >
+                                    <!-- Nút xóa sẽ được JS thêm vào đây -->
+                                </div>
+
+                                <!-- Wrapper flex cho Select và Nút Chi tiết -->
+                                <div class="skill-controls">
+                                    <select
+                                        id={`skill-${idx + 1}`}
+                                        name={`skill-${idx + 1}`}
+                                        class="form-input skill-select"
+                                        required
+                                    >
+                                        <option
+                                            value=""
+                                            disabled
+                                            hidden
+                                            selected={!skill.name}
+                                            >{
+                                                t(
+                                                    'create-project.chonKN'
+                                                )
+                                            }</option
+                                        >
+                                        {
+                                            allSkills.map((option) => (
+                                                <option
+                                                    value={option.name.toLowerCase()}
+                                                    selected={
+                                                        option.name.toLowerCase() ===
+                                                        (skill.name ?? '').toLowerCase()
+                                                    }
+                                                >
+                                                    {option.name}
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+
+                                    <!-- Hidden input để lưu mô tả skill -->
+                                    <input
+                                        type="hidden"
+                                        name={`skill-${idx + 1}-description`}
+                                        class="skill-description-input"
+                                        value={skill.description ?? ''}
+                                    />
+
+                                    <!-- Nút "Chi tiết" -->
+                                    <button
+                                        type="button"
+                                        class="btn-skill-detail"
+                                        title="Thêm chi tiết cho kỹ năng này"
+                                        data-skill-index={idx + 1}
+                                    >
+                                        <span
+                                            >{
+                                                t(
+                                                    'create-project.chiTiet'
+                                                )
+                                            }</span
+                                        >
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h3>{t('create-project.taiLenAnhBia')}</h3>
+                <div
+                    class="form-group group-left upload-container"
+                >
+                    <label class="upload-box" for="coverUpload">
+                        <i
+                            class="fa-solid fa-arrow-up-from-bracket"
+                        ></i>
+                        <p>{t('create-project.dangTaiODay')}</p>
+                    </label>
+
+                    <input
+                        type="file"
+                        id="coverUpload"
+                        name="cover_image"
+                        accept="image/*"
+                        hidden
+                    />
+
+                    <!-- Preview ảnh -->
+                    <div
+                        id="cover-preview"
+                        class="cover-preview"
+                        hidden={!project?.cover_image_url}
+                    >
+                        <img
+                            id="cover-preview-img"
+                            src={project?.cover_image_url ?? ''}
+                            alt="Preview ảnh bìa"
+                            class="cover-preview-image"
+                        />
+                        <button
+                            type="button"
+                            class="btn-remove-cover"
+                            id="btn-remove-cover"
+                            aria-label="Xóa ảnh bìa"
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Tên file -->
+                    <a
+                        id="cover-file-name"
+                        class="file-name-display"
+                        href="#"
+                        target="_blank"
+                        download
+                        hidden></a>
+                </div>
+            </section>
+        </div>
+
+        <!-- CỘT BÊN PHẢI -->
+        <div class="column-right">
+            <section class="form-section" id="thoi-gian">
+                <h3 class="section-title-with-button">
+                    <span>{t('create-project.tgianHD')}</span>
+                    <button
+                        type="button"
+                        class="btn-add"
+                        id="add-milestone-btn">+</button
+                    >
+                </h3>
+
+                <div
+                    class="timeline-container"
+                    id="milestone-list"
+                >
+                    {
+                        initialMilestones.map((milestone, idx) => (
+                            <div class="milestone-item">
+                                <textarea
+                                    name={`milestone-${idx + 1}`}
+                                    class="milestone-input auto-resize-textarea"
+                                    placeholder={t('create-project.moc1')}
+                                    rows="1"
+                                    set:text={milestone}
+                                />
+                            </div>
+                        ))
+                    }
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="form-footer">
+        <div class="checkbox-area">
+            <!-- <input
+                type="checkbox"
+                id="terms"
+                name="terms"
+                class="form-checkbox"
+            />
+            <label for="terms"
+                >{t('create-project.toiDongTinh')}<a href="#"
+                    >{t('create-project.chinhSach')}</a
+                ></label
+            > -->
+        </div>
+        <div class="buttons-area">
+            <button type="button" class="btn btn-secondary"
+                >{t('create-project.quayLai')}</button
+            >
+            <button type="submit" class="btn btn-primary">
+                {mode === 'edit'
+                    ? t('create-project.luuThayDoi')
+                    : t('create-project.dang')}
+            </button>
+        </div>
+    </div>
+</form>

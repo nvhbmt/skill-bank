@@ -2,8 +2,7 @@
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import OAuthButtons from '@/components/OAuthButtons.astro';
 import '@/assets/css/sign-in.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
-export { getStaticPaths };
+import { useTranslate } from '@/i18n';
 
 const { lang, t, l } = useTranslate(Astro);
 const isLoggedIn = Astro.locals.session?.user;
@@ -143,5 +142,10 @@ if (isLoggedIn) {
     window.loginValidationMessages = JSON.parse(validationMessages);
     window.loginUIMessages = JSON.parse(uiMessages);
 </script>
-
-<script src="@/assets/script/sign-in.js"></script>
+    <!-- JustValidate chỉ cần ở các trang có form kiểm tra dữ liệu.
+        Trước đây nạp trong DefaultLayout nên 29KB này tải trên mọi trang. -->
+    <script
+        is:inline
+        src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"
+    ></script>
+    <script src="@/assets/script/sign-in.js"></script>

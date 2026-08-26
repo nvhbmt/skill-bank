@@ -1,0 +1,82 @@
+---
+import '@/assets/css/create-project.css';
+import Header from '@/components/Header.astro';
+import ProjectForm from '@/components/ProjectForm.astro';
+import SkillDetailDialog from '@/components/SkillDetailDialog.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
+import { useTranslate } from '@/i18n';
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import { getProjectDetailById } from '@/services/project-detail';
+import { getAllSkills } from '@/services/skills';
+
+const { t, l } = useTranslate(Astro);
+const session = Astro.locals.session;
+
+if (!session?.user) {
+    return Astro.redirect(l('/sign-in'));
+}
+
+const projectId = Number.parseInt(
+    (Astro.params as { projectId?: string }).projectId ?? '',
+    10
+);
+
+if (!Number.isFinite(projectId)) {
+    return Astro.redirect(l('/my-project'));
+}
+
+const projectData = await getProjectDetailById(projectId, session.user.id);
+
+if (!projectData?.project) {
+    return Astro.redirect(l('/my-project'));
+}
+
+// Chỉ chủ dự án được sửa
+if (!projectData.isOwner) {
+    return Astro.redirect(l(`/project/${projectId}`));
+}
+
+const { project, projectSkills, milestones } = projectData;
+const allSkills = await getAllSkills();
+
+const formSkills = projectSkills.map((skill) => ({
+    name: skill.name,
+    description: skill.description,
+}));
+
+const formMilestones = milestones
+    .slice()
+    .sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0))
+    .map((milestone) => milestone.title);
+---
+
+<DefaultLayout>
+    <div class="wrapper">
+        <Header />
+
+        <main>
+            <div class="hero-section">
+                <h1>{t('create-project.editTitle')}</h1>
+
+                <ProjectForm
+                    mode="edit"
+                    project={project}
+                    skills={formSkills}
+                    milestones={formMilestones}
+                    allSkills={allSkills}
+                />
+            </div>
+        </main>
+    </div>
+
+    <SkillDetailDialog skills={[]} />
+    <!-- JustValidate chỉ cần ở các trang có form kiểm tra dữ liệu.
+        Trước đây nạp trong DefaultLayout nên 29KB này tải trên mọi trang. -->
+    <script
+        is:inline
+        src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"
+    ></script>
+    <script src="@/assets/script/create-project.js"></script>
+
+    <ToastDialog />
+</DefaultLayout>

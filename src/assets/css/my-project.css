@@ -317,25 +317,6 @@ main {
     border-radius: 4px;
 }
 
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-@keyframes pulse {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.8;
-    }
-}
-
 @media (max-width: 1024px) {
     .projects-loading {
         grid-template-columns: repeat(2, 1fr);
@@ -348,4 +329,10 @@ main {
         grid-template-columns: 1fr;
         grid-column: 1 / -1;
     }
+}
+
+/* Nhãn trạng thái cho dự án bị từ chối */
+.status-red {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
 }

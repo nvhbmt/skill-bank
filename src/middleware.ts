@@ -35,29 +35,70 @@ export const onRequest = defineMiddleware(async (context, next) => {
         if (!error && sessionData.session) {
             session = sessionData.session;
             user = sessionData.user;
+
+            // setSession tự làm mới khi access token hết hạn và trả về cặp
+            // token mới. Nếu không ghi lại vào cookie thì request sau vẫn gửi
+            // token cũ đã hết hạn, và mỗi request đều phải gọi lại GoTrue để
+            // refresh.
+            if (session.access_token !== accessToken) {
+                const cookieOptions = {
+                    path: '/',
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax',
+                } as const;
+
+                cookies.set('sb-access-token', session.access_token, {
+                    ...cookieOptions,
+                    maxAge: 60 * 60 * 24 * 7, // 7 ngày
+                });
+                cookies.set('sb-refresh-token', session.refresh_token, {
+                    ...cookieOptions,
+                    maxAge: 60 * 60 * 24 * 30, // 30 ngày
+                });
+            }
         }
     }
 
-    // List of protected routes
-    const protectedRoutes = ['/admin', '/user'];
+    locals.session = session;
 
-    // Get the current route
+    // Danh sách route cần đăng nhập (đã bỏ tiền tố ngôn ngữ)
+    const protectedRoutes = [
+        '/admin',
+        '/dashboard',
+        '/create-project',
+        '/my-project',
+        '/edit-profile',
+        '/change-password',
+        '/project-handover-manager',
+    ];
+
+    // Route thực tế luôn có tiền tố ngôn ngữ (/vi/..., /en/...) nên phải tách
+    // ra trước khi so khớp, nếu không điều kiện này không bao giờ đúng.
     const currentPath = context.url.pathname;
+    const segments = currentPath.split('/').filter(Boolean);
+    const lang = segments[0] === 'en' ? 'en' : 'vi';
+    const pathWithoutLang =
+        segments[0] === 'vi' || segments[0] === 'en'
+            ? `/${segments.slice(1).join('/')}`
+            : currentPath;
 
     if (
-        protectedRoutes.some((route) => currentPath.startsWith(route)) &&
+        protectedRoutes.some(
+            (route) =>
+                pathWithoutLang === route ||
+                pathWithoutLang.startsWith(`${route}/`)
+        ) &&
         !user
     ) {
-        // Redirect to login if not authenticated
+        // Chưa đăng nhập thì đưa về trang đăng nhập đúng ngôn ngữ
         return new Response(null, {
             status: 302,
             headers: {
-                Location: '/login',
+                Location: `/${lang}/sign-in`,
             },
         });
     }
-
-    locals.session = session;
 
     // Otherwise, continue to the next middleware or page
     return next();

@@ -1,9 +1,8 @@
 ---
 interface Props {}
 
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
-export { getStaticPaths };
 
 const { lang, t, l } = useTranslate(Astro);
 
@@ -89,14 +88,17 @@ if (user) {
 
         <div class="dropdown-divider"></div>
 
-        <!-- 3. Sub Navigation -->
-        <a href={l('/about-us')} class="dropdown-item">
+        <a href={l('/project-handover-collaborator')} class="dropdown-item">
             <div class="dropdown-icon">
-                <ion-icon name="information-circle-outline"></ion-icon>
+                <ion-icon name="file-tray-full-outline"></ion-icon>
             </div>
-            <span>{t('header.aboutUs')}</span>
+            <span>{t('header.myHandovers')}</span>
         </a>
-        <a href={l('/help')} class="dropdown-item">
+
+        <div class="dropdown-divider"></div>
+
+        <!-- 3. Sub Navigation -->
+        <a href={l('/faq')} class="dropdown-item">
             <div class="dropdown-icon">
                 <ion-icon name="help-circle-outline"></ion-icon>
             </div>

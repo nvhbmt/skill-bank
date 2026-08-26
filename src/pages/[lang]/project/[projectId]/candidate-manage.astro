@@ -3,14 +3,13 @@ import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import {
     getProjectApplications,
     type ApplicationWithApplicant,
 } from '@/services/project-handover';
 import type { Tables } from '@/types/database.types';
-export { getStaticPaths };
 import '@/assets/css/user-manage.css';
 
 const { lang, t, l } = useTranslate(Astro);
@@ -313,6 +312,19 @@ function getCandidateRole(applicantId: string | undefined): string {
                                                     'candidate-manage.noCoverLetter'
                                                 ) ||
                                                 'Không có thư xin việc'}
+                                            {application.cv_url && (
+                                                <a
+                                                    class="candidate-cv-link"
+                                                    href={application.cv_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    <i class="fa-solid fa-paperclip" />
+                                                    {t(
+                                                        'candidate-manage.viewCv'
+                                                    )}
+                                                </a>
+                                            )}
                                         </td>
                                     </tr>
                                 ))

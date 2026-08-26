@@ -2,40 +2,233 @@
 import DefaultLayout from '@/layouts/DefaultLayout.astro';
 import '@/assets/css/project-handover-collaborator.css';
 import Header from '@/components/Header.astro';
-import { getStaticPaths, useTranslate } from '@/i18n';
-export { getStaticPaths };
+import ToastDialog from '@/components/ToastDialog.astro';
+import { useTranslate } from '@/i18n';
+import { getMyHandovers } from '@/services/project-handover';
 
 const { lang, t, l } = useTranslate(Astro);
+const session = Astro.locals.session;
+
+if (!session?.user) {
+    return Astro.redirect(l('/sign-in'));
+}
+
+const handovers = await getMyHandovers(session.user.id);
+
+function formatDate(dateString: string | null): string {
+    if (!dateString) return '';
+    try {
+        return new Date(dateString).toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    } catch {
+        return '';
+    }
+}
+
+function statusLabel(status: string): string {
+    if (status === 'approved')
+        return t('project-handover-manager.handoverApproved');
+    if (status === 'rejected')
+        return t('project-handover-manager.handoverRejected');
+    if (status === 'pending')
+        return t('project-handover-manager.handoverPending');
+    return t('projectHandover-collaborator.notSubmitted');
+}
 ---
 
 <DefaultLayout>
+    <Header />
     <main>
         <div class="project-handover">
             <div class="inner-project-handover container">
                 <div class="project-handover-title">
                     {t('projectHandover-collaborator.title')}
                 </div>
-                <div class="project-handover-body">
-                    <div class="project-handover-section">
-                        <label class="project-handover-label"
-                            >{t('projectHandover-collaborator.notes')}</label
-                        >
-                        <div class="project-handover-note">
-                            {t('projectHandover-collaborator.project1')}
-                            <br />
-                            {t('projectHandover-collaborator.project2')}
+
+                <p class="project-handover-label">
+                    {t('projectHandover-collaborator.notes')}
+                </p>
+
+                {
+                    handovers.length > 0 ? (
+                        <div class="handover-project-list">
+                            {handovers.map((item) => (
+                                <div
+                                    class="handover-project"
+                                    data-status={item.status || 'none'}
+                                    data-project-id={item.project_id}
+                                >
+                                    <div class="handover-project-head">
+                                        <a
+                                            href={l(
+                                                `/project/${item.project_id}`
+                                            )}
+                                            class="handover-project-title"
+                                        >
+                                            {item.project_title}
+                                        </a>
+                                        <span
+                                            class={`handover-badge handover-badge-${item.status || 'none'}`}
+                                        >
+                                            {statusLabel(item.status)}
+                                        </span>
+                                    </div>
+
+                                    {item.owner_name && (
+                                        <div class="handover-project-owner">
+                                            {t(
+                                                'projectHandover-collaborator.manager'
+                                            )}
+                                            : {item.owner_name}
+                                        </div>
+                                    )}
+
+                                    <textarea
+                                        class="project-handover-note"
+                                        data-project-id={item.project_id}
+                                        placeholder={t(
+                                            'projectHandover-collaborator.notePlaceholder'
+                                        )}
+                                        disabled={item.status === 'approved'}
+                                        set:text={item.notes || ''}
+                                    />
+
+                                    {item.submitted_at && (
+                                        <div class="handover-project-meta">
+                                            {t(
+                                                'project-handover-manager.handoverSubmittedAt'
+                                            )}
+                                            : {formatDate(item.submitted_at)}
+                                        </div>
+                                    )}
+
+                                    {item.review_note && (
+                                        <div class="handover-review-note">
+                                            {t(
+                                                'project-handover-manager.handoverReviewNote'
+                                            )}
+                                            : {item.review_note}
+                                        </div>
+                                    )}
+
+                                    <div class="box-project-handover-submit">
+                                        <a
+                                            href={l(
+                                                `/project/${item.project_id}`
+                                            )}
+                                            class="project-handover-submit1"
+                                        >
+                                            {t(
+                                                'projectHandover-collaborator.back'
+                                            )}
+                                        </a>
+                                        {item.status !== 'approved' && (
+                                            <button
+                                                class="project-handover-submit2 btn-send-handover"
+                                                data-project-id={
+                                                    item.project_id
+                                                }
+                                            >
+                                                {t(
+                                                    'projectHandover-collaborator.send'
+                                                )}
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                </div>    
-                <div class="box-project-handover-submit">
-                    <button class="project-handover-submit1">
-                        {t('projectHandover-collaborator.back')}
-                    </button>
-                    <button class="project-handover-submit2">
-                        {t('projectHandover-collaborator.send')}
-                    </button>
-                </div>
+                    ) : (
+                        <div class="handover-empty">
+                            {t('projectHandover-collaborator.noProjects')}
+                            <a href={l('/explore')}>
+                                {t('projectHandover-collaborator.findProjects')}
+                            </a>
+                        </div>
+                    )
+                }
             </div>
         </div>
     </main>
+
+    <ToastDialog />
 </DefaultLayout>
+
+<script
+    define:vars={{
+        rawMessages: JSON.stringify({
+            empty: t('projectHandover-collaborator.emptyNote'),
+            successTitle: t('change-password.successTitle'),
+            errorTitle: t('change-password.errorTitle'),
+            genericError: t('change-password.genericError'),
+            sending: t('projectHandover-collaborator.sending'),
+            send: t('projectHandover-collaborator.send'),
+        }),
+    }}
+>
+    (function () {
+        const messages = JSON.parse(rawMessages);
+
+        document.querySelectorAll('.btn-send-handover').forEach((button) => {
+            button.addEventListener('click', async function () {
+                const projectId = button.dataset.projectId;
+                const textarea = document.querySelector(
+                    `textarea[data-project-id="${projectId}"]`
+                );
+                const notes = textarea ? textarea.value.trim() : '';
+
+                if (!notes) {
+                    window.showToast?.({
+                        type: 'warning',
+                        title: messages.errorTitle,
+                        message: messages.empty,
+                    });
+                    return;
+                }
+
+                button.disabled = true;
+                button.textContent = messages.sending;
+
+                try {
+                    const response = await fetch(
+                        `/api/projects/${projectId}/handover`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ notes }),
+                        }
+                    );
+                    const result = await response.json();
+
+                    if (result.success) {
+                        window.showToast?.({
+                            type: 'success',
+                            title: messages.successTitle,
+                            message: result.message,
+                            onClose: () => location.reload(),
+                        });
+                    } else {
+                        window.showToast?.({
+                            type: 'error',
+                            title: messages.errorTitle,
+                            message: result.message || messages.genericError,
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error sending handover:', error);
+                    window.showToast?.({
+                        type: 'error',
+                        title: messages.errorTitle,
+                        message: messages.genericError,
+                    });
+                } finally {
+                    button.disabled = false;
+                    button.textContent = messages.send;
+                }
+            });
+        });
+    })();
+</script>

@@ -26,6 +26,14 @@ export type EditProfileData = {
             'id' | 'title' | 'cover_image_url' | 'project_type' | 'status'
         >
     >;
+    reviews: Array<
+        Pick<Tables<'reviews'>, 'id' | 'rating' | 'comment' | 'created_at'> & {
+            reviewer: Pick<
+                Tables<'user_info'>,
+                'full_name' | 'username' | 'avatar_url'
+            > | null;
+        }
+    >;
 };
 
 /**
@@ -137,12 +145,47 @@ export async function getEditProfileData(
             userProjects = projectsData;
         }
 
+        // Đánh giá người khác dành cho mình (trước đây trang này hiển thị
+        // danh sách đánh giá hardcode)
+        let reviews: EditProfileData['reviews'] = [];
+        const { data: reviewsData } = await supabase
+            .from('reviews')
+            .select('id, rating, comment, created_at, reviewer_id')
+            .eq('reviewee_id', userInfo.user_id)
+            .is('deleted_at', null)
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+        if (reviewsData && reviewsData.length > 0) {
+            const reviewerIds = [
+                ...new Set(reviewsData.map((r) => r.reviewer_id)),
+            ];
+            const { data: reviewers } = await supabase
+                .from('user_info')
+                .select('user_id, full_name, username, avatar_url')
+                .in('user_id', reviewerIds)
+                .is('deleted_at', null);
+
+            const reviewerMap = new Map(
+                (reviewers || []).map((r) => [r.user_id, r])
+            );
+
+            reviews = reviewsData.map((review) => ({
+                id: review.id,
+                rating: review.rating,
+                comment: review.comment,
+                created_at: review.created_at,
+                reviewer: reviewerMap.get(review.reviewer_id) ?? null,
+            }));
+        }
+
         return {
             userInfo,
             userProfile,
             userSkills,
             allSkills,
             userProjects,
+            reviews,
         };
     } catch (error) {
         console.error('Error loading edit profile:', error);

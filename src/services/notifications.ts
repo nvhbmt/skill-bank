@@ -5,7 +5,12 @@ export type NotificationType =
     | 'project_approved' // Dự án đã được duyệt
     | 'application_approved' // Đã được duyệt vào dự án
     | 'project_rejected' // Dự án đã bị từ chối
-    | 'application_rejected'; // Đã bị từ chối khi tham gia dự án
+    | 'application_rejected' // Đã bị từ chối khi tham gia dự án
+    | 'handover_submitted' // Thành viên đã gửi bàn giao
+    | 'handover_approved' // Bàn giao được nghiệm thu
+    | 'handover_rejected' // Bàn giao bị trả lại
+    | 'project_completed' // Dự án đã kết thúc, có thể đánh giá
+    | 'review_received'; // Nhận được đánh giá mới
 
 interface CreateNotificationParams {
     userId: string;
@@ -153,5 +158,87 @@ export async function notifyApplicationRejected(
         type: 'application_rejected',
         title: null, // Title will be rendered from template
         message: JSON.stringify(messageData),
+    });
+}
+
+/**
+ * Thông báo cho chủ dự án khi thành viên gửi bàn giao
+ */
+export async function notifyHandoverSubmitted(
+    projectOwnerId: string,
+    memberName: string,
+    projectId: number,
+    projectTitle: string
+): Promise<boolean> {
+    return createNotification({
+        userId: projectOwnerId,
+        type: 'handover_submitted',
+        title: null,
+        message: JSON.stringify({ memberName, projectId, projectTitle }),
+    });
+}
+
+/**
+ * Thông báo cho thành viên khi chủ dự án nghiệm thu bàn giao
+ */
+export async function notifyHandoverApproved(
+    memberId: string,
+    projectId: number,
+    projectTitle: string
+): Promise<boolean> {
+    return createNotification({
+        userId: memberId,
+        type: 'handover_approved',
+        title: null,
+        message: JSON.stringify({ projectId, projectTitle }),
+    });
+}
+
+/**
+ * Thông báo cho thành viên khi bàn giao bị trả lại
+ */
+export async function notifyHandoverRejected(
+    memberId: string,
+    projectId: number,
+    projectTitle: string
+): Promise<boolean> {
+    return createNotification({
+        userId: memberId,
+        type: 'handover_rejected',
+        title: null,
+        message: JSON.stringify({ projectId, projectTitle }),
+    });
+}
+
+/**
+ * Báo cho thành viên khi dự án kết thúc để họ vào đánh giá
+ */
+export async function notifyProjectCompleted(
+    memberId: string,
+    projectId: number,
+    projectTitle: string
+): Promise<boolean> {
+    return createNotification({
+        userId: memberId,
+        type: 'project_completed',
+        title: null,
+        message: JSON.stringify({ projectId, projectTitle }),
+    });
+}
+
+/**
+ * Báo cho người được đánh giá
+ */
+export async function notifyReviewReceived(
+    revieweeId: string,
+    reviewerName: string,
+    projectId: number,
+    projectTitle: string
+): Promise<boolean> {
+    return createNotification({
+        userId: revieweeId,
+        type: 'review_received',
+        title: null,
+        message: JSON.stringify({ reviewerName, projectId, projectTitle }),
     });
 }

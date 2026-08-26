@@ -26,7 +26,11 @@ export const GET: APIRoute = async ({ locals }) => {
 
         const users = await getAllUsers();
 
-        return httpResponse.ok(users, 'Lấy danh sách người dùng thành công', 200);
+        return httpResponse.ok(
+            users,
+            'Lấy danh sách người dùng thành công',
+            200
+        );
     } catch (error) {
         console.error('Error fetching users:', error);
         return httpResponse.fail(
@@ -63,7 +67,11 @@ export const PUT: APIRoute = async ({ request, locals }) => {
             return httpResponse.fail('Thiếu thông tin', 400);
         }
 
-        const success = await updateUser(userId, updates);
+        const success = await updateUser(
+            authenticatedSupabase,
+            userId,
+            updates
+        );
 
         if (!success) {
             return httpResponse.fail('Cập nhật người dùng thất bại', 500);
@@ -79,4 +87,3 @@ export const PUT: APIRoute = async ({ request, locals }) => {
         );
     }
 };
-

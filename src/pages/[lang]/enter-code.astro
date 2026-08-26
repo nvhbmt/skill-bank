@@ -1,8 +1,7 @@
 ---
 import AuthPageLayout from '@/layouts/AuthPageLayout.astro';
 import '@/assets/css/enter-code.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
-export { getStaticPaths };
+import { useTranslate } from '@/i18n';
 
 const { lang, t, l } = useTranslate(Astro);
 ---

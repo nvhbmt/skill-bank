@@ -1,16 +1,7 @@
 ---
 import NotificationDialog from '@/components/NotificationDialog.astro';
-import {
-    renderNotificationMessage,
-    getNotificationTitle,
-} from '@/utils/notification-renderer';
-import {
-    getStaticPaths,
-    getNotificationTranslations,
-    getTranslation,
-} from '@/i18n';
+import { getNotificationTranslations, getTranslation } from '@/i18n';
 import '@/assets/css/notification-dropdown.css';
-export { getStaticPaths };
 
 interface Props {
     userId: string;
@@ -41,13 +32,21 @@ const t = (key: string) => getTranslation(lang, key);
     <div class="notification-dropdown__menu" id="notification-dropdown-menu">
         <div class="notification-header">
             <h3 class="notification-title">{t('header.notifications')}</h3>
+            <button
+                type="button"
+                class="notification-mark-all"
+                id="notification-mark-all"
+                style="display: none;"
+            >
+                {t('flows.markAllRead')}
+            </button>
             <span class="notification-unread-count" style="display: none;">
                 0 {t('header.unread')}
             </span>
         </div>
         <div class="notification-list" id="notification-list">
             <div class="notification-loading">
-                <p>{t('header.loading') || 'Đang tải...'}</p>
+                <p>{t('header.loadingNotifications')}</p>
             </div>
         </div>
     </div>

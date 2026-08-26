@@ -4,7 +4,7 @@ import Header from '@/components/Header.astro';
 import ToastDialog from '@/components/ToastDialog.astro';
 import ConfirmDialog from '@/components/ConfirmDialog.astro';
 import '@/assets/css/admin.css';
-import { getStaticPaths, useTranslate } from '@/i18n';
+import { useTranslate } from '@/i18n';
 import {
     getAllUsers,
     getPendingProjects,
@@ -12,7 +12,7 @@ import {
     type ProjectInfo,
 } from '@/services/admin';
 import { supabase } from '@/lib/supabase';
-export { getStaticPaths };
+import { getAllDisputes, type DisputeWithContext } from '@/services/disputes';
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
@@ -43,10 +43,12 @@ if (!isAdmin) {
 // Fetch data
 let users: UserInfo[] = [];
 let pendingProjects: ProjectInfo[] = [];
+let disputes: DisputeWithContext[] = [];
 
 try {
     users = await getAllUsers();
     pendingProjects = await getPendingProjects();
+    disputes = await getAllDisputes();
 } catch (error) {
     console.error('Error loading admin data:', error);
 }
@@ -80,6 +82,20 @@ function formatDate(dateString: string | null): string {
                 </button>
                 <button class="admin-tab-btn" data-tab="projects">
                     {t('admin.projects')}
+                </button>
+                <button class="admin-tab-btn" data-tab="disputes">
+                    {t('disputes.adminTab')}
+                    {
+                        disputes.filter((d) => d.status === 'open').length >
+                            0 && (
+                            <span class="admin-tab-badge">
+                                {
+                                    disputes.filter((d) => d.status === 'open')
+                                        .length
+                                }
+                            </span>
+                        )
+                    }
                 </button>
             </div>
 
@@ -246,6 +262,98 @@ function formatDate(dateString: string | null): string {
                             )
                         }
                     </div>
+                </div>
+            </div>
+
+            <!-- Disputes Tab -->
+            <div
+                id="disputes-tab"
+                class="admin-tab-content"
+                style="display: none;"
+            >
+                <div class="admin-section">
+                    <h2 class="admin-section-title">
+                        {t('disputes.adminTab')}
+                    </h2>
+
+                    {
+                        disputes.length > 0 ? (
+                            <div class="dispute-list">
+                                {disputes.map((dispute) => (
+                                    <div
+                                        class="dispute-card"
+                                        data-status={dispute.status}
+                                    >
+                                        <div class="dispute-head">
+                                            <span class="dispute-project">
+                                                {t('disputes.project')}:{' '}
+                                                <a
+                                                    href={l(
+                                                        `/project/${dispute.project_id}`
+                                                    )}
+                                                >
+                                                    {dispute.project_title ??
+                                                        dispute.project_id}
+                                                </a>
+                                            </span>
+                                            <span
+                                                class={`dispute-badge dispute-badge-${dispute.status}`}
+                                            >
+                                                {dispute.status === 'resolved'
+                                                    ? t(
+                                                          'disputes.statusResolved'
+                                                      )
+                                                    : dispute.status ===
+                                                        'rejected'
+                                                      ? t(
+                                                            'disputes.statusRejected'
+                                                        )
+                                                      : t(
+                                                            'disputes.statusOpen'
+                                                        )}
+                                            </span>
+                                        </div>
+
+                                        <div class="dispute-meta">
+                                            {t('disputes.raisedBy')}:{' '}
+                                            {dispute.raised_by?.full_name ||
+                                                dispute.raised_by?.username ||
+                                                '—'}
+                                            {' · '}
+                                            {formatDate(dispute.created_at)}
+                                        </div>
+
+                                        <p class="dispute-description">
+                                            {dispute.description}
+                                        </p>
+
+                                        {dispute.status === 'open' && (
+                                            <div class="dispute-actions">
+                                                <button
+                                                    class="admin-btn admin-btn-approve btn-dispute"
+                                                    data-dispute-id={dispute.id}
+                                                    data-action="resolve"
+                                                >
+                                                    {t('disputes.resolve')}
+                                                </button>
+                                                <button
+                                                    class="admin-btn admin-btn-reject btn-dispute"
+                                                    data-dispute-id={dispute.id}
+                                                    data-action="reject"
+                                                >
+                                                    {t('disputes.reject')}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p class="admin-empty">
+                                {t('disputes.noDisputes')}
+                            </p>
+                        )
+                    }
                 </div>
             </div>
         </div>
@@ -471,6 +579,46 @@ function formatDate(dateString: string | null): string {
                 );
             }
         };
+
+        // Quản trị viên xử lý khiếu nại
+        document.querySelectorAll('.btn-dispute').forEach((button) => {
+            button.addEventListener('click', async function () {
+                const disputeId = Number(button.dataset.disputeId);
+                const action = button.dataset.action;
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(
+                        `/api/admin/disputes/${disputeId}`,
+                        {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action }),
+                        }
+                    );
+                    const result = await response.json();
+
+                    if (result.success) {
+                        window.showToast?.({
+                            type: 'success',
+                            title: approveSuccessTitle,
+                            message: result.message,
+                            onClose: () => location.reload(),
+                        });
+                    } else {
+                        button.disabled = false;
+                        window.showToast?.({
+                            type: 'error',
+                            title: approveErrorTitle,
+                            message: result.message,
+                        });
+                    }
+                } catch (error) {
+                    button.disabled = false;
+                    console.error('Error resolving dispute:', error);
+                }
+            });
+        });
     </script>
 
     <ToastDialog />

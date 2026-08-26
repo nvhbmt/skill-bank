@@ -118,6 +118,13 @@
         "errorGeneric": "An error occurred, please try again"
     },
     "projectHandover-collaborator": {
+        "notSubmitted": "Not submitted",
+        "manager": "Manager",
+        "notePlaceholder": "Describe what you finished and any notes for the manager...",
+        "noProjects": "You have not joined any project yet. ",
+        "findProjects": "Find projects",
+        "emptyNote": "Please enter handover notes",
+        "sending": "Sending...",
         "title": "Project Handover",
         "description": "Description",
         "notes": "Is the project completed? Do you have any notes or recommendations for the manager?",
@@ -130,6 +137,8 @@
         "send": "Send"
     },
     "create-project": {
+        "editTitle": "Edit project",
+        "luuThayDoi": "Save changes",
         "title": "Post a project",
         "thongTinChung": "General information",
         "tenDuAn": "Project name:",
@@ -140,7 +149,7 @@
         "moTa": "Project description",
         "moTaChiTiet": "Describe your project in detail...",
         "danhMucKN": "Skills",
-        "KN1": "Skill 1",
+        "KN": "Skill",
         "chonKN": "Select skill",
         "taiLenAnhBia": "Upload cover image",
         "dangTaiODay": "Upload here",
@@ -154,6 +163,7 @@
         "chiTiet": "Detail"
     },
     "header": {
+        "myHandovers": "My handovers",
         "dashboard": "Dashboard",
         "myProject": "My projects",
         "aboutUs": "About us",
@@ -171,6 +181,17 @@
     },
 
     "project-handover-manager": {
+        "handoverSectionTitle": "Member handovers",
+        "noHandovers": "No member has submitted a handover yet",
+        "handoverPending": "Awaiting review",
+        "handoverApproved": "Accepted",
+        "handoverRejected": "Sent back",
+        "handoverSubmittedAt": "Submitted",
+        "handoverReviewNote": "Review note",
+        "handoverApprove": "Accept",
+        "handoverReject": "Send back",
+        "handoverApproveConfirm": "Accept this member's handover?",
+        "handoverRejectConfirm": "Send this handover back for revision?",
         "skillbank-dropdown": "SkillBank",
         "user-name": "User name",
         "email": "Email",
@@ -189,7 +210,24 @@
         "noCoverLetters": "No descriptions from applicants yet",
         "noCoverLetter": "No description"
     },
+    "project-review": {
+        "sectionTitle": "Review members",
+        "intro": "The project is complete. Rate the people you worked with.",
+        "ratingLabel": "Rating",
+        "commentPlaceholder": "Comment on the collaboration (optional)...",
+        "submit": "Submit review",
+        "update": "Update review",
+        "sending": "Sending...",
+        "sent": "Review submitted",
+        "needRating": "Please pick a rating",
+        "noTargets": "No members to review.",
+        "yourReview": "Your review"
+    },
     "project-detail-creator": {
+        "toggleMilestone": "Mark as done",
+        "completeProject": "Complete project",
+        "completeConfirmTitle": "Complete project",
+        "completeConfirmMessage": "Completing the project opens reviews for members and cannot be undone. Continue?",
         "ngayBatDau": "Start Date:",
         "phanLoai": "Category:",
         "điaDiem": "Location:",
@@ -297,6 +335,7 @@
         "delete": "Delete"
     },
     "candidate-manage": {
+        "viewCv": "View CV",
         "candidateManagement": "Candidate Management",
         "candidateName": "Candidate Name",
         "searchCandidateName": "Search candidate name...",
@@ -331,6 +370,7 @@
         "cancel": "Cancel"
     },
     "edit-profile": {
+        "noReviews": "No reviews yet.",
         "generalInfo": "General Information",
         "fullName": "Full Name",
         "username": "Username",
@@ -487,6 +527,11 @@
         "faq3_a": "Not exactly. This is a place for students to build real products (Pet Projects, MVPs) together to learn and enhance their Portfolios."
     },
     "change-password": {
+        "successTitle": "Success",
+        "success": "Password changed successfully",
+        "errorTitle": "Error",
+        "genericError": "Something went wrong, please try again",
+        "submitting": "Processing...",
         "title": "Change password",
         "currentPass": "Enter current password",
         "password": "Set new password",
@@ -494,7 +539,89 @@
         "resetPass": "Reset password",
         "backToSignIn": "Back to sign in"
     },
+    "flows": {
+        "rejectedTab": "Rejected",
+        "noRejected": "No rejected projects",
+        "resubmitHint": "This project was rejected. Edit it and save to submit again.",
+        "leaveProject": "Leave project",
+        "leaveConfirmTitle": "Leave project",
+        "leaveConfirmMessage": "You will no longer be a member of this project. Continue?",
+        "removeMember": "Remove from project",
+        "removeConfirmTitle": "Remove member",
+        "removeConfirmMessage": "Remove this member from the project?",
+        "withdraw": "Withdraw",
+        "withdrawConfirmTitle": "Withdraw application",
+        "withdrawConfirmMessage": "Withdraw your application?",
+        "markAllRead": "Mark all as read",
+        "processing": "Processing..."
+    },
+    "contracts": {
+        "sectionTitle": "Member contracts",
+        "terms": "Terms",
+        "termsPlaceholder": "Scope of work, commitments from both sides...",
+        "startDate": "Start",
+        "endDate": "End",
+        "save": "Save contract",
+        "saving": "Saving...",
+        "noContract": "No contract yet",
+        "deliveries": "Accepted deliveries",
+        "noMembers": "No members to contract with yet."
+    },
+    "disputes": {
+        "report": "Report an issue",
+        "reportTitle": "Report a project issue",
+        "placeholder": "Describe the problem you ran into on this project...",
+        "submit": "Send report",
+        "sending": "Sending...",
+        "needDescription": "Please describe the issue",
+        "adminTab": "Disputes",
+        "noDisputes": "No disputes",
+        "statusOpen": "Open",
+        "statusResolved": "Resolved",
+        "statusRejected": "Rejected",
+        "resolve": "Resolve",
+        "reject": "Reject",
+        "project": "Project",
+        "raisedBy": "Reported by"
+    },
+    "messages": {
+        "title": "Messages",
+        "empty": "You have no conversations yet.",
+        "findPeople": "Explore projects",
+        "threadEmpty": "No messages yet. Say hello!",
+        "inputPlaceholder": "Type a message...",
+        "send": "Send",
+        "sendFailed": "Could not send the message",
+        "sendMessage": "Message",
+        "loading": "Loading messages...",
+        "viewAll": "View all"
+    },
     "notifications": {
+        "project_completed": {
+            "title": "Project completed",
+            "message": "Project \"{{projectTitle}}\" is complete. You can now review the members.",
+            "viewProject": "Review now"
+        },
+        "review_received": {
+            "title": "You received a review",
+            "message": "{{reviewerName}} reviewed you on \"{{projectTitle}}\".",
+            "viewProject": "View project"
+        },
+        "handover_submitted": {
+            "title": "New handover to review",
+            "message": "{{memberName}} submitted a handover for \"{{projectTitle}}\".",
+            "viewProject": "View handover"
+        },
+        "handover_approved": {
+            "title": "Handover accepted",
+            "message": "Your handover for \"{{projectTitle}}\" has been accepted.",
+            "viewProject": "View project"
+        },
+        "handover_rejected": {
+            "title": "Handover sent back",
+            "message": "Your handover for \"{{projectTitle}}\" was sent back. Please revise and resubmit.",
+            "viewProject": "View project"
+        },
         "application_received": {
             "title": "Someone wants to join your project",
             "message": "{{applicantName}} (@{{applicantUsername}}) wants to join your project \"{{projectTitle}}\".",

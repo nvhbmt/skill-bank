@@ -4,13 +4,10 @@
 export function renderNotificationMessage(
     type: string | null,
     messageJson: string | null,
-    translations: {
-        application_received: { message: string; viewProject: string };
-        project_approved: { message: string; viewProject: string };
-        application_approved: { message: string; viewProject: string };
-        project_rejected: { message: string; viewProject: string };
-        application_rejected: { message: string; viewProject: string };
-    },
+    translations: Record<
+        string,
+        { title?: string; message: string; viewProject: string }
+    >,
     lang: 'vi' | 'en' = 'vi'
 ): { text: string; link?: { url: string; text: string } } {
     if (!type || !messageJson) {
@@ -35,10 +32,14 @@ export function renderNotificationMessage(
         let link: { url: string; text: string } | undefined;
         if (data.projectId) {
             // For application_received, link to candidate management page
-            const url =
-                type === 'application_received'
-                    ? `/project/${data.projectId}/candidate-manage`
-                    : `/project/${data.projectId}`;
+            // Route thật luôn có tiền tố ngôn ngữ, thiếu nó là link 404
+            let path = `/project/${data.projectId}`;
+            if (type === 'application_received') {
+                path = `/project/${data.projectId}/candidate-manage`;
+            } else if (type === 'handover_submitted') {
+                path = `/project-handover-manager/${data.projectId}`;
+            }
+            const url = `/${lang}${path}`;
             link = {
                 url,
                 text: template.viewProject,
@@ -57,13 +58,7 @@ export function renderNotificationMessage(
  */
 export function getNotificationTitle(
     type: string | null,
-    translations: {
-        application_received: { title: string };
-        project_approved: { title: string };
-        application_approved: { title: string };
-        project_rejected: { title: string };
-        application_rejected: { title: string };
-    },
+    translations: Record<string, { title?: string }>,
     fallbackTitle?: string
 ): string {
     if (!type) {

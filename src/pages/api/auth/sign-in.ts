@@ -1,13 +1,16 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient } from '@/lib/supabase';
 import { signinSchema } from '@/schemas/auth';
 import normalizeZodError from '@/utils/normalizeZodError';
 import httpResponse from '@/utils/response';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
     try {
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
         const validated = signinSchema.safeParse(
             Object.fromEntries(await request.formData())
         );
@@ -20,7 +23,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             );
         }
 
-        const { data: profile, error: profileError } = await supabase
+        const { data: profile, error: profileError } = await anonClient
             .from('user_info')
             .select('email')
             .eq('username', validated.data.username)
@@ -29,7 +32,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         if (profileError || !profile)
             throw new Error('Không tìm thấy username');
         const email = profile?.email;
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await anonClient.auth.signInWithPassword({
             email,
             password: validated.data.password,
         });
