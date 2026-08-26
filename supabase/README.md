@@ -43,6 +43,11 @@ Muốn thử luồng bàn giao: đăng nhập `thimai` → `/vi/project-handover
 để gửi bàn giao, rồi đăng nhập `viethoang` → `/vi/project-handover-manager/1` để
 nghiệm thu hoặc trả lại.
 
+Muốn thử vòng đời dự án: đăng nhập `viethoang` → `/vi/project/1`, tick các mốc
+để thấy tiến độ đổi, bấm "Kết thúc dự án", rồi đăng nhập `thimai` vào cùng trang
+để chấm sao. Điểm uy tín ở `/vi/dashboard` và mục "Hồ sơ nổi bật" ngoài trang chủ
+sẽ đổi theo.
+
 ## Cấu trúc
 
 - `migrations/20250101000000_init_schema.sql` — 17 bảng, dựng lại từ
@@ -51,8 +56,12 @@ nghiệm thu hoặc trả lại.
   ghi yêu cầu đăng nhập) và 4 storage bucket: `project-covers`, `cover-images`,
   `cv-files`, `avatars`.
 - `migrations/20250101000002_handover_and_cv.sql` — thêm `applications.cv_url` và
-  bảng `project_handovers` cho luồng bàn giao. **Hai thay đổi này mới chỉ có ở
-  local, cần chạy lại trên project production.**
+  bảng `project_handovers` cho luồng bàn giao.
+- `migrations/20250101000003_completion_and_reviews.sql` — thêm `completed_at`
+  cho `projects` và `project_milestones`, cùng ràng buộc mỗi người chỉ đánh giá
+  một người khác một lần trên mỗi dự án.
+
+  **Hai migration này mới chỉ chạy ở local, cần áp dụng trên production.**
 - `seed.sql` — dữ liệu mock.
 
 ## Lưu ý

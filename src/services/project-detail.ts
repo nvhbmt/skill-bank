@@ -23,7 +23,7 @@ export type ProjectDetailData = {
     milestones: Array<
         Pick<
             Tables<'project_milestones'>,
-            'id' | 'title' | 'description' | 'order_index'
+            'id' | 'title' | 'description' | 'order_index' | 'completed_at'
         >
     >;
     isOwner: boolean;
@@ -140,9 +140,7 @@ export async function getProjectDetailById(
                               }
                             : null;
                     })
-                    .filter(
-                        (m): m is NonNullable<typeof m> => m !== null
-                    );
+                    .filter((m): m is NonNullable<typeof m> => m !== null);
             }
         }
 
@@ -150,16 +148,15 @@ export async function getProjectDetailById(
         let milestones: Array<
             Pick<
                 Tables<'project_milestones'>,
-                'id' | 'title' | 'description' | 'order_index'
+                'id' | 'title' | 'description' | 'order_index' | 'completed_at'
             >
         > = [];
 
-        const { data: milestonesData, error: milestonesError } =
-            await supabase
-                .from('project_milestones')
-                .select('id, title, description, order_index')
-                .eq('project_id', projectId)
-                .order('order_index', { ascending: true });
+        const { data: milestonesData, error: milestonesError } = await supabase
+            .from('project_milestones')
+            .select('id, title, description, order_index, completed_at')
+            .eq('project_id', projectId)
+            .order('order_index', { ascending: true });
 
         if (!milestonesError && milestonesData) {
             milestones = milestonesData;
@@ -189,4 +186,3 @@ export async function getProjectDetailById(
         return null;
     }
 }
-

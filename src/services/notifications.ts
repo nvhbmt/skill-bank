@@ -8,7 +8,9 @@ export type NotificationType =
     | 'application_rejected' // Đã bị từ chối khi tham gia dự án
     | 'handover_submitted' // Thành viên đã gửi bàn giao
     | 'handover_approved' // Bàn giao được nghiệm thu
-    | 'handover_rejected'; // Bàn giao bị trả lại
+    | 'handover_rejected' // Bàn giao bị trả lại
+    | 'project_completed' // Dự án đã kết thúc, có thể đánh giá
+    | 'review_received'; // Nhận được đánh giá mới
 
 interface CreateNotificationParams {
     userId: string;
@@ -205,5 +207,38 @@ export async function notifyHandoverRejected(
         type: 'handover_rejected',
         title: null,
         message: JSON.stringify({ projectId, projectTitle }),
+    });
+}
+
+/**
+ * Báo cho thành viên khi dự án kết thúc để họ vào đánh giá
+ */
+export async function notifyProjectCompleted(
+    memberId: string,
+    projectId: number,
+    projectTitle: string
+): Promise<boolean> {
+    return createNotification({
+        userId: memberId,
+        type: 'project_completed',
+        title: null,
+        message: JSON.stringify({ projectId, projectTitle }),
+    });
+}
+
+/**
+ * Báo cho người được đánh giá
+ */
+export async function notifyReviewReceived(
+    revieweeId: string,
+    reviewerName: string,
+    projectId: number,
+    projectTitle: string
+): Promise<boolean> {
+    return createNotification({
+        userId: revieweeId,
+        type: 'review_received',
+        title: null,
+        message: JSON.stringify({ reviewerName, projectId, projectTitle }),
     });
 }

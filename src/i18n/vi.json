@@ -210,7 +210,24 @@
         "noCoverLetters": "Chưa có mô tả từ ứng viên",
         "noCoverLetter": "Không có mô tả"
     },
+    "project-review": {
+        "sectionTitle": "Đánh giá thành viên",
+        "intro": "Dự án đã kết thúc. Hãy đánh giá những người bạn đã làm cùng.",
+        "ratingLabel": "Số sao",
+        "commentPlaceholder": "Nhận xét về sự hợp tác (không bắt buộc)...",
+        "submit": "Gửi đánh giá",
+        "update": "Cập nhật đánh giá",
+        "sending": "Đang gửi...",
+        "sent": "Đã gửi đánh giá",
+        "needRating": "Vui lòng chọn số sao",
+        "noTargets": "Không có thành viên nào để đánh giá.",
+        "yourReview": "Đánh giá của bạn"
+    },
     "project-detail-creator": {
+        "toggleMilestone": "Đánh dấu hoàn thành",
+        "completeProject": "Kết thúc dự án",
+        "completeConfirmTitle": "Kết thúc dự án",
+        "completeConfirmMessage": "Kết thúc dự án sẽ mở phần đánh giá cho các thành viên và không thể hoàn tác. Tiếp tục?",
         "ngayBatDau": "Bắt đầu:",
         "phanLoai": "Phân loại:",
         "điaDiem": "Địa điểm:",
@@ -521,6 +538,16 @@
         "backToSignIn": "Quay lại đăng nhập"
     },
     "notifications": {
+        "project_completed": {
+            "title": "Dự án đã kết thúc",
+            "message": "Dự án \"{{projectTitle}}\" đã kết thúc. Bạn có thể đánh giá các thành viên.",
+            "viewProject": "Đánh giá ngay"
+        },
+        "review_received": {
+            "title": "Bạn nhận được đánh giá mới",
+            "message": "{{reviewerName}} đã đánh giá bạn trong dự án \"{{projectTitle}}\".",
+            "viewProject": "Xem dự án"
+        },
         "handover_submitted": {
             "title": "Có bàn giao mới cần duyệt",
             "message": "{{memberName}} đã gửi bàn giao cho dự án \"{{projectTitle}}\".",

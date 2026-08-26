@@ -349,6 +349,7 @@ export type Database = {
       }
       project_milestones: {
         Row: {
+          completed_at: string | null
           created_at: string | null
           description: string | null
           due_date: string | null
@@ -359,6 +360,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          completed_at?: string | null
           created_at?: string | null
           description?: string | null
           due_date?: string | null
@@ -369,6 +371,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          completed_at?: string | null
           created_at?: string | null
           description?: string | null
           due_date?: string | null
@@ -426,6 +429,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          completed_at: string | null
           cover_image_url: string | null
           created_at: string | null
           deleted_at: string | null
@@ -440,6 +444,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          completed_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           deleted_at?: string | null
@@ -454,6 +459,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          completed_at?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           deleted_at?: string | null

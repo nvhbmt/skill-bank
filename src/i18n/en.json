@@ -210,7 +210,24 @@
         "noCoverLetters": "No descriptions from applicants yet",
         "noCoverLetter": "No description"
     },
+    "project-review": {
+        "sectionTitle": "Review members",
+        "intro": "The project is complete. Rate the people you worked with.",
+        "ratingLabel": "Rating",
+        "commentPlaceholder": "Comment on the collaboration (optional)...",
+        "submit": "Submit review",
+        "update": "Update review",
+        "sending": "Sending...",
+        "sent": "Review submitted",
+        "needRating": "Please pick a rating",
+        "noTargets": "No members to review.",
+        "yourReview": "Your review"
+    },
     "project-detail-creator": {
+        "toggleMilestone": "Mark as done",
+        "completeProject": "Complete project",
+        "completeConfirmTitle": "Complete project",
+        "completeConfirmMessage": "Completing the project opens reviews for members and cannot be undone. Continue?",
         "ngayBatDau": "Start Date:",
         "phanLoai": "Category:",
         "điaDiem": "Location:",
@@ -523,6 +540,16 @@
         "backToSignIn": "Back to sign in"
     },
     "notifications": {
+        "project_completed": {
+            "title": "Project completed",
+            "message": "Project \"{{projectTitle}}\" is complete. You can now review the members.",
+            "viewProject": "Review now"
+        },
+        "review_received": {
+            "title": "You received a review",
+            "message": "{{reviewerName}} reviewed you on \"{{projectTitle}}\".",
+            "viewProject": "View project"
+        },
         "handover_submitted": {
             "title": "New handover to review",
             "message": "{{memberName}} submitted a handover for \"{{projectTitle}}\".",

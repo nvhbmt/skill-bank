@@ -501,3 +501,141 @@ main {
         height: 200px;
     }
 }
+
+/* ===== Mốc tiến độ có trạng thái hoàn thành ===== */
+.timeline-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.timeline-progress-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.timeline-progress-bar span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #7c3aed, #a78bfa);
+    transition: width 0.3s ease;
+}
+
+.timeline-progress-text {
+    font-size: 0.85rem;
+    color: #a1a1aa;
+    white-space: nowrap;
+}
+
+.timeline-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.timeline-card[data-done='true'] > span {
+    text-decoration: line-through;
+    opacity: 0.65;
+}
+
+.timeline-card i {
+    margin-top: 3px;
+    color: #a78bfa;
+}
+
+.milestone-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    font-size: 1rem;
+}
+
+.milestone-toggle:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+/* ===== Khu đánh giá sau khi dự án kết thúc ===== */
+.project-review-section {
+    margin: 40px auto;
+}
+
+.project-review-intro {
+    color: #a1a1aa;
+    margin-bottom: 20px;
+}
+
+.project-review-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.project-review-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.project-review-who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.project-review-who img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.project-review-name {
+    font-weight: 600;
+    color: #fff;
+}
+
+.project-review-role {
+    font-size: 0.85rem;
+    color: #a1a1aa;
+}
+
+.project-review-stars {
+    display: flex;
+    gap: 6px;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fbbf24;
+    font-size: 1.25rem;
+    padding: 0;
+}
+
+.project-review-comment {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.25);
+    color: #e4e4e7;
+    font: inherit;
+    resize: vertical;
+}
+
+.project-review-empty {
+    color: #a1a1aa;
+}

@@ -40,7 +40,9 @@ export type MyProjectsResult = {
     completed: ProjectWithMembers[];
 };
 
-// Batch calculate progress for multiple projects
+// Tiến độ = số mốc đã hoàn thành / tổng số mốc.
+// Trước đây công thức là `min(số_mốc * 20, 100)`, tức là đếm số mốc TỒN TẠI
+// chứ không phải số mốc ĐÃ XONG — dự án vừa tạo với 5 mốc hiện ngay 100%.
 async function calculateProgressBatch(
     projectIds: number[]
 ): Promise<Map<number, number>> {
@@ -48,25 +50,29 @@ async function calculateProgressBatch(
 
     const { data: milestones } = await supabase
         .from('project_milestones')
-        .select('project_id')
+        .select('project_id, completed_at')
         .in('project_id', projectIds);
 
     const progressMap = new Map<number, number>();
+    const total = new Map<number, number>();
+    const done = new Map<number, number>();
 
-    if (milestones) {
-        const milestoneCounts = new Map<number, number>();
-        milestones.forEach((m) => {
-            const count = milestoneCounts.get(m.project_id) || 0;
-            milestoneCounts.set(m.project_id, count + 1);
-        });
+    (milestones || []).forEach((m) => {
+        total.set(m.project_id, (total.get(m.project_id) || 0) + 1);
+        if (m.completed_at) {
+            done.set(m.project_id, (done.get(m.project_id) || 0) + 1);
+        }
+    });
 
-        projectIds.forEach((id) => {
-            const count = milestoneCounts.get(id) || 0;
-            progressMap.set(id, Math.min(count * 20, 100));
-        });
-    } else {
-        projectIds.forEach((id) => progressMap.set(id, 0));
-    }
+    projectIds.forEach((id) => {
+        const totalCount = total.get(id) || 0;
+        if (totalCount === 0) {
+            progressMap.set(id, 0);
+            return;
+        }
+        const doneCount = done.get(id) || 0;
+        progressMap.set(id, Math.round((doneCount / totalCount) * 100));
+    });
 
     return progressMap;
 }

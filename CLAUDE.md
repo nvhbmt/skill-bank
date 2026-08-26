@@ -268,11 +268,34 @@ The newest feature, completed in `supabase/migrations/20250101000002_handover_an
 three times (DOMContentLoaded + two fallback timeouts), so it guards on
 `dataset.handlersReady` — without that guard every click fired multiple requests.
 
+## Project lifecycle
+
+`pending` → `approved` (admin) → `completed` (owner). The last step and everything after it were
+added here; before that `'completed'` was only ever read, so the "Hoàn thành" tab in My Projects
+could never fill and nobody could review anyone.
+
+- Owner ticks milestones done on the project page (`project_milestones.completed_at`). Progress is
+  `done / total`, replacing the old `min(count * 20, 100)`, which counted milestones that *existed*
+  — a fresh project with 5 milestones displayed 100%.
+- Owner ends the project (`POST /api/projects/[id]/complete`, sets `completed_at`), which notifies
+  every member.
+- Once completed, each member reviews the others (`POST /api/projects/[id]/reviews`, one row per
+  reviewer/reviewee pair enforced by a unique index — resubmitting updates). This closes the loop
+  the FAQ promises in a7 and feeds both `getDashboardStats().reputation` (avg rating × 100) and the
+  homepage "Hồ sơ nổi bật" ranking, which filters `reviewCount > 0` and was therefore always empty.
+
 ## Known gaps
 
-- **Production needs migrations 2 and 3 applied.** `project_skills.description` already existed in
-  production, but `applications.cv_url` and the `project_handovers` table were added here and only
-  exist in the local stack so far.
+- **Tables with no feature behind them**: `contracts`, `deliveries`, `disputes`, `messages` and
+  `password_resets` are referenced by zero queries. `messages` has a `BoxMessage.astro` component
+  that Header renders inside a JSX comment — an unstarted chat feature. `password_resets` is
+  redundant because Supabase issues the OTP.
+- **The dashboard stats block is commented out** (`dashboard.astro:53-94`: reputation, likes, views,
+  invites). `getDashboardData` still runs every query to compute them, on both the page render and
+  `/api/dashboard`, and nothing consumes the result.
+- **Production needs migrations 2, 3 and 4 applied.** `project_skills.description` already existed in
+  production, but `applications.cv_url`, the `project_handovers` table, and the `completed_at`
+  columns on `projects` / `project_milestones` were added here and exist only in the local stack.
 - `api/auth/forgot-password.ts` answers "Email không tồn tại trong hệ thống" for unknown addresses,
   which lets anyone enumerate registered emails. Left as-is because changing it changes the UX.
 - `src/templates/README.md` documents an OTP email template whose `@/utils/email-template.ts` and

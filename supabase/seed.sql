@@ -144,3 +144,8 @@ where status = 'approved';
 update public.applications
 set cv_url = '/assets/images/defaul-project-background.jpg'
 where applicant_id = '55555555-5555-5555-5555-555555555555';
+
+-- ---------- Mốc đã hoàn thành (để tiến độ khác 0) ----------
+update public.project_milestones
+set completed_at = now() - interval '2 days'
+where project_id = 1 and order_index = 1;
