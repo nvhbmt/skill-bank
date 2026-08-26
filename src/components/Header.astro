@@ -1,13 +1,7 @@
 ---
-interface Props {}
-
-const {} = Astro.props;
-
 import { useTranslate } from '@/i18n';
-import { supabase } from '@/lib/supabase';
 import NotificationDropdown from '@/components/NotificationDropdown.astro';
 import UserDropdown from '@/components/UserDropdown.astro';
-import BoxMessage from './BoxMessage.astro';
 
 const { lang, t, l } = useTranslate(Astro);
 

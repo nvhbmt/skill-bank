@@ -35,6 +35,28 @@ export const onRequest = defineMiddleware(async (context, next) => {
         if (!error && sessionData.session) {
             session = sessionData.session;
             user = sessionData.user;
+
+            // setSession tự làm mới khi access token hết hạn và trả về cặp
+            // token mới. Nếu không ghi lại vào cookie thì request sau vẫn gửi
+            // token cũ đã hết hạn, và mỗi request đều phải gọi lại GoTrue để
+            // refresh.
+            if (session.access_token !== accessToken) {
+                const cookieOptions = {
+                    path: '/',
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax',
+                } as const;
+
+                cookies.set('sb-access-token', session.access_token, {
+                    ...cookieOptions,
+                    maxAge: 60 * 60 * 24 * 7, // 7 ngày
+                });
+                cookies.set('sb-refresh-token', session.refresh_token, {
+                    ...cookieOptions,
+                    maxAge: 60 * 60 * 24 * 30, // 30 ngày
+                });
+            }
         }
     }
 
