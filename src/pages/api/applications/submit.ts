@@ -57,16 +57,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
         }
 
         // Check if user already applied
+        // Chỉ đơn đang chờ hoặc đã được duyệt mới chặn nộp lại. Trước đây câu
+        // này không xét status nên một lần bị từ chối là chặn vĩnh viễn, kể cả
+        // khi dự án mở tuyển đợt mới.
         const { data: existingApplication } = await authenticatedSupabase
             .from('applications')
-            .select('id')
+            .select('id, status')
             .eq('project_id', projectIdNum)
             .eq('applicant_id', session.user.id)
+            .in('status', ['pending', 'approved'])
             .is('deleted_at', null)
             .maybeSingle();
 
         if (existingApplication) {
-            return httpResponse.fail('Bạn đã ứng tuyển cho dự án này rồi', 400);
+            return httpResponse.fail(
+                existingApplication.status === 'approved'
+                    ? 'Bạn đã là thành viên của dự án này'
+                    : 'Bạn đã ứng tuyển cho dự án này rồi',
+                400
+            );
         }
 
         // Upload CV file if provided

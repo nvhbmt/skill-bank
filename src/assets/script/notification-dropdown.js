@@ -179,6 +179,13 @@
             })
             .join('');
 
+        // Nút "đánh dấu tất cả đã đọc" chỉ hiện khi còn tin chưa đọc
+        const markAllBtn = document.getElementById('notification-mark-all');
+        if (markAllBtn) {
+            const unread = notifications.filter((n) => !n.is_read).length;
+            markAllBtn.style.display = unread > 0 ? 'inline-block' : 'none';
+        }
+
         // Re-attach click handlers
         attachNotificationHandlers();
     }
@@ -285,6 +292,30 @@
                 </div>
             `;
         }
+    }
+
+    // Đánh dấu toàn bộ thông báo là đã đọc
+    const markAllButton = document.getElementById('notification-mark-all');
+    if (markAllButton && markAllButton.dataset.ready !== 'true') {
+        markAllButton.dataset.ready = 'true';
+        markAllButton.addEventListener('click', async function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            markAllButton.disabled = true;
+            try {
+                const response = await fetch('/api/notifications/read-all', {
+                    method: 'POST',
+                });
+                const result = await response.json();
+                if (result.success) {
+                    await fetchNotifications();
+                }
+            } catch (error) {
+                console.error('Error marking all as read:', error);
+            } finally {
+                markAllButton.disabled = false;
+            }
+        });
     }
 
     // Initialize when DOM is ready

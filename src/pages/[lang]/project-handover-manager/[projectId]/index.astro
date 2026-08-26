@@ -320,6 +320,18 @@ function formatDate(dateString: string | null): string {
                                                     {member.full_name ||
                                                         member.username}
                                                 </span>
+                                                <button
+                                                    type="button"
+                                                    class="btn-remove-member"
+                                                    data-member-id={
+                                                        member.user_id
+                                                    }
+                                                    title={t(
+                                                        'flows.removeMember'
+                                                    )}
+                                                >
+                                                    <i class="fa-solid fa-user-minus" />
+                                                </button>
                                                 {!contract && (
                                                     <span class="contract-none">
                                                         {t(
@@ -561,6 +573,8 @@ function formatDate(dateString: string | null): string {
                     handoverRejectConfirm: t(
                         'project-handover-manager.handoverRejectConfirm'
                     ),
+                    removeConfirmTitle: t('flows.removeConfirmTitle'),
+                    removeConfirmMessage: t('flows.removeConfirmMessage'),
                     contractMessages: JSON.stringify({
                         save: t('contracts.save'),
                         saving: t('contracts.saving'),
@@ -692,6 +706,62 @@ function formatDate(dateString: string | null): string {
                         );
                     }
                 };
+
+                // Chủ dự án gỡ thành viên khỏi dự án
+                document
+                    .querySelectorAll('.btn-remove-member')
+                    .forEach((button) => {
+                        button.addEventListener('click', function () {
+                            const run = async () => {
+                                button.disabled = true;
+                                try {
+                                    const response = await fetch(
+                                        `/api/projects/${handoverProjectId}/members`,
+                                        {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type':
+                                                    'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                member_id:
+                                                    button.dataset.memberId,
+                                            }),
+                                        }
+                                    );
+                                    const result = await response.json();
+                                    window.showToast?.({
+                                        type: result.success
+                                            ? 'success'
+                                            : 'error',
+                                        title: result.success
+                                            ? approveSuccessTitle
+                                            : approveErrorTitle,
+                                        message: result.message,
+                                        onClose: () => location.reload(),
+                                    });
+                                    if (!result.success)
+                                        button.disabled = false;
+                                } catch (error) {
+                                    button.disabled = false;
+                                    console.error(
+                                        'Error removing member:',
+                                        error
+                                    );
+                                }
+                            };
+
+                            if (window.openApproveApplicationDialog) {
+                                window.openApproveApplicationDialog(
+                                    removeConfirmTitle,
+                                    removeConfirmMessage,
+                                    run
+                                );
+                            } else {
+                                run();
+                            }
+                        });
+                    });
 
                 // Lưu hợp đồng với từng thành viên
                 const contractMsg = JSON.parse(contractMessages);

@@ -36,6 +36,8 @@ export type ProjectWithMembers = {
 export type MyProjectsResult = {
     pending: ProjectWithMembers[];
     approved: ProjectWithMembers[];
+    /** Bị admin từ chối — chủ dự án sửa lại rồi nộp lại được */
+    rejected: ProjectWithMembers[];
     joined: ProjectWithMembers[];
     completed: ProjectWithMembers[];
 };
@@ -86,6 +88,7 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     // Initialize project arrays
     const pendingProjects: ProjectWithMembers[] = [];
     const approvedProjects: ProjectWithMembers[] = [];
+    const rejectedProjects: ProjectWithMembers[] = [];
     const joinedProjects: ProjectWithMembers[] = [];
     const completedProjects: ProjectWithMembers[] = [];
 
@@ -144,6 +147,7 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
         return {
             pending: [],
             approved: [],
+            rejected: [],
             joined: [],
             completed: [],
         };
@@ -220,6 +224,8 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
                 approvedProjects.push(projectWithMembers);
             } else if (project.status === 'completed') {
                 completedProjects.push(projectWithMembers);
+            } else if (project.status === 'rejected') {
+                rejectedProjects.push(projectWithMembers);
             }
         }
     }
@@ -247,6 +253,7 @@ export async function getMyProjects(userId: string): Promise<MyProjectsResult> {
     }
 
     return {
+        rejected: rejectedProjects,
         pending: pendingProjects,
         approved: approvedProjects,
         joined: joinedProjects,

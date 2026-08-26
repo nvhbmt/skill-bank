@@ -330,3 +330,9 @@ main {
         grid-column: 1 / -1;
     }
 }
+
+/* Nhãn trạng thái cho dự án bị từ chối */
+.status-red {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}

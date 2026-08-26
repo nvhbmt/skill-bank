@@ -11,6 +11,7 @@ import { useTranslate } from '@/i18n';
 import { getProjectDetailById } from '@/services/project-detail';
 import { getHandoverForMember } from '@/services/project-handover';
 import { getReviewTargets } from '@/services/reviews';
+import { supabase } from '@/lib/supabase';
 
 const session = Astro.locals.session;
 const { lang, t, l } = useTranslate(Astro);
@@ -41,6 +42,19 @@ const {
     isOwner,
     isMember,
 } = projectData;
+
+// Đơn ứng tuyển đang chờ của người xem, để hiện nút rút đơn
+const { data: myPendingApplication } =
+    session?.user && !isMember
+        ? await supabase
+              .from('applications')
+              .select('id')
+              .eq('project_id', projectIdNum)
+              .eq('applicant_id', session.user.id)
+              .eq('status', 'pending')
+              .is('deleted_at', null)
+              .maybeSingle()
+        : { data: null };
 
 // Tiến độ tính theo số mốc đã hoàn thành
 const doneMilestones = milestones.filter((m) => m.completed_at).length;
@@ -236,6 +250,33 @@ function formatDate(dateString: string | null): string {
                                     >
                                         <i class="fa-solid fa-file-import" />
                                         {t('project-detail-collab.banGiao')}
+                                    </button>
+                                )
+                            }
+                            <!-- Nút "Rút đơn" - đã nộp và đang chờ duyệt -->
+                            {
+                                myPendingApplication && (
+                                    <button
+                                        class="action-btn btn-withdraw-application"
+                                        id="withdraw-application-btn"
+                                        data-application-id={
+                                            myPendingApplication.id
+                                        }
+                                    >
+                                        <i class="fa-solid fa-rotate-left" />
+                                        {t('flows.withdraw')}
+                                    </button>
+                                )
+                            }
+                            <!-- Nút "Rời dự án" - thành viên, không phải chủ -->
+                            {
+                                isMember && !isOwner && !isCompleted && (
+                                    <button
+                                        class="action-btn btn-leave-project"
+                                        id="leave-project-btn"
+                                    >
+                                        <i class="fa-solid fa-right-from-bracket" />
+                                        {t('flows.leaveProject')}
                                     </button>
                                 )
                             }
@@ -671,6 +712,10 @@ function formatDate(dateString: string | null): string {
         completeConfirmMessage: t(
             'project-detail-creator.completeConfirmMessage'
         ),
+        withdrawConfirmTitle: t('flows.withdrawConfirmTitle'),
+        withdrawConfirmMessage: t('flows.withdrawConfirmMessage'),
+        leaveConfirmTitle: t('flows.leaveConfirmTitle'),
+        leaveConfirmMessage: t('flows.leaveConfirmMessage'),
         disputeMessages: JSON.stringify({
             needDescription: t('disputes.needDescription'),
             sending: t('disputes.sending'),
@@ -834,6 +879,84 @@ function formatDate(dateString: string | null): string {
         );
         if (overlay) {
             overlay.addEventListener('click', closeSkillDetailDialog);
+        }
+
+        // Ứng viên rút đơn đang chờ duyệt
+        const withdrawBtn = document.getElementById('withdraw-application-btn');
+        if (withdrawBtn) {
+            withdrawBtn.addEventListener('click', function () {
+                const run = async () => {
+                    withdrawBtn.disabled = true;
+                    try {
+                        const response = await fetch(
+                            `/api/applications/${withdrawBtn.dataset.applicationId}/withdraw`,
+                            { method: 'POST' }
+                        );
+                        const result = await response.json();
+                        window.showToast?.({
+                            type: result.success ? 'success' : 'error',
+                            title: result.success ? 'Thành công' : 'Lỗi',
+                            message: result.message,
+                            onClose: () => location.reload(),
+                        });
+                        if (!result.success) withdrawBtn.disabled = false;
+                    } catch (error) {
+                        withdrawBtn.disabled = false;
+                        console.error('Error withdrawing application:', error);
+                    }
+                };
+
+                if (window.openDeleteProjectDialog) {
+                    window.openDeleteProjectDialog(
+                        withdrawConfirmTitle,
+                        withdrawConfirmMessage,
+                        run
+                    );
+                } else {
+                    run();
+                }
+            });
+        }
+
+        // Thành viên rời dự án
+        const leaveBtn = document.getElementById('leave-project-btn');
+        if (leaveBtn) {
+            leaveBtn.addEventListener('click', function () {
+                const run = async () => {
+                    leaveBtn.disabled = true;
+                    try {
+                        const response = await fetch(
+                            `/api/projects/${projectId}/members`,
+                            {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: '{}',
+                            }
+                        );
+                        const result = await response.json();
+                        window.showToast?.({
+                            type: result.success ? 'success' : 'error',
+                            title: result.success ? 'Thành công' : 'Lỗi',
+                            message: result.message,
+                            onClose: () => location.reload(),
+                        });
+                        if (!result.success) leaveBtn.disabled = false;
+                    } catch (error) {
+                        leaveBtn.disabled = false;
+                        console.error('Error leaving project:', error);
+                    }
+                };
+
+                if (window.openDeleteProjectDialog) {
+                    window.openDeleteProjectDialog(
+                        leaveConfirmTitle,
+                        leaveConfirmMessage,
+                        run
+                    );
+                } else {
+                    run();
+                }
+            });
         }
 
         // Báo cáo vấn đề của dự án tới quản trị viên

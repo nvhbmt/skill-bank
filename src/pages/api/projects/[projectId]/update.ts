@@ -10,7 +10,10 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     try {
         const session = locals.session;
         if (!session?.user) {
-            return httpResponse.fail('Bạn cần đăng nhập để cập nhật dự án', 401);
+            return httpResponse.fail(
+                'Bạn cần đăng nhập để cập nhật dự án',
+                401
+            );
         }
 
         const authenticatedSupabase = createAuthenticatedClient(session);
@@ -21,19 +24,28 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
         }
 
         // Check if user is project owner
-        const { data: project, error: projectError } = await authenticatedSupabase
-            .from('projects')
-            .select('owner_id')
-            .eq('id', projectId)
-            .is('deleted_at', null)
-            .single();
+        const { data: project, error: projectError } =
+            await authenticatedSupabase
+                .from('projects')
+                .select('owner_id, status')
+                .eq('id', projectId)
+                .is('deleted_at', null)
+                .single();
 
         if (projectError || !project) {
             return httpResponse.fail('Dự án không tồn tại', 404);
         }
 
         if (project.owner_id !== session.user.id) {
-            return httpResponse.fail('Bạn không có quyền cập nhật dự án này', 403);
+            return httpResponse.fail(
+                'Bạn không có quyền cập nhật dự án này',
+                403
+            );
+        }
+
+        // Dự án đã kết thúc thì không sửa nữa
+        if (project.status === 'completed') {
+            return httpResponse.fail('Dự án đã kết thúc, không sửa được', 400);
         }
 
         const formData = await request.formData();
@@ -116,12 +128,17 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
         const milestones: string[] = [];
 
         for (const [key, value] of formData.entries()) {
-            if (key.startsWith('skill-') && !key.includes('-description') && value) {
+            if (
+                key.startsWith('skill-') &&
+                !key.includes('-description') &&
+                value
+            ) {
                 const skillValue = value.toString().trim();
                 if (skillValue) {
                     const skillIndex = key.replace('skill-', '');
                     const descriptionKey = `skill-${skillIndex}-description`;
-                    const description = formData.get(descriptionKey)?.toString().trim() || null;
+                    const description =
+                        formData.get(descriptionKey)?.toString().trim() || null;
 
                     skills.push({
                         name: skillValue,
@@ -145,7 +162,10 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
                 .delete()
                 .eq('project_id', projectId);
 
-            const skillMap = new Map<string, { id: number; description?: string }>();
+            const skillMap = new Map<
+                string,
+                { id: number; description?: string }
+            >();
 
             // Find or create skills
             for (const skill of skills) {
@@ -204,7 +224,8 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
 
                 if (projectSkillsError) {
                     return httpResponse.fail(
-                        'Lỗi khi cập nhật kỹ năng: ' + projectSkillsError.message,
+                        'Lỗi khi cập nhật kỹ năng: ' +
+                            projectSkillsError.message,
                         500
                     );
                 }
@@ -240,16 +261,30 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
 
                 if (milestonesError) {
                     return httpResponse.fail(
-                        'Lỗi khi cập nhật mốc thời gian: ' + milestonesError.message,
+                        'Lỗi khi cập nhật mốc thời gian: ' +
+                            milestonesError.message,
                         500
                     );
                 }
             }
         }
 
+        // Dự án bị từ chối, sau khi sửa thì tự đưa lại vào hàng chờ duyệt
+        let resubmitted = false;
+        if (project.status === 'rejected') {
+            const { data: requeued } = await authenticatedSupabase
+                .from('projects')
+                .update({ status: 'pending' })
+                .eq('id', projectId)
+                .select('id');
+            resubmitted = (requeued?.length ?? 0) > 0;
+        }
+
         return httpResponse.ok(
-            { project_id: projectId },
-            'Cập nhật dự án thành công',
+            { project_id: projectId, resubmitted },
+            resubmitted
+                ? 'Đã cập nhật và gửi lại dự án để duyệt'
+                : 'Cập nhật dự án thành công',
             200
         );
     } catch (error) {
@@ -261,4 +296,3 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
         );
     }
 };
-

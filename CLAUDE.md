@@ -330,6 +330,26 @@ The last three unused tables were wired in one pass:
 - **`disputes`** — any project member reports an issue from the project page (one open report per
   person per project); admins resolve or reject it in a new tab on `/[lang]/admin`.
 
+## Lifecycle edges
+
+Rules that are easy to reintroduce as bugs, all covered by `scripts/e2e-api.sh`:
+
+- **Rejecting a project sets `status='rejected'`, it does not soft-delete.** The rejection
+  notification tells the owner to "chỉnh sửa lại dự án", so the project has to stay visible — it
+  shows in the `rejected` bucket of `getMyProjects()` and the matching tab. Saving an edit on a
+  rejected project moves it back to `pending` automatically.
+- **A rejected application must not block re-applying.** The duplicate check in
+  `applications/submit.ts` filters on `status in ('pending','approved')`, not just `deleted_at`.
+- **`project_members.left_at` is now written** by `POST /api/projects/[id]/members` (empty body =
+  leave, `member_id` = owner removes). Someone who left keeps their old row, so `approveApplication`
+  clears `left_at` to let them rejoin instead of inserting a duplicate — check both `deleted_at` and
+  `left_at` whenever you query membership.
+- **A completed project is frozen**: no handovers, no edits, no membership changes. Its contracts
+  are closed to `ended` by `endProjectContracts()`.
+- **`formData.get()` returns `null` for a missing field, and Zod `.optional()` rejects `null`.**
+  Optional form fields must use `.nullish()` — otherwise leaving one blank fails the whole request
+  with "expected string, received null".
+
 ## Known gaps
 
 - **`password_resets` is the only table left with no feature behind it** — Supabase issues the OTP,

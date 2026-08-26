@@ -537,6 +537,22 @@
         "resetPass": "Đặt lại mật khẩu",
         "backToSignIn": "Quay lại đăng nhập"
     },
+    "flows": {
+        "rejectedTab": "Bị từ chối",
+        "noRejected": "Không có dự án nào bị từ chối",
+        "resubmitHint": "Dự án bị từ chối. Sửa lại rồi lưu để gửi duyệt lần nữa.",
+        "leaveProject": "Rời dự án",
+        "leaveConfirmTitle": "Rời dự án",
+        "leaveConfirmMessage": "Bạn sẽ không còn là thành viên của dự án này. Tiếp tục?",
+        "removeMember": "Gỡ khỏi dự án",
+        "removeConfirmTitle": "Gỡ thành viên",
+        "removeConfirmMessage": "Gỡ thành viên này khỏi dự án?",
+        "withdraw": "Rút đơn",
+        "withdrawConfirmTitle": "Rút đơn ứng tuyển",
+        "withdrawConfirmMessage": "Rút lại đơn ứng tuyển của bạn?",
+        "markAllRead": "Đánh dấu tất cả đã đọc",
+        "processing": "Đang xử lý..."
+    },
     "contracts": {
         "sectionTitle": "Hợp đồng với thành viên",
         "terms": "Điều khoản",

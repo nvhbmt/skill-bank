@@ -39,53 +39,104 @@ if (!session?.user) {
                     <button class="tab-btn" data-tab="completed"
                         >{t('my-project.hoanThanh')}</button
                     >
+                    <button class="tab-btn" data-tab="rejected"
+                        >{t('flows.rejectedTab')}</button
+                    >
                 </div>
 
                 <!-- CONTENT TAB 1: DỰ ÁN CHỜ DUYỆT -->
                 <div id="pending" class="projects-grid tab-content">
                     <div id="pending-loading" class="projects-loading">
-                        {Array(3).fill(0).map(() => (
-                            <div class="project-skeleton">
-                                <div class="skeleton-header"></div>
-                                <div class="skeleton-status"></div>
-                            </div>
-                        ))}
+                        {
+                            Array(3)
+                                .fill(0)
+                                .map(() => (
+                                    <div class="project-skeleton">
+                                        <div class="skeleton-header" />
+                                        <div class="skeleton-status" />
+                                    </div>
+                                ))
+                        }
                     </div>
                 </div>
 
                 <!-- CONTENT TAB 2: DỰ ÁN ĐÃ DUYỆT -->
-                <div id="approved" class="projects-grid tab-content" style="display: none;">
+                <div
+                    id="approved"
+                    class="projects-grid tab-content"
+                    style="display: none;"
+                >
                     <div id="approved-loading" class="projects-loading">
-                        {Array(3).fill(0).map(() => (
-                            <div class="project-skeleton">
-                                <div class="skeleton-header"></div>
-                                <div class="skeleton-status"></div>
-                            </div>
-                        ))}
+                        {
+                            Array(3)
+                                .fill(0)
+                                .map(() => (
+                                    <div class="project-skeleton">
+                                        <div class="skeleton-header" />
+                                        <div class="skeleton-status" />
+                                    </div>
+                                ))
+                        }
                     </div>
                 </div>
 
                 <!-- CONTENT TAB 3: DỰ ÁN ĐÃ THAM GIA -->
-                <div id="joined" class="projects-grid tab-content" style="display: none;">
+                <div
+                    id="joined"
+                    class="projects-grid tab-content"
+                    style="display: none;"
+                >
                     <div id="joined-loading" class="projects-loading">
-                        {Array(3).fill(0).map(() => (
-                            <div class="project-skeleton">
-                                <div class="skeleton-header"></div>
-                                <div class="skeleton-status"></div>
-                            </div>
-                        ))}
+                        {
+                            Array(3)
+                                .fill(0)
+                                .map(() => (
+                                    <div class="project-skeleton">
+                                        <div class="skeleton-header" />
+                                        <div class="skeleton-status" />
+                                    </div>
+                                ))
+                        }
                     </div>
                 </div>
 
                 <!-- CONTENT TAB 4: DỰ ÁN HOÀN THÀNH -->
-                <div id="completed" class="projects-grid tab-content" style="display: none;">
+                <div
+                    id="completed"
+                    class="projects-grid tab-content"
+                    style="display: none;"
+                >
                     <div id="completed-loading" class="projects-loading">
-                        {Array(3).fill(0).map(() => (
-                            <div class="project-skeleton">
-                                <div class="skeleton-header"></div>
-                                <div class="skeleton-status"></div>
-                            </div>
-                        ))}
+                        {
+                            Array(3)
+                                .fill(0)
+                                .map(() => (
+                                    <div class="project-skeleton">
+                                        <div class="skeleton-header" />
+                                        <div class="skeleton-status" />
+                                    </div>
+                                ))
+                        }
+                    </div>
+                </div>
+
+                <!-- CONTENT TAB 5: DỰ ÁN BỊ TỪ CHỐI -->
+                <div
+                    id="rejected"
+                    class="projects-grid tab-content"
+                    style="display: none;"
+                >
+                    <div id="rejected-loading" class="projects-loading">
+                        {
+                            Array(3)
+                                .fill(0)
+                                .map(() => (
+                                    <div class="project-skeleton">
+                                        <div class="skeleton-header" />
+                                        <div class="skeleton-status" />
+                                    </div>
+                                ))
+                        }
                     </div>
                 </div>
             </div>

@@ -93,46 +93,51 @@ document.addEventListener('DOMContentLoaded', () => {
             approved: 'status-green',
             joined: 'status-green',
             completed: 'status-blue',
+            rejected: 'status-red',
         };
 
-        ['pending', 'approved', 'joined', 'completed'].forEach((tabId) => {
-            const container = document.getElementById(tabId);
-            const loading = document.getElementById(`${tabId}-loading`);
-            const projects = projectsData[tabId] || [];
+        ['pending', 'approved', 'joined', 'completed', 'rejected'].forEach(
+            (tabId) => {
+                const container = document.getElementById(tabId);
+                const loading = document.getElementById(`${tabId}-loading`);
+                const projects = projectsData[tabId] || [];
 
-            if (loading) loading.style.display = 'none';
+                if (loading) loading.style.display = 'none';
 
-            if (container) {
-                if (projects.length === 0) {
-                    container.innerHTML = `
+                if (container) {
+                    if (projects.length === 0) {
+                        container.innerHTML = `
                         <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--color-text-gray);">
                             Không có dự án nào
                         </div>
                     `;
-                } else {
-                    container.innerHTML = projects
-                        .map((project) =>
-                            renderProjectCard(project, statusColors[tabId])
-                        )
-                        .join('');
+                    } else {
+                        container.innerHTML = projects
+                            .map((project) =>
+                                renderProjectCard(project, statusColors[tabId])
+                            )
+                            .join('');
+                    }
                 }
             }
-        });
+        );
     }
 
     function showError(message) {
-        ['pending', 'approved', 'joined', 'completed'].forEach((tabId) => {
-            const container = document.getElementById(tabId);
-            const loading = document.getElementById(`${tabId}-loading`);
-            if (loading) loading.style.display = 'none';
-            if (container) {
-                container.innerHTML = `
+        ['pending', 'approved', 'joined', 'completed', 'rejected'].forEach(
+            (tabId) => {
+                const container = document.getElementById(tabId);
+                const loading = document.getElementById(`${tabId}-loading`);
+                if (loading) loading.style.display = 'none';
+                if (container) {
+                    container.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--color-text-gray);">
                         ${message}
                     </div>
                 `;
+                }
             }
-        });
+        );
     }
 
     // Tab switching

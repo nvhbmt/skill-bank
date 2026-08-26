@@ -539,6 +539,22 @@
         "resetPass": "Reset password",
         "backToSignIn": "Back to sign in"
     },
+    "flows": {
+        "rejectedTab": "Rejected",
+        "noRejected": "No rejected projects",
+        "resubmitHint": "This project was rejected. Edit it and save to submit again.",
+        "leaveProject": "Leave project",
+        "leaveConfirmTitle": "Leave project",
+        "leaveConfirmMessage": "You will no longer be a member of this project. Continue?",
+        "removeMember": "Remove from project",
+        "removeConfirmTitle": "Remove member",
+        "removeConfirmMessage": "Remove this member from the project?",
+        "withdraw": "Withdraw",
+        "withdrawConfirmTitle": "Withdraw application",
+        "withdrawConfirmMessage": "Withdraw your application?",
+        "markAllRead": "Mark all as read",
+        "processing": "Processing..."
+    },
     "contracts": {
         "sectionTitle": "Member contracts",
         "terms": "Terms",

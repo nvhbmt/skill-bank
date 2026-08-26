@@ -135,13 +135,22 @@ export async function approveProject(
 /**
  * Reject a project (soft delete)
  */
+/**
+ * Từ chối dự án.
+ *
+ * Trước đây hàm này ghi thẳng `deleted_at`, tức là xoá mềm. Nhưng thông báo
+ * gửi cho chủ dự án lại nói "Vui lòng kiểm tra và chỉnh sửa lại dự án", trong
+ * khi mọi truy vấn đều lọc `deleted_at is null` nên dự án biến mất khỏi cả tab
+ * "Dự án của tôi" — không còn đường nào sửa. Nay chỉ đổi trạng thái để chủ dự
+ * án sửa rồi nộp lại.
+ */
 export async function rejectProject(
     client: WriteClient,
     projectId: number
 ): Promise<boolean> {
     const { data, error } = await client
         .from('projects')
-        .update({ deleted_at: new Date().toISOString() })
+        .update({ status: 'rejected' })
         .eq('id', projectId)
         .select('id');
 

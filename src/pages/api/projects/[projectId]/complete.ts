@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createAuthenticatedClient } from '@/lib/supabase';
+import { endProjectContracts } from '@/services/contracts';
 import { notifyProjectCompleted } from '@/services/notifications';
 import httpResponse from '@/utils/response';
 
@@ -67,6 +68,9 @@ export const POST: APIRoute = async ({ params, locals }) => {
                 500
             );
         }
+
+        // Dự án đóng thì hợp đồng cũng đóng theo
+        await endProjectContracts(supabase, projectId);
 
         // Báo cho các thành viên để họ vào đánh giá
         const { data: members } = await supabase

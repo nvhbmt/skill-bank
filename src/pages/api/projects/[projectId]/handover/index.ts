@@ -54,7 +54,7 @@ export const POST: APIRoute = async ({ request, params, locals }) => {
 
         const { data: project } = await supabase
             .from('projects')
-            .select('id, title, owner_id')
+            .select('id, title, owner_id, status')
             .eq('id', projectId)
             .is('deleted_at', null)
             .maybeSingle();
@@ -65,6 +65,15 @@ export const POST: APIRoute = async ({ request, params, locals }) => {
 
         if (project.owner_id === session.user.id) {
             return httpResponse.fail('Chủ dự án không cần gửi bàn giao', 400);
+        }
+
+        // Dự án đã kết thúc thì luồng nghiệm thu cũng đã đóng; nhận thêm bàn
+        // giao chỉ tạo ra bản ghi chờ duyệt mãi không ai xử lý.
+        if (project.status === 'completed') {
+            return httpResponse.fail(
+                'Dự án đã kết thúc, không nhận bàn giao nữa',
+                400
+            );
         }
 
         // Gửi lại sẽ ghi đè bản cũ và đưa về trạng thái chờ duyệt

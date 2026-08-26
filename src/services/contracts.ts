@@ -184,3 +184,31 @@ export async function recordDelivery(
 
     return true;
 }
+
+/**
+ * Đóng toàn bộ hợp đồng của một dự án khi dự án kết thúc.
+ * Trước đây `contracts.status` chỉ từng được đặt 'active' và không có đường
+ * nào chuyển sang trạng thái khác.
+ */
+export async function endProjectContracts(
+    client: WriteClient,
+    projectId: number
+): Promise<number> {
+    const { data, error } = await client
+        .from('contracts')
+        .update({
+            status: 'ended',
+            end_date: new Date().toISOString().slice(0, 10),
+        })
+        .eq('project_id', projectId)
+        .eq('status', 'active')
+        .is('deleted_at', null)
+        .select('id');
+
+    if (error) {
+        console.error('Error ending contracts:', error);
+        return 0;
+    }
+
+    return data?.length ?? 0;
+}

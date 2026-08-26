@@ -165,6 +165,10 @@ check  "  → tiến độ 1/2 = 50%" "$(body -b $S/c_own.txt $BASE/api/my-proje
 import sys,json;d=json.load(sys.stdin)['data']
 print([p['progress'] for p in d['approved'] if p['title']=='Dự án E2E'][0])" 2>/dev/null)" "50"
 
+r=$(body -b $S/c_own.txt -X PUT -F "project_name=Dự án E2E sửa" -F "category=UI/UX" -F "start_date=2026-12-15" -F "location=Thành phố Huế" -F "description=Sửa" -F "skill-1=figma" -F "milestone-1=Mốc sửa" $BASE/api/projects/$PID/update)
+checkc "PUT  /projects/:id/update" "$r" '"success":true'
+check  "  → tiêu đề đổi" "$(db "select title from projects where id=$PID")" "DựánE2Esửa"
+
 r=$(body -b $S/c_app.txt -X POST -H 'Content-Type: application/json' -d '{"reviewee_id":"22222222-2222-2222-2222-222222222222","rating":5}' $BASE/api/projects/$PID/reviews)
 checkc "POST /projects/:id/reviews  chưa kết thúc" "$r" 'sau khi dự án kết thúc'
 r=$(body -b $S/c_app.txt -X POST $BASE/api/projects/$PID/complete)
@@ -238,9 +242,8 @@ r=$(body -b $S/c_own.txt -X POST -F "full_name=Nguyễn Việt Hoàng" -F "bio=T
 checkc "POST /profile/update" "$r" '"success":true'
 check  "  → ghi vào DB" "$(db "select bio from user_profiles where user_id='22222222-2222-2222-2222-222222222222'")" "TiểusửE2E"
 
-r=$(body -b $S/c_own.txt -X PUT -F "project_name=Dự án E2E sửa" -F "category=UI/UX" -F "start_date=2026-12-15" -F "location=Thành phố Huế" -F "description=Sửa" -F "skill-1=figma" -F "milestone-1=Mốc sửa" $BASE/api/projects/$PID/update)
-checkc "PUT  /projects/:id/update" "$r" '"success":true'
-check  "  → tiêu đề đổi" "$(db "select title from projects where id=$PID")" "DựánE2Esửa"
+r=$(body -b $S/c_own.txt -X PUT -F "project_name=X" -F "category=UI/UX" -F "start_date=2026-12-15" $BASE/api/projects/$PID/update)
+checkc "PUT  /projects/:id/update  dự án đã kết thúc" "$r" 'đã kết thúc'
 
 r=$(body -b $S/c_adm.txt -X PUT -H 'Content-Type: application/json' -d '{"userId":"55555555-5555-5555-5555-555555555555","updates":{"role":"user"}}' $BASE/api/admin/users)
 checkc "PUT  /admin/users" "$r" '"success":true'
@@ -289,8 +292,73 @@ curl -s -o /dev/null -b $S/c_own.txt -X POST $BASE/api/auth/sign-out
 check "POST /auth/sign-out        thu hồi phiên" "$(code -b $S/c_own.txt $BASE/api/dashboard)" "401"
 
 echo ""
-echo "════ 16. XOÁ DỰ ÁN ════"
+echo "════ 16. LUỒNG VÒNG ĐỜI BỔ SUNG ════"
+# Mục 15 đã đăng xuất c_own, đăng nhập lại trước khi dùng tiếp
 curl -s -o /dev/null -c $S/c_own.txt -X POST -F "username=viethoang" -F "password=Password123" $BASE/api/auth/sign-in
+
+# --- dự án bị từ chối: sửa rồi nộp lại ---
+r=$(body -b $S/c_own.txt -X POST -F "project_name=Dự án bị từ chối" -F "category=DevOps" -F "start_date=2026-12-01" -F "description=x" $BASE/api/projects/create)
+RPID=$(echo "$r" | jq_ "d['data']['project_id']")
+body -b $S/c_adm.txt -X PUT $BASE/api/admin/projects/$RPID/reject > /dev/null
+check  "Từ chối dự án: đổi status, KHÔNG xoá mềm" "$(db "select status from projects where id=$RPID")" "rejected"
+check  "  → không bị xoá mềm" "$(db "select deleted_at is null from projects where id=$RPID")" "t"
+check  "  → hiện ở nhóm rejected" "$(body -b $S/c_own.txt $BASE/api/my-projects | jq_ "len([p for p in d['data']['rejected'] if p['id']==$RPID])")" "1"
+r=$(body -b $S/c_own.txt -X PUT -F "project_name=Đã sửa theo góp ý" -F "category=DevOps" -F "start_date=2026-12-01" -F "description=y" $BASE/api/projects/$RPID/update)
+checkc "  → sửa lại thì tự nộp lại" "$r" 'gửi lại'
+check  "  → về hàng chờ duyệt" "$(db "select status from projects where id=$RPID")" "pending"
+
+# --- bị từ chối ứng tuyển vẫn nộp lại được ---
+body -b $S/c_adm.txt -X PUT $BASE/api/admin/projects/$RPID/approve > /dev/null
+r=$(body -b $S/c_out.txt -X POST -F "project_id=$RPID" -F "cover_letter=lần 1" $BASE/api/applications/submit)
+RAID=$(echo "$r" | jq_ "d['data']['application_id']")
+body -b $S/c_own.txt -X PUT $BASE/api/projects/$RPID/applications/$RAID/reject > /dev/null
+check  "Đơn bị từ chối" "$(db "select status from applications where id=$RAID")" "rejected"
+r=$(body -b $S/c_out.txt -X POST -F "project_id=$RPID" -F "cover_letter=lần 2" $BASE/api/applications/submit)
+checkc "  → vẫn ứng tuyển lại được" "$r" '"success":true'
+
+# --- rút đơn ---
+RAID2=$(db "select id from applications where project_id=$RPID and status='pending' order by id desc limit 1")
+r=$(body -b $S/c_own.txt -X POST $BASE/api/applications/$RAID2/withdraw)
+checkc "POST /applications/:id/withdraw  không phải chủ đơn" "$r" 'không phải đơn của bạn'
+r=$(body -b $S/c_out.txt -X POST $BASE/api/applications/$RAID2/withdraw)
+checkc "POST /applications/:id/withdraw  chính chủ" "$r" '"success":true'
+check  "  → đã xoá mềm" "$(db "select deleted_at is not null from applications where id=$RAID2")" "t"
+
+# --- rời dự án / gỡ thành viên ---
+body -b $S/c_app.txt -X POST -F "project_id=$RPID" -F "cover_letter=xin vào" $BASE/api/applications/submit > /dev/null
+NAID=$(db "select id from applications where project_id=$RPID and status='pending' order by id desc limit 1")
+body -b $S/c_own.txt -X PUT $BASE/api/projects/$RPID/applications/$NAID/approve > /dev/null
+check  "Thành viên đang hoạt động" "$(db "select count(*) from project_members where project_id=$RPID and left_at is null")" "2"
+r=$(body -b $S/c_own.txt -X POST -H 'Content-Type: application/json' -d '{}' $BASE/api/projects/$RPID/members)
+checkc "POST /projects/:id/members  chủ dự án tự rời" "$r" 'không thể rời'
+r=$(body -b $S/c_out.txt -X POST -H 'Content-Type: application/json' -d '{"member_id":"44444444-4444-4444-4444-444444444444"}' $BASE/api/projects/$RPID/members)
+checkc "POST /projects/:id/members  người ngoài gỡ" "$r" 'Chỉ chủ dự án'
+r=$(body -b $S/c_app.txt -X POST -H 'Content-Type: application/json' -d '{}' $BASE/api/projects/$RPID/members)
+checkc "POST /projects/:id/members  tự rời dự án" "$r" 'Đã rời dự án'
+check  "  → left_at được ghi" "$(db "select left_at is not null from project_members where project_id=$RPID and user_id='44444444-4444-4444-4444-444444444444'")" "t"
+
+# --- hợp đồng đóng theo dự án, chặn bàn giao sau khi kết thúc ---
+body -b $S/c_app.txt -X POST -F "project_id=$RPID" -F "cover_letter=vào lại" $BASE/api/applications/submit > /dev/null
+BAID=$(db "select id from applications where project_id=$RPID and status='pending' order by id desc limit 1")
+body -b $S/c_own.txt -X PUT $BASE/api/projects/$RPID/applications/$BAID/approve > /dev/null
+body -b $S/c_own.txt -X POST -H 'Content-Type: application/json' -d '{"member_id":"44444444-4444-4444-4444-444444444444","terms":"HĐ"}' $BASE/api/projects/$RPID/contracts > /dev/null
+check  "Hợp đồng đang hiệu lực" "$(db "select status from contracts where project_id=$RPID")" "active"
+body -b $S/c_own.txt -X POST $BASE/api/projects/$RPID/complete > /dev/null
+check  "  → dự án kết thúc thì hợp đồng đóng theo" "$(db "select status from contracts where project_id=$RPID")" "ended"
+r=$(body -b $S/c_app.txt -X POST -H 'Content-Type: application/json' -d '{"notes":"sau khi kết thúc"}' $BASE/api/projects/$RPID/handover)
+checkc "POST /projects/:id/handover  dự án đã kết thúc" "$r" 'không nhận bàn giao'
+r=$(body -b $S/c_own.txt -X POST -H 'Content-Type: application/json' -d '{"member_id":"44444444-4444-4444-4444-444444444444"}' $BASE/api/projects/$RPID/members)
+checkc "POST /projects/:id/members  dự án đã kết thúc" "$r" 'đã kết thúc'
+
+# --- đánh dấu tất cả thông báo đã đọc ---
+UNREAD=$(db "select count(*) from notifications where user_id='22222222-2222-2222-2222-222222222222' and is_read=false")
+check  "Có thông báo chưa đọc" "$([ "${UNREAD:-0}" -ge 1 ] && echo yes || echo no)" "yes"
+r=$(body -b $S/c_own.txt -X POST $BASE/api/notifications/read-all)
+checkc "POST /notifications/read-all" "$r" '"success":true'
+check  "  → không còn tin chưa đọc" "$(db "select count(*) from notifications where user_id='22222222-2222-2222-2222-222222222222' and is_read=false")" "0"
+
+echo ""
+echo "════ 17. XOÁ DỰ ÁN ════"
 r=$(body -b $S/c_out.txt -X DELETE $BASE/api/projects/$PID/delete)
 checkc "DELETE /projects/:id/delete  không phải chủ" "$r" 'không có quyền'
 r=$(body -b $S/c_own.txt -X DELETE $BASE/api/projects/$PID/delete)

@@ -171,15 +171,28 @@ export async function approveApplication(
     }
 
     // Thêm ứng viên vào thành viên dự án nếu chưa có
+    // Người từng rời dự án vẫn còn dòng project_members cũ với `left_at` đã
+    // được ghi. Nếu chỉ kiểm tra `deleted_at` thì câu này tìm thấy dòng cũ và
+    // bỏ qua bước thêm thành viên, khiến duyệt đơn xong họ vẫn ở ngoài dự án.
     const { data: existingMember } = await client
         .from('project_members')
-        .select('id')
+        .select('id, left_at')
         .eq('project_id', projectId)
         .eq('user_id', application.applicant_id)
         .is('deleted_at', null)
         .maybeSingle();
 
-    if (!existingMember) {
+    if (existingMember?.left_at) {
+        // Từng rời dự án rồi quay lại: mở lại dòng cũ
+        const { error: rejoinError } = await client
+            .from('project_members')
+            .update({ left_at: null, joined_at: new Date().toISOString() })
+            .eq('id', existingMember.id);
+
+        if (rejoinError) {
+            console.error('Error rejoining member:', rejoinError);
+        }
+    } else if (!existingMember) {
         const { error: memberError } = await client
             .from('project_members')
             .insert({

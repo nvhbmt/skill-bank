@@ -655,3 +655,24 @@ body {
     margin: 6px 0 0;
     padding-left: 18px;
 }
+
+/* Nút gỡ thành viên khỏi dự án */
+.btn-remove-member {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #f87171;
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+}
+
+.btn-remove-member:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.btn-remove-member:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
