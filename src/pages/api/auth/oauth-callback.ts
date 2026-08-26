@@ -1,7 +1,8 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { createAnonClient } from '@/lib/supabase';
+import { createAnonClient, createAuthenticatedClient } from '@/lib/supabase';
+import { ensureUserInfo } from '@/services/user-account';
 import httpResponse from '@/utils/response';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
@@ -47,37 +48,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             maxAge: 60 * 60 * 24 * 30, // 30 days
         });
 
-        // Check if user exists in user_info table, if not create it
-        const user = data.user;
-        if (user && user.email) {
-            const { data: existingUser } = await anonClient
-                .from('user_info')
-                .select('user_id')
-                .eq('user_id', user.id)
-                .maybeSingle();
-
-            if (!existingUser) {
-                // Create user_info entry for OAuth user
-                const username =
-                    user.user_metadata?.username ||
-                    user.user_metadata?.full_name
-                        ?.toLowerCase()
-                        .replace(/\s+/g, '') ||
-                    `user_${user.id.slice(0, 8)}`;
-
-                const fullName =
-                    user.user_metadata?.full_name ||
-                    user.user_metadata?.name ||
-                    'User';
-
-                await anonClient.from('user_info').insert({
-                    user_id: user.id,
-                    email: user.email,
-                    username: username,
-                    full_name: fullName,
-                    avatar_url: user.user_metadata?.avatar_url || null,
-                    role: 'user',
-                });
+        // Tạo user_info nếu chưa có. Trước đây insert bằng client ẩn danh nên
+        // RLS chặn im lặng, và username suy ra từ tên đầy đủ không chống trùng
+        // trong khi cột này là UNIQUE.
+        const authenticatedSupabase = createAuthenticatedClient(data.session);
+        if (data.user) {
+            const profile = await ensureUserInfo(
+                authenticatedSupabase,
+                data.user
+            );
+            if (!profile.ok) {
+                console.error('Cannot create user_info:', profile.error);
             }
         }
 

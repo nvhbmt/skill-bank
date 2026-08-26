@@ -1,15 +1,20 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { createAnonClient } from '@/lib/supabase';
+import { createAuthenticatedClient } from '@/lib/supabase';
 import httpResponse from '@/utils/response';
 
 export const POST: APIRoute = async ({ cookies, locals }) => {
     try {
-        // Client riêng cho request này, không dùng chung singleton
-        const anonClient = createAnonClient();
+        // Phải signOut trên client có phiên thì Supabase mới thu hồi refresh
+        // token. Gọi trên client ẩn danh (không có phiên) là vô nghĩa, token
+        // vẫn dùng lại được sau khi người dùng bấm đăng xuất.
+        const session = locals.session;
+        if (session) {
+            const authenticatedSupabase = createAuthenticatedClient(session);
+            await authenticatedSupabase.auth.signOut();
+        }
 
-        await anonClient.auth.signOut();
         return httpResponse.ok(null, 'Đăng xuất thành công', 200);
     } catch (error) {
         return httpResponse.fail('Lỗi khi đăng xuất', 500);

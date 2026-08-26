@@ -1,7 +1,8 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { createAnonClient } from '@/lib/supabase';
+import { createAnonClient, createAuthenticatedClient } from '@/lib/supabase';
+import { ensureUserInfo } from '@/services/user-account';
 
 export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
     // Client riêng cho request này, không dùng chung singleton
@@ -111,37 +112,15 @@ export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
             maxAge: 60 * 60 * 24 * 30, // 30 days
         });
 
-        // Check if user exists in user_info table, if not create it
-        const user = session.user;
-        if (user && user.email) {
-            const { data: existingUser } = await anonClient
-                .from('user_info')
-                .select('user_id')
-                .eq('user_id', user.id)
-                .maybeSingle();
-
-            if (!existingUser) {
-                // Create user_info entry for OAuth user
-                const username =
-                    user.user_metadata?.username ||
-                    user.user_metadata?.full_name
-                        ?.toLowerCase()
-                        .replace(/\s+/g, '') ||
-                    `user_${user.id.slice(0, 8)}`;
-
-                const fullName =
-                    user.user_metadata?.full_name ||
-                    user.user_metadata?.name ||
-                    'User';
-
-                await anonClient.from('user_info').insert({
-                    user_id: user.id,
-                    email: user.email, // Now guaranteed to be string
-                    username: username,
-                    full_name: fullName,
-                    avatar_url: user.user_metadata?.avatar_url || null,
-                    role: 'user',
-                });
+        // Tạo user_info nếu chưa có (xem ghi chú ở oauth-callback.ts)
+        const authenticatedSupabase = createAuthenticatedClient(session);
+        if (session.user) {
+            const profile = await ensureUserInfo(
+                authenticatedSupabase,
+                session.user
+            );
+            if (!profile.ok) {
+                console.error('Cannot create user_info:', profile.error);
             }
         }
 
