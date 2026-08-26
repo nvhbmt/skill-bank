@@ -1,10 +1,13 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient } from '@/lib/supabase';
 
 export const GET: APIRoute = async ({ url, redirect, request }) => {
     try {
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
         // Get redirect parameters - prefer redirect_to from query, fallback to request origin
         const redirectToParam = url.searchParams.get('redirect_to');
         // Use request.headers to get the actual host in production
@@ -31,7 +34,7 @@ export const GET: APIRoute = async ({ url, redirect, request }) => {
 
         // Get the OAuth URL for Google
         // Redirect to the correct page (sign-in or sign-up) which will handle hash fragment
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { data, error } = await anonClient.auth.signInWithOAuth({
             provider: 'google',
             options: {
                 redirectTo: callbackUrl,

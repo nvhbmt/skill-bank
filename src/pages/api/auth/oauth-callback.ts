@@ -1,11 +1,14 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient } from '@/lib/supabase';
 import httpResponse from '@/utils/response';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
     try {
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
         const body = await request.json();
         const { access_token, refresh_token } = body;
 
@@ -14,7 +17,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         }
 
         // Set session using the tokens
-        const { data, error } = await supabase.auth.setSession({
+        const { data, error } = await anonClient.auth.setSession({
             access_token: access_token,
             refresh_token: refresh_token || '',
         });
@@ -25,7 +28,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         }
 
         // Set cookies
-        const { access_token: sessionAccessToken, refresh_token: sessionRefreshToken } = data.session;
+        const {
+            access_token: sessionAccessToken,
+            refresh_token: sessionRefreshToken,
+        } = data.session;
         cookies.set('sb-access-token', sessionAccessToken, {
             path: '/',
             httpOnly: true,
@@ -44,7 +50,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         // Check if user exists in user_info table, if not create it
         const user = data.user;
         if (user && user.email) {
-            const { data: existingUser } = await supabase
+            const { data: existingUser } = await anonClient
                 .from('user_info')
                 .select('user_id')
                 .eq('user_id', user.id)
@@ -64,7 +70,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
                     user.user_metadata?.name ||
                     'User';
 
-                await supabase.from('user_info').insert({
+                await anonClient.from('user_info').insert({
                     user_id: user.id,
                     email: user.email,
                     username: username,
@@ -85,4 +91,3 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         );
     }
 };
-

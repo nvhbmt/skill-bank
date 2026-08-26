@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient } from '@/lib/supabase';
 import { z } from 'zod';
 import httpResponse from '@/utils/response';
 
@@ -11,6 +11,9 @@ const forgotPasswordSchema = z.object({
 
 export const POST: APIRoute = async ({ request }) => {
     try {
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
         const formData = await request.formData();
         const email = formData.get('email') as string;
 
@@ -26,7 +29,7 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         // Check if email exists in user_info table
-        const { data: userInfo, error: userError } = await supabase
+        const { data: userInfo, error: userError } = await anonClient
             .from('user_info')
             .select('email, user_id')
             .eq('email', validated.data.email)
@@ -38,7 +41,7 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         // Send password reset email via Supabase
-        const { error } = await supabase.auth.signInWithOtp({
+        const { error } = await anonClient.auth.signInWithOtp({
             email: validated.data.email,
             options: {
                 shouldCreateUser: false,

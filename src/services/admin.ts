@@ -1,4 +1,13 @@
 import { supabase } from '@/lib/supabase';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/database.types';
+
+/**
+ * Các hàm ghi bắt buộc nhận client đã đăng nhập. Nếu ghi bằng client ẩn danh,
+ * RLS chặn lại nhưng PostgREST trả về 0 dòng mà KHÔNG báo lỗi, khiến API vẫn
+ * trả success trong khi dữ liệu không hề thay đổi.
+ */
+type WriteClient = SupabaseClient<Database>;
 import type { Tables } from '@/types/database.types';
 
 export type UserInfo = Pick<
@@ -43,23 +52,25 @@ export async function getAllUsers(): Promise<UserInfo[]> {
  * Update user (lock/unlock, delete, change role)
  */
 export async function updateUser(
+    client: WriteClient,
     userId: string,
     updates: {
         role?: string;
         deleted_at?: string | null;
     }
 ): Promise<boolean> {
-    const { error } = await supabase
+    const { data, error } = await client
         .from('user_info')
         .update(updates)
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .select('user_id');
 
     if (error) {
         console.error('Error updating user:', error);
         return false;
     }
 
-    return true;
+    return (data?.length ?? 0) > 0;
 }
 
 /**
@@ -103,32 +114,41 @@ export async function getPendingProjects(): Promise<ProjectInfo[]> {
 /**
  * Approve a project
  */
-export async function approveProject(projectId: number): Promise<boolean> {
-    const { error, data } = await supabase
+export async function approveProject(
+    client: WriteClient,
+    projectId: number
+): Promise<boolean> {
+    const { data, error } = await client
         .from('projects')
         .update({ status: 'approved' })
-        .eq('id', projectId);
+        .eq('id', projectId)
+        .select('id');
 
     if (error) {
         console.error('Error approving project:', error);
         return false;
     }
-    return true;
+
+    return (data?.length ?? 0) > 0;
 }
 
 /**
  * Reject a project (soft delete)
  */
-export async function rejectProject(projectId: number): Promise<boolean> {
-    const { error } = await supabase
+export async function rejectProject(
+    client: WriteClient,
+    projectId: number
+): Promise<boolean> {
+    const { data, error } = await client
         .from('projects')
         .update({ deleted_at: new Date().toISOString() })
-        .eq('id', projectId);
+        .eq('id', projectId)
+        .select('id');
 
     if (error) {
         console.error('Error rejecting project:', error);
         return false;
     }
 
-    return true;
+    return (data?.length ?? 0) > 0;
 }

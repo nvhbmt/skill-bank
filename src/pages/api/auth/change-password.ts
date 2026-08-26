@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase, createAuthenticatedClient } from '@/lib/supabase';
+import { createAnonClient, createAuthenticatedClient } from '@/lib/supabase';
 import { changePasswordSchema } from '@/schemas/auth';
 import normalizeZodError from '@/utils/normalizeZodError';
 import httpResponse from '@/utils/response';
@@ -12,6 +12,9 @@ import httpResponse from '@/utils/response';
  */
 export const POST: APIRoute = async ({ request, locals }) => {
     try {
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
         const session = locals.session;
         if (!session?.user) {
             return httpResponse.fail('Bạn cần đăng nhập', 401);
@@ -48,10 +51,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
         }
 
         // Xác minh mật khẩu hiện tại bằng cách đăng nhập lại
-        const { error: verifyError } = await supabase.auth.signInWithPassword({
-            email,
-            password: currentPassword,
-        });
+        const { error: verifyError } = await anonClient.auth.signInWithPassword(
+            {
+                email,
+                password: currentPassword,
+            }
+        );
 
         if (verifyError) {
             return httpResponse.fail('Mật khẩu hiện tại không đúng', 400, {

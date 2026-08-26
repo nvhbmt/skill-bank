@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient } from '@/lib/supabase';
 import { z } from 'zod';
 import httpResponse from '@/utils/response';
 
@@ -12,6 +12,9 @@ const verifyOtpSchema = z.object({
 
 export const POST: APIRoute = async ({ request, cookies }) => {
     try {
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
         const body = await request.json();
         const { email, token } = body;
 
@@ -27,7 +30,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         }
 
         // Verify OTP with Supabase
-        const { data, error } = await supabase.auth.verifyOtp({
+        const { data, error } = await anonClient.auth.verifyOtp({
             email: validated.data.email,
             token: validated.data.token,
             type: 'email',

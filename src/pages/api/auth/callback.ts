@@ -1,9 +1,12 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient } from '@/lib/supabase';
 
 export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
+    // Client riêng cho request này, không dùng chung singleton
+    const anonClient = createAnonClient();
+
     // Get language from URL or default to 'vi'
     const pathname = url.pathname;
     const langMatch = pathname.match(/^\/(vi|en)/);
@@ -31,7 +34,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
         if (code) {
             // Authorization code flow - exchange code for session
             const { data, error: exchangeError } =
-                await supabase.auth.exchangeCodeForSession(code);
+                await anonClient.auth.exchangeCodeForSession(code);
 
             if (exchangeError || !data.session) {
                 console.error(
@@ -48,7 +51,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
             try {
                 // Get user info using the access token
                 const { data: userData, error: userError } =
-                    await supabase.auth.getUser(accessTokenFromHash);
+                    await anonClient.auth.getUser(accessTokenFromHash);
 
                 if (userError || !userData.user) {
                     console.error('Error getting user from token:', userError);
@@ -66,7 +69,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
 
                 // Set session using setSession
                 const { data: sessionData, error: sessionError } =
-                    await supabase.auth.setSession({
+                    await anonClient.auth.setSession({
                         access_token: accessTokenFromHash,
                         refresh_token: refreshToken,
                     });
@@ -111,7 +114,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
         // Check if user exists in user_info table, if not create it
         const user = session.user;
         if (user && user.email) {
-            const { data: existingUser } = await supabase
+            const { data: existingUser } = await anonClient
                 .from('user_info')
                 .select('user_id')
                 .eq('user_id', user.id)
@@ -131,7 +134,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect, request }) => {
                     user.user_metadata?.name ||
                     'User';
 
-                await supabase.from('user_info').insert({
+                await anonClient.from('user_info').insert({
                     user_id: user.id,
                     email: user.email, // Now guaranteed to be string
                     username: username,

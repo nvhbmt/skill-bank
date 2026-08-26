@@ -1,12 +1,15 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAnonClient } from '@/lib/supabase';
 import httpResponse from '@/utils/response';
 
 export const POST: APIRoute = async ({ cookies, locals }) => {
     try {
-        await supabase.auth.signOut();
+        // Client riêng cho request này, không dùng chung singleton
+        const anonClient = createAnonClient();
+
+        await anonClient.auth.signOut();
         return httpResponse.ok(null, 'Đăng xuất thành công', 200);
     } catch (error) {
         return httpResponse.fail('Lỗi khi đăng xuất', 500);

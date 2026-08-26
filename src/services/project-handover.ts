@@ -1,5 +1,12 @@
 import { supabase } from '@/lib/supabase';
-import type { Tables } from '@/types/database.types';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database, Tables } from '@/types/database.types';
+
+/**
+ * Ghi bằng client ẩn danh sẽ bị RLS chặn nhưng PostgREST không báo lỗi, nên
+ * các hàm ghi phải nhận client đã đăng nhập từ route gọi tới.
+ */
+type WriteClient = SupabaseClient<Database>;
 
 export type ApplicationWithApplicant = Pick<
     Tables<'applications'>,
@@ -142,28 +149,38 @@ export async function getProjectMembers(
  * Approve an application
  */
 export async function approveApplication(
+    client: WriteClient,
     applicationId: number,
     projectId: number
 ): Promise<boolean> {
-    const { error: appError } = await supabase
+    const { data: updated, error: appError } = await client
         .from('applications')
         .update({ status: 'approved' })
-        .eq('id', applicationId);
+        .eq('id', applicationId)
+        .select('id, applicant_id');
 
     if (appError) {
         console.error('Error approving application:', appError);
         return false;
     }
 
-    // Add applicant as project member
-    const { data: application } = await supabase
-        .from('applications')
-        .select('applicant_id')
-        .eq('id', applicationId)
-        .single();
+    const application = updated?.[0];
+    if (!application) {
+        // Không có dòng nào được cập nhật: đơn không tồn tại hoặc bị RLS chặn
+        return false;
+    }
 
-    if (application) {
-        const { error: memberError } = await supabase
+    // Thêm ứng viên vào thành viên dự án nếu chưa có
+    const { data: existingMember } = await client
+        .from('project_members')
+        .select('id')
+        .eq('project_id', projectId)
+        .eq('user_id', application.applicant_id)
+        .is('deleted_at', null)
+        .maybeSingle();
+
+    if (!existingMember) {
+        const { error: memberError } = await client
             .from('project_members')
             .insert({
                 project_id: projectId,
@@ -174,7 +191,6 @@ export async function approveApplication(
 
         if (memberError) {
             console.error('Error adding member:', memberError);
-            // Don't fail if member already exists
         }
     }
 
@@ -185,19 +201,21 @@ export async function approveApplication(
  * Reject an application
  */
 export async function rejectApplication(
+    client: WriteClient,
     applicationId: number
 ): Promise<boolean> {
-    const { error } = await supabase
+    const { data, error } = await client
         .from('applications')
         .update({ status: 'rejected' })
-        .eq('id', applicationId);
+        .eq('id', applicationId)
+        .select('id');
 
     if (error) {
         console.error('Error rejecting application:', error);
         return false;
     }
 
-    return true;
+    return (data?.length ?? 0) > 0;
 }
 
 export type HandoverStatus = 'pending' | 'approved' | 'rejected';

@@ -101,10 +101,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const span = document.createElement('span');
         span.className = 'skill-tag-edit';
         span.setAttribute('data-skill-id', id);
-        span.innerHTML = `${name}<input type="checkbox" name="skill_ids" value="${id}" checked style="display:none;" /><button type="button" class="remove-skill-btn">×</button>`;
-        span.querySelector('.remove-skill-btn').addEventListener('click', () =>
-            span.remove()
-        );
+
+        // Tên kỹ năng do người dùng tự đặt (api/projects/create.ts tạo kỹ năng
+        // mới từ form), nên dựng bằng DOM node thay vì innerHTML.
+        span.appendChild(document.createTextNode(name));
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'skill_ids';
+        checkbox.value = id;
+        checkbox.checked = true;
+        checkbox.style.display = 'none';
+        span.appendChild(checkbox);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'remove-skill-btn';
+        removeBtn.textContent = '×';
+        removeBtn.addEventListener('click', () => span.remove());
+        span.appendChild(removeBtn);
+
         return span;
     }
 

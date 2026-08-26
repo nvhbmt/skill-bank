@@ -41,7 +41,7 @@ export const PUT: APIRoute = async ({ params, locals, request }) => {
             return httpResponse.fail('Dự án không tồn tại', 404);
         }
 
-        const success = await rejectProject(projectId);
+        const success = await rejectProject(authenticatedSupabase, projectId);
 
         if (!success) {
             return httpResponse.fail('Từ chối dự án thất bại', 500);

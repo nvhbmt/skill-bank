@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase';
+import { createAuthenticatedClient } from '@/lib/supabase';
 import httpResponse from '@/utils/response';
 
 export const POST: APIRoute = async ({ request, locals }) => {
@@ -11,19 +11,27 @@ export const POST: APIRoute = async ({ request, locals }) => {
             return httpResponse.fail('Bạn cần đăng nhập', 401);
         }
 
-        const body = await request.json();
-        const { notification_id } = body;
+        const body = await request.json().catch(() => ({}));
+        const notificationId = Number.parseInt(
+            String(body.notification_id ?? ''),
+            10
+        );
 
-        if (!notification_id) {
-            return httpResponse.fail('Notification ID is required', 400);
+        if (!Number.isFinite(notificationId)) {
+            return httpResponse.fail('Thiếu ID thông báo', 400);
         }
 
-        // Update notification as read
-        const { error } = await supabase
+        // Phải dùng client có phiên đăng nhập: client ẩn danh bị RLS chặn ghi,
+        // PostgREST trả về 0 dòng và KHÔNG báo lỗi, nên endpoint vẫn trả
+        // success trong khi thông báo không hề được đánh dấu đã đọc.
+        const authenticatedSupabase = createAuthenticatedClient(session);
+
+        const { data, error } = await authenticatedSupabase
             .from('notifications')
             .update({ is_read: true })
-            .eq('id', notification_id)
-            .eq('user_id', session.user.id);
+            .eq('id', notificationId)
+            .eq('user_id', session.user.id)
+            .select('id');
 
         if (error) {
             console.error('Error updating notification:', error);
@@ -31,6 +39,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 'Lỗi khi cập nhật thông báo: ' + error.message,
                 500
             );
+        }
+
+        // Không có dòng nào khớp: thông báo không tồn tại hoặc của người khác
+        if (!data || data.length === 0) {
+            return httpResponse.fail('Không tìm thấy thông báo', 404);
         }
 
         return httpResponse.ok(
@@ -43,4 +56,3 @@ export const POST: APIRoute = async ({ request, locals }) => {
         return httpResponse.fail('Lỗi server', 500);
     }
 };
-
