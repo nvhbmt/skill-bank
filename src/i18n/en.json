@@ -539,6 +539,18 @@
         "resetPass": "Reset password",
         "backToSignIn": "Back to sign in"
     },
+    "messages": {
+        "title": "Messages",
+        "empty": "You have no conversations yet.",
+        "findPeople": "Explore projects",
+        "threadEmpty": "No messages yet. Say hello!",
+        "inputPlaceholder": "Type a message...",
+        "send": "Send",
+        "sendFailed": "Could not send the message",
+        "sendMessage": "Message",
+        "loading": "Loading messages...",
+        "viewAll": "View all"
+    },
     "notifications": {
         "project_completed": {
             "title": "Project completed",

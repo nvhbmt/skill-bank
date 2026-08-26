@@ -537,6 +537,18 @@
         "resetPass": "Đặt lại mật khẩu",
         "backToSignIn": "Quay lại đăng nhập"
     },
+    "messages": {
+        "title": "Tin nhắn",
+        "empty": "Bạn chưa có cuộc trò chuyện nào.",
+        "findPeople": "Khám phá dự án",
+        "threadEmpty": "Chưa có tin nhắn nào. Hãy gửi lời chào!",
+        "inputPlaceholder": "Nhập tin nhắn...",
+        "send": "Gửi",
+        "sendFailed": "Không gửi được tin nhắn",
+        "sendMessage": "Nhắn tin",
+        "loading": "Đang tải tin nhắn...",
+        "viewAll": "Xem tất cả"
+    },
     "notifications": {
         "project_completed": {
             "title": "Dự án đã kết thúc",

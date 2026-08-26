@@ -246,7 +246,7 @@ const {
                                 <i class="fa-solid fa-share-nodes"></i>
                                 {t('profile.chiaSe')}
                             </button>
-                            {isOwner && (
+                            {isOwner ? (
                                 <a
                                     href={l('/edit-profile')}
                                     class="btn-banner btn-edit"
@@ -255,6 +255,19 @@ const {
                                     <i class="fa-solid fa-pen"></i>
                                     {t('profile.chinhSua')}
                                 </a>
+                            ) : (
+                                Astro.locals.session?.user && (
+                                    <a
+                                        href={l(
+                                            `/messages/${userInfo?.username}`
+                                        )}
+                                        class="btn-banner btn-edit"
+                                        style="text-decoration: none;"
+                                    >
+                                        <i class="fa-solid fa-paper-plane" />
+                                        {t('messages.sendMessage')}
+                                    </a>
+                                )
                             )}
                         </div>
                     </div>

@@ -50,13 +50,13 @@ const userName = user?.user_metadata?.full_name || 'User';
                 </div>
 
                 <!-- 2. STATS -->
-                <!-- <div class="stats-grid">
+                <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon-box">
                             <i class="fa-solid fa-star"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 class="stat-value">{stats.reputation}</h3>
+                            <h3 class="stat-value" id="stat-reputation">–</h3>
                             <p class="stat-label">
                                 {t('dashboard.statReputation')}
                             </p>
@@ -67,7 +67,7 @@ const userName = user?.user_metadata?.full_name || 'User';
                             <i class="fa-solid fa-thumbs-up"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 class="stat-value">{stats.likes}</h3>
+                            <h3 class="stat-value" id="stat-likes">–</h3>
                             <p class="stat-label">{t('dashboard.statLikes')}</p>
                         </div>
                     </div>
@@ -76,7 +76,7 @@ const userName = user?.user_metadata?.full_name || 'User';
                             <i class="fa-regular fa-eye"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 class="stat-value">{stats.views}</h3>
+                            <h3 class="stat-value" id="stat-views">–</h3>
                             <p class="stat-label">{t('dashboard.statViews')}</p>
                         </div>
                     </div>
@@ -85,13 +85,13 @@ const userName = user?.user_metadata?.full_name || 'User';
                             <i class="fa-regular fa-envelope"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 class="stat-value">{stats.invites}</h3>
+                            <h3 class="stat-value" id="stat-invites">–</h3>
                             <p class="stat-label">
                                 {t('dashboard.statInvites')}
                             </p>
                         </div>
                     </div>
-                </div> -->
+                </div>
 
                 <!-- 3. MAIN CONTENT -->
                 <div class="dashboard-content">
@@ -108,18 +108,25 @@ const userName = user?.user_metadata?.full_name || 'User';
                             >
                         </div>
 
-                        <div class="projects-list-horizontal" id="recommended-projects">
+                        <div
+                            class="projects-list-horizontal"
+                            id="recommended-projects"
+                        >
                             <div class="projects-loading">
-                                {Array(3).fill(0).map(() => (
-                                    <div class="project-card-horizontal skeleton">
-                                        <div class="skeleton-image"></div>
-                                        <div class="skeleton-content">
-                                            <div class="skeleton-tags"></div>
-                                            <div class="skeleton-title"></div>
-                                            <div class="skeleton-text"></div>
-                                        </div>
-                                    </div>
-                                ))}
+                                {
+                                    Array(3)
+                                        .fill(0)
+                                        .map(() => (
+                                            <div class="project-card-horizontal skeleton">
+                                                <div class="skeleton-image" />
+                                                <div class="skeleton-content">
+                                                    <div class="skeleton-tags" />
+                                                    <div class="skeleton-title" />
+                                                    <div class="skeleton-text" />
+                                                </div>
+                                            </div>
+                                        ))
+                                }
                             </div>
                         </div>
 
@@ -135,11 +142,15 @@ const userName = user?.user_metadata?.full_name || 'User';
                         </div>
                         <div class="trending-grid" id="trending-skills">
                             <div class="skills-loading">
-                                {Array(5).fill(0).map(() => (
-                                    <div class="trend-tag skeleton">
-                                        <div class="skeleton-text"></div>
-                                    </div>
-                                ))}
+                                {
+                                    Array(5)
+                                        .fill(0)
+                                        .map(() => (
+                                            <div class="trend-tag skeleton">
+                                                <div class="skeleton-text" />
+                                            </div>
+                                        ))
+                                }
                             </div>
                         </div>
                     </div>
@@ -153,11 +164,16 @@ const userName = user?.user_metadata?.full_name || 'User';
                             >
                                 {t('dashboard.profileStrength')}
                             </h3>
-                            <div class="circle-chart" id="profile-strength-chart">
+                            <div
+                                class="circle-chart"
+                                id="profile-strength-chart"
+                            >
                                 <div class="loading-spinner"></div>
                             </div>
                             <div class="strength-info" id="strength-info">
-                                <p style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 1rem;">
+                                <p
+                                    style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 1rem;"
+                                >
                                     Đang tải...
                                 </p>
                             </div>
@@ -172,12 +188,16 @@ const userName = user?.user_metadata?.full_name || 'User';
                             </h3>
                             <div class="activity-list" id="activity-list">
                                 <div class="activities-loading">
-                                    {Array(3).fill(0).map(() => (
-                                        <div class="activity-item skeleton">
-                                            <div class="skeleton-icon"></div>
-                                            <div class="skeleton-text"></div>
-                                        </div>
-                                    ))}
+                                    {
+                                        Array(3)
+                                            .fill(0)
+                                            .map(() => (
+                                                <div class="activity-item skeleton">
+                                                    <div class="skeleton-icon" />
+                                                    <div class="skeleton-text" />
+                                                </div>
+                                            ))
+                                    }
                                 </div>
                             </div>
                         </div>

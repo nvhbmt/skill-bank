@@ -1,5 +1,6 @@
 ---
 import { useTranslate } from '@/i18n';
+import BoxMessage from '@/components/BoxMessage.astro';
 import NotificationDropdown from '@/components/NotificationDropdown.astro';
 import UserDropdown from '@/components/UserDropdown.astro';
 
@@ -39,7 +40,7 @@ const user = session?.user;
                             lang={lang}
                             l={l}
                         />
-                        {/* <BoxMessage /> */}
+                        <BoxMessage />
                     </>
                 )
             }

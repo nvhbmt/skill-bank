@@ -1,0 +1,198 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
+import '@/assets/css/messages.css';
+import { useTranslate } from '@/i18n';
+import { supabase } from '@/lib/supabase';
+import { getThread } from '@/services/messages';
+
+const { t, l } = useTranslate(Astro);
+const session = Astro.locals.session;
+
+if (!session?.user) {
+    return Astro.redirect(l('/sign-in'));
+}
+
+const username = (Astro.params as { username?: string }).username;
+if (!username) {
+    return Astro.redirect(l('/messages'));
+}
+
+const { data: partner } = await supabase
+    .from('user_info')
+    .select('user_id, username, full_name, avatar_url')
+    .eq('username', username)
+    .is('deleted_at', null)
+    .maybeSingle();
+
+if (!partner) {
+    return Astro.redirect(l('/messages'));
+}
+
+if (partner.user_id === session.user.id) {
+    return Astro.redirect(l('/messages'));
+}
+
+const messages = await getThread(session.user.id, partner.user_id);
+const myId = session.user.id;
+
+function formatTime(value: string | null): string {
+    if (!value) return '';
+    try {
+        return new Date(value).toLocaleString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    } catch {
+        return '';
+    }
+}
+---
+
+<DefaultLayout>
+    <Header />
+    <main class="messages-page container">
+        <div class="thread-header">
+            <a href={l('/messages')} class="thread-back" aria-label="Quay lại">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <a href={l(`/profile/${partner.username}`)} class="thread-partner">
+                <img
+                    src={partner.avatar_url ||
+                        '/assets/images/avatar-default-icon.png'}
+                    alt={partner.username}
+                />
+                <span>{partner.full_name || partner.username}</span>
+            </a>
+        </div>
+
+        <div class="thread-messages" id="thread-messages">
+            {
+                messages.length > 0 ? (
+                    messages.map((message) => (
+                        <div
+                            class:list={[
+                                'chat-bubble',
+                                message.sender_id === myId ? 'mine' : 'theirs',
+                            ]}
+                        >
+                            <p>{message.content}</p>
+                            <time>{formatTime(message.sent_at)}</time>
+                        </div>
+                    ))
+                ) : (
+                    <p class="messages-empty">{t('messages.threadEmpty')}</p>
+                )
+            }
+        </div>
+
+        <form class="thread-form" id="thread-form">
+            <input
+                type="text"
+                id="thread-input"
+                autocomplete="off"
+                placeholder={t('messages.inputPlaceholder')}
+                maxlength="2000"
+            />
+            <button type="submit" class="btn btn-primary">
+                {t('messages.send')}
+            </button>
+        </form>
+    </main>
+
+    <ToastDialog />
+</DefaultLayout>
+
+<script
+    define:vars={{
+        partnerId: partner.user_id,
+        sendFailed: t('messages.sendFailed'),
+    }}
+>
+    (function () {
+        const form = document.getElementById('thread-form');
+        const input = document.getElementById('thread-input');
+        const list = document.getElementById('thread-messages');
+        if (!form || !input || !list) return;
+
+        // Luôn cuộn xuống tin mới nhất
+        list.scrollTop = list.scrollHeight;
+
+        // Mở hội thoại là coi như đã đọc
+        fetch(`/api/messages/${partnerId}`, { method: 'POST' }).catch(() => {});
+
+        function appendMine(content, sentAt) {
+            const empty = list.querySelector('.messages-empty');
+            if (empty) empty.remove();
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble mine';
+
+            const p = document.createElement('p');
+            p.textContent = content;
+            bubble.appendChild(p);
+
+            const time = document.createElement('time');
+            time.textContent = new Date(sentAt).toLocaleString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+            bubble.appendChild(time);
+
+            list.appendChild(bubble);
+            list.scrollTop = list.scrollHeight;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const content = input.value.trim();
+            if (!content) return;
+
+            const button = form.querySelector('button[type="submit"]');
+            input.value = '';
+            if (button) button.disabled = true;
+
+            try {
+                const response = await fetch('/api/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        receiver_id: partnerId,
+                        content,
+                    }),
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    appendMine(
+                        result.data.content,
+                        result.data.sent_at || Date.now()
+                    );
+                } else {
+                    input.value = content;
+                    window.showToast?.({
+                        type: 'error',
+                        title: 'Lỗi',
+                        message: result.message || sendFailed,
+                    });
+                }
+            } catch (error) {
+                input.value = content;
+                console.error('Error sending message:', error);
+                window.showToast?.({
+                    type: 'error',
+                    title: 'Lỗi',
+                    message: sendFailed,
+                });
+            } finally {
+                if (button) button.disabled = false;
+                input.focus();
+            }
+        });
+    })();
+</script>

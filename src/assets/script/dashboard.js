@@ -8,9 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const translations = {
             'dashboard.viewAll': 'Xem tất cả',
             'dashboard.completeProfile': 'Hoàn thiện hồ sơ',
-            'dashboard.profileImpressive': 'Hồ sơ ấn tượng! Thêm chứng chỉ để đạt 100%.',
+            'dashboard.profileImpressive':
+                'Hồ sơ ấn tượng! Thêm chứng chỉ để đạt 100%.',
             'dashboard.profileGood': 'Hồ sơ tốt! Hoàn thiện thêm để tăng điểm.',
-            'dashboard.profileIncomplete': 'Hãy hoàn thiện hồ sơ để có nhiều cơ hội hơn.',
+            'dashboard.profileIncomplete':
+                'Hãy hoàn thiện hồ sơ để có nhiều cơ hội hơn.',
             'dashboard.act_applied': 'Đã ứng tuyển',
             'dashboard.act_posted': 'Đã đăng',
             'dashboard.act_joined': 'Đã tham gia',
@@ -42,7 +44,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return div.innerHTML;
     }
 
+    // Bốn ô thống kê trước đây bị comment trong template vì tham chiếu biến
+    // `stats` không tồn tại ở frontmatter; giờ đổ từ /api/dashboard như các
+    // phần khác của trang.
+    function renderStats() {
+        const stats = dashboardData?.stats;
+        if (!stats) return;
+
+        const cells = {
+            'stat-reputation': stats.reputation,
+            'stat-likes': stats.likes,
+            'stat-views': stats.views,
+            'stat-invites': stats.invites,
+        };
+
+        Object.entries(cells).forEach(([id, value]) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = Number(value ?? 0).toLocaleString('vi-VN');
+        });
+    }
+
     function renderDashboard() {
+        renderStats();
         if (!dashboardData) return;
 
         renderRecommendedProjects();
@@ -61,16 +84,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loading) loading.style.display = 'none';
 
         if (projects.length === 0) {
-            container.innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 2rem;">Chưa có dự án được đề xuất.</p>';
+            container.innerHTML =
+                '<p style="color: #9ca3af; text-align: center; padding: 2rem;">Chưa có dự án được đề xuất.</p>';
             return;
         }
 
-        container.innerHTML = projects.map(proj => `
+        container.innerHTML = projects
+            .map(
+                (proj) => `
             <a href="/${currentLang}/project/${proj.id}" class="project-card-horizontal">
                 <img src="${proj.image || '/assets/images/project-image.svg'}" alt="${escapeHtml(proj.title)}" class="project-thumb-hz" />
                 <div class="project-info-hz">
                     <div class="project-tags-row">
-                        ${proj.tags.map(tag => `<span class="mini-tag">${escapeHtml(tag)}</span>`).join('')}
+                        ${proj.tags.map((tag) => `<span class="mini-tag">${escapeHtml(tag)}</span>`).join('')}
                         <span class="mini-tag match-tag">Match ${proj.match}%</span>
                     </div>
                     <h3 class="project-title-hz">${escapeHtml(proj.title)}</h3>
@@ -81,7 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             </a>
-        `).join('');
+        `
+            )
+            .join('');
     }
 
     function renderTrendingSkills() {
@@ -94,16 +122,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loading) loading.style.display = 'none';
 
         if (skills.length === 0) {
-            container.innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 1rem;">Chưa có kỹ năng trending.</p>';
+            container.innerHTML =
+                '<p style="color: #9ca3af; text-align: center; padding: 1rem;">Chưa có kỹ năng trending.</p>';
             return;
         }
 
-        container.innerHTML = skills.map(skill => `
+        container.innerHTML = skills
+            .map(
+                (skill) => `
             <div class="trend-tag">
                 <i class="fa-solid fa-fire"></i> ${escapeHtml(skill.name)}
                 <span class="trend-count">${skill.count}</span>
             </div>
-        `).join('');
+        `
+            )
+            .join('');
     }
 
     function renderProfileStrength() {
@@ -148,17 +181,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loading) loading.style.display = 'none';
 
         if (activities.length === 0) {
-            container.innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 1rem;">Chưa có hoạt động gần đây.</p>';
+            container.innerHTML =
+                '<p style="color: #9ca3af; text-align: center; padding: 1rem;">Chưa có hoạt động gần đây.</p>';
             return;
         }
 
-        container.innerHTML = activities.map(act => {
-            let icon = '';
-            if (act.type === 'applied') icon = '<i class="fa-solid fa-paper-plane"></i>';
-            else if (act.type === 'posted') icon = '<i class="fa-solid fa-plus"></i>';
-            else if (act.type === 'joined') icon = '<i class="fa-solid fa-handshake"></i>';
+        container.innerHTML = activities
+            .map((act) => {
+                let icon = '';
+                if (act.type === 'applied')
+                    icon = '<i class="fa-solid fa-paper-plane"></i>';
+                else if (act.type === 'posted')
+                    icon = '<i class="fa-solid fa-plus"></i>';
+                else if (act.type === 'joined')
+                    icon = '<i class="fa-solid fa-handshake"></i>';
 
-            return `
+                return `
                 <div class="activity-item">
                     <div class="act-icon">${icon}</div>
                     <div class="act-text">
@@ -167,7 +205,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
-        }).join('');
+            })
+            .join('');
     }
 
     function showError(message) {
@@ -177,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('activity-list'),
         ];
 
-        containers.forEach(container => {
+        containers.forEach((container) => {
             if (container) {
                 container.innerHTML = `<p style="color: #ef4444; text-align: center; padding: 2rem;">${message}</p>`;
             }
@@ -187,4 +226,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load data on page load
     loadDashboardData();
 });
-

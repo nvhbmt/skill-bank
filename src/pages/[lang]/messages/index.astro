@@ -1,0 +1,90 @@
+---
+import DefaultLayout from '@/layouts/DefaultLayout.astro';
+import Header from '@/components/Header.astro';
+import ToastDialog from '@/components/ToastDialog.astro';
+import '@/assets/css/messages.css';
+import { useTranslate } from '@/i18n';
+import { getConversations } from '@/services/messages';
+
+const { t, l } = useTranslate(Astro);
+const session = Astro.locals.session;
+
+if (!session?.user) {
+    return Astro.redirect(l('/sign-in'));
+}
+
+const conversations = await getConversations(session.user.id);
+
+function formatTime(value: string | null): string {
+    if (!value) return '';
+    try {
+        return new Date(value).toLocaleString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    } catch {
+        return '';
+    }
+}
+---
+
+<DefaultLayout>
+    <Header />
+    <main class="messages-page container">
+        <h1>{t('messages.title')}</h1>
+
+        {
+            conversations.length > 0 ? (
+                <div class="conversation-list">
+                    {conversations.map((conversation) => (
+                        <a
+                            class:list={[
+                                'conversation-item',
+                                { unread: conversation.unread > 0 },
+                            ]}
+                            href={l(
+                                `/messages/${conversation.partner.username}`
+                            )}
+                        >
+                            <img
+                                src={
+                                    conversation.partner.avatar_url ||
+                                    '/assets/images/avatar-default-icon.png'
+                                }
+                                alt={conversation.partner.username}
+                            />
+                            <div class="conversation-body">
+                                <div class="conversation-top">
+                                    <span class="conversation-name">
+                                        {conversation.partner.full_name ||
+                                            conversation.partner.username}
+                                    </span>
+                                    <span class="conversation-time">
+                                        {formatTime(conversation.lastAt)}
+                                    </span>
+                                </div>
+                                <p class="conversation-preview">
+                                    {conversation.lastMessage}
+                                </p>
+                            </div>
+                            {conversation.unread > 0 && (
+                                <span class="conversation-badge">
+                                    {conversation.unread}
+                                </span>
+                            )}
+                        </a>
+                    ))}
+                </div>
+            ) : (
+                <p class="messages-empty">
+                    {t('messages.empty')}
+                    <a href={l('/explore')}>{t('messages.findPeople')}</a>
+                </p>
+            )
+        }
+    </main>
+
+    <ToastDialog />
+</DefaultLayout>
