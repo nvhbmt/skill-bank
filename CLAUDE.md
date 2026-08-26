@@ -17,9 +17,17 @@ npm run format:check
 npx astro check        # the only type-check available (no `typecheck` script)
 ```
 
-There is **no test framework and no ESLint config** in this repo despite `.vscode/extensions.json`
-recommending the ESLint extension. `astro check` is the whole gate (it needs `@astrojs/check` +
-`typescript`, which are not in `package.json` — install them with `npm i --no-save` when you need it).
+There is **no unit-test framework and no ESLint config** in this repo despite `.vscode/extensions.json`
+recommending the ESLint extension. The gate is `astro check` (it needs `@astrojs/check` +
+`typescript`, which are not in `package.json` — install them with `npm i --no-save` when you need it)
+plus `npm run test:e2e`.
+
+`scripts/e2e-api.sh` walks every one of the 41 API routes end to end — 109 assertions covering the
+whole journey (register → create project → admin approves → apply → approve → contract → handover →
+delivery → milestones → complete → review → dispute → message → password reset → delete) and each
+rejection path (wrong role, duplicate, out-of-range rating, non-member, already completed). It needs
+the local stack and `npm run dev` running, creates timestamped accounts so it is safe to re-run
+without resetting the database, and exits non-zero on any failure.
 
 **Do not run `npm run format` on the whole repo.** Most files were never Prettier-formatted, so a
 repo-wide run rewrites ~140 files. Format only files you actually touched.

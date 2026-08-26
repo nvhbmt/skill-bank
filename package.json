@@ -14,7 +14,8 @@
         "db:stop": "supabase stop",
         "db:reset": "supabase db reset",
         "db:status": "supabase status",
-        "db:types": "supabase gen types typescript --local > src/types/database.types.ts"
+        "db:types": "supabase gen types typescript --local > src/types/database.types.ts",
+        "test:e2e": "bash scripts/e2e-api.sh"
     },
     "dependencies": {
         "@astrojs/vercel": "^9.0.1",
